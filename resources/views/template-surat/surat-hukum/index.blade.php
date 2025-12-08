@@ -13,13 +13,16 @@
 
     <x-template-table :templates="$templates" :columns="['no', 'template', 'actions']">
         @foreach($templates as $index => $template)
-            <x-template-row :template="$template" :index="$loop->iteration" :actionButtons="['create']"
-                createAction="openModal('modalCreateSK')" />
+            <x-template-row :templates="$template" :index="$loop->iteration" :actionButtons="['create', 'delete']"
+                createAction="openModal('modalCreateSK')"
+                deleteAction="openDeleteModal('{{ addslashes($template->nama_template_surat ?? 'Template') }}')" />
         @endforeach
     </x-template-table>
 </x-template-header>
 
 @include('template-surat.surat-hukum.sk-direktur.modal-create')
+@include('template-surat.surat-hukum.sk-direktur.modal-delete')
+@include('template-surat.surat-hukum.sk-direktur.modal-preview-pdf')
 
 <script>
     function openModal(id) {
@@ -28,6 +31,17 @@
 
     function closeModal(id) {
         document.getElementById(id).classList.add('hidden');
+    }
+
+    function openDeleteModal(templateName) {
+        const modal = document.getElementById('modalDeleteTemplate');
+        const nameField = document.getElementById('delete-template-name');
+        if (nameField) {
+            nameField.textContent = templateName || '-';
+        }
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {

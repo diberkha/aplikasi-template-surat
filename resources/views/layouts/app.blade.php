@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+    <script src="{{ asset('js/global-helpers.js') }}"></script>
 
     <script>
         tailwind.config = { darkMode: 'class' }
@@ -212,6 +213,103 @@
             @yield('content')
         </main>
     </div>
+
+    <!-- Global Notification Toast -->
+    <div id="globalNotification" class="hidden fixed top-4 right-4 z-[9999] max-w-md">
+        <div id="notificationContent" class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300">
+            <div id="notificationIcon" class="flex-shrink-0 mt-0.5"></div>
+            <div class="flex-1">
+                <p id="notificationTitle" class="font-semibold text-sm"></p>
+                <p id="notificationMessage" class="text-sm mt-1"></p>
+            </div>
+            <button onclick="closeNotification()" class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global Notification System
+        function showNotification(type, title, message, autoClose = true) {
+            const notification = document.getElementById('globalNotification');
+            const content = document.getElementById('notificationContent');
+            const icon = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            // Set style based on type
+            if (type === 'success') {
+                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
+                icon.innerHTML = '<i class="fas fa-check-circle text-2xl text-green-600 dark:text-green-400"></i>';
+                titleEl.className = 'font-semibold text-sm text-green-800 dark:text-green-200';
+                messageEl.className = 'text-sm mt-1 text-green-700 dark:text-green-300';
+            } else if (type === 'error') {
+                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500';
+                icon.innerHTML = '<i class="fas fa-exclamation-circle text-2xl text-red-600 dark:text-red-400"></i>';
+                titleEl.className = 'font-semibold text-sm text-red-800 dark:text-red-200';
+                messageEl.className = 'text-sm mt-1 text-red-700 dark:text-red-300';
+            } else if (type === 'warning') {
+                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-500';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle text-2xl text-yellow-600 dark:text-yellow-400"></i>';
+                titleEl.className = 'font-semibold text-sm text-yellow-800 dark:text-yellow-200';
+                messageEl.className = 'text-sm mt-1 text-yellow-700 dark:text-yellow-300';
+            } else if (type === 'info') {
+                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500';
+                icon.innerHTML = '<i class="fas fa-info-circle text-2xl text-blue-600 dark:text-blue-400"></i>';
+                titleEl.className = 'font-semibold text-sm text-blue-800 dark:text-blue-200';
+                messageEl.className = 'text-sm mt-1 text-blue-700 dark:text-blue-300';
+            }
+
+            // Show notification
+            notification.classList.remove('hidden');
+            setTimeout(() => {
+                content.style.transform = 'translateX(0)';
+            }, 10);
+
+            // Auto close after 5 seconds
+            if (autoClose) {
+                setTimeout(() => {
+                    closeNotification();
+                }, 5000);
+            }
+        }
+
+        function closeNotification() {
+            const notification = document.getElementById('globalNotification');
+            const content = document.getElementById('notificationContent');
+            content.style.transform = 'translateX(120%)';
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 300);
+        }
+
+        // Check for session flash messages on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                showNotification('success', 'Berhasil!', '{{ session('success') }}');
+            @endif
+
+            @if(session('error'))
+                showNotification('error', 'Error!', '{{ session('error') }}');
+            @endif
+
+            @if(session('warning'))
+                showNotification('warning', 'Peringatan!', '{{ session('warning') }}');
+            @endif
+
+            @if(session('info'))
+                showNotification('info', 'Informasi', '{{ session('info') }}');
+            @endif
+
+            @if ($errors->any())
+                showNotification('error', 'Validasi Gagal', '{{ $errors->first() }}');
+            @endif
+        });
+    </script>
 
     <script>
         function themeHandler() {

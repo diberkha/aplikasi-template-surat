@@ -78,6 +78,9 @@
                                 Tipe Surat</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Keputusan</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Menimbang</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -116,6 +119,11 @@
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeColor }}">
                                         {{ $regulasi->template->nama_template_surat ?? 'Tidak ada tipe surat' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                                        {{ $regulasi->keputusan ? $regulasi->keputusan->nama_keputusan : ($regulasi->keputusan_lainnya ?? '-') }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
@@ -159,7 +167,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
+                                <td colspan="8" class="px-6 py-12 text-center">
                                     <div class="text-gray-500 dark:text-gray-400">
                                         <div
                                             class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
@@ -353,6 +361,11 @@
                                 <p class="font-medium text-gray-900 dark:text-white mt-1">${data.updated_at}</p>
                             </div>
                         </div>
+
+                        <div class="mt-4 bg-white dark:bg-gray-700 p-4 rounded-lg">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Keputusan</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">${data.keputusan}</p>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -426,6 +439,13 @@
             openModal('modalDeleteRegulasi');
         }
 
+        function closeEditRegulasiAndBackToDetail() {
+            closeModal('modalEdit');
+            setTimeout(() => {
+                openModal('modalDetail');
+            }, 100);
+        }
+
         async function openEditModal(id) {
             try {
                 currentRegulasiId = id;
@@ -440,6 +460,8 @@
                     originalRegulasiData = {
                         id_template_surat: regulasi.id_template_surat,
                         id_surat: regulasi.id_surat,
+                        id_keputusan: regulasi.id_keputusan,
+                        keputusan_lainnya: regulasi.keputusan_lainnya,
                         menimbang: regulasi.menimbang,
                         mengingat: regulasi.mengingat
                     };
@@ -448,6 +470,17 @@
                     document.getElementById('editTemplateSurat').value = regulasi.id_template_surat;
                     document.getElementById('editMenimbang').value = regulasi.menimbang;
                     document.getElementById('editMengingat').value = regulasi.mengingat;
+
+                    // Handle keputusan
+                    if (regulasi.keputusan_lainnya) {
+                        document.getElementById('editKeputusan').value = '';
+                        document.getElementById('editKeputusanLainnya').value = regulasi.keputusan_lainnya;
+                        document.getElementById('editKeputusanInputContainer').classList.remove('hidden');
+                    } else {
+                        document.getElementById('editKeputusan').value = regulasi.id_keputusan || '';
+                        document.getElementById('editKeputusanLainnya').value = '';
+                        document.getElementById('editKeputusanInputContainer').classList.add('hidden');
+                    }
 
                     const editMenimbang = document.getElementById('editMenimbang');
                     const editMengingat = document.getElementById('editMengingat');
@@ -536,6 +569,17 @@
                 document.getElementById('editTemplateSurat').value = originalRegulasiData.id_template_surat;
                 document.getElementById('editMenimbang').value = originalRegulasiData.menimbang;
                 document.getElementById('editMengingat').value = originalRegulasiData.mengingat;
+
+                // Reset keputusan
+                if (originalRegulasiData.keputusan_lainnya) {
+                    document.getElementById('editKeputusan').value = '';
+                    document.getElementById('editKeputusanLainnya').value = originalRegulasiData.keputusan_lainnya;
+                    document.getElementById('editKeputusanInputContainer').classList.remove('hidden');
+                } else {
+                    document.getElementById('editKeputusan').value = originalRegulasiData.id_keputusan || '';
+                    document.getElementById('editKeputusanLainnya').value = '';
+                    document.getElementById('editKeputusanInputContainer').classList.add('hidden');
+                }
 
                 const editMenimbang = document.getElementById('editMenimbang');
                 const editMengingat = document.getElementById('editMengingat');
@@ -678,5 +722,29 @@
                 }
             });
         });
+
+        function toggleEditKeputusanInput() {
+            const keputusanSelect = document.getElementById('editKeputusan');
+            const keputusanInputContainer = document.getElementById('editKeputusanInputContainer');
+
+            if (keputusanInputContainer.classList.contains('hidden')) {
+                keputusanInputContainer.classList.remove('hidden');
+                keputusanSelect.value = '';
+                document.getElementById('editKeputusanLainnya').focus();
+            } else {
+                keputusanInputContainer.classList.add('hidden');
+                document.getElementById('editKeputusanLainnya').value = '';
+            }
+        }
+
+        function handleEditKeputusanChange() {
+            const keputusanSelect = document.getElementById('editKeputusan');
+            const keputusanInputContainer = document.getElementById('editKeputusanInputContainer');
+
+            if (keputusanSelect.value) {
+                keputusanInputContainer.classList.add('hidden');
+                document.getElementById('editKeputusanLainnya').value = '';
+            }
+        }
     </script>
 @endsection

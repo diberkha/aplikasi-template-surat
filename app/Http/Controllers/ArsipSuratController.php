@@ -165,6 +165,109 @@ class ArsipSuratController extends Controller
         return response()->download($path);
     }
 
+    public function edit($id)
+    {
+        $surat = Surat::with(['skDirektur', 'template'])->findOrFail($id);
+        
+        // Return JSON for AJAX requests
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'surat' => $surat
+            ]);
+        }
+        
+        return view('arsip-surat.edit', compact('surat'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $surat = Surat::with('skDirektur')->findOrFail($id);
+            
+            // Validate input
+            $validated = $request->validate([
+                'judul_surat' => 'required|string',
+                'nomor_surat' => 'required|unique:surat,nomor_surat,' . $id . ',id_surat',
+                'tentang' => 'required',
+                'identitas_penetap' => 'required',
+                'menimbang' => 'required',
+                'mengingat' => 'required',
+                'memutuskan' => 'required|array|min:1',
+                'memutuskan.*' => 'required|string',
+                'tempat_dibuat' => 'required',
+                'tanggal_dibuat' => 'required|date',
+                'jabatan_pembuat' => 'required',
+                'nama_pembuat' => 'required',
+            ]);
+
+            // Format memutuskan array to string
+            $memutuskanArray = $request->memutuskan;
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
+            $memutuskanText = '';
+            
+            foreach ($memutuskanArray as $index => $item) {
+                $label = $labels[$index] ?? 'KE-' . ($index + 1);
+                $memutuskanText .= $label . "\n" . trim($item) . "\n\n";
+            }
+
+            // Update Surat
+            $surat->update([
+                'nama_surat' => $request->judul_surat,
+                'nomor_surat' => $request->nomor_surat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+            ]);
+
+            // Update SKDirektur
+            if ($surat->skDirektur) {
+                $surat->skDirektur->update([
+                    'judul_surat' => $request->judul_surat,
+                    'nomor_surat' => $request->nomor_surat,
+                    'tentang' => $request->tentang,
+                    'identitas_penetap' => $request->identitas_penetap,
+                    'menimbang' => $request->menimbang,
+                    'mengingat' => $request->mengingat,
+                    'memutuskan' => trim($memutuskanText),
+                    'tempat_dibuat' => $request->tempat_dibuat,
+                    'tanggal_dibuat' => $request->tanggal_dibuat,
+                    'jabatan_pembuat' => $request->jabatan_pembuat,
+                    'nama_pembuat' => $request->nama_pembuat,
+                ]);
+            }
+
+            // Return JSON for AJAX requests
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Surat berhasil diupdate',
+                    'surat' => $surat
+                ]);
+            }
+
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil diupdate');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Error updating surat: ' . $e->getMessage());
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+            
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat mengupdate surat');
+        }
+    }
+
     public function destroy($id)
     {
         try {

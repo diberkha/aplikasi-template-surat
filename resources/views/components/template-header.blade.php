@@ -46,14 +46,14 @@
 
                 @if ($showFilter)
                     <div class="relative" x-data="{open:false}">
-                        <button @click="open = !open" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <button @click="open = !open" type="button"
+                            class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-300" x-text="sortText">Filter</span>
+                            <span class="text-gray-700 dark:text-gray-300">Filter</span>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300"></i>
                         </button>
-
                         <div x-show="open" @click.away="open=false" x-cloak class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20">
                             <div class="py-1">
-                                <button @click.prevent="setSort(null); open=false" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200">Reset</button>
                                 <button @click.prevent="setSort('a-z'); open=false" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200">A-Z</button>
                                 <button @click.prevent="setSort('z-a'); open=false" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200">Z-A</button>
                                 <button @click.prevent="setSort('latest'); open=false" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200">Terbaru</button>

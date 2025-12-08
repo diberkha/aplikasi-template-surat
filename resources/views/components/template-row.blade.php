@@ -7,9 +7,17 @@
     'showUpdatedAt' => false,
     'actionButtons' => ['create', 'download'],
     'createAction' => null,
+    'deleteAction' => null,
 ])
 
 @php
+    $templatesData = $templates;
+    if (is_object($templates)) {
+        $templatesData = method_exists($templates, 'toArray') ? $templates->toArray() : (array) $templates;
+    } elseif (!is_array($templates)) {
+        $templatesData = [];
+    }
+
     $defaultTemplate = [
         'id' => null,
         'name' => 'Surat Keputusan Direktur',
@@ -24,7 +32,7 @@
         'updated_at' => null
     ];
 
-    $template = array_merge($defaultTemplate, $templates);
+    $template = array_merge($defaultTemplate, $templatesData);
 @endphp
 
 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -77,6 +85,15 @@
                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                     title="Buat Surat">
                     <i class="fas fa-plus text-sm"></i>
+                </button>
+            @endif
+
+            @if (in_array('delete', $actionButtons))
+                <button 
+                    @if($deleteAction) onclick="{{ $deleteAction }}" @endif
+                    class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                    title="Hapus Template">
+                    <i class="fas fa-trash text-sm"></i>
                 </button>
             @endif
 

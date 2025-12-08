@@ -46,57 +46,97 @@ class TemplateSuratController extends Controller
     public function storeSuratHukum(Request $request)
     {
         try {
+            Log::info('storeSuratHukum request received', ['data' => $request->all()]);
+            
             $request->validate([
-                'nama_surat' => 'nullable|string',
-                'nomor_surat' => 'required|unique:surat,nomor_surat',
-                'tanggal_dibuat' => 'required|date',
                 'judul_surat' => 'required|string',
+                'nomor_surat' => 'required|unique:surat,nomor_surat',
                 'tentang' => 'required',
                 'identitas_penetap' => 'required',
+                'id_regulasi' => 'required|exists:regulasi,id_regulasi',
                 'menimbang' => 'required',
                 'mengingat' => 'required',
-                'memutuskan' => 'required',
-                'menetapkan' => 'nullable',
-                'id_surat' => 'nullable|exists:surat,id_surat',
+                'memutuskan' => 'required|array|min:1',
+                'memutuskan.*' => 'required|string',
                 'tempat_dibuat' => 'required',
+                'tanggal_dibuat' => 'required|date',
+                'jabatan_pembuat' => 'required|string',
+                'nama_pembuat' => 'required|string',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
             ]);
 
-            $namaSurat = $request->input('nama_surat') ?? $request->input('judul_surat') ?? 'Surat Baru';
+            $namaSurat = $request->input('judul_surat');
 
             $surat = Surat::create([
                 'nama_surat' => $namaSurat,
                 'nomor_surat' => $request->nomor_surat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
                 'id_template_surat' => $request->template_id,
+                'id_regulasi' => $request->id_regulasi,
                 'created_by' => auth()->id(),
             ]);
 
             Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
 
-            SKDirektur::create([
+            // Format memutuskan array menjadi string dengan numbering
+            $memutuskanArray = $request->memutuskan;
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
+            $memutuskanText = '';
+            
+            foreach ($memutuskanArray as $index => $item) {
+                $label = $labels[$index] ?? 'KE-' . ($index + 1);
+                $memutuskanText .= $label . "\n" . trim($item) . "\n\n";
+            }
+
+            $skDirektur = SKDirektur::create([
                 'judul_surat' => $request->judul_surat,
                 'nomor_surat' => $request->nomor_surat,
                 'tentang' => $request->tentang,
                 'identitas_penetap' => $request->identitas_penetap,
                 'menimbang' => $request->menimbang,
                 'mengingat' => $request->mengingat,
-                'memutuskan' => $request->memutuskan,
-                'menetapkan' => $request->menetapkan ?? null,
+                'memutuskan' => trim($memutuskanText),
+                'menetapkan' => null,
                 'tempat_dibuat' => $request->tempat_dibuat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
+                'jabatan_pembuat' => $request->jabatan_pembuat,
+                'nama_pembuat' => $request->nama_pembuat,
                 'id_surat' => $surat->id_surat,
             ]);
 
-            $this->generateAndSavePDF($surat, $request->all());
+            // Prepare data for PDF with formatted memutuskan
+            $pdfData = $request->all();
+            $pdfData['memutuskan'] = trim($memutuskanText); // Replace array with formatted string
 
-            return redirect()->route('arsip-surat.index')
-                ->with('success', 'Surat hukum berhasil dibuat dan disimpan di arsip.');
+            $this->generateAndSavePDF($surat, $pdfData);
+
+            // Return JSON for AJAX requests
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Surat berhasil dibuat',
+                    'surat_id' => $surat->id_surat,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'file_url' => route('template-surat.hukum.file', $surat->id_surat),
+                ]);
+            }
+
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dibuat');
         } catch (ValidationException $e) {
             Log::warning('Validation failed for storeSuratHukum', [
                 'errors' => $e->errors(),
                 'input' => $request->all(),
             ]);
+            
+            // Return JSON for AJAX requests
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {
             if (method_exists($e, 'errors')) {
@@ -111,6 +151,14 @@ class TemplateSuratController extends Controller
                     'input' => $request->all(),
                 ]);
             }
+            
+            // Return JSON for AJAX requests
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
 
             return redirect()->back()
                 ->withInput()
@@ -124,30 +172,58 @@ class TemplateSuratController extends Controller
         $filePath = 'arsip/' . $fileName;
 
         try {
-            $html = view('template-surat.surat-hukum.pdf', ['data' => $data, 'surat' => $surat])->render();
-            $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+            Log::info('PDF Generation Step 1: Starting PDF generation', [
+                'surat_id' => $surat->id_surat,
+                'nomor_surat' => $surat->nomor_surat,
+                'fileName' => $fileName
+            ]);
 
+            // Step 1: Render view
+            Log::info('PDF Generation Step 2: Rendering view', [
+                'data_keys' => array_keys($data)
+            ]);
+            $html = view('template-surat.surat-hukum.pdf', ['data' => $data, 'surat' => $surat])->render();
+            Log::info('PDF Generation Step 3: View rendered successfully', [
+                'html_length' => strlen($html)
+            ]);
+
+            // Step 2: Load HTML to PDF
+            Log::info('PDF Generation Step 4: Loading HTML to PDF library');
+            $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+            Log::info('PDF Generation Step 5: PDF loaded successfully');
+
+            // Step 3: Create directory if not exists
+            Log::info('PDF Generation Step 6: Checking arsip directory');
             if (!Storage::exists('arsip')) {
                 Storage::makeDirectory('arsip');
+                Log::info('PDF Generation Step 7: Created arsip directory');
             }
 
+            // Step 4: Save PDF
+            Log::info('PDF Generation Step 8: Writing PDF to storage', [
+                'filePath' => $filePath,
+                'disk' => 'local'
+            ]);
             Storage::put($filePath, $pdf->output());
+            Log::info('PDF Generation Step 9: PDF written successfully');
 
+            // Step 5: Update surat record
+            Log::info('PDF Generation Step 10: Updating surat record with file_path', [
+                'file_path' => $filePath
+            ]);
             $surat->update(['file_path' => $filePath]);
-        } catch (\Exception $e) {
+            Log::info('PDF Generation Step 11: Surat record updated successfully');
+
+        } catch (Exception $e) {
+            Log::error('Error generating PDF: ' . $e->getMessage(), [
+                'exception' => (string)$e,
+                'surat_id' => $surat->id_surat,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
         }
-    }
-
-    public function preview($id)
-    {
-        $surat = Surat::findOrFail($id);
-
-        if (!$surat->file_path || !Storage::exists($surat->file_path)) {
-            return redirect()->back()->with('error', 'File belum tersedia.');
-        }
-
-        $fileUrl = route('template-surat.hukum.file', $surat->id_surat);
-        return view('template-surat.surat-hukum.preview', compact('surat', 'fileUrl'));
     }
 
     public function file($id)

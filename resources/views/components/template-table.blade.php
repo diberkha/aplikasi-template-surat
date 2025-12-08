@@ -38,17 +38,5 @@
 </div>
 
 @if($showFooter)
-    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            @if($footerText)
-                <div class="text-sm text-gray-700 dark:text-gray-300">{{ $footerText }}</div>
-            @else
-                <div class="text-sm text-gray-700 dark:text-gray-300">
-                    Menampilkan <span class="font-medium">1</span> sampai 
-                    <span class="font-medium">{{ count($templates) }}</span> dari 
-                    <span class="font-medium">{{ count($templates) }}</span> template
-                </div>
-            @endif
-        </div>
-    </div>
+    <x-template-pagination :templates="$templates" />
 @endif

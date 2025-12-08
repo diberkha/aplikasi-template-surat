@@ -61,6 +61,65 @@
 
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">
+                        Keputusan
+                    </label>
+
+                    <div class="flex gap-3">
+                        <select name="id_keputusan" id="keputusan"
+                            class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                                   dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500
+                                   appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e')] bg-no-repeat bg-right-4 bg-contain"
+                            onchange="handleKeputusanChange()">
+
+                            <option value="">-- Pilih Keputusan --</option>
+
+                            @foreach ($keputusans as $keputusan)
+                                <option value="{{ $keputusan->id_keputusan }}">
+                                    {{ $keputusan->nama_keputusan }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                        <button type="button" onclick="toggleKeputusanInput()"
+                            class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                                   hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            title="Tambah keputusan lain">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    @error('id_keputusan')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div id="keputusanInputContainer" class="hidden">
+                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
+                        Keputusan Lainnya
+                    </label>
+
+                    <div class="flex gap-3">
+                        <input type="text" name="keputusan_lainnya" id="keputusanLainnya"
+                            placeholder="Masukkan keputusan lain"
+                            class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                                   dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500">
+
+                        <button type="button" onclick="toggleKeputusanInput()"
+                            class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
+                                   hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            title="Batal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    @error('keputusan_lainnya')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
                         Menimbang <span class="text-red-500">*</span>
                     </label>
 
@@ -140,6 +199,30 @@
             .catch(() => {
                 suratSelect.innerHTML = '<option value="">Gagal memuat data</option>';
             });
+    }
+
+    function toggleKeputusanInput() {
+        const keputusanSelect = document.getElementById('keputusan');
+        const keputusanInputContainer = document.getElementById('keputusanInputContainer');
+
+        if (keputusanInputContainer.classList.contains('hidden')) {
+            keputusanInputContainer.classList.remove('hidden');
+            keputusanSelect.value = '';
+            document.getElementById('keputusanLainnya').focus();
+        } else {
+            keputusanInputContainer.classList.add('hidden');
+            document.getElementById('keputusanLainnya').value = '';
+        }
+    }
+
+    function handleKeputusanChange() {
+        const keputusanSelect = document.getElementById('keputusan');
+        const keputusanInputContainer = document.getElementById('keputusanInputContainer');
+
+        if (keputusanSelect.value) {
+            keputusanInputContainer.classList.add('hidden');
+            document.getElementById('keputusanLainnya').value = '';
+        }
     }
 
     function updateCounter(textarea, counter) {

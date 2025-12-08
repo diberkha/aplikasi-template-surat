@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             TemplateSuratSeeder::class,
             UserSeeder::class,
             SuratSeeder::class,
+            KeputusanSeeder::class,
             RegulasiSeeder::class,
         ]);
     }

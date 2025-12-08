@@ -12,7 +12,14 @@
             </button>
         </div>
 
-        <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 120px)">
+        <div class="px-6 pt-4 flex justify-end">
+            <button type="button" id="detail-edit-btn" onclick="openEditModal()"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                <i class="fas fa-edit mr-2"></i>Edit
+            </button>
+        </div>
+
+        <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 200px)">
             <div class="space-y-6">
                 <div class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Informasi Surat</h2>
@@ -100,7 +107,7 @@
         </div>
 
         <div
-            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 bg-white dark:bg-gray-800 sticky bottom-0">
+            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-white dark:bg-gray-800 sticky bottom-0">
             <button type="button" onclick="closeModal('modalDetailSurat')"
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 Tutup

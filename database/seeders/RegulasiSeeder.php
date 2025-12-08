@@ -7,23 +7,30 @@ use App\Models\Regulasi;
 use App\Models\TemplateSurat;
 use App\Models\Surat;
 use App\Models\User;
+use App\Models\Keputusan;
 
 class RegulasiSeeder extends Seeder
 {
     public function run(): void
     {
+        // Disable foreign key checks untuk truncate
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Regulasi::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $templateHukum = TemplateSurat::where('nama_template_surat', 'Surat Hukum & Kerja Sama')->first();
 
         $suratKeputusan = Surat::where('nama_surat', 'Surat Keputusan Direktur')->first();
 
+        $keputusanPembentukan = Keputusan::where('nama_keputusan', 'Pembentukan Tim')->first();
+
         $user = User::first();
 
-        if (!$templateHukum || !$suratKeputusan || !$user) {
+        if (!$templateHukum || !$suratKeputusan || !$keputusanPembentukan || !$user) {
             $this->command->error('Data yang diperlukan tidak ditemukan. Pastikan seeder berikut sudah dijalankan:');
             $this->command->error('- TemplateSuratSeeder');
             $this->command->error('- SuratSeeder');
+            $this->command->error('- KeputusanSeeder');
             $this->command->error('- UserSeeder');
             return;
         }
@@ -32,6 +39,8 @@ class RegulasiSeeder extends Seeder
             [
                 'id_template_surat' => $templateHukum->id_template_surat,
                 'id_surat' => $suratKeputusan->id_surat,
+                'id_keputusan' => $keputusanPembentukan->id_keputusan,
+                'keputusan_lainnya' => null,
                 'isi_regulasi' => json_encode([
                     'menimbang' => 'a. bahwa dalam rangka mendukung program pemerintah di bidang pelayanan kesehatan melalui Jaminan Kesehatan Nasional yang dikelola oleh Badan Penyelenggara Jaminan Sosial (BPJS) bidang kesehatan, rumah sakit diminta untuk berperan serta dalam meningkatkan pelayanan kesehatan;
 b. bahwa untuk pemantapan mutu dan pengendalian biaya dalam pelaksanaan Program Jaminan Kesehatan Nasional, perlu dibentuk Tim Kendali Mutu Kendali Biaya JKN RSUD dr. Soeratno Gemolong;

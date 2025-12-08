@@ -20,6 +20,8 @@ class SKDirektur extends Model
         'menetapkan',
         'tempat_dibuat',
         'tanggal_dibuat',
+        'jabatan_pembuat',
+        'nama_pembuat',
         'id_surat',
     ];
 

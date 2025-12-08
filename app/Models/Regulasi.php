@@ -13,6 +13,8 @@ class Regulasi extends Model
     protected $fillable = [
         'id_template_surat',
         'id_surat',
+        'id_keputusan',
+        'keputusan_lainnya',
         'isi_regulasi',
         'created_by',
     ];
@@ -40,6 +42,11 @@ class Regulasi extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function keputusan()
+    {
+        return $this->belongsTo(Keputusan::class, 'id_keputusan');
     }
 
     public function getMenimbangAttribute()

@@ -19,6 +19,12 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('keputusan', function (Blueprint $table) {
+            $table->id('id_keputusan');
+            $table->string('nama_keputusan');
+            $table->timestamps();
+        });
+
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
@@ -57,6 +63,9 @@ return new class extends Migration {
         Schema::create('regulasi', function (Blueprint $table) {
             $table->id('id_regulasi');
             $table->unsignedBigInteger('id_template_surat')->nullable();
+            $table->unsignedBigInteger('id_surat')->nullable();
+            $table->unsignedBigInteger('id_keputusan')->nullable();
+            $table->string('keputusan_lainnya')->nullable();
             $table->json('isi_regulasi');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
@@ -71,9 +80,23 @@ return new class extends Migration {
                 ->on('surat')
                 ->onDelete('set null');
 
+            $table->foreign('id_keputusan')
+                ->references('id_keputusan')
+                ->on('keputusan')
+                ->onDelete('set null');
+
             $table->foreign('created_by')
                 ->references('id')
                 ->on('users')
+                ->onDelete('set null');
+        });
+
+        // Add id_regulasi to surat table after regulasi is created
+        Schema::table('surat', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_regulasi')->nullable()->after('id_template_surat');
+            $table->foreign('id_regulasi')
+                ->references('id_regulasi')
+                ->on('regulasi')
                 ->onDelete('set null');
         });
 
@@ -83,12 +106,14 @@ return new class extends Migration {
             $table->string('nomor_surat');
             $table->string('tentang');
             $table->string('identitas_penetap');
-            $table->string('menimbang');
-            $table->string('mengingat');
-            $table->string('memutuskan');
-            $table->string('menetapkan');
+            $table->text('menimbang');
+            $table->text('mengingat');
+            $table->text('memutuskan');
+            $table->text('menetapkan')->nullable();
             $table->string('tempat_dibuat');
             $table->date('tanggal_dibuat');
+            $table->string('jabatan_pembuat')->nullable();
+            $table->string('nama_pembuat')->nullable();
             $table->unsignedBigInteger('id_surat')->nullable();
             $table->timestamps();
 
@@ -105,6 +130,7 @@ return new class extends Migration {
         Schema::dropIfExists('regulasi');
         Schema::dropIfExists('surat');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('keputusan');
         Schema::dropIfExists('template_surat');
         Schema::dropIfExists('ruangan');
     }

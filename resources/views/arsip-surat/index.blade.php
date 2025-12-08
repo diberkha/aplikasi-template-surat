@@ -321,7 +321,6 @@
 
                         <div class="text-sm text-gray-700 dark:text-gray-300">
                             <span id="arsipStart">0</span> - <span id="arsipEnd">0</span> dari <span id="arsipTotal">0</span>
-                            surat
                         </div>
                     </div>
                 </div>
@@ -394,6 +393,7 @@
     </div>
 
     @include('arsip-surat.partials.modal-detail')
+    @include('arsip-surat.partials.modal-edit')
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -443,7 +443,10 @@
                 document.getElementById('detail-no-file').classList.remove('hidden');
             }
 
-            document.getElementById('modalDetailSurat').classList.remove('hidden');
+            // Store surat ID for edit functionality
+            const modal = document.getElementById('modalDetailSurat');
+            modal.dataset.suratId = idSurat;
+            modal.classList.remove('hidden');
         }
 
         function closeModal(modalId) {

@@ -25,10 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('arsip-surat')->name('arsip-surat.')->group(function () {
         Route::get('/', [ArsipSuratController::class, 'index'])->name('index');
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [ArsipSuratController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [ArsipSuratController::class, 'update'])->name('update');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
         Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
-
-
     });
 
     Route::prefix('master-data')->group(function () {
@@ -57,10 +57,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}', 'destroy')->name('destroy');
     });
 
+    // API Routes for Regulasi
+    Route::prefix('api/regulasi')->group(function () {
+        Route::get('/keputusan-list', [RegulasiController::class, 'getKeputusanList']);
+        Route::get('/{id}/data', [RegulasiController::class, 'getRegulasiData']);
+    });
+
     Route::prefix('template-surat')->name('template-surat.')->group(function () {
         Route::get('/hukum', [TemplateSuratController::class, 'suratHukum'])->name('hukum.index');
         Route::post('/hukum/store', [TemplateSuratController::class, 'storeSuratHukum'])->name('hukum.store');
-        Route::get('/hukum/preview/{id}', [TemplateSuratController::class, 'preview'])->name('hukum.preview');
         Route::get('/hukum/file/{id}', [TemplateSuratController::class, 'file'])->name('hukum.file');
     });
 
