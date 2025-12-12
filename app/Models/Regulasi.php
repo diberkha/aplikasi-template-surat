@@ -11,22 +11,13 @@ class Regulasi extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id_template_surat',
-        'id_surat',
-        'id_keputusan',
-        'keputusan_lainnya',
         'isi_regulasi',
         'created_by',
     ];
 
     protected $casts = [
-        'isi_regulasi' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-    ];
-
-    protected $attributes = [
-        'isi_regulasi' => '{"menimbang": "", "mengingat": ""}',
     ];
 
     public function template()
@@ -42,29 +33,6 @@ class Regulasi extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function keputusan()
-    {
-        return $this->belongsTo(Keputusan::class, 'id_keputusan');
-    }
-
-    public function getMenimbangAttribute()
-    {
-        $isi = $this->isi_regulasi;
-        if (is_array($isi)) {
-            return $isi['menimbang'] ?? '';
-        }
-        return '';
-    }
-
-    public function getMengingatAttribute()
-    {
-        $isi = $this->isi_regulasi;
-        if (is_array($isi)) {
-            return $isi['mengingat'] ?? '';
-        }
-        return '';
     }
 
     public function getFormattedCreatedAtAttribute()

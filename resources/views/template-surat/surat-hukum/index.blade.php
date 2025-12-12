@@ -1,5 +1,5 @@
 <x-template-header title="Template Surat Hukum & Kerja Sama"
-    subtitle="Pilih dan gunakan template surat hukum dan kerja sama yang tersedia" tableTitle="Daftar Template"
+    subtitle="Pilih dan gunakan template surat hukum & kerja sama yang tersedia" tableTitle="Daftar Template"
     searchPlaceholder="Cari template...">
 
     @if(session('success'))
@@ -14,8 +14,8 @@
     <x-template-table :templates="$templates" :columns="['no', 'template', 'actions']">
         @foreach($templates as $index => $template)
             <x-template-row :templates="$template" :index="$loop->iteration" :actionButtons="['create', 'delete']"
-                createAction="openModal('modalCreateSK')"
-                deleteAction="openDeleteModal('{{ addslashes($template->nama_template_surat ?? 'Template') }}')" />
+                createAction="openModal('modalCreateSK', '{!! addslashes($template->nama_template_surat ?? 'Surat Hukum') !!}', {{ $template->id_template_surat }})"
+                deleteAction="openDeleteModal('{!! addslashes($template->nama_template_surat ?? 'Template') !!}')" />
         @endforeach
     </x-template-table>
 </x-template-header>
@@ -25,8 +25,25 @@
 @include('template-surat.surat-hukum.sk-direktur.modal-preview-pdf')
 
 <script>
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
+    function openModal(id, templateName = null, templateId = null) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('hidden');
+            
+            if (templateId) {
+                document.getElementById('template_surat_sk').value = templateId;
+            }
+            
+            if (templateName) {
+                const titleElement = modal.querySelector('#modalTitle');
+                if (titleElement) {
+                    const textarea = document.createElement('textarea');
+                    textarea.innerHTML = templateName;
+                    const decodedName = textarea.value;
+                    titleElement.textContent = 'Buat ' + decodedName;
+                }
+            }
+        }
     }
 
     function closeModal(id) {
@@ -40,7 +57,12 @@
             nameField.textContent = templateName || '-';
         }
         if (modal) {
-            modal.classList.remove('hidden');
+            const alpineData = Alpine.$data(modal);
+            if (alpineData) {
+                alpineData.isOpen = true;
+            } else {
+                modal.classList.remove('hidden');
+            }
         }
     }
 

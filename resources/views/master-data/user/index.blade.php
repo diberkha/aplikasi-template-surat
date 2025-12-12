@@ -45,11 +45,11 @@
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
                     <input type="text" x-model="search" placeholder="Cari pengguna..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white w-64">
+                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-64">
                 </div>
 
                 <button @click="openCreateModal()"
-                    class="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    class="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
                     <i class="fas fa-plus"></i>
                     <span>Tambah Pengguna</span>
                 </button>
@@ -155,6 +155,16 @@
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
+                    <template x-for="page in pages()" :key="page">
+                        <button @click="goToPage(page)"
+                            class="min-w-[38px] px-3 py-1 rounded-lg border text-sm font-semibold transition-colors"
+                            :class="page === currentPage
+                                ? 'bg-green-600 text-white border-green-600 shadow-sm'
+                                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'">
+                            <span x-text="page"></span>
+                        </button>
+                    </template>
+
                     <button @click="nextPage()" :disabled="currentPage === totalPages"
                         class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
                         <i class="fas fa-chevron-right"></i>
@@ -189,7 +199,29 @@
                 init() { },
 
                 get totalPages() {
-                    return Math.ceil(this.filteredUsers().length / this.itemsPerPage);
+                    return Math.max(1, Math.ceil(this.filteredUsers().length / this.itemsPerPage));
+                },
+                pages() {
+                    const total = this.totalPages;
+                    if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
+
+                    let start = Math.max(1, this.currentPage - 4);
+                    let end = start + 9;
+                    if (end > total) {
+                        end = total;
+                        start = Math.max(1, end - 9);
+                    }
+
+                    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+                },
+                goToPage(page) {
+                    this.currentPage = page;
+                },
+                pages() {
+                    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+                },
+                goToPage(page) {
+                    this.currentPage = page;
                 },
 
                 get startItem() {

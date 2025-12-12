@@ -25,9 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('arsip-surat')->name('arsip-surat.')->group(function () {
         Route::get('/', [ArsipSuratController::class, 'index'])->name('index');
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [ArsipSuratController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [ArsipSuratController::class, 'update'])->name('update');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
+        Route::get('/{id}/download-word', [ArsipSuratController::class, 'downloadWord'])->name('download-word');
+        Route::get('/{id}/download-rtf', [ArsipSuratController::class, 'downloadRTF'])->name('download-rtf');
         Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
     });
 
@@ -45,21 +45,20 @@ Route::middleware('auth')->group(function () {
             Route::put('/{user}', [UserController::class, 'update'])->name('master-data.user.update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('master-data.user.destroy');
         });
+
+        Route::prefix('regulasi')->name('master-data.regulasi.')->controller(RegulasiController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/get-surat/{templateId}', 'getSuratByTemplate')->name('get.surat');
+            Route::get('/detail/{id}', 'getRegulasiDetail')->name('detail');
+            Route::get('/edit-data/{id}', 'getRegulasiForEdit')->name('edit.data');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+        });
     });
 
-    Route::prefix('regulasi')->name('regulasi.')->controller(RegulasiController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/', 'store')->name('store');
-        Route::get('/get-surat/{templateId}', 'getSuratByTemplate')->name('get.surat');
-        Route::get('/detail/{id}', 'getRegulasiDetail')->name('detail');
-        Route::get('/edit-data/{id}', 'getRegulasiForEdit')->name('edit.data');
-        Route::put('/{id}', 'update')->name('update');
-        Route::delete('/{id}', 'destroy')->name('destroy');
-    });
-
-    // API Routes for Regulasi
     Route::prefix('api/regulasi')->group(function () {
-        Route::get('/keputusan-list', [RegulasiController::class, 'getKeputusanList']);
+        Route::get('/', [RegulasiController::class, 'getRegulasiList']);
         Route::get('/{id}/data', [RegulasiController::class, 'getRegulasiData']);
     });
 

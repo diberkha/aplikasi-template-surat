@@ -5,8 +5,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    /**
+     * Run the migrations - Create all application tables.
+     */
     public function up(): void
     {
+        Schema::create('failed_jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid')->unique();
+            $table->text('connection');
+            $table->text('queue');
+            $table->longText('payload');
+            $table->longText('exception');
+            $table->timestamp('failed_at')->useCurrent();
+        });
+
         Schema::create('ruangan', function (Blueprint $table) {
         $table->id('id_ruangan');
             $table->string('nama_ruangan');
@@ -16,12 +29,6 @@ return new class extends Migration {
         Schema::create('template_surat', function (Blueprint $table) {
             $table->id('id_template_surat');
             $table->string('nama_template_surat');
-            $table->timestamps();
-        });
-
-        Schema::create('keputusan', function (Blueprint $table) {
-            $table->id('id_keputusan');
-            $table->string('nama_keputusan');
             $table->timestamps();
         });
 
@@ -62,28 +69,9 @@ return new class extends Migration {
 
         Schema::create('regulasi', function (Blueprint $table) {
             $table->id('id_regulasi');
-            $table->unsignedBigInteger('id_template_surat')->nullable();
-            $table->unsignedBigInteger('id_surat')->nullable();
-            $table->unsignedBigInteger('id_keputusan')->nullable();
-            $table->string('keputusan_lainnya')->nullable();
-            $table->json('isi_regulasi');
+            $table->text('isi_regulasi');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
-
-            $table->foreign('id_template_surat')
-                ->references('id_template_surat')
-                ->on('template_surat')
-                ->onDelete('set null');
-
-            $table->foreign('id_surat')
-                ->references('id_surat')
-                ->on('surat')
-                ->onDelete('set null');
-
-            $table->foreign('id_keputusan')
-                ->references('id_keputusan')
-                ->on('keputusan')
-                ->onDelete('set null');
 
             $table->foreign('created_by')
                 ->references('id')
@@ -91,7 +79,6 @@ return new class extends Migration {
                 ->onDelete('set null');
         });
 
-        // Add id_regulasi to surat table after regulasi is created
         Schema::table('surat', function (Blueprint $table) {
             $table->unsignedBigInteger('id_regulasi')->nullable()->after('id_template_surat');
             $table->foreign('id_regulasi')
@@ -105,15 +92,12 @@ return new class extends Migration {
             $table->string('judul_surat');
             $table->string('nomor_surat');
             $table->string('tentang');
-            $table->string('identitas_penetap');
             $table->text('menimbang');
             $table->text('mengingat');
             $table->text('memutuskan');
             $table->text('menetapkan')->nullable();
             $table->string('tempat_dibuat');
             $table->date('tanggal_dibuat');
-            $table->string('jabatan_pembuat')->nullable();
-            $table->string('nama_pembuat')->nullable();
             $table->unsignedBigInteger('id_surat')->nullable();
             $table->timestamps();
 
@@ -124,14 +108,17 @@ return new class extends Migration {
         });
     }
 
+    /**
+     * Reverse the migrations - Drop all application tables.
+     */
     public function down(): void
     {
         Schema::dropIfExists('sk_direktur');
         Schema::dropIfExists('regulasi');
         Schema::dropIfExists('surat');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('keputusan');
         Schema::dropIfExists('template_surat');
         Schema::dropIfExists('ruangan');
+        Schema::dropIfExists('failed_jobs');
     }
 };

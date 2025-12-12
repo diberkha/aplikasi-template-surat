@@ -12,14 +12,7 @@
             </button>
         </div>
 
-        <div class="px-6 pt-4 flex justify-end">
-            <button type="button" id="detail-edit-btn" onclick="openEditModal()"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                <i class="fas fa-edit mr-2"></i>Edit
-            </button>
-        </div>
-
-        <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 200px)">
+        <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 150px)">
             <div class="space-y-6">
                 <div class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Informasi Surat</h2>
@@ -62,29 +55,52 @@
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">File Surat</h2>
-
-                    <div id="detail-file-exists" class="hidden">
-                        <div
-                            class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
-                            <i class="fas fa-file-pdf text-4xl text-red-500 mb-3"></i>
-
-                            <div class="flex items-center justify-center space-x-3 mb-2">
-                                <p id="detail-file-nama" class="text-gray-700 dark:text-gray-300 font-medium"></p>
-                                <button id="detail-download-btn" type="button"
-                                    onclick="document.getElementById('detail-download-link').click()"
-                                    class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                                    <i class="fas fa-download mr-2"></i>
-                                    Download
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">File Surat</h2>
+                        <div id="detail-download-dropdown" class="hidden relative" x-data="{ open: false }">
+                            <button @click="open = !open" type="button"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-download mr-2"></i>
+                                Download
+                                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 z-10">
+                                <a id="detail-download-pdf" href="#"
+                                    class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-t-lg transition-colors">
+                                    <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                    Download PDF
+                                </a>
+                                <button type="button" onclick="downloadAsWord()"
+                                    class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-file-word text-green-500 mr-3"></i>
+                                    Download Word
+                                </button>
+                                <button type="button" onclick="downloadAsRTF()"
+                                    class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
+                                    <i class="fas fa-file text-purple-500 mr-3"></i>
+                                    Download RTF
                                 </button>
                             </div>
+                        </div>
+                    </div>
 
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">File PDF surat</p>
-                            <a id="detail-download-link" href="#" target="_blank" aria-hidden="true" tabindex="-1"
-                                class="sr-only inline-flex items-center justify-center w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                                <i class="fas fa-download mr-2"></i>
-                                Download PDF
-                            </a>
+                    <div id="detail-file-exists" class="hidden">
+                        <div class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+                            <iframe id="detail-pdf-preview" src="" 
+                                class="w-full border-0"
+                                style="min-height: 600px;">
+                            </iframe>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-file-pdf text-2xl text-red-500"></i>
+                                <div>
+                                    <p id="detail-file-nama" class="text-gray-900 dark:text-white font-medium"></p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">File PDF</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -93,13 +109,6 @@
                             class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
                             <i class="fas fa-file-alt text-4xl text-gray-400 mb-3"></i>
                             <p class="text-gray-500 dark:text-gray-400">Tidak ada file surat yang tersimpan</p>
-                            <div class="mt-4">
-                                <button type="button" disabled
-                                    class="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-lg cursor-not-allowed">
-                                    <i class="fas fa-download mr-2"></i>
-                                    Tidak Tersedia
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>

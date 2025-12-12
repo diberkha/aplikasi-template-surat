@@ -61,7 +61,7 @@
                             <div class="flex space-x-2 pt-2">
                                 <button type="button"
                                     onclick="setDateFilter(document.getElementById('simpleStartDate').value, document.getElementById('simpleEndDate').value)"
-                                    class="flex-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Terapkan</button>
+                                    class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
                                 <button type="button" onclick="clearDateFilter()"
                                     class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50">Hapus</button>
                             </div>
@@ -74,16 +74,8 @@
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
                     <input type="text" id="searchInput" placeholder="Cari surat..." value="{{ request('search') }}"
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white w-64">
+                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-64">
                 </div>
-
-                @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
-                    <a href="{{ route('arsip-surat.index') }}"
-                        class="flex items-center space-x-2 px-4 py-2 border border-red-300 dark:border-red-600 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                        <i class="fas fa-times text-red-500"></i>
-                        <span>Reset</span>
-                    </a>
-                @endif
             </div>
         </div>
 
@@ -134,13 +126,13 @@
         @endif
 
         @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
-            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="text-sm text-blue-800 dark:text-blue-300 font-medium">Filter aktif:</span>
 
                     @if(request()->has('search'))
                         <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                             Pencarian: "{{ request('search') }}"
                             <a href="{{ route('arsip-surat.index', request()->except('search')) }}"
                                 class="ml-1.5 text-blue-600 hover:text-blue-800">
@@ -173,7 +165,7 @@
                                 Hingga {{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') }}
                             @endif
                             <a href="{{ route('arsip-surat.index', request()->except(['start_date', 'end_date'])) }}"
-                                class="ml-1.5 text-green-600 hover:text-green-800">
+                                class="ml-1.5 text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-times"></i>
                             </a>
                         </span>
@@ -271,7 +263,7 @@
 
                                             @if($filePath)
                                                 <a href="{{ route('arsip-surat.download', $idSurat) }}"
-                                                    class="inline-flex items-center p-1.5 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors">
+                                                    class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
                                                 </a>
                                             @else
@@ -313,6 +305,9 @@
                                 class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
+
+                            <div id="arsipPageButtons" class="flex items-center space-x-2"></div>
+
                             <button id="arsipNextBtn" onclick="arsipNext()"
                                 class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
                                 <i class="fas fa-chevron-right"></i>
@@ -393,7 +388,6 @@
     </div>
 
     @include('arsip-surat.partials.modal-detail')
-    @include('arsip-surat.partials.modal-edit')
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -433,20 +427,55 @@
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
                 document.getElementById('detail-no-file').classList.add('hidden');
+                document.getElementById('detail-download-dropdown').classList.remove('hidden');
 
                 const fileName = filePath.split('/').pop();
                 document.getElementById('detail-file-nama').textContent = fileName;
 
-                document.getElementById('detail-download-link').href = `/arsip-surat/${idSurat}/download`;
+                document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
+                
+                document.getElementById('detail-pdf-preview').src = `/arsip-surat/${idSurat}`;
             } else {
                 document.getElementById('detail-file-exists').classList.add('hidden');
                 document.getElementById('detail-no-file').classList.remove('hidden');
+                document.getElementById('detail-download-dropdown').classList.add('hidden');
             }
 
-            // Store surat ID for edit functionality
             const modal = document.getElementById('modalDetailSurat');
             modal.dataset.suratId = idSurat;
             modal.classList.remove('hidden');
+        }
+
+        function downloadAsWord() {
+            const suratId = document.getElementById('modalDetailSurat').dataset.suratId;
+            if (!suratId) {
+                alert('ID surat tidak ditemukan');
+                return;
+            }
+            
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = `/arsip-surat/${suratId}/download-word`;
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+
+        function downloadAsRTF() {
+            const suratId = document.getElementById('modalDetailSurat').dataset.suratId;
+            if (!suratId) {
+                alert('ID surat tidak ditemukan');
+                return;
+            }
+            
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = `/arsip-surat/${suratId}/download-rtf`;
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         }
 
         function closeModal(modalId) {
@@ -469,23 +498,58 @@
             const rows = Array.from(document.querySelectorAll('#suratTableBody tr'));
             const matched = rows.filter(r => r.dataset.match === '1');
             const total = matched.length;
+            const totalPages = Math.max(1, Math.ceil(total / arsipItemsPerPage));
+
+            if (arsipCurrentPage > totalPages) arsipCurrentPage = totalPages;
+
             const start = total === 0 ? 0 : (arsipCurrentPage - 1) * arsipItemsPerPage + 1;
             const end = Math.min(arsipCurrentPage * arsipItemsPerPage, total);
 
             rows.forEach(r => r.style.display = 'none');
-
             matched.slice(start - 1, end).forEach(r => r.style.display = '');
 
             const startEl = document.getElementById('arsipStart');
             const endEl = document.getElementById('arsipEnd');
             const totalEl = document.getElementById('arsipTotal');
+            const pageButtonsEl = document.getElementById('arsipPageButtons');
             if (startEl) startEl.textContent = start;
             if (endEl) endEl.textContent = end;
             if (totalEl) totalEl.textContent = total;
 
+            if (pageButtonsEl) {
+                pageButtonsEl.innerHTML = '';
+
+                const getPages = () => {
+                    if (totalPages <= 10) return Array.from({ length: totalPages }, (_, i) => i + 1);
+
+                    let start = Math.max(1, arsipCurrentPage - 4);
+                    let end = start + 9;
+                    if (end > totalPages) {
+                        end = totalPages;
+                        start = Math.max(1, end - 9);
+                    }
+                    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+                };
+
+                getPages().forEach(p => {
+                    const btn = document.createElement('button');
+                    btn.textContent = p;
+                    btn.className = 'min-w-[38px] px-3 py-1 rounded-lg border text-sm font-semibold transition-colors';
+                    if (p === arsipCurrentPage) {
+                        btn.classList.add('bg-green-600', 'text-white', 'border-green-600', 'shadow-sm');
+                    } else {
+                        btn.classList.add('bg-white', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600', 'hover:bg-gray-100', 'dark:hover:bg-gray-600');
+                    }
+                    btn.addEventListener('click', () => {
+                        arsipCurrentPage = p;
+                        renderArsipPagination();
+                    });
+                    pageButtonsEl.appendChild(btn);
+                });
+            }
+
             const prevBtn = document.getElementById('arsipPrevBtn');
             const nextBtn = document.getElementById('arsipNextBtn');
-            const totalPages = Math.max(1, Math.ceil(total / arsipItemsPerPage));
             if (prevBtn) prevBtn.disabled = arsipCurrentPage === 1;
             if (nextBtn) nextBtn.disabled = arsipCurrentPage >= totalPages;
         }

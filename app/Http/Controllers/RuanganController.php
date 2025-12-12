@@ -24,7 +24,7 @@ class RuanganController extends Controller
         ]);
 
         return redirect()->route('master-data.ruangan.index')
-            ->with('success', 'Ruangan berhasil ditambahkan.');
+            ->with('success', 'Ruangan berhasil ditambahkan');
     }
 
     public function update(Request $request, Ruangan $ruangan)
@@ -46,6 +46,6 @@ class RuanganController extends Controller
         $ruangan->delete();
 
         return redirect()->route('master-data.ruangan.index')
-            ->with('success', 'Ruangan berhasil dihapus.');
+            ->with('success', 'Ruangan berhasil dihapus');
     }
 }

@@ -1,31 +1,27 @@
 <div id="modalCreateSK" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-3xl w-full">
 
-        <!-- HEADER -->
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Surat Hukum</h3>
-            <button onclick="closeModal('modalCreateSK')"
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modalTitle">Buat Surat Hukum</h3>
+            <button @click="closeModal('modalCreateSK')"
                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
         </div>
 
-        <!-- FORM -->
         <form action="{{ route('template-surat.hukum.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)">
             @csrf
 
             <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
 
-                <!-- JUDUL SURAT -->
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">Judul Surat <span
                             class="text-red-500">*</span></label>
                     <input type="text" name="judul_surat" required
-                        placeholder="Contoh: KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM..."
+                        placeholder="Contoh: Keputusan Direktur Rumah Sakit Umum"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                 </div>
 
-                <!-- NOMOR SURAT -->
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
                             class="text-red-500">*</span></label>
@@ -37,145 +33,96 @@
                     </p>
                 </div>
 
-                <!-- TENTANG -->
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">Tentang <span
                             class="text-red-500">*</span></label>
-                    <input type="text" name="tentang" required placeholder="Contoh: Pembentukan Tim Kendali Mutu..."
+                    <input type="text" name="tentang" required placeholder="Contoh: Pembentukan Tim Kendali Mutu Kendali Biaya (KMKB)"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                 </div>
 
-                <!-- IDENTITAS PENETAP -->
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Identitas Penetap <span
-                            class="text-red-500">*</span></label>
-                    <input type="text" name="identitas_penetap" required
-                        placeholder="Contoh: DIREKTUR RSUD dr. SOERATNO GEMOLONG"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-
-                <!-- TEMPLATE SURAT (Hidden) -->
                 <input type="hidden" name="template_id" id="template_surat_sk">
 
-                <!-- KEPUTUSAN -->
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
-                        Keputusan <span class="text-red-500">*</span>
-                    </label>
-                    <select name="id_regulasi" id="keputusan_regulasi" required onchange="loadRegulasiData()"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                               dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Keputusan --</option>
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Data Menimbang dan Mengingat akan otomatis terisi berdasarkan keputusan yang dipilih
-                    </p>
-                </div>
-
-                <!-- MENIMBANG (Auto-filled) -->
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
-                        Menimbang <span class="text-red-500">*</span>
-                        <span class="text-xs font-normal text-blue-600 dark:text-blue-400 ml-2">
-                            <i class="fas fa-robot mr-1"></i>Otomatis dari Regulasi
-                        </span>
-                    </label>
-                    <div class="relative">
-                        <textarea name="menimbang" id="menimbangSK" rows="5" required readonly
-                            placeholder="Pilih keputusan untuk mengisi data menimbang otomatis..."
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y bg-gray-50 dark:bg-gray-900"></textarea>
-                        <div id="counterMenimbangSK" class="absolute bottom-2 right-2 text-xs text-gray-500">0 karakter
+                    <div>
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">
+                            Menimbang <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <textarea name="menimbang" id="menimbangSK" rows="5" required
+                                placeholder="Contoh: a. bahwa dalam rangka mendukung program pemerintah di bidang pelayanan kesehatan melalui Jaminan Kesehatan Nasional yang dikelola oleh Badan Penyelenggara Jaminan Sosial (BPJS) bidang kesehatan, rumah sakit diminta untuk berperan serta dalam memberikan pelayanan kesehatan;&#10;b. bahwa untuk pemantauan mutu dan pengendalian biaya dalam pelaksanaan Program Jaminan Kesehatan Nasional, perlu dibentuk Tim Kendali Mutu Kendali Biaya JKN RSUD dr. Soeratno Gemolong;&#10;c. bahwa berdasarkan pertimbangan sebagaimana dimaksud huruf a dan b tersebut di atas maka perlu diatur dan ditetapkan dengan Surat Keputusan Direktur RSUD dr. Soeratno Gemolong."
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            <div id="counterMenimbangSK" class="absolute bottom-2 right-2 text-xs text-gray-500">0 karakter
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- MENGINGAT (Auto-filled) -->
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">
                         Mengingat <span class="text-red-500">*</span>
-                        <span class="text-xs font-normal text-blue-600 dark:text-blue-400 ml-2">
-                            <i class="fas fa-robot mr-1"></i>Otomatis dari Regulasi
-                        </span>
                     </label>
-                    <div class="relative">
-                        <textarea name="mengingat" id="mengingatSK" rows="5" required readonly
-                            placeholder="Pilih keputusan untuk mengisi data mengingat otomatis..."
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y bg-gray-50 dark:bg-gray-900"></textarea>
-                        <div id="counterMengingatSK" class="absolute bottom-2 right-2 text-xs text-gray-500">0 karakter
+                    <input type="hidden" name="mengingat_check" id="mengingat_check">
+                    <div id="mengingatList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Memuat data
                         </div>
                     </div>
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Pilih satu atau lebih regulasi
+                    </p>
                 </div>
 
-                <!-- MEMUTUSKAN (Dynamic Fields) -->
                 <div>
                     <label class="block mb-2 text-gray-700 dark:text-gray-300">
                         Memutuskan <span class="text-red-500">*</span>
                     </label>
                     <div id="memutuskanContainer" class="space-y-3">
-                        <div class="memutuskan-item">
-                            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Kesatu</label>
-                            <textarea name="memutuskan[]" rows="2" required
-                                placeholder="Isi keputusan kesatu..."
+                        <div class="memutuskan-item flex gap-3">
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Menetapkan :</label>
+                            <textarea name="menetapkan" id="menetapkan_input" rows="2" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
-                        <div class="memutuskan-item">
-                            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Kedua</label>
+                        <div class="memutuskan-item flex gap-3">
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Kesatu :</label>
                             <textarea name="memutuskan[]" rows="2" required
-                                placeholder="Isi keputusan kedua..."
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
-                        <div class="memutuskan-item">
-                            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Ketiga</label>
+                        <div class="memutuskan-item flex gap-3">
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Kedua :</label>
                             <textarea name="memutuskan[]" rows="2" required
-                                placeholder="Isi keputusan ketiga..."
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                        </div>
+                        <div class="memutuskan-item flex gap-3">
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Ketiga :</label>
+                            <textarea name="memutuskan[]" rows="2" required
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
                     <button type="button" onclick="addMemutuskanField()" 
                         class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <i class="fas fa-plus mr-2"></i>
-                        Tambah Keputusan
+                        Tambah Memutuskan
                     </button>
                 </div>
 
-                <!-- TEMPAT & TANGGAL -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Lokasi Dibuat <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="tempat_dibuat" required placeholder="Gemolong"
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Lokasi Surat Dibuat <span
+                            class="text-red-500">*</span></label>
+                        <input type="text" name="tempat_dibuat" required placeholder="Contoh: Gemolong"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                     </div>
 
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Dibuat <span
-                                class="text-red-500">*</span></label>
+                        <div>
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Surat Dibuat <span
+                            class="text-red-500">*</span></label>
                         <input type="date" name="tanggal_dibuat" required
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                    </div>
-                </div>
-
-                <!-- JABATAN & NAMA PEMBUAT -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Pembuat <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="jabatan_pembuat" required placeholder="Direktur RSUD"
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                    </div>
-
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pembuat <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="nama_pembuat" required placeholder="Dr. Nama Lengkap, Sp.X"
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                    </div>
+                        </div>
                 </div>
 
             </div>
 
-            <!-- FOOTER -->
             <div
                 class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
                 <button type="button" onclick="resetFormSK()"
@@ -183,7 +130,7 @@
                     Reset
                 </button>
                 <button type="submit"
-                    class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                    class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
                     Simpan
                 </button>
             </div>
@@ -194,151 +141,135 @@
 <script>
     let memutuskanCounter = 3;
 
-    // Load regulasi data when page loads
     document.addEventListener('DOMContentLoaded', function() {
-        loadKeputusanOptions();
+        loadRegulasiOptions();
         
         const menimbangSK = document.getElementById('menimbangSK');
-        const mengingatSK = document.getElementById('mengingatSK');
 
         menimbangSK.addEventListener('input', () => updateCharCount(menimbangSK, 'counterMenimbangSK'));
-        mengingatSK.addEventListener('input', () => updateCharCount(mengingatSK, 'counterMengingatSK'));
 
-        // Form validation on submit
         document.getElementById('skDirekturForm').addEventListener('submit', function(e) {
-            const templateId = document.getElementById('template_surat_sk').value;
-            const regulasiId = document.getElementById('keputusan_regulasi').value;
+            const mengingatCheckboxes = document.querySelectorAll('input[name="mengingat[]"]:checked');
             
-            if (!templateId || !regulasiId) {
+            if (mengingatCheckboxes.length === 0) {
                 e.preventDefault();
-                alert('Silakan pilih keputusan terlebih dahulu untuk mengisi template dan data regulasi');
+                alert('Silakan pilih minimal satu Mengingat');
                 return false;
             }
         });
     });
 
-    // Load keputusan options from regulasi
-    async function loadKeputusanOptions() {
+    async function loadRegulasiOptions() {
         try {
-            const response = await fetch('/api/regulasi/keputusan-list');
-            const data = await response.json();
+            const response = await fetch('/api/regulasi');
+            let data = await response.json();
             
-            const select = document.getElementById('keputusan_regulasi');
-            select.innerHTML = '<option value="">-- Pilih Keputusan --</option>';
+            if (data.data) {
+                data = data.data;
+            }
             
-            data.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.id_regulasi;
-                option.textContent = item.keputusan_label;
-                option.dataset.templateId = item.id_template_surat;
-                select.appendChild(option);
+            const listContainer = document.getElementById('mengingatList');
+            listContainer.innerHTML = ''; 
+            
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Tidak ada data regulasi</div>';
+                return;
+            }
+            
+            data.forEach((item, index) => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}" 
+                        id="mengingat_${index}" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer"
+                        onchange="updateMengingatCheck()">
+                    <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
             });
         } catch (error) {
-            console.error('Error loading keputusan:', error);
+            console.error('Error loading regulasi options:', error);
+            const listContainer = document.getElementById('mengingatList');
+            listContainer.innerHTML = '<div class="text-sm text-red-500 dark:text-red-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data</div>';
         }
     }
 
-    // Load regulasi data when keputusan is selected
-    async function loadRegulasiData() {
-        const select = document.getElementById('keputusan_regulasi');
-        const regulasiId = select.value;
-        
-        if (!regulasiId) {
-            document.getElementById('menimbangSK').value = '';
-            document.getElementById('mengingatSK').value = '';
-            document.getElementById('template_surat_sk').value = '';
-            updateCharCount(document.getElementById('menimbangSK'), 'counterMenimbangSK');
-            updateCharCount(document.getElementById('mengingatSK'), 'counterMengingatSK');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/regulasi/${regulasiId}/data`);
-            const data = await response.json();
-            
-            // Fill in the form fields
-            document.getElementById('menimbangSK').value = data.menimbang;
-            document.getElementById('mengingatSK').value = data.mengingat;
-            document.getElementById('template_surat_sk').value = data.id_template_surat;
-            
-            // Update character counters
-            updateCharCount(document.getElementById('menimbangSK'), 'counterMenimbangSK');
-            updateCharCount(document.getElementById('mengingatSK'), 'counterMengingatSK');
-            
-        } catch (error) {
-            console.error('Error loading regulasi data:', error);
-            alert('Gagal memuat data regulasi. Silakan coba lagi.');
-        }
+    function updateMengingatCheck() {
+        const checkboxes = document.querySelectorAll('input[name="mengingat[]"]:checked');
+        document.getElementById('mengingat_check').value = checkboxes.length > 0 ? 'yes' : '';
     }
 
-    // Add new memutuskan field
     function addMemutuskanField() {
         memutuskanCounter++;
         const container = document.getElementById('memutuskanContainer');
         
         const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
         const label = labels[memutuskanCounter - 1] || `Ke-${memutuskanCounter}`;
+        const labelUpper = label.toUpperCase();
         
         const newField = document.createElement('div');
-        newField.className = 'memutuskan-item flex gap-2';
+        newField.className = 'memutuskan-item flex gap-3';
         newField.innerHTML = `
-            <div class="flex-1">
-                <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">${label}</label>
+            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">${labelUpper} :</label>
+            <div class="flex-1 flex gap-2">
                 <textarea name="memutuskan[]" rows="2" required
-                    placeholder="Isi keputusan ${label.toLowerCase()}..."
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                <button type="button" onclick="removeMemutuskanField(this)" 
+                    class="mt-0 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                    title="Hapus">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
-            <button type="button" onclick="removeMemutuskanField(this)" 
-                class="mt-6 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                title="Hapus">
-                <i class="fas fa-trash"></i>
-            </button>
         `;
         
         container.appendChild(newField);
     }
 
-    // Remove memutuskan field
     function removeMemutuskanField(button) {
         const item = button.closest('.memutuskan-item');
         item.remove();
         memutuskanCounter--;
     }
 
-    // Reset form
     function resetFormSK() {
         const form = document.getElementById('skDirekturForm');
         form.reset();
         
-        // Reset memutuskan fields to initial 3 fields
         const container = document.getElementById('memutuskanContainer');
         container.innerHTML = `
-            <div class="memutuskan-item">
-                <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Kesatu</label>
-                <textarea name="memutuskan[]" rows="2" required
-                    placeholder="Isi keputusan kesatu..."
+            <div class="memutuskan-item flex gap-3">
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">MENETAPKAN :</label>
+                <textarea name="menetapkan" id="menetapkan_input" rows="2" required
                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
-            <div class="memutuskan-item">
-                <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Kedua</label>
+            <div class="memutuskan-item flex gap-3">
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KESATU :</label>
                 <textarea name="memutuskan[]" rows="2" required
-                    placeholder="Isi keputusan kedua..."
                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
-            <div class="memutuskan-item">
-                <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Ketiga</label>
+            <div class="memutuskan-item flex gap-3">
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KEDUA :</label>
                 <textarea name="memutuskan[]" rows="2" required
-                    placeholder="Isi keputusan ketiga..."
+                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+            </div>
+            <div class="memutuskan-item flex gap-3">
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KETIGA :</label>
+                <textarea name="memutuskan[]" rows="2" required
                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
         `;
         memutuskanCounter = 3;
         
-        // Reset character counters
         document.getElementById('counterMenimbangSK').textContent = '0 karakter';
-        document.getElementById('counterMengingatSK').textContent = '0 karakter';
         
-        // Reset border colors if any field was marked as error
+        const mengingatCheckboxes = document.querySelectorAll('input[name="mengingat[]"]');
+        mengingatCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateMengingatCheck();
+        
         const allInputs = form.querySelectorAll('input, textarea, select');
         allInputs.forEach(input => {
             input.style.borderColor = '';
@@ -353,41 +284,37 @@
         }
     }
 
-    // Submit form via AJAX
     function submitFormAJAX(event) {
         event.preventDefault();
         
         const form = document.getElementById('skDirekturForm');
         
-        // Validate memutuskan fields
-        const memutuskanFields = document.querySelectorAll('textarea[name="memutuskan[]"]');
-        let hasEmptyMemutuskan = false;
-        memutuskanFields.forEach((field, index) => {
+        const allTextareas = document.querySelectorAll('#memutuskanContainer textarea');
+        let hasEmptyField = false;
+        allTextareas.forEach((field, index) => {
             if (!field.value.trim()) {
                 field.style.borderColor = 'red';
-                hasEmptyMemutuskan = true;
+                hasEmptyField = true;
             } else {
                 field.style.borderColor = '';
             }
         });
         
-        if (hasEmptyMemutuskan) {
-            alert('Semua field Memutuskan harus diisi!');
+        if (hasEmptyField) {
+            alert('Semua field Memutuskan (termasuk Menetapkan) harus diisi!');
             return;
         }
         
         const formData = new FormData(form);
         
-        // Debug: Log all form data
         console.log('Form data entries:');
         for (let [key, value] of formData.entries()) {
             console.log(`${key}:`, value);
         }
         
-        // Disable submit button
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
         
         fetch(form.action, {
             method: 'POST',
@@ -398,13 +325,11 @@
             }
         })
         .then(response => {
-            // Try to parse as JSON first
             return response.json().then(data => ({
                 status: response.status,
                 ok: response.ok,
                 data: data
             })).catch(err => {
-                // If JSON parsing fails, return text response
                 return response.text().then(text => ({
                     status: response.status,
                     ok: response.ok,
@@ -425,22 +350,17 @@
             if (!result.ok) {
                 console.error('Server error - Status:', result.status, 'Data:', result.data);
                 
-                // Display validation errors
                 if (result.data.errors) {
-                    // Map technical field names to user-friendly names
                     const fieldLabels = {
                         'judul_surat': 'Judul Surat',
                         'nomor_surat': 'Nomor Surat',
                         'tentang': 'Tentang',
-                        'identitas_penetap': 'Identitas Penetap',
-                        'id_regulasi': 'Keputusan',
                         'menimbang': 'Menimbang',
                         'mengingat': 'Mengingat',
+                        'menetapkan': 'Menetapkan',
                         'memutuskan': 'Memutuskan',
-                        'tempat_dibuat': 'Tempat Dibuat',
-                        'tanggal_dibuat': 'Tanggal Dibuat',
-                        'jabatan_pembuat': 'Jabatan Pembuat',
-                        'nama_pembuat': 'Nama Pembuat'
+                        'tempat_dibuat': 'Tempat Surat Dibuat',
+                        'tanggal_dibuat': 'Tanggal Surat Dibuat'
                     };
                     
                     let errorMsg = 'Validasi Gagal:\n\n';
@@ -449,12 +369,10 @@
                         const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
                         errorMsg += `❌ ${fieldLabel}: ${messageText}\n`;
                         
-                        // Highlight error field with red border
                         const inputField = form.querySelector(`[name="${field}"]`);
                         if (inputField) {
                             inputField.style.borderColor = 'red';
                             inputField.style.borderWidth = '2px';
-                            // Reset border after 3 seconds
                             setTimeout(() => {
                                 inputField.style.borderColor = '';
                                 inputField.style.borderWidth = '';
@@ -469,19 +387,15 @@
             }
             
             if (result.data.success) {
-                // Close create modal
                 closeModal('modalCreateSK');
                 
-                // Reset form
                 form.reset();
                 memutuskanCounter = 3;
                 
-                // Show success message
                 showSuccessMessage('Surat berhasil dibuat!');
                 
-                // Open preview modal after brief delay
                 setTimeout(() => {
-                    openPreviewPDF(result.data.file_url, result.data.nomor_surat);
+                    openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id);
                 }, 500);
             } else {
                 alert('Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'));
@@ -492,13 +406,11 @@
             alert('Terjadi kesalahan: ' + error.message);
         })
         .finally(() => {
-            // Re-enable submit button
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Simpan';
         });
     }
 
-    // Show success message
     function showSuccessMessage(message) {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center animate-pulse';

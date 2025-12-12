@@ -52,16 +52,14 @@ class TemplateSuratController extends Controller
                 'judul_surat' => 'required|string',
                 'nomor_surat' => 'required|unique:surat,nomor_surat',
                 'tentang' => 'required',
-                'identitas_penetap' => 'required',
-                'id_regulasi' => 'required|exists:regulasi,id_regulasi',
                 'menimbang' => 'required',
-                'mengingat' => 'required',
+                'mengingat' => 'required|array|min:1',
+                'mengingat.*' => 'required|string',
+                'menetapkan' => 'required|string',
                 'memutuskan' => 'required|array|min:1',
                 'memutuskan.*' => 'required|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
-                'jabatan_pembuat' => 'required|string',
-                'nama_pembuat' => 'required|string',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
             ]);
 
@@ -72,13 +70,12 @@ class TemplateSuratController extends Controller
                 'nomor_surat' => $request->nomor_surat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
                 'id_template_surat' => $request->template_id,
-                'id_regulasi' => $request->id_regulasi,
+                'id_regulasi' => null,
                 'created_by' => auth()->id(),
             ]);
 
             Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
 
-            // Format memutuskan array menjadi string dengan numbering
             $memutuskanArray = $request->memutuskan;
             $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
             $memutuskanText = '';
@@ -88,29 +85,34 @@ class TemplateSuratController extends Controller
                 $memutuskanText .= $label . "\n" . trim($item) . "\n\n";
             }
 
+            $mengingatArray = $request->mengingat;
+            $mengingatText = '';
+            foreach ($mengingatArray as $index => $item) {
+                $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
+            }
+
+            $mengingatIds = is_array($request->mengingat) ? implode(',', $request->mengingat) : $request->mengingat;
+
             $skDirektur = SKDirektur::create([
                 'judul_surat' => $request->judul_surat,
                 'nomor_surat' => $request->nomor_surat,
                 'tentang' => $request->tentang,
-                'identitas_penetap' => $request->identitas_penetap,
                 'menimbang' => $request->menimbang,
-                'mengingat' => $request->mengingat,
+                'mengingat' => trim($mengingatText),
                 'memutuskan' => trim($memutuskanText),
-                'menetapkan' => null,
+                'menetapkan' => $request->menetapkan,
                 'tempat_dibuat' => $request->tempat_dibuat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
-                'jabatan_pembuat' => $request->jabatan_pembuat,
-                'nama_pembuat' => $request->nama_pembuat,
                 'id_surat' => $surat->id_surat,
             ]);
 
-            // Prepare data for PDF with formatted memutuskan
             $pdfData = $request->all();
-            $pdfData['memutuskan'] = trim($memutuskanText); // Replace array with formatted string
+            $pdfData['memutuskan'] = trim($memutuskanText);
+            $pdfData['mengingat'] = trim($mengingatText);
+            $pdfData['lokasi_surat'] = $request->tempat_dibuat;
 
             $this->generateAndSavePDF($surat, $pdfData);
 
-            // Return JSON for AJAX requests
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
@@ -128,7 +130,6 @@ class TemplateSuratController extends Controller
                 'input' => $request->all(),
             ]);
             
-            // Return JSON for AJAX requests
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -152,7 +153,6 @@ class TemplateSuratController extends Controller
                 ]);
             }
             
-            // Return JSON for AJAX requests
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -178,7 +178,6 @@ class TemplateSuratController extends Controller
                 'fileName' => $fileName
             ]);
 
-            // Step 1: Render view
             Log::info('PDF Generation Step 2: Rendering view', [
                 'data_keys' => array_keys($data)
             ]);
@@ -187,19 +186,16 @@ class TemplateSuratController extends Controller
                 'html_length' => strlen($html)
             ]);
 
-            // Step 2: Load HTML to PDF
             Log::info('PDF Generation Step 4: Loading HTML to PDF library');
             $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
             Log::info('PDF Generation Step 5: PDF loaded successfully');
 
-            // Step 3: Create directory if not exists
             Log::info('PDF Generation Step 6: Checking arsip directory');
             if (!Storage::exists('arsip')) {
                 Storage::makeDirectory('arsip');
                 Log::info('PDF Generation Step 7: Created arsip directory');
             }
 
-            // Step 4: Save PDF
             Log::info('PDF Generation Step 8: Writing PDF to storage', [
                 'filePath' => $filePath,
                 'disk' => 'local'
@@ -207,7 +203,6 @@ class TemplateSuratController extends Controller
             Storage::put($filePath, $pdf->output());
             Log::info('PDF Generation Step 9: PDF written successfully');
 
-            // Step 5: Update surat record
             Log::info('PDF Generation Step 10: Updating surat record with file_path', [
                 'file_path' => $filePath
             ]);

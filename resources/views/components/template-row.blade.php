@@ -25,9 +25,9 @@
         'icon' => 'file-alt',
         'iconColor' => 'blue',
         'iconBgColor' => 'blue-100',
-        'iconDarkBgColor' => 'blue-900',
-        'iconTextColor' => 'blue-600',
-        'iconDarkTextColor' => 'blue-400',
+        'iconDarkBgColor' => 'green-900',
+        'iconTextColor' => 'green-600',
+        'iconDarkTextColor' => 'green-400',
         'category' => null,
         'updated_at' => null
     ];
@@ -98,7 +98,7 @@
             @endif
 
             @if (in_array('download', $actionButtons))
-                <button class="inline-flex items-center p-1.5 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+                <button class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                         title="Download Template">
                     <i class="fas fa-download text-sm"></i>
                 </button>

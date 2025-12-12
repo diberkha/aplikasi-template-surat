@@ -6,173 +6,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $data['judul_surat'] ?? 'Surat Keputusan' }}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Arial', 'Times New Roman', serif;
-            color: #000;
-            line-height: 1.5;
-            font-size: 11pt;
-        }
+        body { font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.15; font-size: 12pt; background: #e5e7eb; }
 
-        .page {
-            width: 210mm;
-            height: 297mm;
-            padding: 20mm;
-            margin: 0 auto;
+        .page { width: 210mm; min-height: 297mm; padding: 10mm 15mm 10mm 10mm; margin: 20px auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        
+        @media print {
+            body { background: white; }
+            .page { box-shadow: none; margin: 0 auto; }
+            .header { display: block; }
         }
+        
+        @page { size: A4; margin: 10mm 15mm 10mm 10mm; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-        }
+        .header { text-align: center; margin-bottom: 16px; }
+        .header table { width: 100%; border-collapse: collapse; }
+        .header td { vertical-align: top; padding: 0; }
+        .header-logo { width: 70px; text-align: center; }
+        .header-logo img { width: 62px; height: 77px; object-fit: contain; }
+        .header-text { text-align: center; line-height: 1.4; }
+        .header-line1 { font-size: 15pt; margin-bottom: 2px; letter-spacing: 0.2px; }
+        .header-line2 { font-size: 15pt; font-weight: normal; margin-bottom: 3px; letter-spacing: 0.2px; }
+        .header-line3 { font-size: 10.5pt; line-height: 1.35; }
+        .header-border { margin-top: 6px; }
+        .header-border hr:first-child { border: none; border-top: 3px solid #000; margin: 0; }
+        .header-border hr:last-child { border: none; border-top: 1px solid #000; margin-top: 2px; }
 
-        .header-top {
-            font-size: 10pt;
-            margin-bottom: 5px;
-        }
+        .title-section { text-align: center; font-weight: normal; font-size: 12.5pt; margin: 24px 0 12px 0; }
+        .meta-info { margin: 15px 0; text-align: center; line-height: 1.5; }
+        .meta-info p { margin: 3px 0; font-size: 12.5pt; line-height: 1.0; }
 
-        .header-logo {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
+        .content { margin: 22px 0; text-align: justify; line-height: 1.5; }
+        .section { margin-bottom: 16px; line-height: 1.5; }
+        .section table { width: 100%; border-collapse: collapse; }
+        .section-label { font-size: 12pt; width: 100px; vertical-align: top; padding-right: 8px; line-height: 1.5; word-wrap: break-word; }
+        .section-separator { width: 18px; vertical-align: top; text-align: center; line-height: 1.5; }
+        .section-content { font-size: 12pt; line-height: 1.5; text-align: justify; vertical-align: top; word-wrap: break-word; }
+        .section-content ol { margin: 0 0 0 22px; padding-left: 0; list-style-position: outside; }
+        .section-content li { margin-bottom: 6px; text-align: justify; line-height: 1.5; }
 
-        .header-title {
-            display: inline-block;
-            text-align: center;
-            vertical-align: middle;
-        }
+        .deciding-title { text-align: center; font-weight: normal; font-size: 12.5pt; margin: 18px 0 10px 0; text-transform: uppercase; line-height: 1.5; }
+        .deciding-content { margin-top: 8px; line-height: 1.5; }
+        .deciding-item { margin-bottom: 12px; line-height: 1.5; }
+        .deciding-text { text-align: justify; line-height: 1.5; }
 
-        .header-title h1 {
-            font-size: 11pt;
-            font-weight: bold;
-            margin: 0;
-            padding: 0;
-        }
-
-        .header-title p {
-            font-size: 10pt;
-            margin: 2px 0 0 0;
-            padding: 0;
-        }
-
-        .header-contact {
-            font-size: 9pt;
-            margin-top: 5px;
-            line-height: 1.3;
-        }
-
-        .title-section {
-            text-align: center;
-            font-weight: bold;
-            font-size: 12pt;
-            margin: 15px 0 5px 0;
-            text-decoration: underline;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 11pt;
-            margin: 5px 0 15px 0;
-        }
-
-        .meta-info {
-            margin-bottom: 15px;
-        }
-
-        .meta-info p {
-            margin: 3px 0;
-            font-size: 11pt;
-        }
-
-        .content {
-            margin: 15px 0;
-        }
-
-        .section {
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 11pt;
-            margin: 10px 0 5px 0;
-        }
-
-        .section-content {
-            font-size: 11pt;
-            line-height: 1.6;
-            text-align: justify;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            margin-left: 0;
-        }
-
-        .memutuskan-item {
-            margin-bottom: 8px;
-            text-align: justify;
-        }
-
-        .memutuskan-label {
-            font-weight: bold;
-            display: inline;
-        }
-
-        .footer {
-            margin-top: 30px;
-        }
-
-        .footer-place {
-            float: left;
-            width: 45%;
-        }
-
-        .footer-sign {
-            float: right;
-            width: 45%;
-            text-align: center;
-        }
-
-        .footer-content {
-            clear: both;
-            margin-top: 100px;
-        }
-
-        .signature-line {
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .clearfix::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
+        .footer { margin-top: 46px; line-height: 1.5; }
+        .footer table { width: 100%; border-collapse: collapse; }
+        .footer-left { width: 55%; vertical-align: top; text-align: left; line-height: 1.5; }
+        .footer-right { width: 45%; vertical-align: top; text-align: center; padding-left: 10mm; line-height: 1.5; }
+        .footer-title { font-size: 12pt; font-weight: normal; }
+        .signature-wrapper { margin: 18px 0 10px 0; min-height: 90px; }
+        .signature-wrapper img { max-height: 90px; object-fit: contain; }
+        .signature-name { font-weight: normal; text-decoration: underline; margin-top: 6px; }
+        .signature-nip { font-size: 12.5pt; margin-top: 2px; }
     </style>
 </head>
 
 <body>
     <div class="page">
-        <!-- HEADER -->
-        <div class="header" style="padding-bottom:0; border-bottom:none;">
-            <table style="width:100%; border:none;">
+        <div class="header">
+            <table>
                 <tr>
-                    <td style="width:70px; vertical-align:top; text-align:center;">
-                        <img src="{{ public_path('img/logo-sragen.png') }}" alt="Logo" style="width:62px; height:77px;">
+                    <td class="header-logo">
+                        <img src="{{ public_path('img/logo-sragen.png') }}" alt="Logo Sragen">
                     </td>
-                    <td style="text-align:center;">
-                        <div style="font-size:13pt; font-weight:normal;">PEMERINTAH KABUPATEN SRAGEN</div>
-                        <div style="font-size:15pt; font-weight:bold;">RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</div>
-                        <div style="font-size:10pt; margin-top:2px;">
+                    <td class="header-text">
+                        <div class="header-line1">PEMERINTAH KABUPATEN SRAGEN</div>
+                        <div class="header-line2">RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</div>
+                        <div class="header-line3">
                             Jl. R.Ngt. Tjitrosantjoko No. 10 Gemolong Telp. (0271) 6811839 Fax : (0271) 6811439<br>
                             E-mail : rsudgemolong@gmail.com Website : https://rsudgemolong.sragenkab.go.id<br>
                             SRAGEN - Kode Pos 57274
@@ -180,71 +82,172 @@
                     </td>
                 </tr>
             </table>
-            <div style="margin-top:4px;">
-                <hr style="border:2px solid #000; margin:0;">
-                <hr style="border:1px solid #000; margin-top:2px;">
+            <div class="header-border">
+                <hr>
+                <hr>
             </div>
         </div>
 
-        <!-- TITLE -->
-        <div class="title-section">KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</div>
-
-        <!-- META INFO -->
-        <div class="meta-info">
-            <p><strong>NOMOR</strong> : {{ $data['nomor_surat'] ?? '-' }}</p>
+        <div class="title-section">
+            KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG
         </div>
 
         <div class="meta-info">
-            <p style="text-align: center;"><strong>TENTANG</strong></p>
-            <p style="text-align: center;"><strong>{{ strtoupper($data['tentang'] ?? '-') }}</strong></p>
+            <p>NOMOR : {{ $data['nomor_surat'] ?? '-' }}</p>
         </div>
 
-        <!-- CONTENT -->
+        <div class="meta-info">
+            <p>TENTANG</p>
+            <p style="margin-top: 5px;">{{ strtoupper($data['tentang'] ?? '-') }}</p>
+        </div>
+
+        <div style="text-align: center; margin: 15px 0;">
+            <p>DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG,</p>
+        </div>
+
         <div class="content">
-            <!-- MENIMBANG -->
             <div class="section">
-                <div class="section-title">Menimbang</div>
-                <div class="section-content">{{ $data['menimbang'] ?? '-' }}</div>
+                <table>
+                    <tr>
+                        <td class="section-label">Menimbang</td>
+                        <td class="section-separator">:</td>
+                        <td class="section-content">
+                            @php
+                                $menimbangLines = preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
+                                $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
+                            @endphp
+                            <ol type="a">
+                                @foreach($menimbangLines as $line)
+                                    <li>{{ trim($line) }}</li>
+                                @endforeach
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
-            <!-- MENGINGAT -->
             <div class="section">
-                <div class="section-title">Mengingat</div>
-                <div class="section-content">{{ $data['mengingat'] ?? '-' }}</div>
+                <table>
+                    <tr>
+                        <td class="section-label">Mengingat</td>
+                        <td class="section-separator">:</td>
+                        <td class="section-content">
+                            @php
+                                $rawMengingat = trim($data['mengingat'] ?? '');
+                                $normalized = str_replace(' ', '', $rawMengingat);
+                                $mengingatLines = [];
+                                if($normalized !== '' && preg_match('/^\d+(,\d+)*$/', $normalized)) {
+                                    $ids = array_filter(array_map('trim', explode(',', $normalized)));
+                                    try {
+                                        $mtexts = \App\Models\Regulasi::whereIn('id_regulasi', $ids)->pluck('isi_regulasi')->toArray();
+                                        $mengingatLines = $mtexts;
+                                    } catch (\Exception $e) {
+                                        $mengingatLines = $ids;
+                                    }
+                                } else {
+                                    $mengingatLines = preg_split('/\r\n|\r|\n/', $rawMengingat);
+                                    $mengingatLines = array_filter($mengingatLines, fn($line) => trim($line) !== '');
+                                }
+                            @endphp
+                            <ol type="1">
+                                @foreach($mengingatLines as $line)
+                                    <li>{{ trim($line) }}</li>
+                                @endforeach
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
             </div>
+        </div>
 
-            <!-- MEMUTUSKAN -->
-            <div class="section">
-                <div class="section-title">Memutuskan</div>
-                <div class="section-content">
-                    {!! nl2br($data['memutuskan'] ?? '-') !!}
-                </div>
-            </div>
+        <div class="deciding-title">MEMUTUSKAN</div>
 
-            <!-- MENETAPKAN -->
+        <div class="deciding-content">
+            @php
+                $memutuskanText = $data['memutuskan'] ?? '';
+                $lines = explode("\n", $memutuskanText);
+                $currentLabel = '';
+                $currentText = '';
+                $items = [];
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    if (preg_match('/^(MENETAPKAN|KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
+                        if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
+                        $currentLabel = $line; $currentText = '';
+                    } else { $currentText .= ' ' . $line; }
+                }
+                if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
+
+                usort($items, function($a, $b) {
+                    $order = [
+                        'Menetapkan' => 0,
+                        'KESATU' => 1,
+                        'KEDUA' => 2,
+                        'KETIGA' => 3,
+                        'KEEMPAT' => 4,
+                        'KELIMA' => 5,
+                        'KEENAM' => 6,
+                        'KETUJUH' => 7,
+                        'KEDELAPAN' => 8,
+                        'KESEMBILAN' => 9,
+                        'KESEPULUH' => 10,
+                    ];
+                    return ($order[strtoupper($a['label'])] ?? 99) <=> ($order[strtoupper($b['label'])] ?? 99);
+                });
+            @endphp
+
             @if(!empty($data['menetapkan']))
-            <div class="section">
-                <div class="section-title">Menetapkan</div>
-                <div class="section-content">{{ $data['menetapkan'] }}</div>
+            <div class="deciding-item">
+                <table>
+                    <tr>
+                        <td class="section-label">Menetapkan</td>
+                        <td class="section-separator">:</td>
+                        <td class="deciding-text">{{ $data['menetapkan'] }}</td>
+                    </tr>
+                </table>
             </div>
             @endif
+
+            @foreach($items as $item)
+                <div class="deciding-item">
+                    <table>
+                        <tr>
+                            <td class="section-label">{{ strtoupper($item['label']) }}</td>
+                            <td class="section-separator">:</td>
+                            <td class="deciding-text">{{ $item['text'] }}</td>
+                        </tr>
+                    </table>
+                </div>
+            @endforeach
         </div>
 
-        <!-- FOOTER -->
-        <div class="footer clearfix">
-            <div class="footer-place">
-                <p><strong>Ditetapkan di</strong> {{ $data['tempat_dibuat'] ?? '-' }}</p>
-                <p><strong>pada tanggal</strong> {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? '')->locale('id')->translatedFormat('j F Y') ?? '-' }}</p>
-            </div>
+        <div class="footer">
+            <table>
+                <tr>
+                    <td class="footer-left">
+                    </td>
+                    <td class="footer-right">
+                        <p>Ditetapkan di {{ $data['lokasi_surat'] ?? 'Gemolong' }}</p>
+                        <p>Pada tanggal {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now())->locale('id')->translatedFormat('j F Y') }}</p>
+                        <p class="footer-title" style="margin-top: 10px;">DIREKTUR RSUD dr. SOERATNO GEMOLONG</p>
+                        <p class="footer-title">KABUPATEN SRAGEN</p>
 
-            <div class="footer-sign">
-                <p><strong>{{ $data['identitas_penetap'] ?? 'DIREKTUR' }}</strong></p>
-                <div class="signature-line"></div>
-                <p><strong>{{ $data['nama_pembuat'] ?? '' }}</strong></p>
-                @if(!empty($data['jabatan_pembuat']))
-                    <p style="font-size: 10pt;">{{ $data['jabatan_pembuat'] }}</p>
-                @endif
-            </div>
+                        <div class="signature-wrapper">
+                            @if(!empty($data['ttd_image']))
+                                <img src="{{ public_path($data['ttd_image']) }}" alt="Tanda tangan">
+                            @else
+                                <div style="height: 90px"></div>
+                            @endif
+                        </div>
+
+                        <p class="signature-name">{{ $data['pejabat_nama'] ?? 'KINIK DARSONO' }}</p>
+                        @if(!empty($data['pejabat_nip']))
+                            <p class="signature-nip">NIP. {{ $data['pejabat_nip'] }}</p>
+                        @endif
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

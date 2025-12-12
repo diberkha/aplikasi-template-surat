@@ -7,7 +7,7 @@
         </button>
 
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus</h3>
+            <h3 class="text-lg font-semibold text-green-600 dark:text-green-400">Konfirmasi Hapus</h3>
         </div>
 
         <div class="p-6">
@@ -28,7 +28,7 @@
             <form id="formDeleteRuangan" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     Hapus Ruangan
                 </button>
             </form>

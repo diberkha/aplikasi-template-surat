@@ -39,7 +39,7 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('master-data.user.index')
-            ->with('success', 'Pengguna berhasil ditambahkan.');
+            ->with('success', 'Pengguna berhasil ditambahkan');
     }
 
     public function update(Request $request, User $user)
@@ -62,19 +62,19 @@ class UserController extends Controller
         $user->update($data);
 
         return redirect()->route('master-data.user.index')
-            ->with('success', 'Pengguna berhasil diperbarui.');
+            ->with('success', 'Pengguna berhasil diperbarui');
     }
 
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
             return redirect()->route('master-data.user.index')
-                ->with('error', 'Tidak dapat menghapus akun sendiri.');
+                ->with('error', 'Tidak dapat menghapus akun sendiri');
         }
 
         $user->delete();
 
         return redirect()->route('master-data.user.index')
-            ->with('success', 'Pengguna berhasil dihapus.');
+            ->with('success', 'Pengguna berhasil dihapus');
     }
 }

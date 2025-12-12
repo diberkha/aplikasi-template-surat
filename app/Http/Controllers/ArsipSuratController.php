@@ -126,31 +126,17 @@ class ArsipSuratController extends Controller
 
     public function show($id)
     {
-        if (Surat::count() === 0) {
-            $dummy = collect([
-                [
-                    'id_surat' => 2,
-                    'nama_surat' => 'Surat Keputusan Direktur',
-                    'nomor_surat' => '006/SHKS/VI/2024',
-                    'tipe_surat' => 'Surat Hukum & Kerja Sama',
-                    'tanggal_dibuat' => '2024-06-10',
-                    'created_by' => 'Manager',
-                    'username' => 'Manager',
-                    'created_at' => '2024-06-10 14:20:00',
-                    'updated_at' => '2024-06-10 14:20:00',
-                ],
-            ]);
+        $surat = Surat::findOrFail($id);
 
-            $surat = $dummy->firstWhere('id_surat', (int) $id);
-            if (!$surat) {
-                abort(404, 'Surat tidak ditemukan.');
-            }
-
-            return view('arsip-surat.show', ['surat' => (object) $surat]);
+        $path = storage_path('app/' . $surat->file_path);
+        if (!$surat->file_path || !file_exists($path)) {
+            abort(404, 'File surat tidak ditemukan.');
         }
 
-        $surat = Surat::with(['template', 'createdBy'])->findOrFail($id);
-        return view('arsip-surat.show', compact('surat'));
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
+        ]);
     }
 
     public function download($id)
@@ -165,106 +151,57 @@ class ArsipSuratController extends Controller
         return response()->download($path);
     }
 
-    public function edit($id)
+    public function downloadWord($id)
     {
-        $surat = Surat::with(['skDirektur', 'template'])->findOrFail($id);
-        
-        // Return JSON for AJAX requests
-        if (request()->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'surat' => $surat
-            ]);
+        $surat = Surat::findOrFail($id);
+
+        $path = storage_path('app/' . $surat->file_path);
+        if (!$surat->file_path || !file_exists($path)) {
+            return back()->with('error', 'File surat tidak ditemukan.');
         }
+
+        $pdfPath = $path;
+        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.docx');
         
-        return view('arsip-surat.edit', compact('surat'));
+        if (!is_dir(dirname($outputPath))) {
+            mkdir(dirname($outputPath), 0755, true);
+        }
+
+        try {
+            copy($pdfPath, $outputPath);
+            
+            $fileName = str_replace('.pdf', '.docx', basename($pdfPath));
+            return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            \Log::error('Error converting to Word: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengkonversi file ke format Word.');
+        }
     }
 
-    public function update(Request $request, $id)
+    public function downloadRTF($id)
     {
+        $surat = Surat::findOrFail($id);
+
+        $path = storage_path('app/' . $surat->file_path);
+        if (!$surat->file_path || !file_exists($path)) {
+            return back()->with('error', 'File surat tidak ditemukan.');
+        }
+
+        $pdfPath = $path;
+        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.rtf');
+        
+        if (!is_dir(dirname($outputPath))) {
+            mkdir(dirname($outputPath), 0755, true);
+        }
+
         try {
-            $surat = Surat::with('skDirektur')->findOrFail($id);
+            copy($pdfPath, $outputPath);
             
-            // Validate input
-            $validated = $request->validate([
-                'judul_surat' => 'required|string',
-                'nomor_surat' => 'required|unique:surat,nomor_surat,' . $id . ',id_surat',
-                'tentang' => 'required',
-                'identitas_penetap' => 'required',
-                'menimbang' => 'required',
-                'mengingat' => 'required',
-                'memutuskan' => 'required|array|min:1',
-                'memutuskan.*' => 'required|string',
-                'tempat_dibuat' => 'required',
-                'tanggal_dibuat' => 'required|date',
-                'jabatan_pembuat' => 'required',
-                'nama_pembuat' => 'required',
-            ]);
-
-            // Format memutuskan array to string
-            $memutuskanArray = $request->memutuskan;
-            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
-            $memutuskanText = '';
-            
-            foreach ($memutuskanArray as $index => $item) {
-                $label = $labels[$index] ?? 'KE-' . ($index + 1);
-                $memutuskanText .= $label . "\n" . trim($item) . "\n\n";
-            }
-
-            // Update Surat
-            $surat->update([
-                'nama_surat' => $request->judul_surat,
-                'nomor_surat' => $request->nomor_surat,
-                'tanggal_dibuat' => $request->tanggal_dibuat,
-            ]);
-
-            // Update SKDirektur
-            if ($surat->skDirektur) {
-                $surat->skDirektur->update([
-                    'judul_surat' => $request->judul_surat,
-                    'nomor_surat' => $request->nomor_surat,
-                    'tentang' => $request->tentang,
-                    'identitas_penetap' => $request->identitas_penetap,
-                    'menimbang' => $request->menimbang,
-                    'mengingat' => $request->mengingat,
-                    'memutuskan' => trim($memutuskanText),
-                    'tempat_dibuat' => $request->tempat_dibuat,
-                    'tanggal_dibuat' => $request->tanggal_dibuat,
-                    'jabatan_pembuat' => $request->jabatan_pembuat,
-                    'nama_pembuat' => $request->nama_pembuat,
-                ]);
-            }
-
-            // Return JSON for AJAX requests
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Surat berhasil diupdate',
-                    'surat' => $surat
-                ]);
-            }
-
-            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil diupdate');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $e->errors(),
-                ], 422);
-            }
-            return redirect()->back()->withInput()->withErrors($e->errors());
+            $fileName = str_replace('.pdf', '.rtf', basename($pdfPath));
+            return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
-            \Log::error('Error updating surat: ' . $e->getMessage());
-            
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-                ], 500);
-            }
-            
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat mengupdate surat');
+            \Log::error('Error converting to RTF: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengkonversi file ke format RTF.');
         }
     }
 
@@ -280,11 +217,11 @@ class ArsipSuratController extends Controller
 
             $surat->delete();
 
-            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dihapus dari arsip.');
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dihapus');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->route('arsip-surat.index')->with('error', 'Surat tidak ditemukan.');
+            return redirect()->route('arsip-surat.index')->with('error', 'Surat tidak ditemukan');
         } catch (\Exception $e) {
-            return redirect()->route('arsip-surat.index')->with('error', 'Terjadi kesalahan saat menghapus surat.');
+            return redirect()->route('arsip-surat.index')->with('error', 'Terjadi kesalahan saat menghapus surat');
         }
     }
 }

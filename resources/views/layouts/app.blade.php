@@ -17,6 +17,11 @@
     </script>
 
     <style>
+        /* Alpine.js cloak to prevent flash of unstyled content */
+        [x-cloak] { 
+            display: none !important; 
+        }
+
         @media (max-width: 768px) {
             .sidebar-backdrop {
                 position: fixed;
@@ -69,6 +74,10 @@
     <nav
         class="h-16 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between px-4 md:px-6 sticky top-0 z-50">
         <div class="flex items-center space-x-3 md:space-x-4">
+            <div class="flex items-center">
+                <img src="{{ asset('img/logo-rs.png') }}" alt="Logo RS" class="h-10 md:h-12 object-contain">
+            </div>
+
             <button @click="sidebar = true; backdrop = true"
                 class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors md:hidden">
                 <i class="fas fa-bars text-gray-600 dark:text-gray-300 text-lg"></i>
@@ -78,15 +87,13 @@
                 class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors hidden md:block">
                 <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
             </button>
-
-            <div class="font-bold text-lg md:text-xl text-blue-600 dark:text-blue-400 truncate">E-Office</div>
         </div>
 
         <div class="flex items-center space-x-2 md:space-x-4">
             <button @click="toggleDarkMode()"
                 class="p-2 md:p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative">
                 <i x-show="!dark" class="fas fa-sun text-yellow-500 text-base md:text-lg"></i>
-                <i x-show="dark" class="fas fa-moon text-blue-400 text-base md:text-lg"></i>
+                <i x-show="dark" class="fas fa-moon text-green-400 text-base md:text-lg"></i>
                 <div x-show="darkModeTransition"
                     class="absolute inset-0 bg-white dark:bg-gray-800 rounded-lg opacity-0 animate-ping"
                     style="display: none;"></div>
@@ -96,7 +103,7 @@
                 <button @click="open = !open"
                     class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                     <div
-                        class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow">
+                        class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow">
                         <i class="fas fa-user text-white text-sm"></i>
                     </div>
                     <span class="font-medium hidden sm:block">{{ Auth::user()->ruangan->nama_ruangan ?? 'User' }}</span>
@@ -133,7 +140,7 @@
 
                 <a href="{{ route('dashboard') }}"
                     class="flex items-center space-x-3 py-3 px-4 rounded-xl transition-all group
-                   {{ request()->routeIs('dashboard') ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                   {{ request()->routeIs('dashboard') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                     <i class="fas fa-home w-5"></i>
                     <span>Dashboard</span>
                 </a>
@@ -141,7 +148,7 @@
                 <div x-data="{ open: {{ request()->routeIs('template-surat.*') ? 'true' : 'false' }} }" class="space-y-1">
                     <button @click="open = !open"
                         class="flex items-center justify-between w-full py-3 px-4 rounded-xl transition-all
-                        {{ request()->routeIs('template-surat.*') ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                        {{ request()->routeIs('template-surat.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-envelope w-5"></i>
                             <span>Template Surat</span>
@@ -154,7 +161,7 @@
 
                         <a href="{{ route('template-surat.hukum.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.hukum.index') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            {{ request()->routeIs('template-surat.hukum.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-balance-scale w-4"></i>
                             <span>Surat Hukum & Kerja Sama</span>
                         </a>
@@ -163,7 +170,7 @@
 
                 <a href="{{ route('arsip-surat.index') }}"
                     class="flex items-center space-x-3 py-3 px-4 rounded-xl transition-all
-                   {{ request()->routeIs('arsip-surat*') ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                   {{ request()->routeIs('arsip-surat*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                     <i class="fas fa-archive w-5"></i>
                     <span>Arsip Surat</span>
                 </a>
@@ -171,7 +178,7 @@
                 <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }} }" class="space-y-1">
                     <button @click="open = !open"
                         class="flex items-center justify-between w-full py-3 px-4 rounded-xl transition-all
-                        {{ request()->routeIs('master-data.*') ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-database w-5"></i>
                             <span>Master Data</span>
@@ -184,28 +191,27 @@
 
                         <a href="{{ route('master-data.user.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.user.*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-users w-4"></i>
                             <span>User</span>
                         </a>
 
                         <a href="{{ route('master-data.ruangan.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-door-open w-4"></i>
                             <span>Ruangan</span>
                         </a>
 
+                        <a href="{{ route('master-data.regulasi.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-file w-4"></i>
+                            <span>Regulasi</span>
+                        </a>
+
                     </div>
                 </div>
-
-                <a href="{{ route('regulasi.index') }}"
-                    class="flex items-center space-x-3 py-3 px-4 rounded-xl transition-all
-                    {{ request()->routeIs('regulasi*') ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                    <i class="fas fa-file w-5"></i>
-                    <span>Regulasi</span>
-                </a>
-
             </nav>
         </aside>
 
@@ -214,7 +220,6 @@
         </main>
     </div>
 
-    <!-- Global Notification Toast -->
     <div id="globalNotification" class="hidden fixed top-4 right-4 z-[9999] max-w-md">
         <div id="notificationContent" class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300">
             <div id="notificationIcon" class="flex-shrink-0 mt-0.5"></div>
@@ -229,7 +234,6 @@
     </div>
 
     <script>
-        // Global Notification System
         function showNotification(type, title, message, autoClose = true) {
             const notification = document.getElementById('globalNotification');
             const content = document.getElementById('notificationContent');
@@ -237,11 +241,9 @@
             const titleEl = document.getElementById('notificationTitle');
             const messageEl = document.getElementById('notificationMessage');
 
-            // Set content
             titleEl.textContent = title;
             messageEl.textContent = message;
 
-            // Set style based on type
             if (type === 'success') {
                 content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
                 icon.innerHTML = '<i class="fas fa-check-circle text-2xl text-green-600 dark:text-green-400"></i>';
@@ -258,19 +260,17 @@
                 titleEl.className = 'font-semibold text-sm text-yellow-800 dark:text-yellow-200';
                 messageEl.className = 'text-sm mt-1 text-yellow-700 dark:text-yellow-300';
             } else if (type === 'info') {
-                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500';
-                icon.innerHTML = '<i class="fas fa-info-circle text-2xl text-blue-600 dark:text-blue-400"></i>';
-                titleEl.className = 'font-semibold text-sm text-blue-800 dark:text-blue-200';
-                messageEl.className = 'text-sm mt-1 text-blue-700 dark:text-blue-300';
+                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
+                icon.innerHTML = '<i class="fas fa-info-circle text-2xl text-green-600 dark:text-green-400"></i>';
+                titleEl.className = 'font-semibold text-sm text-green-800 dark:text-green-200';
+                messageEl.className = 'text-sm mt-1 text-green-700 dark:text-green-300';
             }
 
-            // Show notification
             notification.classList.remove('hidden');
             setTimeout(() => {
                 content.style.transform = 'translateX(0)';
             }, 10);
 
-            // Auto close after 5 seconds
             if (autoClose) {
                 setTimeout(() => {
                     closeNotification();
@@ -287,7 +287,6 @@
             }, 300);
         }
 
-        // Check for session flash messages on page load
         document.addEventListener('DOMContentLoaded', function() {
             @if(session('success'))
                 showNotification('success', 'Berhasil!', '{{ session('success') }}');
