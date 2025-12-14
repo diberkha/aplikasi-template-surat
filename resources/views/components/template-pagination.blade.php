@@ -1,37 +1,38 @@
-<div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex items-center justify-between border-t border-gray-200 dark:border-gray-700"
+<div class="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-800 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700"
      x-data="templatePagination()">
     <div class="flex items-center space-x-2">
-        <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
+        <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
         <select x-model.number="itemsPerPage"
-            class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white">
+            class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
             <option>5</option>
             <option>10</option>
             <option>15</option>
             <option>20</option>
         </select>
     </div>
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-1 sm:space-x-2">
         <button @click="prevPage()" :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+            class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
             <i class="fas fa-chevron-left"></i>
         </button>
 
         <template x-for="page in pages()" :key="page">
             <button @click="goToPage(page)"
-                class="min-w-[38px] px-3 py-1 rounded-lg border text-sm font-semibold transition-colors"
+                class="min-w-[32px] sm:min-w-[38px] px-2 sm:px-3 py-1 rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                 :class="page === currentPage
                     ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'">
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'"
+                x-show="totalPages <= 5 || page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1">
                 <span x-text="page"></span>
             </button>
         </template>
 
         <button @click="nextPage()" :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+            class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
-    <div class="text-sm text-gray-600 dark:text-gray-300">
+    <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
         <span x-text="startItem"></span> -
         <span x-text="endItem"></span>
         dari

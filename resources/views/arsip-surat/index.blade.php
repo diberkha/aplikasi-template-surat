@@ -12,13 +12,13 @@
                 </p>
             </div>
 
-            <div class="flex items-center space-x-3 mt-4 lg:mt-0">
+            <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
                 <div x-data="{ toggleFilter: false }" class="relative">
                     <button type="button" @click="toggleFilter = !toggleFilter"
-                        class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
                         <span class="text-gray-700 dark:text-gray-300">Template</span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                     </button>
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
@@ -26,13 +26,13 @@
                         <ul class="py-1">
                             <li>
                                 <button type="button" onclick="setTemplateFilter('')"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">Semua
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Semua
                                     Template</button>
                             </li>
                             @foreach($templateOptions as $template)
                                 <li>
                                     <button type="button" onclick="setTemplateFilter('{{ $template->id_template_surat }}')"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">{{ $template->nama_template_surat }}</button>
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">{{ $template->nama_template_surat }}</button>
                                 </li>
                             @endforeach
                         </ul>
@@ -41,10 +41,10 @@
 
                 <div x-data="{ toggleDate: false }" class="relative">
                     <button type="button" @click="toggleDate = !toggleDate"
-                        class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
                         <span class="text-gray-700 dark:text-gray-300">Tanggal</span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                     </button>
 
                     <div x-show="toggleDate" @click.away="toggleDate = false" x-transition
@@ -63,18 +63,18 @@
                                     onclick="setDateFilter(document.getElementById('simpleStartDate').value, document.getElementById('simpleEndDate').value)"
                                     class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
                                 <button type="button" onclick="clearDateFilter()"
-                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50">Hapus</button>
+                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="relative">
+                <div class="relative flex-1 sm:flex-initial">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
+                        <i class="fas fa-search text-gray-400 text-sm"></i>
                     </div>
                     <input type="text" id="searchInput" placeholder="Cari surat..." value="{{ request('search') }}"
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-64">
+                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
                 </div>
             </div>
         </div>
@@ -287,12 +287,12 @@
                     </table>
                 </div>
 
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                    <div class="flex items-center justify-between">
+                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
+                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
                             <select id="arsipItemsPerPage" onchange="arsipSetItemsPerPage(this.value)"
-                                class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white">
+                                class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
                                 <option value="5">5</option>
                                 <option value="10" selected>10</option>
                                 <option value="15">15</option>
@@ -300,21 +300,21 @@
                             </select>
                         </div>
 
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-1 sm:space-x-2">
                             <button id="arsipPrevBtn" onclick="arsipPrev()"
-                                class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
-                            <div id="arsipPageButtons" class="flex items-center space-x-2"></div>
+                            <div id="arsipPageButtons" class="flex items-center space-x-1 sm:space-x-2"></div>
 
                             <button id="arsipNextBtn" onclick="arsipNext()"
-                                class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
 
-                        <div class="text-sm text-gray-700 dark:text-gray-300">
+                        <div class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
                             <span id="arsipStart">0</span> - <span id="arsipEnd">0</span> dari <span id="arsipTotal">0</span>
                         </div>
                     </div>
@@ -531,10 +531,19 @@
                     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
                 };
 
+                const isMobile = window.innerWidth < 640;
+
                 getPages().forEach(p => {
+                    // Di mobile, hanya tampilkan halaman tertentu (1, terakhir, dan sekitar current)
+                    if (isMobile && totalPages > 5) {
+                        if (p !== 1 && p !== totalPages && Math.abs(p - arsipCurrentPage) > 1) {
+                            return;
+                        }
+                    }
+
                     const btn = document.createElement('button');
                     btn.textContent = p;
-                    btn.className = 'min-w-[38px] px-3 py-1 rounded-lg border text-sm font-semibold transition-colors';
+                    btn.className = 'min-w-[32px] sm:min-w-[38px] px-2 sm:px-3 py-1 rounded-lg border text-xs sm:text-sm font-semibold transition-colors';
                     if (p === arsipCurrentPage) {
                         btn.classList.add('bg-green-600', 'text-white', 'border-green-600', 'shadow-sm');
                     } else {

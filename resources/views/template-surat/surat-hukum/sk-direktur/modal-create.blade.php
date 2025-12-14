@@ -60,6 +60,19 @@
                         Mengingat <span class="text-red-500">*</span>
                     </label>
                     <input type="hidden" name="mengingat_check" id="mengingat_check">
+                    
+                    <!-- Search Bar -->
+                    <div class="mb-3">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" id="searchMengingat" placeholder="Cari regulasi..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                onkeyup="filterMengingat()">
+                        </div>
+                    </div>
+                    
                     <div id="mengingatList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
                             <i class="fas fa-spinner fa-spin mr-2"></i>
@@ -78,24 +91,24 @@
                     </label>
                     <div id="memutuskanContainer" class="space-y-3">
                         <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Menetapkan :</label>
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Menetapkan :</label>
                             <textarea name="menetapkan" id="menetapkan_input" rows="2" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                         <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Kesatu :</label>
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu :</label>
                             <textarea name="memutuskan[]" rows="2" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                         <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Kedua :</label>
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kedua :</label>
                             <textarea name="memutuskan[]" rows="2" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                         <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Ketiga :</label>
+                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Ketiga :</label>
                             <textarea name="memutuskan[]" rows="2" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
                     <button type="button" onclick="addMemutuskanField()" 
@@ -178,10 +191,10 @@
             
             data.forEach((item, index) => {
                 const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.className = 'mengingat-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
                     <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}" 
-                        id="mengingat_${index}" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer"
+                        id="mengingat_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateMengingatCheck()">
                     <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
                         <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
@@ -201,6 +214,39 @@
         document.getElementById('mengingat_check').value = checkboxes.length > 0 ? 'yes' : '';
     }
 
+    function filterMengingat() {
+        const searchValue = document.getElementById('searchMengingat').value.toLowerCase();
+        const items = document.querySelectorAll('#mengingatList .mengingat-item');
+        let visibleCount = 0;
+        
+        items.forEach(item => {
+            const label = item.querySelector('label');
+            if (label) {
+                const text = label.textContent.toLowerCase();
+                if (text.includes(searchValue)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+
+        // Show "no results" message if nothing found
+        const noResultMsg = document.getElementById('noMengingatResult');
+        if (visibleCount === 0 && items.length > 0) {
+            if (!noResultMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'noMengingatResult';
+                msg.className = 'text-center text-gray-500 dark:text-gray-400 py-4';
+                msg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada regulasi yang cocok';
+                document.getElementById('mengingatList').appendChild(msg);
+            }
+        } else if (noResultMsg) {
+            noResultMsg.remove();
+        }
+    }
+
     function addMemutuskanField() {
         memutuskanCounter++;
         const container = document.getElementById('memutuskanContainer');
@@ -212,7 +258,7 @@
         const newField = document.createElement('div');
         newField.className = 'memutuskan-item flex gap-3';
         newField.innerHTML = `
-            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">${labelUpper} :</label>
+            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">${labelUpper} :</label>
             <div class="flex-1 flex gap-2">
                 <textarea name="memutuskan[]" rows="2" required
                     class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
@@ -240,24 +286,24 @@
         const container = document.getElementById('memutuskanContainer');
         container.innerHTML = `
             <div class="memutuskan-item flex gap-3">
-                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">MENETAPKAN :</label>
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">MENETAPKAN :</label>
                 <textarea name="menetapkan" id="menetapkan_input" rows="2" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
             <div class="memutuskan-item flex gap-3">
-                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KESATU :</label>
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">KESATU :</label>
                 <textarea name="memutuskan[]" rows="2" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
             <div class="memutuskan-item flex gap-3">
-                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KEDUA :</label>
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">KEDUA :</label>
                 <textarea name="memutuskan[]" rows="2" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
             <div class="memutuskan-item flex gap-3">
-                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">KETIGA :</label>
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">KETIGA :</label>
                 <textarea name="memutuskan[]" rows="2" required
-                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
         `;
         memutuskanCounter = 3;

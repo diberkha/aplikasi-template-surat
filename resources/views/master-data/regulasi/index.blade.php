@@ -11,20 +11,21 @@
                     template surat</p>
             </div>
 
-            <div class="flex items-center space-x-3 mt-4 lg:mt-0">
-                <div class="relative">
+            <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
+                <div class="relative flex-1 sm:flex-initial">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
+                        <i class="fas fa-search text-gray-400 text-sm"></i>
                     </div>
                     <input type="text" placeholder="Cari regulasi..." x-model="search"
                         x-on:input.debounce.300ms="filterRegulasi()"
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-64">
+                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
                 </div>
 
                 <button onclick="openModal('modalCreate')"
-                    class="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                    class="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm whitespace-nowrap">
                     <i class="fas fa-plus"></i>
-                    <span>Tambah Regulasi</span>
+                    <span class="hidden sm:inline">Tambah Regulasi</span>
+                    <span class="sm:hidden">Tambah</span>
                 </button>
             </div>
         </div>
@@ -124,12 +125,12 @@
             </div>
 
             @if($regulasis->count() > 0)
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                    <div class="flex items-center justify-between">
+                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
+                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
                             <select x-model.number="itemsPerPage" @change="currentPage = 1; update()"
-                                class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white">
+                                class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
                                 <option>5</option>
                                 <option>10</option>
                                 <option>15</option>
@@ -137,29 +138,30 @@
                             </select>
                         </div>
 
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-1 sm:space-x-2">
                             <button @click="prevPage()" :disabled="currentPage === 1"
-                                class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
                             <template x-for="page in pages()" :key="page">
                                 <button @click="goToPage(page)"
-                                    class="min-w-[38px] px-3 py-1 rounded-lg border text-sm font-semibold transition-colors"
+                                    class="min-w-[32px] sm:min-w-[38px] px-2 sm:px-3 py-1 rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="page === currentPage
                                         ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                                        : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'">
+                                        : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'"
+                                    x-show="totalPages <= 5 || page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1">
                                     <span x-text="page"></span>
                                 </button>
                             </template>
 
                             <button @click="nextPage()" :disabled="currentPage === totalPages"
-                                class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40">
+                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
 
-                        <div class="text-sm text-gray-600 dark:text-gray-300">
+                        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
                             <span x-text="startItem"></span> -
                             <span x-text="endItem"></span>
                             dari

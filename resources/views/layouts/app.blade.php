@@ -17,9 +17,28 @@
     </script>
 
     <style>
-        /* Alpine.js cloak to prevent flash of unstyled content */
         [x-cloak] { 
             display: none !important; 
+        }
+
+        html {
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+        }
+
+        :root {
+            --sidebar-width: 256px;
+            --sidebar-collapsed-width: 80px;
+        }
+
+        body:not(.alpine-ready) nav,
+        body:not(.alpine-ready) main {
+            opacity: 0;
+        }
+
+        body.alpine-ready nav,
+        body.alpine-ready main {
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
@@ -66,25 +85,38 @@
         .dark .sidebar-scrollbar::-webkit-scrollbar-thumb {
             background: #4b5563;
         }
+
+        nav, aside, main {
+            transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                        width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        * {
+            transition-property: margin-left, margin-right, width, padding-left, padding-right;
+            transition-duration: 300ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        button, a, input, textarea, select {
+            transition-property: background-color, color, border-color, box-shadow !important;
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen" style="scrollbar-gutter: stable;" x-cloak>
 
     <nav
-        class="h-16 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between px-4 md:px-6 sticky top-0 z-50">
-        <div class="flex items-center space-x-3 md:space-x-4">
-            <div class="flex items-center">
-                <img src="{{ asset('img/logo-rs.png') }}" alt="Logo RS" class="h-10 md:h-12 object-contain">
-            </div>
-
-            <button @click="sidebar = true; backdrop = true"
+        class="h-20 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between pl-4 pr-4 md:pl-6 md:pr-6 sticky top-0 z-50"
+        x-bind:style="isDesktop ? 'margin-left:' + (sidebarCollapsed ? '80px' : '256px') + '; width: calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ');' : ''">
+        <div class="flex items-center">
+            <button @click="sidebarOpen = true; backdrop = true"
                 class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors md:hidden">
                 <i class="fas fa-bars text-gray-600 dark:text-gray-300 text-lg"></i>
             </button>
 
-            <button @click="sidebar = !sidebar"
-                class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors hidden md:block">
+            <button @click="sidebarCollapsed = !sidebarCollapsed"
+                class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors hidden md:block"
+                :title="sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
                 <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
             </button>
         </div>
@@ -92,8 +124,8 @@
         <div class="flex items-center space-x-2 md:space-x-4">
             <button @click="toggleDarkMode()"
                 class="p-2 md:p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative">
-                <i x-show="!dark" class="fas fa-sun text-yellow-500 text-base md:text-lg"></i>
-                <i x-show="dark" class="fas fa-moon text-green-400 text-base md:text-lg"></i>
+                <i x-show="!dark" class="far fa-sun text-gray-600 text-base md:text-lg"></i>
+                <i x-show="dark" class="far fa-moon text-gray-100 text-base md:text-lg"></i>
                 <div x-show="darkModeTransition"
                     class="absolute inset-0 bg-white dark:bg-gray-800 rounded-lg opacity-0 animate-ping"
                     style="display: none;"></div>
@@ -129,93 +161,147 @@
         </div>
     </nav>
 
-    <div x-show="backdrop && sidebar" x-transition class="sidebar-backdrop md:hidden"
-        @click="sidebar = false; backdrop = false"></div>
+    <div x-show="backdrop && sidebarOpen" x-transition class="sidebar-backdrop md:hidden"
+        @click="sidebarOpen = false; backdrop = false"></div>
 
-    <div class="flex min-h-[calc(100vh-4rem)]">
-        <aside x-show="sidebar" x-transition
-            class="bg-white dark:bg-gray-800 shadow-xl md:shadow border-r border-gray-200 dark:border-gray-700 overflow-y-auto fixed top-16 left-0 bottom-0 z-40 w-64 md:sticky md:top-16 md:z-auto">
+    <div class="flex min-h-[calc(100vh-5rem)] pt-20 md:pt-0">
+        <aside x-show="isDesktop || sidebarOpen" x-transition
+            :class="[
+                sidebarCollapsed && isDesktop ? 'w-16 md:w-20 overflow-visible' : 'w-64 md:w-64 overflow-y-auto',
+                'bg-white dark:bg-gray-800 shadow-xl md:shadow border-r border-gray-200 dark:border-gray-700 fixed left-0 z-40'
+            ]"
+            x-bind:style="isDesktop
+                ? { top: '0px', height: '100vh' }
+                : { top: '80px', height: 'calc(100vh - 80px)' }">
+
+            <div class="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 space-x-3 h-20"
+                :class="sidebarCollapsed && isDesktop ? 'justify-center' : ''">
+                <img src="{{ asset('img/logo-rs.png') }}" alt="Logo RS" class="h-12 object-contain">
+            </div>
 
             <nav class="p-4 space-y-1">
 
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center space-x-3 py-3 px-4 rounded-xl transition-all group
-                   {{ request()->routeIs('dashboard') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                    <i class="fas fa-home w-5"></i>
-                    <span>Dashboard</span>
+                    class="flex items-center py-3 rounded-xl transition-all group
+                   {{ request()->routeIs('dashboard') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                    :class="sidebarCollapsed && isDesktop ? 'justify-center px-3' : 'space-x-3 px-4'">
+                    <i class="fas fa-home w-5 text-center"></i>
+                    <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Dashboard</span>
                 </a>
 
-                <div x-data="{ open: {{ request()->routeIs('template-surat.*') ? 'true' : 'false' }} }" class="space-y-1">
-                    <button @click="open = !open"
-                        class="flex items-center justify-between w-full py-3 px-4 rounded-xl transition-all
-                        {{ request()->routeIs('template-surat.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-envelope w-5"></i>
-                            <span>Template Surat</span>
+                <div x-data="{ open: {{ request()->routeIs('template-surat.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
+                    <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
+                        class="flex items-center justify-between w-full py-3 rounded-xl transition-all
+                        {{ request()->routeIs('template-surat.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                        :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
+                        <div class="flex items-center" :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
+                            <i class="fas fa-envelope w-5 text-center"></i>
+                            <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Template Surat</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs" :class="open ? 'rotate-180':''"></i>
+                        <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop" :class="open ? 'rotate-180':''"></i>
                     </button>
 
-                    <div x-show="open" x-transition
+                    <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
                         <a href="{{ route('template-surat.hukum.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('template-surat.hukum.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-balance-scale w-4"></i>
+                            <i class="fas fa-balance-scale w-4 text-center"></i>
+                            <span>Surat Hukum & Kerja Sama</span>
+                        </a>
+                    </div>
+
+                    <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
+                        @click.outside="flyout = false"
+                        class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
+                        <a href="{{ route('template-surat.hukum.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.hukum.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-balance-scale w-4 text-center"></i>
                             <span>Surat Hukum & Kerja Sama</span>
                         </a>
                     </div>
                 </div>
 
                 <a href="{{ route('arsip-surat.index') }}"
-                    class="flex items-center space-x-3 py-3 px-4 rounded-xl transition-all
-                   {{ request()->routeIs('arsip-surat*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                    <i class="fas fa-archive w-5"></i>
-                    <span>Arsip Surat</span>
+                    class="flex items-center py-3 rounded-xl transition-all
+                   {{ request()->routeIs('arsip-surat*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                    :class="sidebarCollapsed && isDesktop ? 'justify-center px-3' : 'space-x-3 px-4'">
+                    <i class="fas fa-archive w-5 text-center"></i>
+                    <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Arsip Surat</span>
                 </a>
 
-                <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }} }" class="space-y-1">
-                    <button @click="open = !open"
-                        class="flex items-center justify-between w-full py-3 px-4 rounded-xl transition-all
-                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-database w-5"></i>
-                            <span>Master Data</span>
+                <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
+                    <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
+                        class="flex items-center justify-between w-full py-3 rounded-xl transition-all
+                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                        :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
+                        <div class="flex items-center" :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
+                            <i class="fas fa-database w-5 text-center"></i>
+                            <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Master Data</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs" :class="open ? 'rotate-180':''"></i>
+                        <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop" :class="open ? 'rotate-180':''"></i>
                     </button>
 
-                    <div x-show="open" x-transition
+                    <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
                         <a href="{{ route('master-data.user.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-users w-4"></i>
+                            <i class="fas fa-users w-4 text-center"></i>
                             <span>User</span>
                         </a>
 
                         <a href="{{ route('master-data.ruangan.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-door-open w-4"></i>
+                            <i class="fas fa-door-open w-4 text-center"></i>
                             <span>Ruangan</span>
                         </a>
 
                         <a href="{{ route('master-data.regulasi.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-file w-4"></i>
+                            <i class="fas fa-file w-4 text-center"></i>
                             <span>Regulasi</span>
                         </a>
 
+                    </div>
+
+                    <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
+                        @click.outside="flyout = false"
+                        class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
+                        <a href="{{ route('master-data.user.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-users w-4 text-center"></i>
+                            <span>User</span>
+                        </a>
+
+                        <a href="{{ route('master-data.ruangan.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-door-open w-4 text-center"></i>
+                            <span>Ruangan</span>
+                        </a>
+
+                        <a href="{{ route('master-data.regulasi.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-file w-4 text-center"></i>
+                            <span>Regulasi</span>
+                        </a>
                     </div>
                 </div>
             </nav>
         </aside>
 
-        <main class="flex-1 p-4 md:p-6 transition-all duration-300 w-full">
+        <main class="flex-1 p-4 md:p-6 transition-all duration-300 w-full"
+            x-bind:style="isDesktop
+                ? { marginLeft: sidebarCollapsed ? '80px' : '256px', width: 'calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ')' }
+                : { marginLeft: '0', width: '100%' }">
             @yield('content')
         </main>
     </div>
@@ -314,13 +400,24 @@
         function themeHandler() {
             return {
                 dark: false,
-                sidebar: window.innerWidth >= 768,
+                sidebarOpen: window.innerWidth >= 768,
+                sidebarCollapsed: localStorage.getItem('sidebar-collapsed') === 'true',
                 backdrop: false,
+                isDesktop: window.innerWidth >= 768,
                 darkModeTransition: false,
 
                 init() {
                     this.checkDarkModePreference();
-                    if (window.innerWidth < 768) this.sidebar = false;
+                    this.isDesktop = window.innerWidth >= 768;
+                    this.sidebarOpen = this.isDesktop;
+                    
+                    const savedCollapsed = localStorage.getItem('sidebar-collapsed');
+                    if (savedCollapsed !== null) {
+                        this.sidebarCollapsed = savedCollapsed === 'true';
+                    }
+                    
+                    setTimeout(() => document.body.classList.add('alpine-ready'), 50);
+                    
                     window.addEventListener('resize', this.handleResize.bind(this));
                     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                         if (!localStorage.getItem('dark-theme')) {
@@ -328,15 +425,23 @@
                             this.updateDarkMode();
                         }
                     });
+                    
+                    this.$watch('sidebarCollapsed', value => {
+                        localStorage.setItem('sidebar-collapsed', value);
+                    });
                 },
 
                 handleResize() {
-                    if (window.innerWidth >= 768) {
-                        this.sidebar = true;
+                    const wasDesktop = this.isDesktop;
+                    this.isDesktop = window.innerWidth >= 768;
+                    
+                    if (!wasDesktop && this.isDesktop) {
+                        this.sidebarOpen = true;
                         this.backdrop = false;
-                    } else {
-                        this.sidebar = false;
+                    } else if (wasDesktop && !this.isDesktop) {
+                        this.sidebarOpen = false;
                         this.backdrop = false;
+                        this.sidebarCollapsed = false;
                     }
                 },
 
