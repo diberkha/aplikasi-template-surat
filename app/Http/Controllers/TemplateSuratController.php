@@ -49,21 +49,23 @@ class TemplateSuratController extends Controller
             Log::info('storeSuratHukum request received', ['data' => $request->all()]);
             
             $request->validate([
-                'judul_surat' => 'required|string',
                 'nomor_surat' => 'required|unique:surat,nomor_surat',
                 'tentang' => 'required',
-                'menimbang' => 'required',
+                'menimbang' => 'required|array|min:1',
+                'menimbang.*' => 'required|string',
                 'mengingat' => 'required|array|min:1',
                 'mengingat.*' => 'required|string',
-                'menetapkan' => 'required|string',
-                'memutuskan' => 'required|array|min:1',
-                'memutuskan.*' => 'required|string',
+                'menetapkan' => 'nullable|string',
+                'memutuskan' => 'required|array|min:2',
+                'memutuskan.0' => 'required|string',
+                'memutuskan.1' => 'required|string',
+                'memutuskan.*' => 'nullable|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
             ]);
 
-            $namaSurat = $request->input('judul_surat');
+            $namaSurat = 'Surat Keputusan Direktur';
 
             $surat = Surat::create([
                 'nama_surat' => $namaSurat,
@@ -77,12 +79,15 @@ class TemplateSuratController extends Controller
             Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
 
             $memutuskanArray = $request->memutuskan;
-            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
+            $labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam'];
             $memutuskanText = '';
-            
             foreach ($memutuskanArray as $index => $item) {
-                $label = $labels[$index] ?? 'KE-' . ($index + 1);
-                $memutuskanText .= $label . "\n" . trim($item) . "\n\n";
+                $item = trim((string) $item);
+                if ($index > 1 && $item === '') {
+                    continue; // optional beyond kedua
+                }
+                $label = $labels[$index] ?? 'Ke-' . ($index + 1);
+                $memutuskanText .= $label . "\n" . $item . "\n\n";
             }
 
             $mengingatArray = $request->mengingat;
@@ -91,13 +96,21 @@ class TemplateSuratController extends Controller
                 $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
             }
 
+            // Build menimbang text as alphabetically labeled lines (a., b., ...)
+            $menimbangArray = $request->menimbang;
+            $menimbangText = '';
+            foreach ($menimbangArray as $index => $item) {
+                $letter = chr(ord('a') + $index);
+                $menimbangText .= $letter . '. ' . trim($item) . "\n";
+            }
+
             $mengingatIds = is_array($request->mengingat) ? implode(',', $request->mengingat) : $request->mengingat;
 
             $skDirektur = SKDirektur::create([
-                'judul_surat' => $request->judul_surat,
+                'judul_surat' => 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG',
                 'nomor_surat' => $request->nomor_surat,
                 'tentang' => $request->tentang,
-                'menimbang' => $request->menimbang,
+                'menimbang' => trim($menimbangText),
                 'mengingat' => trim($mengingatText),
                 'memutuskan' => trim($memutuskanText),
                 'menetapkan' => $request->menetapkan,
@@ -109,6 +122,7 @@ class TemplateSuratController extends Controller
             $pdfData = $request->all();
             $pdfData['memutuskan'] = trim($memutuskanText);
             $pdfData['mengingat'] = trim($mengingatText);
+            $pdfData['menimbang'] = trim($menimbangText);
             $pdfData['lokasi_surat'] = $request->tempat_dibuat;
 
             $this->generateAndSavePDF($surat, $pdfData);
@@ -119,6 +133,7 @@ class TemplateSuratController extends Controller
                     'message' => 'Surat berhasil dibuat',
                     'surat_id' => $surat->id_surat,
                     'nomor_surat' => $surat->nomor_surat,
+                    'tanggal_dibuat' => \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('Y-m-d'),
                     'file_url' => route('template-surat.hukum.file', $surat->id_surat),
                 ]);
             }
@@ -187,7 +202,13 @@ class TemplateSuratController extends Controller
             ]);
 
             Log::info('PDF Generation Step 4: Loading HTML to PDF library');
-            $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+            $pdf = Pdf::loadHTML($html)
+                ->setPaper([0, 0, 612, 936], 'portrait')
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'defaultFont' => 'Times New Roman',
+                ]);
             Log::info('PDF Generation Step 5: PDF loaded successfully');
 
             Log::info('PDF Generation Step 6: Checking arsip directory');

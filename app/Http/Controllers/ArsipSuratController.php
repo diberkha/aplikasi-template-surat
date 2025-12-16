@@ -148,61 +148,24 @@ class ArsipSuratController extends Controller
             return back()->with('error', 'File surat tidak ditemukan.');
         }
 
-        return response()->download($path);
+        $cleanJudul = preg_replace('/\s+/', '_', trim($surat->judul_surat));
+        $cleanJudul = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanJudul);
+        $cleanNomor = preg_replace('/\s+/', '_', trim($surat->nomor_surat));
+        $cleanNomor = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanNomor);
+        $tanggal = \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('d-m-Y');
+        $filename = "{$cleanJudul}_{$cleanNomor}_{$tanggal}.pdf";
+
+        return response()->download($path, $filename);
     }
 
     public function downloadWord($id)
     {
-        $surat = Surat::findOrFail($id);
-
-        $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
-            return back()->with('error', 'File surat tidak ditemukan.');
-        }
-
-        $pdfPath = $path;
-        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.docx');
-        
-        if (!is_dir(dirname($outputPath))) {
-            mkdir(dirname($outputPath), 0755, true);
-        }
-
-        try {
-            copy($pdfPath, $outputPath);
-            
-            $fileName = str_replace('.pdf', '.docx', basename($pdfPath));
-            return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
-            \Log::error('Error converting to Word: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengkonversi file ke format Word.');
-        }
+        return app(SKDirekturController::class)->downloadWord($id);
     }
 
     public function downloadRTF($id)
     {
-        $surat = Surat::findOrFail($id);
-
-        $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
-            return back()->with('error', 'File surat tidak ditemukan.');
-        }
-
-        $pdfPath = $path;
-        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.rtf');
-        
-        if (!is_dir(dirname($outputPath))) {
-            mkdir(dirname($outputPath), 0755, true);
-        }
-
-        try {
-            copy($pdfPath, $outputPath);
-            
-            $fileName = str_replace('.pdf', '.rtf', basename($pdfPath));
-            return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
-            \Log::error('Error converting to RTF: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengkonversi file ke format RTF.');
-        }
+        return app(SKDirekturController::class)->downloadRTF($id);
     }
 
     public function destroy($id)

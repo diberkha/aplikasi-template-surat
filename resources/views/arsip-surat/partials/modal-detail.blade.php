@@ -74,11 +74,11 @@
                                 <button type="button" onclick="downloadAsWord()"
                                     class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                                     <i class="fas fa-file-word text-green-500 mr-3"></i>
-                                    Download Word
+                                    Download DOCX
                                 </button>
                                 <button type="button" onclick="downloadAsRTF()"
                                     class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
-                                    <i class="fas fa-file text-purple-500 mr-3"></i>
+                                    <i class="fas fa-file-alt text-purple-600 mr-3 w-5"></i>
                                     Download RTF
                                 </button>
                             </div>

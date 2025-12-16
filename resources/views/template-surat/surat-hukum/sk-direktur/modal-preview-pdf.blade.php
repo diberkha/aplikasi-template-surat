@@ -4,7 +4,7 @@
         
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Preview Surat Hukum</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Preview Surat Keputusan Direktur</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1" x-ref="suratNomor" x-text="nomorSurat || '-'"></p>
             </div>
             <div class="flex items-center space-x-3">
@@ -78,15 +78,24 @@
             fileUrl: '',
             nomorSurat: '',
             suratId: null,
+            judulSurat: '',
+            tanggalDibuat: '',
             
             get downloadFilename() {
+                if (this.judulSurat && this.nomorSurat && this.tanggalDibuat) {
+                    const cleanJudul = this.judulSurat.replace(/[^a-zA-Z0-9]/g, '_');
+                    const cleanNomor = this.nomorSurat.replace(/[^a-zA-Z0-9]/g, '_');
+                    return `${cleanJudul}_${cleanNomor}_${this.tanggalDibuat}.pdf`;
+                }
                 return this.nomorSurat ? this.nomorSurat + '.pdf' : 'surat.pdf';
             },
             
-            open(fileUrl, nomorSurat, suratId = null) {
+            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;
                 this.suratId = suratId;
+                this.judulSurat = judulSurat;
+                this.tanggalDibuat = tanggalDibuat;
                 this.isOpen = true;
                 this.$nextTick(() => {
                     this.$refs.pdfFrame.src = fileUrl;
@@ -116,7 +125,7 @@
                 if (!this.suratId) {
                     const link = document.createElement('a');
                     link.href = this.fileUrl;
-                    link.download = this.nomorSurat ? this.nomorSurat + '.pdf' : 'surat.pdf';
+                    link.download = this.downloadFilename;
                     link.click();
                     return;
                 }
@@ -132,9 +141,6 @@
                     case 'rtf':
                         downloadUrl = `/arsip-surat/${this.suratId}/download-rtf`;
                         break;
-                    case 'txt':
-                        downloadUrl = `/arsip-surat/${this.suratId}/download`;
-                        break;
                     default:
                         downloadUrl = `/arsip-surat/${this.suratId}/download`;
                 }
@@ -144,10 +150,10 @@
         }
     }
     
-    function openPreviewPDF(fileUrl, nomorSurat, suratId = null) {
+    function openPreviewPDF(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
         const modal = Alpine.$data(document.getElementById('modalPreviewPDF'));
         if (modal) {
-            modal.open(fileUrl, nomorSurat, suratId);
+            modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat);
         }
     }
     

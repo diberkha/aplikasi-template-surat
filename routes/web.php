@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ArsipSuratController;
+use App\Http\Controllers\SKDirekturController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\TemplateSuratController;
@@ -26,8 +27,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ArsipSuratController::class, 'index'])->name('index');
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
-        Route::get('/{id}/download-word', [ArsipSuratController::class, 'downloadWord'])->name('download-word');
-        Route::get('/{id}/download-rtf', [ArsipSuratController::class, 'downloadRTF'])->name('download-rtf');
+        Route::get('/{id}/download-word', [SKDirekturController::class, 'downloadWord'])->name('download-word');
+        Route::get('/{id}/download-rtf', [SKDirekturController::class, 'downloadRTF'])->name('download-rtf');
         Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
     });
 

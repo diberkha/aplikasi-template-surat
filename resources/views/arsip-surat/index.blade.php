@@ -262,10 +262,31 @@
                                             </button>
 
                                             @if($filePath)
-                                                <a href="{{ route('arsip-surat.download', $idSurat) }}"
-                                                    class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                                                    <i class="fas fa-download text-sm"></i>
-                                                </a>
+                                                <div x-data="{ openDownload: false }" class="relative">
+                                                    <button type="button" @click="openDownload = !openDownload"
+                                                        class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                                                        <i class="fas fa-download text-sm"></i>
+                                                    </button>
+                                                    
+                                                    <div x-show="openDownload" @click.outside="openDownload = false" x-transition
+                                                        class="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                                        <a href="{{ route('arsip-surat.download', $idSurat) }}"
+                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
+                                                            PDF
+                                                        </a>
+                                                        <a href="{{ route('arsip-surat.download-word', $idSurat) }}"
+                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
+                                                            DOCX
+                                                        </a>
+                                                        <a href="{{ route('arsip-surat.download-rtf', $idSurat) }}"
+                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <i class="fas fa-file-alt text-purple-600 mr-2 w-4"></i>
+                                                            RTF
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             @else
                                                 <a href="#"
                                                     class="inline-flex items-center p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 transition-colors"
@@ -534,7 +555,6 @@
                 const isMobile = window.innerWidth < 640;
 
                 getPages().forEach(p => {
-                    // Di mobile, hanya tampilkan halaman tertentu (1, terakhir, dan sekitar current)
                     if (isMobile && totalPages > 5) {
                         if (p !== 1 && p !== totalPages && Math.abs(p - arsipCurrentPage) > 1) {
                             return;

@@ -14,7 +14,7 @@
     <x-template-table :templates="$templates" :columns="['no', 'template', 'actions']">
         @foreach($templates as $index => $template)
             <x-template-row :templates="$template" :index="$loop->iteration" :actionButtons="['create', 'delete']"
-                createAction="openModal('modalCreateSK', '{!! addslashes($template->nama_template_surat ?? 'Surat Hukum') !!}', {{ $template->id_template_surat }})"
+                createAction="openModal('modalCreateSK', 'Surat Keputusan Direktur', {{ $template->id_template_surat }})"
                 deleteAction="openDeleteModal('{!! addslashes($template->nama_template_surat ?? 'Template') !!}')" />
         @endforeach
     </x-template-table>
