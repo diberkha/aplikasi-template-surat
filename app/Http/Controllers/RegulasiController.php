@@ -9,7 +9,7 @@ class RegulasiController extends Controller
 {
     public function index()
     {
-        $regulasis = Regulasi::with(['createdBy'])->get();
+        $regulasis = Regulasi::all();
 
         return view('master-data.regulasi.index', compact('regulasis'));
     }
@@ -22,7 +22,6 @@ class RegulasiController extends Controller
 
         Regulasi::create([
             'isi_regulasi' => $request->isi_regulasi,
-            'created_by' => auth()->id(),
         ]);
 
         return redirect()->route('master-data.regulasi.index')
@@ -31,14 +30,13 @@ class RegulasiController extends Controller
 
     public function getRegulasiDetail($id)
     {
-        $regulasi = Regulasi::with(['createdBy'])->findOrFail($id);
+        $regulasi = Regulasi::findOrFail($id);
 
         return response()->json([
             'success' => true,
             'data' => [
                 'id_regulasi' => $regulasi->id_regulasi,
                 'isi_regulasi' => $regulasi->isi_regulasi,
-                'created_by' => $regulasi->createdBy ? $regulasi->createdBy->username : 'N/A',
                 'created_at' => $regulasi->formattedCreatedAt,
                 'updated_at' => $regulasi->updated_at ? $regulasi->updated_at->format('Y-m-d H:i') : 'N/A',
             ]

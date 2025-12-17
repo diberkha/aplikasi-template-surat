@@ -14,39 +14,39 @@ use Illuminate\Validation\ValidationException;
 
 class TemplateSuratController extends Controller
 {
-    public function suratHukum(Request $request)
-    {
-        $query = TemplateSurat::where('nama_template_surat', 'like', '%Hukum%');
-
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'a-z':
-                    $query->orderBy('nama_template_surat', 'asc');
-                    break;
-                case 'z-a':
-                    $query->orderBy('nama_template_surat', 'desc');
-                    break;
-                case 'latest':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
-                    break;
-                default:
-                    $query->orderBy('nama_template_surat');
+        public function skDirektur(Request $request)
+        {
+            $query = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur');
+            
+            if ($request->filled('sort')) {
+                switch ($request->sort) {
+                    case 'a-z':
+                        $query->orderBy('nama_template_surat', 'asc');
+                        break;
+                    case 'z-a':
+                        $query->orderBy('nama_template_surat', 'desc');
+                        break;
+                    case 'latest':
+                        $query->orderBy('created_at', 'desc');
+                        break;
+                    case 'oldest':
+                        $query->orderBy('created_at', 'asc');
+                        break;
+                    default:
+                        $query->orderBy('nama_template_surat');
+                }
+            } else {
+                $query->orderBy('nama_template_surat');
             }
-        } else {
-            $query->orderBy('nama_template_surat');
+
+            $templates = $query->get();
+            return view('template-surat.sk-direktur.index', compact('templates'));
         }
 
-        $templates = $query->get();
-        return view('template-surat.surat-hukum.index', compact('templates'));
-    }
-
-    public function storeSuratHukum(Request $request)
+    public function store(Request $request)
     {
         try {
-            Log::info('storeSuratHukum request received', ['data' => $request->all()]);
+            Log::info('store request received', ['data' => $request->all()]);
             
             $request->validate([
                 'nomor_surat' => 'required|unique:surat,nomor_surat',
@@ -84,7 +84,7 @@ class TemplateSuratController extends Controller
             foreach ($memutuskanArray as $index => $item) {
                 $item = trim((string) $item);
                 if ($index > 1 && $item === '') {
-                    continue; // optional beyond kedua
+                    continue; 
                 }
                 $label = $labels[$index] ?? 'Ke-' . ($index + 1);
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
@@ -96,7 +96,6 @@ class TemplateSuratController extends Controller
                 $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
             }
 
-            // Build menimbang text as alphabetically labeled lines (a., b., ...)
             $menimbangArray = $request->menimbang;
             $menimbangText = '';
             foreach ($menimbangArray as $index => $item) {
@@ -134,13 +133,13 @@ class TemplateSuratController extends Controller
                     'surat_id' => $surat->id_surat,
                     'nomor_surat' => $surat->nomor_surat,
                     'tanggal_dibuat' => \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('Y-m-d'),
-                    'file_url' => route('template-surat.hukum.file', $surat->id_surat),
+                    'file_url' => route('template-surat.sk-direktur.file', $surat->id_surat),
                 ]);
             }
 
             return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dibuat');
         } catch (ValidationException $e) {
-            Log::warning('Validation failed for storeSuratHukum', [
+            Log::warning('Validation failed for store', [
                 'errors' => $e->errors(),
                 'input' => $request->all(),
             ]);
@@ -156,13 +155,13 @@ class TemplateSuratController extends Controller
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {
             if (method_exists($e, 'errors')) {
-                Log::warning('Validation-like exception in storeSuratHukum', [
+                Log::warning('Validation-like exception in store', [
                     'errors' => $e->errors(),
                     'message' => $e->getMessage(),
                     'input' => $request->all(),
                 ]);
             } else {
-                Log::error('Error creating Surat Hukum: ' . $e->getMessage(), [
+                Log::error('Error creating Surat Keputusan Direktur: ' . $e->getMessage(), [
                     'exception' => $e,
                     'input' => $request->all(),
                 ]);
@@ -177,7 +176,7 @@ class TemplateSuratController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan saat membuat surat hukum. Silakan coba lagi.');
+                ->with('error', 'Terjadi kesalahan saat membuat surat keputusan direktur. Silakan coba lagi.');
         }
     }
 
@@ -196,7 +195,7 @@ class TemplateSuratController extends Controller
             Log::info('PDF Generation Step 2: Rendering view', [
                 'data_keys' => array_keys($data)
             ]);
-            $html = view('template-surat.surat-hukum.pdf', ['data' => $data, 'surat' => $surat])->render();
+            $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
             Log::info('PDF Generation Step 3: View rendered successfully', [
                 'html_length' => strlen($html)
             ]);

@@ -1,5 +1,5 @@
-<x-template-header title="Template Surat Hukum & Kerja Sama"
-    subtitle="Pilih dan gunakan template surat hukum & kerja sama yang tersedia" tableTitle="Daftar Template"
+<x-template-header title="Template Surat Keputusan Direktur"
+    subtitle="Pilih dan gunakan template surat keputusan direktur yang tersedia" tableTitle="Daftar Template"
     searchPlaceholder="Cari template...">
 
     @if(session('success'))
@@ -20,9 +20,9 @@
     </x-template-table>
 </x-template-header>
 
-@include('template-surat.surat-hukum.sk-direktur.modal-create')
-@include('template-surat.surat-hukum.sk-direktur.modal-delete')
-@include('template-surat.surat-hukum.sk-direktur.modal-preview-pdf')
+@include('template-surat.sk-direktur.partials.modal-create')
+@include('template-surat.sk-direktur.partials.modal-delete')
+@include('template-surat.sk-direktur.partials.modal-preview-pdf')
 
 <script>
     function openModal(id, templateName = null, templateId = null) {

@@ -70,13 +70,7 @@ return new class extends Migration {
         Schema::create('regulasi', function (Blueprint $table) {
             $table->id('id_regulasi');
             $table->text('isi_regulasi');
-            $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
-
-            $table->foreign('created_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
         });
 
         Schema::table('surat', function (Blueprint $table) {

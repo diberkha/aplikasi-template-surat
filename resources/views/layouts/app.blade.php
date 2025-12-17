@@ -204,22 +204,22 @@
                     <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
-                        <a href="{{ route('template-surat.hukum.index') }}"
+                        <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.hukum.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-balance-scale w-4 text-center"></i>
-                            <span>Surat Hukum & Kerja Sama</span>
+                            <span>Surat Keputusan Direktur</span>
                         </a>
                     </div>
 
                     <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
                         @click.outside="flyout = false"
                         class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
-                        <a href="{{ route('template-surat.hukum.index') }}"
+                        <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.hukum.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-balance-scale w-4 text-center"></i>
-                            <span>Surat Hukum & Kerja Sama</span>
+                            <span>Surat Keputusan Direktur</span>
                         </a>
                     </div>
                 </div>

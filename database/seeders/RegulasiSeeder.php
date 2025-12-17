@@ -10,17 +10,6 @@ class RegulasiSeeder extends Seeder
 {
     public function run(): void
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Regulasi::truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $user = User::first();
-
-        if (!$user) {
-            $this->command->error('Data user tidak ditemukan. Pastikan UserSeeder sudah dijalankan.');
-            return;
-        }
-
         $dasarHukums = [
             'Undang-undang Nomor 36 Tahun 2009 tentang Kesehatan',
             'Undang-undang Nomor 44 Tahun 2009 tentang Rumah Sakit',
@@ -35,10 +24,9 @@ class RegulasiSeeder extends Seeder
             'Peraturan Bupati Sragen Nomor 44 Tahun 2020 tentang Pembentukan Unit Pelaksana Teknis Daerah Rumah Sakit Umum Daerah dr. Soeratno Gemolong',
         ];
 
-        $regulasis = collect($dasarHukums)->map(function ($isi) use ($user) {
+        $regulasis = collect($dasarHukums)->map(function ($isi) {
             return [
                 'isi_regulasi' => $isi,
-                'created_by' => $user->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

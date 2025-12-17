@@ -9,7 +9,7 @@
             </button>
         </div>
 
-        <form action="{{ route('template-surat.hukum.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)">
+        <form action="{{ route('template-surat.sk-direktur.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)">
             @csrf
 
             <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
@@ -144,7 +144,7 @@
 </div>
 
 <script>
-    let memutuskanCounter = 2; // default kesatu, kedua
+    let memutuskanCounter = 2; 
 
     document.addEventListener('DOMContentLoaded', function() {
         loadRegulasiOptions();

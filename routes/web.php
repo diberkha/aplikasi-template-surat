@@ -64,9 +64,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('template-surat')->name('template-surat.')->group(function () {
-        Route::get('/hukum', [TemplateSuratController::class, 'suratHukum'])->name('hukum.index');
-        Route::post('/hukum/store', [TemplateSuratController::class, 'storeSuratHukum'])->name('hukum.store');
-        Route::get('/hukum/file/{id}', [TemplateSuratController::class, 'file'])->name('hukum.file');
+        Route::get('/sk-direktur', [TemplateSuratController::class, 'skDirektur'])->name('sk-direktur.index');
+        Route::post('/sk-direktur/store', [TemplateSuratController::class, 'store'])->name('sk-direktur.store');
+        Route::get('/sk-direktur/file/{id}', [TemplateSuratController::class, 'file'])->name('sk-direktur.file');
     });
 
     Route::post('/logout', function () {

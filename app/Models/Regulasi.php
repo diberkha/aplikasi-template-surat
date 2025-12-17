@@ -12,7 +12,6 @@ class Regulasi extends Model
 
     protected $fillable = [
         'isi_regulasi',
-        'created_by',
     ];
 
     protected $casts = [
@@ -28,11 +27,6 @@ class Regulasi extends Model
     public function surat()
     {
         return $this->belongsTo(Surat::class, 'id_surat');
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function getFormattedCreatedAtAttribute()

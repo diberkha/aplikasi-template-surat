@@ -224,7 +224,7 @@
                                     $filePath = is_object($item) ? $item->file_path : ($item['file_path'] ?? '');
 
                                     $badgeColor = [
-                                        'Surat Hukum & Kerja Sama' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                                        'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                                     ][$tipeSurat] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
                                 @endphp
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -437,7 +437,7 @@
             document.getElementById('detail-dibuat-oleh').textContent = dibuatOleh;
 
             const tipeBadge = {
-                'Surat Hukum & Kerja Sama': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                'Surat Keputusan Direktur': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
             }[tipe] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
             document.getElementById('detail-tipe-surat').innerHTML =

@@ -5,6 +5,11 @@
 			"label": "noop",
 			"type": "shell",
 			"command": "echo Skipping actual run; applying responsive pagination changes"
+		},
+		{
+			"label": "Fix references after folder rename",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"(Get-Content resources\\views\\template-surat\\sk-direktur\\index.blade.php) -replace 'template-surat.surat-direktur', 'template-surat.sk-direktur' | Set-Content resources\\views\\template-surat\\sk-direktur\\index.blade.php\""
 		}
 	]
 }

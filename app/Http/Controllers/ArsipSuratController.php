@@ -15,10 +15,6 @@ class ArsipSuratController extends Controller
             ->orderBy('nama_template_surat')
             ->get();
 
-        if (Surat::count() === 0) {
-            return $this->showDummyData($request, $templateOptions);
-        }
-
         $query = Surat::with(['template', 'createdBy', 'skDirektur'])
             ->orderBy('tanggal_dibuat', 'desc');
 
@@ -65,63 +61,6 @@ class ArsipSuratController extends Controller
         }
 
         return view('arsip-surat.index', compact('surat', 'totalSurat', 'templateOptions', 'debugRecent'));
-    }
-
-    private function showDummyData(Request $request, $templateOptions = null)
-    {
-        $dummySurat = collect([
-            [
-                'id_surat' => 1,
-                'nama_surat' => 'Surat Keputusan Direktur',
-                'nomor_surat' => '006/SHKS/VI/2024',
-                'tipe_surat' => 'Surat Hukum & Kerja Sama',
-                'tanggal_dibuat' => '2024-06-10',
-                'created_by' => 'Manager',
-                'username' => 'Manager',
-                'created_at' => '2024-06-10 14:20:00',
-                'updated_at' => '2024-06-10 14:20:00',
-            ],
-        ]);
-
-        if ($request->filled('search')) {
-            $search = strtolower($request->search);
-            $dummySurat = $dummySurat->filter(function ($item) use ($search) {
-                return str_contains(strtolower($item['nama_surat']), $search) ||
-                    str_contains(strtolower($item['nomor_surat']), $search) ||
-                    str_contains(strtolower($item['tipe_surat']), $search) ||
-                    str_contains(strtolower($item['username']), $search);
-            });
-        }
-
-        if ($request->filled('template') && $templateOptions) {
-            $selected = $templateOptions->firstWhere('id_template_surat', $request->template);
-            if ($selected) {
-                $dummySurat = $dummySurat->where('tipe_surat', $selected->nama_template_surat);
-            }
-        }
-
-        if ($request->filled('start_date')) {
-            $dummySurat = $dummySurat->filter(function ($item) use ($request) {
-                return Carbon::parse($item['tanggal_dibuat'])->greaterThanOrEqualTo($request->start_date);
-            });
-        }
-
-        if ($request->filled('end_date')) {
-            $dummySurat = $dummySurat->filter(function ($item) use ($request) {
-                return Carbon::parse($item['tanggal_dibuat'])->lessThanOrEqualTo($request->end_date);
-            });
-        }
-
-        $surat = $dummySurat;
-        $totalSurat = $dummySurat->count();
-
-        if (!$templateOptions || $templateOptions->isEmpty()) {
-            $templateOptions = collect([
-                (object) ['id_template_surat' => 1, 'nama_template_surat' => 'Surat Hukum & Kerja Sama'],
-            ]);
-        }
-
-        return view('arsip-surat.index', compact('surat', 'totalSurat', 'templateOptions'));
     }
 
     public function show($id)

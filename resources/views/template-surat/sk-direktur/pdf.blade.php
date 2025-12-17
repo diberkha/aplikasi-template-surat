@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $data['judul_surat'] ?? 'Surat Keputusan' }}</title>
+    <title>KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -15,13 +15,13 @@
             font-size: 12pt; 
             background: white; 
             margin: 0; 
-            padding: 20mm 25mm 20mm 25mm; 
+            padding: 20mm 10mm 20mm 10mm; 
         }
 
         .page { width: 100%; padding: 0; margin: 0; background: white; }
         
         @media print {
-            body { background: white; padding: 20mm 25mm 20mm 25mm; }
+            body { background: white; padding: 20mm 15mm 20mm 15mm; }
             .page { box-shadow: none; margin: 0; }
             .header { display: block; }
         }
@@ -33,12 +33,12 @@
         .header td { vertical-align: middle; padding: 0; }
         .header-logo { width: 75px; text-align: left; padding-right: 8px; }
         .header-logo img { width: 65px; height: auto; object-fit: contain; }
-        .header-logo-right { width: 75px; text-align: right; padding-left: 8px; }
-        .header-logo-right img { width: 65px; height: auto; object-fit: contain; }
         .header-text { text-align: center; line-height: 1.3; }
-        .header-line1 { font-size: 14pt; font-weight: bold; margin-bottom: 0; letter-spacing: 0.5px; }
-        .header-line2 { font-size: 14pt; font-weight: bold; margin-bottom: 2px; letter-spacing: 0.3px; }
-        .header-line3 { font-size: 9pt; line-height: 1.4; margin-top: 2px; }
+        .header-text { text-align: center; line-height: 1.3; font-family: Arial, sans-serif; }
+        .header-line1 { font-size: 12pt; margin-bottom: 0; letter-spacing: 0.3px; font-weight: normal; }
+        .header-line2 { font-size: 16pt; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: bold; }
+        .header-line3 { font-size: 10pt; line-height: 1.4; margin-top: 2px; }
+        .header-contact { white-space: nowrap; }
         .header-border { margin-top: 8px; border-bottom: 3px solid #000; padding-bottom: 2px; }
         .header-border-inner { border-bottom: 1px solid #000; }
 
@@ -76,7 +76,47 @@
 
 <body>
     <div class="page">
-        @include('template-surat.sk-direktur.partials.header')
+        <div class="header">
+            <table>
+                <tr>
+                    <td class="header-logo">
+                        @php
+                            $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
+                            $logoLeftData = '';
+                            if (file_exists($logoLeftPath)) {
+                                $logoLeftData = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoLeftPath));
+                            }
+                        @endphp
+                        @if($logoLeftData)
+                            <img src="{{ $logoLeftData }}" alt="Logo Sragen">
+                        @endif
+                    </td>
+                    <td class="header-text">
+                        <div class="header-line1">PEMERINTAH KABUPATEN SRAGEN</div>
+                        <div class="header-line2">RSUD dr. SOERATNO GEMOLONG</div>
+                        <div class="header-line3">
+                            Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274<br>
+                            <span class="header-contact">Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el <a href="mailto:rsudgemolong@gmail.com" style="color: #000; text-decoration: underline;">rsudgemolong@gmail.com</a></span>
+                        </div>
+                    </td>
+                    <td class="header-logo" style="text-align: right;">
+                        @php
+                            $logoRightPath = public_path('img/logo-rs-kop.png');
+                            $logoRightData = '';
+                            if (file_exists($logoRightPath)) {
+                                $logoRightData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoRightPath));
+                            }
+                        @endphp
+                        @if($logoRightData)
+                            <img src="{{ $logoRightData }}" alt="Logo RSUD">
+                        @endif
+                    </td>
+                </tr>
+            </table>
+            <div class="header-border">
+                <div class="header-border-inner"></div>
+            </div>
+        </div>
 
         <div class="title-section">
             KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG
@@ -103,10 +143,171 @@
         </div>
 
         <div class="content">
-            @include('template-surat.sk-direktur.partials.sections')
+            <div class="section">
+                <table>
+                    <tr>
+                        <td class="section-label">Menimbang</td>
+                        <td class="section-separator">:</td>
+                        <td class="section-content">
+                            @php
+                                $menimbangLines = preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
+                                $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
+                                $menimbangLines = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbangLines);
+                            @endphp
+                            <ol type="a">
+                                @foreach($menimbangLines as $line)
+                                    <li>{{ trim($line) }}</li>
+                                @endforeach
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <table>
+                    <tr>
+                        <td class="section-label">Mengingat</td>
+                        <td class="section-separator">:</td>
+                        <td class="section-content">
+                            @php
+                                $rawMengingat = trim($data['mengingat'] ?? '');
+                                $mengingatLines = [];
+                                
+                                $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
+                                $lines = array_filter($lines, fn($line) => trim($line) !== '');
+                                
+                                $allAreIds = true;
+                                $ids = [];
+                                
+                                foreach($lines as $line) {
+                                    $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                                    
+                                    if(preg_match('/^\d+$/', $cleaned)) {
+                                        $ids[] = (int)$cleaned;
+                                    } else {
+                                        $allAreIds = false;
+                                        break;
+                                    }
+                                }
+                                
+                                if($allAreIds && count($ids) > 0) {
+                                    $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
+                                        ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
+                                        ->get();
+                                    
+                                    if($regulasis->count() > 0) {
+                                        $mengingatLines = $regulasis->pluck('isi_regulasi')->toArray();
+                                    } else {
+                                        $mengingatLines = ['Data regulasi tidak ditemukan'];
+                                    }
+                                } else {
+                                    foreach($lines as $line) {
+                                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                                        if($cleaned !== '') {
+                                            $mengingatLines[] = $cleaned;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <ol type="1">
+                                @foreach($mengingatLines as $line)
+                                    <li>{{ trim($line) }}</li>
+                                @endforeach
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
-        @include('template-surat.sk-direktur.partials.footer')
+        <div class="deciding-title">MEMUTUSKAN</div>
+
+        <div class="deciding-content">
+            @php
+                $memutuskanText = $data['memutuskan'] ?? '';
+                $lines = explode("\n", $memutuskanText);
+                $currentLabel = '';
+                $currentText = '';
+                $items = [];
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    if (preg_match('/^(MENETAPKAN|KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
+                        if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
+                        $currentLabel = $line; $currentText = '';
+                    } else { $currentText .= ' ' . $line; }
+                }
+                if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
+
+                usort($items, function($a, $b) {
+                    $order = [
+                        'Menetapkan' => 0,
+                        'KESATU' => 1,
+                        'KEDUA' => 2,
+                        'KETIGA' => 3,
+                        'KEEMPAT' => 4,
+                        'KELIMA' => 5,
+                        'KEENAM' => 6,
+                        'KETUJUH' => 7,
+                        'KEDELAPAN' => 8,
+                        'KESEMBILAN' => 9,
+                        'KESEPULUH' => 10,
+                    ];
+                    return ($order[strtoupper($a['label'])] ?? 99) <=> ($order[strtoupper($b['label'])] ?? 99);
+                });
+            @endphp
+
+            <div class="deciding-item">
+                <table>
+                    <tr>
+                        <td class="section-label">Menetapkan</td>
+                        <td class="section-separator">:</td>
+                        <td class="deciding-text">{{ trim($data['menetapkan'] ?? '') }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            @foreach($items as $item)
+                <div class="deciding-item">
+                    <table>
+                        <tr>
+                            <td class="section-label">{{ ucfirst(strtolower($item['label'])) }}</td>
+                            <td class="section-separator">:</td>
+                            <td class="deciding-text">{{ $item['text'] }}</td>
+                        </tr>
+                    </table>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="footer">
+            <table>
+                <tr>
+                    <td class="footer-left">
+                    </td>
+                    <td class="footer-right">
+                        <p>Ditetapkan di {{ $data['lokasi_surat'] ?? 'Gemolong' }}</p>
+                        <p>Pada tanggal {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now())->locale('id')->translatedFormat('j F Y') }}</p>
+                        <p class="footer-title" style="margin-top: 10px;">DIREKTUR RSUD dr. SOERATNO GEMOLONG</p>
+                        <p class="footer-title">KABUPATEN SRAGEN</p>
+
+                        <div class="signature-wrapper">
+                            @if(!empty($data['ttd_image']))
+                                <img src="{{ public_path($data['ttd_image']) }}" alt="Tanda tangan">
+                            @else
+                                <div style="height: 90px"></div>
+                            @endif
+                        </div>
+
+                        <p class="signature-name">{{ $data['pejabat_nama'] ?? 'KINIK DARSONO' }}</p>
+                        @if(!empty($data['pejabat_nip']))
+                            <p class="signature-nip">NIP. {{ $data['pejabat_nip'] }}</p>
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>

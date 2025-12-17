@@ -40,7 +40,7 @@
                 </div>
                 <div class="mt-4 flex items-center justify-between text-sm text-green-600">
                     <span class="flex items-center"><i class="fas fa-layer-group mr-1"></i> Template tersedia</span>
-                    <a href="{{ route('template-surat.hukum.index') }}" class="text-indigo-600 dark:text-indigo-300 font-medium hover:underline">Kelola</a>
+                    <a href="{{ route('template-surat.sk-direktur.index') }}" class="text-indigo-600 dark:text-indigo-300 font-medium hover:underline">Kelola</a>
                 </div>
             </div>
 
