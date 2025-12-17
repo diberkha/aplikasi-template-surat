@@ -9,6 +9,10 @@ class RuanganSeeder extends Seeder
 {
     public function run(): void
     {
-        
+        $ruangan = [
+            ['nama_ruangan' => 'Admin'],
+        ];
+
+        Ruangan::insert($ruangan);
     }
 }
