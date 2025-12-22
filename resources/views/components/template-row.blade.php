@@ -18,10 +18,31 @@
         $templatesData = [];
     }
 
+    $templateName = $templatesData['nama_template_surat'] ?? 'Template';
+    
+    $description = $templatesData['deskripsi'] ?? null;
+    if (!$description) {
+        if (stripos($templateName, 'Standar Operasional Prosedur (SOP)') !== false) {
+            $description = 'Template Standar Operasional Prosedur';
+        } elseif (stripos($templateName, 'Keputusan Direktur') !== false) {
+            $description = 'Template Surat Keputusan Direktur';
+        } elseif (stripos($templateName, 'Cuti') !== false) {
+            if (stripos($templateName, 'PPPK') !== false) {
+                $description = 'Template Surat Izin Cuti PPPK';
+            } elseif (stripos($templateName, 'Non ASN') !== false) {
+                $description = 'Template Surat Izin Cuti Non ASN';
+            } else {
+                $description = 'Template Surat Izin Cuti ASN';
+            }
+        } else {
+            $description = $templateName;
+        }
+    }
+
     $defaultTemplate = [
         'id' => null,
-        'name' => 'Surat Keputusan Direktur',
-        'description' => 'Template surat keputusan direktur',
+        'name' => $templateName,
+        'description' => $description,
         'icon' => 'file-alt',
         'iconColor' => 'blue',
         'iconBgColor' => 'blue-100',
@@ -29,7 +50,7 @@
         'iconTextColor' => 'green-600',
         'iconDarkTextColor' => 'green-400',
         'category' => null,
-        'updated_at' => null
+        'updated_at' => $templatesData['updated_at'] ?? null
     ];
 
     $template = array_merge($defaultTemplate, $templatesData);

@@ -100,6 +100,34 @@ return new class extends Migration {
                 ->on('surat')
                 ->onDelete('cascade');
         });
+
+        Schema::create('sop', function (Blueprint $table) {
+            $table->id('id_sop');
+            $table->unsignedBigInteger('id_surat')->nullable();
+            $table->string('judul_sop');
+            $table->string('nomor_dokumen');
+            $table->string('nomor_revisi');
+            $table->string('halaman')->nullable();
+            $table->date('tanggal_terbit');
+            $table->text('pengertian');
+            $table->text('tujuan');
+            $table->text('kebijakan');
+            $table->text('prosedur');
+            $table->string('unit_terkait');
+            $table->timestamps();
+
+            $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
+        });
+
+        Schema::create('surat_izin_cuti', function (Blueprint $table) {
+            $table->id('id_cuti');
+            $table->unsignedBigInteger('id_surat')->nullable();
+            $table->string('kategori')->default('PNS');
+            $table->json('form_data')->nullable();
+            $table->timestamps();
+
+            $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
+        });
     }
 
     /**
@@ -107,6 +135,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        Schema::dropIfExists('surat_izin_cuti');
+        Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');
         Schema::dropIfExists('regulasi');
         Schema::dropIfExists('surat');

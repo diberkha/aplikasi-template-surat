@@ -207,8 +207,22 @@
                         <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-balance-scale w-4 text-center"></i>
+                            <i class="fas fa-scroll w-4 text-center"></i>
                             <span>Surat Keputusan Direktur</span>
+                        </a>
+
+                        <a href="{{ route('template-surat.sop.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-clipboard-list w-4 text-center"></i>
+                            <span>Standar Operasional Prosedur (SOP)</span>
+                        </a>
+
+                        <a href="{{ route('template-surat.cuti.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.cuti.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-calendar-check w-4 text-center"></i>
+                            <span>Surat Izin Cuti</span>
                         </a>
                     </div>
 
@@ -218,8 +232,22 @@
                         <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-balance-scale w-4 text-center"></i>
+                            <i class="fas fa-scroll w-4 text-center"></i>
                             <span>Surat Keputusan Direktur</span>
+                        </a>
+
+                        <a href="{{ route('template-surat.sop.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-clipboard-list w-4 text-center"></i>
+                            <span> Standar Operasional Prosedur (SOP)</span>
+                        </a>
+
+                        <a href="{{ route('template-surat.cuti.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.cuti.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-calendar-check w-4 text-center"></i>
+                            <span>Surat Izin Cuti</span>
                         </a>
                     </div>
                 </div>

@@ -10,6 +10,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\RegulasiController;
+use App\Http\Controllers\SOPController;
+use App\Http\Controllers\CutiController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -27,8 +29,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ArsipSuratController::class, 'index'])->name('index');
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
-        Route::get('/{id}/download-word', [SKDirekturController::class, 'downloadWord'])->name('download-word');
-        Route::get('/{id}/download-rtf', [SKDirekturController::class, 'downloadRTF'])->name('download-rtf');
         Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
     });
 
@@ -64,10 +64,18 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('template-surat')->name('template-surat.')->group(function () {
-        Route::get('/sk-direktur', [TemplateSuratController::class, 'skDirektur'])->name('sk-direktur.index');
-        Route::post('/sk-direktur/store', [TemplateSuratController::class, 'store'])->name('sk-direktur.store');
-        Route::get('/sk-direktur/file/{id}', [TemplateSuratController::class, 'file'])->name('sk-direktur.file');
+        Route::get('/sk-direktur', [SKDirekturController::class, 'index'])->name('sk-direktur.index');
+        Route::post('/sk-direktur/store', [SKDirekturController::class, 'store'])->name('sk-direktur.store');
+        Route::get('/sk-direktur/file/{id}', [SKDirekturController::class, 'file'])->name('sk-direktur.file');
+        Route::delete('/sk-direktur/{template_surat}', [SKDirekturController::class, 'destroy'])->whereNumber('template_surat')->name('sk-direktur.destroy');
+        Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
+        Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
+        Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])->whereNumber('template_surat')->name('sop.destroy');
+        Route::get('/cuti', [CutiController::class, 'index'])->name('cuti.index');
+        Route::post('/cuti/store', [CutiController::class, 'store'])->name('cuti.store');
+        Route::get('/cuti/pdf/{id}', [TemplateSuratController::class, 'file'])->name('cuti.file');
     });
+
 
     Route::post('/logout', function () {
         Auth::logout();

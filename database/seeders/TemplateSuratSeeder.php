@@ -11,6 +11,10 @@ class TemplateSuratSeeder extends Seeder
     {
         $templates = [
             ['nama_template_surat' => 'Surat Keputusan Direktur'],
+            ['nama_template_surat' => 'Standar Operasional Prosedur (SOP)'],
+            ['nama_template_surat' => 'Surat Izin Cuti PNS'],
+            ['nama_template_surat' => 'Surat Izin Cuti PPPK'],
+            ['nama_template_surat' => 'Surat Izin Cuti Non ASN'],
         ];
 
         foreach ($templates as $tpl) {

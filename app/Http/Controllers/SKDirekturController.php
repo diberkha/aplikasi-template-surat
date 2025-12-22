@@ -3,195 +3,289 @@
 namespace App\Http\Controllers;
 
 use App\Models\Surat;
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\IOFactory;
-use PhpOffice\PhpWord\Shared\Converter;
+use App\Models\TemplateSurat;
+use App\Models\SKDirektur;
+use Exception;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class SKDirekturController extends Controller
 {
-    public function downloadWord($id)
+    public function index(Request $request)
     {
-        $surat = Surat::with('skDirektur')->findOrFail($id);
-
-        $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
-            return back()->with('error', 'File surat tidak ditemukan.');
+        $query = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur');
+        
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'a-z':
+                    $query->orderBy('nama_template_surat', 'asc');
+                    break;
+                case 'z-a':
+                    $query->orderBy('nama_template_surat', 'desc');
+                    break;
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default:
+                    $query->orderBy('nama_template_surat');
+            }
+        } else {
+            $query->orderBy('nama_template_surat');
         }
 
-        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.docx');
-        if (!is_dir(dirname($outputPath))) {
-            mkdir(dirname($outputPath), 0755, true);
-        }
+        $templates = $query->get();
+        return view('template-surat.sk-direktur.index', compact('templates'));
+    }
 
+    public function store(Request $request)
+    {
         try {
-            $cleanNomor = preg_replace('/\s+/', '_', trim($surat->nomor_surat));
-            $cleanNomor = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanNomor);
-            $tanggal = \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('d-m-Y');
-            $filename = "{$cleanNomor}_{$tanggal}.docx";
+            Log::info('store request received', ['data' => $request->all()]);
+            
+            $request->validate([
+                'nomor_surat' => 'required|unique:surat,nomor_surat',
+                'tentang' => 'required',
+                'menimbang' => 'required|array|min:1',
+                'menimbang.*' => 'required|string',
+                'mengingat' => 'required|array|min:1',
+                'mengingat.*' => 'required|string',
+                'menetapkan' => 'nullable|string',
+                'memutuskan' => 'required|array|min:2',
+                'memutuskan.0' => 'required|string',
+                'memutuskan.1' => 'required|string',
+                'memutuskan.*' => 'nullable|string',
+                'tempat_dibuat' => 'required',
+                'tanggal_dibuat' => 'required|date',
+                'template_id' => 'required|exists:template_surat,id_template_surat',
+            ]);
 
-            $phpWord = $this->buildPhpWordDocument($surat, 'Word2007');
-            $writer = IOFactory::createWriter($phpWord, 'Word2007');
-            $writer->save($outputPath);
+            $namaSurat = 'Surat Keputusan Direktur';
 
-            return response()->download($outputPath, $filename)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
-            \Log::error('Error converting to Word: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengkonversi file ke format Word.');
+            $surat = Surat::create([
+                'nama_surat' => $namaSurat,
+                'nomor_surat' => $request->nomor_surat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+                'id_template_surat' => $request->template_id,
+                'id_regulasi' => null,
+                'created_by' => auth()->id(),
+            ]);
+
+            Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
+
+            $memutuskanArray = $request->memutuskan;
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM'];
+            $memutuskanText = '';
+            foreach ($memutuskanArray as $index => $item) {
+                $item = trim((string) $item);
+                if ($index > 1 && $item === '') {
+                    continue; 
+                }
+                $label = $labels[$index] ?? 'Ke-' . ($index + 1);
+                $memutuskanText .= $label . "\n" . $item . "\n\n";
+            }
+
+            $mengingatArray = $request->mengingat;
+            $mengingatText = '';
+            foreach ($mengingatArray as $index => $item) {
+                $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
+            }
+
+            $menimbangArray = $request->menimbang;
+            $menimbangText = '';
+            foreach ($menimbangArray as $index => $item) {
+                $letter = chr(ord('a') + $index);
+                $menimbangText .= $letter . '. ' . trim($item) . "\n";
+            }
+
+            $mengingatIds = is_array($request->mengingat) ? implode(',', $request->mengingat) : $request->mengingat;
+
+            $skDirektur = SKDirektur::create([
+                'judul_surat' => 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG',
+                'nomor_surat' => $request->nomor_surat,
+                'tentang' => $request->tentang,
+                'menimbang' => trim($menimbangText),
+                'mengingat' => trim($mengingatText),
+                'memutuskan' => trim($memutuskanText),
+                'menetapkan' => $request->menetapkan,
+                'tempat_dibuat' => $request->tempat_dibuat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+                'id_surat' => $surat->id_surat,
+            ]);
+
+            $pdfData = $request->all();
+            $pdfData['memutuskan'] = trim($memutuskanText);
+            $pdfData['mengingat'] = trim($mengingatText);
+            $pdfData['menimbang'] = trim($menimbangText);
+            $pdfData['tempat_surat'] = $request->tempat_dibuat;
+
+            $this->generateAndSavePDF($surat, $pdfData);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Surat berhasil dibuat',
+                    'surat_id' => $surat->id_surat,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'tanggal_dibuat' => \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('Y-m-d'),
+                    'file_url' => route('template-surat.sk-direktur.file', $surat->id_surat),
+                ]);
+            }
+
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dibuat');
+        } catch (ValidationException $e) {
+            Log::warning('Validation failed for store', [
+                'errors' => $e->errors(),
+                'input' => $request->all(),
+            ]);
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (Exception $e) {
+            if (method_exists($e, 'errors')) {
+                Log::warning('Validation-like exception in store', [
+                    'errors' => $e->errors(),
+                    'message' => $e->getMessage(),
+                    'input' => $request->all(),
+                ]);
+            } else {
+                Log::error('Error creating Surat Keputusan Direktur: ' . $e->getMessage(), [
+                    'exception' => $e,
+                    'input' => $request->all(),
+                ]);
+            }
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat membuat surat keputusan direktur. Silakan coba lagi.');
         }
     }
 
-    public function downloadRTF($id)
+    public function file($id)
     {
-        $surat = Surat::with('skDirektur')->findOrFail($id);
-
+        $surat = Surat::findOrFail($id);
         $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
-            return back()->with('error', 'File surat tidak ditemukan.');
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
         }
+        return response()->file($path);
+    }
 
-        $outputPath = storage_path('app/temp/' . $surat->nomor_surat . '.rtf');
-        if (!is_dir(dirname($outputPath))) {
-            mkdir(dirname($outputPath), 0755, true);
-        }
-
+    public function destroy(TemplateSurat $template_surat)
+    {
         try {
-            $cleanNomor = preg_replace('/\s+/', '_', trim($surat->nomor_surat));
-            $cleanNomor = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanNomor);
-            $tanggal = \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('d-m-Y');
-            $filename = "{$cleanNomor}_{$tanggal}.rtf";
+            $templateName = $template_surat->nama_template_surat;
+            
+            if ($template_surat->nama_template_surat !== 'Surat Keputusan Direktur') {
+                if (request()->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Template bukan SK Direktur',
+                    ], 403);
+                }
+                return redirect()->back()->with('error', 'Template bukan SK Direktur');
+            }
 
-            $phpWord = $this->buildPhpWordDocument($surat, 'RTF');
-            $writer = IOFactory::createWriter($phpWord, 'RTF');
-            $writer->save($outputPath);
+            $template_surat->delete();
 
-            return response()->download($outputPath, $filename)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
-            \Log::error('Error converting to RTF: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengkonversi file ke format RTF.');
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Template berhasil dihapus',
+                    'name' => $templateName,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Template berhasil dihapus');
+        } catch (Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus template: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Gagal menghapus template.');
         }
     }
 
-    private function buildPhpWordDocument(Surat $surat, $writerType = 'Word2007'): PhpWord
+    private function generateAndSavePDF($surat, $data)
     {
-        $phpWord = new PhpWord();
-        $phpWord->setDefaultFontName('Times New Roman');
-        $phpWord->setDefaultFontSize(12);
+        $fileName = 'SK-Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '-' . time() . '.pdf';
+        $filePath = 'arsip/' . $fileName;
 
-        $section = $phpWord->addSection([
-            'marginTop' => Converter::cmToTwip(2.0),
-            'marginRight' => Converter::cmToTwip(1.5),
-            'marginBottom' => Converter::cmToTwip(2.0),
-            'marginLeft' => Converter::cmToTwip(1.5),
-        ]);
+        try {
+            Log::info('PDF Generation Step 1: Starting PDF generation', [
+                'surat_id' => $surat->id_surat,
+                'nomor_surat' => $surat->nomor_surat,
+                'fileName' => $fileName
+            ]);
 
-        $sk = $surat->skDirektur;
-        $judul = $sk->judul_surat ?? $surat->nama_surat ?? '';
-        $nomor = $sk->nomor_surat ?? $surat->nomor_surat ?? '';
-        $tentang = $sk->tentang ?? '';
-        $menimbang = $sk->menimbang ?? '';
-        $mengingat = $sk->mengingat ?? '';
-        $menetapkan = $sk->menetapkan ?? '';
-        $memutuskan = $sk->memutuskan ?? '';
-        $tempat = $sk->tempat_dibuat ?? $surat->lokasi_surat ?? 'Gemolong';
-        $tanggal = $sk->tanggal_dibuat ?? $surat->tanggal_dibuat ?? now();
-        $pejabatNama = $surat->pejabat_nama ?? 'KINIK DARSONO';
-        $pejabatNip = $surat->pejabat_nip ?? '';
+            Log::info('PDF Generation Step 2: Rendering view', [
+                'data_keys' => array_keys($data)
+            ]);
+            $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
+            Log::info('PDF Generation Step 3: View rendered successfully', [
+                'html_length' => strlen($html)
+            ]);
 
-        $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
-        $logoRightPath = public_path('img/logo-rs-kop.png');
-        if ($writerType === 'Word2007') {
-            $headerTable = $section->addTable(['borderSize' => 0, 'borderColor' => 'ffffff']);
-            $headerTable->addRow();
-            $cellLogoLeft = $headerTable->addCell(1500, ['valign' => 'center']);
-            if (file_exists($logoLeftPath)) {
-                $cellLogoLeft->addImage($logoLeftPath, ['width' => 65, 'height' => 65, 'alignment' => 'left']);
+            Log::info('PDF Generation Step 4: Loading HTML to PDF library');
+            $pdf = Pdf::loadHTML($html)
+                ->setPaper([0, 0, 612, 936], 'portrait')
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'defaultFont' => 'Times New Roman',
+                ]);
+            Log::info('PDF Generation Step 5: PDF loaded successfully');
+
+            Log::info('PDF Generation Step 6: Checking arsip directory');
+            if (!Storage::exists('arsip')) {
+                Storage::makeDirectory('arsip');
+                Log::info('PDF Generation Step 7: Created arsip directory');
             }
-            $cellText = $headerTable->addCell(7000, ['valign' => 'center']);
-            $cellText->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 12, 'bold' => false], ['alignment' => 'center']);
-            $cellText->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'size' => 12, 'bold' => true], ['alignment' => 'center', 'spaceAfter' => 40]);
-            $cellText->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 10], ['alignment' => 'center']);
-            $cellText->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 10], ['alignment' => 'center', 'spaceAfter' => 120]);
-            $cellLogoRight = $headerTable->addCell(1500, ['valign' => 'center']);
-            if (file_exists($logoRightPath)) {
-                $cellLogoRight->addImage($logoRightPath, ['width' => 65, 'height' => 65, 'alignment' => 'right']);
-            }
-        } else {
-            $section->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 12, 'bold' => false], ['alignment' => 'center']);
-            $section->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'size' => 12, 'bold' => true], ['alignment' => 'center', 'spaceAfter' => 40]);
-            $section->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 10], ['alignment' => 'center']);
-            $section->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 10], ['alignment' => 'center', 'spaceAfter' => 120]);
+
+            Log::info('PDF Generation Step 8: Writing PDF to storage', [
+                'filePath' => $filePath,
+                'disk' => 'local'
+            ]);
+            Storage::put($filePath, $pdf->output());
+            Log::info('PDF Generation Step 9: PDF written successfully');
+
+            Log::info('PDF Generation Step 10: Updating surat record with file_path', [
+                'file_path' => $filePath
+            ]);
+            $surat->update(['file_path' => $filePath]);
+            Log::info('PDF Generation Step 11: Surat record updated successfully');
+
+        } catch (Exception $e) {
+            Log::error('Error generating PDF: ' . $e->getMessage(), [
+                'exception' => (string)$e,
+                'surat_id' => $surat->id_surat,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
         }
-
-        if ($writerType === 'Word2007') {
-            $section->addLine(['weight' => 3, 'width' => 450, 'height' => 0]);
-        } else {
-            $section->addText(str_repeat('_', 80), ['name' => 'Times New Roman', 'size' => 8], ['alignment' => 'center', 'spaceAfter' => 40]);
-        }
-
-        $section->addText('KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', ['name' => 'Times New Roman', 'size' => 11.5], ['alignment' => 'center']);
-        $section->addText('NOMOR : ' . ($nomor ?: '-'), ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'center']);
-        $section->addText('TENTANG', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'center']);
-        $section->addText(strtoupper($tentang ?: '-'), ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'center', 'spaceAfter' => 200]);
-
-        $section->addText('DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'center', 'spaceAfter' => 200]);
-
-        $section->addText('Menimbang :', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'left']);
-        $menimbangLines = preg_split('/\r\n|\r|\n/', trim($menimbang));
-        $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
-        $menimbangLines = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbangLines);
-        $alpha = 'abcdefghijklmnopqrstuvwxyz';
-        $i = 0;
-        foreach ($menimbangLines as $line) {
-            $section->addText('     ' . $alpha[$i] . '. ' . trim($line), ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'both']);
-            $i++;
-        }
-
-        $section->addText('Mengingat :', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'left']);
-        $rawMengingat = trim($mengingat);
-        $mLines = [];
-        $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-        $lines = array_filter($lines, fn($l) => trim($l) !== '');
-        $allIds = true;
-        $ids = [];
-        foreach ($lines as $line) {
-            $content = preg_replace('/^\d+\.\s*/', '', trim($line));
-            if (preg_match('/^\d+$/', $content)) { $ids[] = (int)$content; } else { $allIds = false; break; }
-        }
-        if ($allIds && count($ids) > 0) {
-            $regs = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
-                ->orderByRaw('FIELD(id_regulasi,' . implode(',', $ids) . ')')
-                ->get();
-            if ($regs->count() > 0) { $mLines = $regs->pluck('isi_regulasi')->toArray(); }
-        }
-        if (empty($mLines)) {
-            foreach ($lines as $line) { $content = preg_replace('/^\d+\.\s*/', '', trim($line)); if ($content !== '') { $mLines[] = $content; } }
-        }
-        $n = 1;
-        foreach ($mLines as $line) {
-            $section->addText('     ' . $n . '. ' . trim($line), ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'both']);
-            $n++;
-        }
-
-        $section->addText('MEMUTUSKAN', ['name' => 'Times New Roman', 'size' => 12.5], ['alignment' => 'center']);
-        if (!empty(trim($menetapkan))) { $section->addText('Menetapkan : ' . $menetapkan, ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'both']); }
-        else { $section->addText('Menetapkan : ', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'both']); }
-
-        $memText = $memutuskan; $lines = explode("\n", $memText); $currentLabel = ''; $currentText = ''; $items = [];
-        foreach ($lines as $line) { $line = trim($line); if (empty($line)) continue; if (preg_match('/^(MENETAPKAN|KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) { if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; } $currentLabel = $line; $currentText = ''; } else { $currentText .= ' ' . $line; } }
-        if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
-        usort($items, function ($a, $b) { $order = ['MENETAPKAN' => 0, 'KESATU' => 1, 'KEDUA' => 2, 'KETIGA' => 3, 'KEEMPAT' => 4, 'KELIMA' => 5, 'KEENAM' => 6, 'KETUJUH' => 7, 'KEDELAPAN' => 8, 'KESEMBILAN' => 9, 'KESEPULUH' => 10]; return ($order[strtoupper($a['label'])] ?? 99) <=> ($order[strtoupper($b['label'])] ?? 99); });
-        foreach ($items as $item) {
-            $labelText = ucfirst(strtolower($item['label']));
-            $section->addText($labelText . ' : ' . $item['text'], ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'both']);
-        }
-
-        $section->addText('Ditetapkan di ' . $tempat, ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'right']);
-        $section->addText('Pada tanggal ' . \Carbon\Carbon::parse($tanggal)->locale('id')->translatedFormat('j F Y'), ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'right']);
-        $section->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'right']);
-        $section->addText('KABUPATEN SRAGEN', ['name' => 'Times New Roman', 'size' => 12], ['alignment' => 'right']);
-        $section->addText($pejabatNama, ['name' => 'Times New Roman', 'size' => 12, 'underline' => 'single'], ['alignment' => 'right']);
-        if (!empty($pejabatNip)) { $section->addText('NIP. ' . $pejabatNip, ['name' => 'Times New Roman', 'size' => 12.5], ['alignment' => 'right']); }
-
-        return $phpWord;
     }
 }

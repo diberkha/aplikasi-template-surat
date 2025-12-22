@@ -1,9 +1,9 @@
 <div id="modalCreateSK" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-3xl w-full">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
 
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modalTitle">Buat Surat</h3>
-            <button @click="closeModal('modalCreateSK')"
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Keputusan Direktur</h3>
+            <button onclick="closeModal('modalCreateSK')"
                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
@@ -11,131 +11,142 @@
 
         <form action="{{ route('template-surat.sk-direktur.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)">
             @csrf
+            <input type="hidden" name="template_id" id="template_surat_sk">
 
-            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
 
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
-                            class="text-red-500">*</span></label>
-                    <input type="text" name="nomor_surat" required placeholder="Contoh: 006/SHKS/VI/2024"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-exclamation-circle mr-1"></i>
-                        Nomor surat tidak boleh sama dengan surat yang sudah ada
-                    </p>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span class="text-red-500">*</span></label>
+                            <input type="text" name="nomor_surat" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                Nomor surat tidak boleh sama dengan surat yang sudah ada
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tentang <span class="text-red-500">*</span></label>
+                            <input type="text" name="tentang" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Tentang <span
-                            class="text-red-500">*</span></label>
-                    <input type="text" name="tentang" required placeholder="Contoh: Pembentukan Tim KMKB"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                </div>
-
-                <input type="hidden" name="template_id" id="template_surat_sk">
-
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
-                        Menimbang <span class="text-red-500">*</span>
-                    </label>
-                    <div id="menimbangContainer" class="space-y-3">
-                        <div class="menimbang-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-10 flex-shrink-0">a.</label>
-                            <div class="flex-1 flex gap-2">
-                                <input type="text" name="menimbang[]" class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                        <h4 class="font-bold text-gray-900 dark:text-white">MENIMBANG</h4>
+                    </div>
+                    <div class="p-4">
+                        <div id="menimbangContainer" class="space-y-3">
+                            <div class="menimbang-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-10 flex-shrink-0">a.</label>
+                                <div class="flex-1">
+                                    <input type="text" name="menimbang[]" required
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                </div>
                             </div>
                         </div>
+                        <button type="button" onclick="addMenimbangField()"
+                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Tambah Menimbang
+                        </button>
                     </div>
-                    <button type="button" onclick="addMenimbangField()"
-                        class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>
-                        Tambah Poin Menimbang
-                    </button>
                 </div>
 
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
-                        Mengingat <span class="text-red-500">*</span>
-                    </label>
-                    <input type="hidden" name="mengingat_check" id="mengingat_check">
+                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                        <h4 class="font-bold text-gray-900 dark:text-white">MENGINGAT</h4>
+                    </div>
+                    <div class="p-4">
+                        <input type="hidden" name="mengingat_check" id="mengingat_check">
 
-                    <div class="mb-3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                        <div class="mb-3">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" id="searchMengingat" placeholder="Cari regulasi..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    onkeyup="filterMengingat()">
                             </div>
-                            <input type="text" id="searchMengingat" placeholder="Cari regulasi..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                onkeyup="filterMengingat()">
                         </div>
-                    </div>
 
-                    <div id="mengingatList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                            <i class="fas fa-spinner fa-spin mr-2"></i>
-                            Memuat data
+                        <div id="mengingatList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                            <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Memuat data
+                            </div>
                         </div>
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Pilih satu atau lebih regulasi yang relevan
+                        </p>
                     </div>
-                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Pilih satu atau lebih regulasi
-                    </p>
                 </div>
 
-                <div>
-                    <label class="block mb-2 text-gray-700 dark:text-gray-300">
-                        Memutuskan <span class="text-red-500">*</span>
-                    </label>
-                    <div id="memutuskanContainer" class="space-y-3">
-                        <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Menetapkan :</label>
-                            <textarea name="menetapkan" id="menetapkan_input" rows="2"
-                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                        </div>
-                        <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu :</label>
-                            <textarea name="memutuskan[]" rows="2" required
-                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                        </div>
-                        <div class="memutuskan-item flex gap-3">
-                            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kedua :</label>
-                            <textarea name="memutuskan[]" rows="2" required
-                                class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                        </div>
+                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                        <h4 class="font-bold text-gray-900 dark:text-white">MEMUTUSKAN</h4>
                     </div>
-                    <button type="button" onclick="addMemutuskanField()" 
-                        class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-plus mr-2"></i>
-                        Tambah Poin Memutuskan
-                    </button>
+                    <div class="p-4">
+                        <div id="memutuskanContainer" class="space-y-3">
+                            <div class="memutuskan-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Menetapkan :</label>
+                                <textarea name="menetapkan" id="menetapkan_input" rows="2"
+                                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            </div>
+                            <div class="memutuskan-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu :</label>
+                                <textarea name="memutuskan[]" rows="2" required
+                                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            </div>
+                            <div class="memutuskan-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kedua :</label>
+                                <textarea name="memutuskan[]" rows="2" required
+                                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addMemutuskanField()" 
+                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Tambah Memutuskan
+                        </button>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Lokasi Surat Dibuat <span
-                            class="text-red-500">*</span></label>
-                        <input type="text" name="tempat_dibuat" required placeholder="Contoh: Gemolong"
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                        <h4 class="font-bold text-gray-900 dark:text-white">TEMPAT & TANGGAL PENETAPAN</h4>
                     </div>
-
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Surat Dibuat <span
-                            class="text-red-500">*</span></label>
-                        <input type="date" name="tanggal_dibuat" required
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tempat <span class="text-red-500">*</span></label>
+                                <input type="text" name="tempat_dibuat" required placeholder="Contoh: Gemolong"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Surat <span class="text-red-500">*</span></label>
+                                <input type="date" name="tanggal_dibuat" required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <div
-                class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
+            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
                 <button type="button" onclick="resetFormSK()"
-                    class="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                     Reset
                 </button>
                 <button type="submit"
-                    class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                    class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
                     Simpan
                 </button>
             </div>
@@ -148,6 +159,14 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         loadRegulasiOptions();
+
+        const dateInput = document.querySelector('input[name="tanggal_dibuat"]');
+        if (dateInput && typeof flatpickr !== 'undefined') {
+            flatpickr(dateInput, {
+                locale: 'id',
+                dateFormat: 'Y-m-d'
+            });
+        }
 
         document.getElementById('skDirekturForm').addEventListener('submit', function(e) {
             const mengingatCheckboxes = document.querySelectorAll('input[name="mengingat[]"]:checked');
@@ -271,8 +290,8 @@
             menimbangContainer.innerHTML = `
                 <div class="menimbang-item flex gap-3">
                     <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-10 flex-shrink-0">a.</label>
-                    <div class="flex-1 flex gap-2">
-                        <input type="text" name="menimbang[]" class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="flex-1">
+                        <input type="text" name="menimbang[]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                     </div>
                 </div>
             `;
@@ -281,9 +300,6 @@
         const mengingatCheckboxes = document.querySelectorAll('input[name="mengingat[]"]');
         mengingatCheckboxes.forEach(checkbox => { checkbox.checked = false; });
         updateMengingatCheck();
-
-        const allInputs = form.querySelectorAll('input, textarea, select');
-        allInputs.forEach(input => { input.style.borderColor = ''; input.style.borderWidth = ''; });
     }
 
     function addMenimbangField() {
@@ -302,7 +318,6 @@
             </div>
         `;
         container.appendChild(wrapper);
-        renumberMenimbangLabels();
     }
 
     function removeMenimbangField(button) {
@@ -358,7 +373,7 @@
             if (result.parseError) { alert('Error: Response parsing failed.'); return; }
             if (!result.ok) {
                 if (result.data?.errors) {
-                    const fieldLabels = { 'nomor_surat': 'Nomor Surat', 'tentang': 'Tentang', 'menimbang': 'Menimbang', 'mengingat': 'Mengingat', 'menetapkan': 'Menetapkan', 'memutuskan': 'Memutuskan', 'tempat_dibuat': 'Tempat Surat Dibuat', 'tanggal_dibuat': 'Tanggal Surat Dibuat' };
+                    const fieldLabels = { 'nomor_surat': 'Nomor Surat', 'tentang': 'Tentang', 'menimbang': 'Menimbang', 'mengingat': 'Mengingat', 'menetapkan': 'Menetapkan', 'memutuskan': 'Memutuskan', 'tempat_dibuat': 'Tempat', 'tanggal_dibuat': 'Tanggal Surat' };
                     let errorMsg = 'Validasi Gagal:\n\n';
                     for (let [field, messages] of Object.entries(result.data.errors)) {
                         const baseField = field.startsWith('memutuskan') ? 'memutuskan' : (field.startsWith('menimbang') ? 'menimbang' : field);

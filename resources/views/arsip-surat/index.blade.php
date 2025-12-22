@@ -51,11 +51,11 @@
                         class="absolute mt-2 right-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
                         <div class="space-y-2">
                             <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                            <input type="date" id="simpleStartDate" value="{{ request('start_date') }}"
+                            <input type="date" id="simpleStartDate" name="start_date" value="{{ request('start_date') }}"
                                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
                             <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                            <input type="date" id="simpleEndDate" value="{{ request('end_date') }}"
+                            <input type="date" id="simpleEndDate" name="end_date" value="{{ request('end_date') }}"
                                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
                             <div class="flex space-x-2 pt-2">
@@ -67,6 +67,16 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        flatpickr('input[name="start_date"]', {
+                            locale: 'id',
+                            dateFormat: 'Y-m-d'
+                        });
+                        flatpickr('input[name="end_date"]', {
+                            locale: 'id',
+                            dateFormat: 'Y-m-d'
+                        });
+                    </script>
                 </div>
 
                 <div class="relative flex-1 sm:flex-initial">
@@ -219,13 +229,42 @@
                                     $namaSurat = is_object($item) ? $item->nama_surat : ($item['nama_surat'] ?? '');
                                     $nomorSurat = is_object($item) ? $item->nomor_surat : ($item['nomor_surat'] ?? '');
                                     $tipeSurat = is_object($item) ? $item->tipe_surat : ($item['tipe_surat'] ?? '');
+                                    $tipeSuratDisplay = $tipeSurat;
                                     $tanggalDibuat = is_object($item) ? $item->tanggal_dibuat : ($item['tanggal_dibuat'] ?? '');
                                     $dibuatOleh = is_object($item) ? ($item->createdBy->username ?? ($item->created_by ?? 'Unknown')) : ($item['username'] ?? 'Unknown');
                                     $filePath = is_object($item) ? $item->file_path : ($item['file_path'] ?? '');
+                                    $namaSuratDisplay = $namaSurat;
+
+                                    if ($tipeSurat === 'Standar Operasional Prosedur (SOP)' && is_object($item) && $item->sop) {
+                                        $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
+                                    }
+
+                                    if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && is_object($item) && $item->cuti) {
+                                        $kategori = strtoupper($item->cuti->kategori ?? '');
+                                        $formData = $item->cuti->form_data ?? [];
+                                        $namaPegawai = is_array($formData) ? ($formData['nama'] ?? '') : '';
+                                        if ($namaPegawai) {
+                                            $namaPegawai = strtoupper(str_replace(' ', '-', $namaPegawai));
+                                            $nomorSurat = 'CUTI-' . $kategori . '-' . $namaPegawai;
+                                        }
+
+                                        // tampilkan badge tipe generik, nama surat memuat kategori
+                                        $kategoriLabel = trim($kategori);
+                                        if (!$kategoriLabel) {
+                                            $kategoriLabel = trim(str_ireplace('Surat Izin Cuti', '', $tipeSurat));
+                                        }
+                                        if (strtoupper($kategoriLabel) === 'NON ASN') {
+                                            $kategoriLabel = 'Non ASN';
+                                        }
+                                        $tipeSuratDisplay = 'Surat Izin Cuti';
+                                        $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
+                                    }
 
                                     $badgeColor = [
                                         'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-                                    ][$tipeSurat] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+                                        'Standar Operasional Prosedur (SOP)' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                                        'Surat Izin Cuti' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                                    ][$tipeSuratDisplay] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
                                 @endphp
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -234,11 +273,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeColor }}">
-                                            {{ $tipeSurat }}
+                                            {{ $tipeSuratDisplay }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $namaSurat }}
+                                        {{ $namaSuratDisplay }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                         {{ $nomorSurat }}
@@ -250,9 +289,9 @@
                                         <div class="flex items-center space-x-2">
                                             <button type="button" onclick="showDetailSurat(
                                                 '{{ $idSurat }}',
-                                                '{{ addslashes($namaSurat) }}',
+                                                '{{ addslashes($namaSuratDisplay) }}',
                                                 '{{ addslashes($nomorSurat) }}',
-                                                '{{ addslashes($tipeSurat) }}',
+                                                '{{ addslashes($tipeSuratDisplay) }}',
                                                 '{{ $tanggalDibuat }}',
                                                 '{{ addslashes($dibuatOleh) }}',
                                                 '{{ $filePath }}'
@@ -275,12 +314,12 @@
                                                             <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
                                                             PDF
                                                         </a>
-                                                        <a href="{{ route('arsip-surat.download-word', $idSurat) }}"
+                                                        <a href="#"
                                                             class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                             <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
                                                             DOCX
                                                         </a>
-                                                        <a href="{{ route('arsip-surat.download-rtf', $idSurat) }}"
+                                                        <a href="#"
                                                             class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                             <i class="fas fa-file-alt text-purple-600 mr-2 w-4"></i>
                                                             RTF
@@ -296,7 +335,7 @@
                                             @endif
 
                                             <button type="button"
-                                                onclick="openDeleteModal({{ $idSurat }}, '{{ addslashes($namaSurat) }}', '{{ addslashes($nomorSurat) }}', '{{ addslashes($tipeSurat) }}')"
+                                                onclick="openDeleteModal({{ $idSurat }}, '{{ addslashes($namaSuratDisplay) }}', '{{ addslashes($nomorSurat) }}', '{{ addslashes($tipeSuratDisplay) }}')"
                                                 class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                                                 <i class="fas fa-trash text-sm"></i>
                                             </button>
@@ -438,6 +477,8 @@
 
             const tipeBadge = {
                 'Surat Keputusan Direktur': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                'Standar Operasional Prosedur (SOP)': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                'Surat Izin Cuti': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
             }[tipe] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
             document.getElementById('detail-tipe-surat').innerHTML =

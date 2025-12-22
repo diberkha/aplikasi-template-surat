@@ -15,24 +15,24 @@
             font-size: 12pt; 
             background: white; 
             margin: 0; 
-            padding: 20mm 10mm 20mm 10mm; 
+            padding: 8.4mm 9.9mm 4.8mm 12.4mm; 
         }
 
         .page { width: 100%; padding: 0; margin: 0; background: white; }
         
         @media print {
-            body { background: white; padding: 20mm 15mm 20mm 15mm; }
+            body { background: white; padding: 8.4mm 9.9mm 4.8mm 12.4mm; }
             .page { box-shadow: none; margin: 0; }
             .header { display: block; }
         }
         
         @page { size: 215.9mm 330.2mm; margin: 0; }
 
-        .header { text-align: center; margin-bottom: 10px; }
+        .header { text-align: center; margin-bottom: 8px; }
         .header table { width: 100%; border-collapse: collapse; }
         .header td { vertical-align: middle; padding: 0; }
         .header-logo { width: 75px; text-align: left; padding-right: 8px; }
-        .header-logo img { width: 65px; height: auto; object-fit: contain; }
+        .header-logo img { width: 0.8in; height: auto; object-fit: contain; }
         .header-text { text-align: center; line-height: 1.3; }
         .header-text { text-align: center; line-height: 1.3; font-family: Arial, sans-serif; }
         .header-line1 { font-size: 12pt; margin-bottom: 0; letter-spacing: 0.3px; font-weight: normal; }
@@ -42,11 +42,11 @@
         .header-border { margin-top: 8px; border-bottom: 3px solid #000; padding-bottom: 2px; }
         .header-border-inner { border-bottom: 1px solid #000; }
 
-        .title-section { text-align: center; font-weight: normal; font-size: 11.5pt; margin: 20px 0 8px 0; white-space: nowrap; }
-        .meta-info { margin: 8px 0; text-align: center; line-height: 1.4; }
-        .meta-info p { margin: 2px 0; font-size: 12pt; line-height: 1.2; }
-        .meta-info-tentang { margin: 10px 0 15px 0; text-align: center; }
-        .meta-info-tentang p { margin: 2px 0; font-size: 12pt; line-height: 1.3; }
+        .title-section { text-align: center; font-weight: normal; font-size: 11.5pt; margin: 14px 0 10px 0; white-space: nowrap; }
+        .meta-info { margin: 12px 0 16px 0; text-align: center; line-height: 1.5; }
+        .meta-info p { margin: 6px 0; font-size: 12pt; line-height: 1.3; }
+        .meta-info-tentang { margin: 16px 0 18px 0; text-align: center; }
+        .meta-info-tentang p { margin: 6px 0; font-size: 12pt; line-height: 1.35; }
 
         .content { margin: 22px 0; text-align: justify; line-height: 1.5; }
         .section { margin-bottom: 16px; line-height: 1.5; }
@@ -65,12 +65,11 @@
         .footer { margin-top: 46px; line-height: 1.5; }
         .footer table { width: 100%; border-collapse: collapse; }
         .footer-left { width: 55%; vertical-align: top; text-align: left; line-height: 1.5; }
-        .footer-right { width: 45%; vertical-align: top; text-align: center; padding-left: 10mm; line-height: 1.5; }
-        .footer-title { font-size: 12pt; font-weight: normal; }
+        .footer-right { width: 45%; vertical-align: top; text-align: left; padding-left: 20mm; line-height: 1.5; }
+        .footer-title { font-size: 12pt; font-weight: normal; white-space: nowrap; }
         .signature-wrapper { margin: 18px 0 10px 0; min-height: 90px; }
         .signature-wrapper img { max-height: 90px; object-fit: contain; }
-        .signature-name { font-weight: normal; text-decoration: underline; margin-top: 6px; }
-        .signature-nip { font-size: 12.5pt; margin-top: 2px; }
+        .signature-name { font-weight: normal; margin-top: 6px; }
     </style>
 </head>
 
@@ -96,7 +95,7 @@
                         <div class="header-line2">RSUD dr. SOERATNO GEMOLONG</div>
                         <div class="header-line3">
                             Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274<br>
-                            <span class="header-contact">Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el <a href="mailto:rsudgemolong@gmail.com" style="color: #000; text-decoration: underline;">rsudgemolong@gmail.com</a></span>
+                            <span class="header-contact">Telp. (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el <a href="mailto:rsudgemolong@gmail.com" style="color: #000; text-decoration: underline;">rsudgemolong@gmail.com</a></span>
                         </div>
                     </td>
                     <td class="header-logo" style="text-align: right;">
@@ -119,7 +118,8 @@
         </div>
 
         <div class="title-section">
-            KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG
+            KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG<br>
+            KABUPATEN SRAGEN
         </div>
 
         <div class="meta-info">
@@ -128,6 +128,7 @@
 
         <div class="meta-info-tentang">
             <p>TENTANG</p>
+            <br>
             @php
                 $tentangText = strtoupper($data['tentang'] ?? '-');
                 $tentangLines = wordwrap($tentangText, 60, "\n", false);
@@ -272,7 +273,7 @@
                 <div class="deciding-item">
                     <table>
                         <tr>
-                            <td class="section-label">{{ ucfirst(strtolower($item['label'])) }}</td>
+                            <td class="section-label">{{ strtoupper($item['label']) }}</td>
                             <td class="section-separator">:</td>
                             <td class="deciding-text">{{ $item['text'] }}</td>
                         </tr>
@@ -287,23 +288,25 @@
                     <td class="footer-left">
                     </td>
                     <td class="footer-right">
-                        <p>Ditetapkan di {{ $data['lokasi_surat'] ?? 'Gemolong' }}</p>
-                        <p>Pada tanggal {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now())->locale('id')->translatedFormat('j F Y') }}</p>
-                        <p class="footer-title" style="margin-top: 10px;">DIREKTUR RSUD dr. SOERATNO GEMOLONG</p>
-                        <p class="footer-title">KABUPATEN SRAGEN</p>
+                        <p style="text-align: left;">Ditetapkan di {{ $data['tempat_surat'] ?? 'Gemolong' }}</p>
+                        <p style="text-align: left;">pada tanggal {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now())->locale('id')->translatedFormat('j F Y') }}</p>
+                        <div style="margin-left: -15mm;">
+                            <p class="footer-title" style="margin-top: 10px; text-align: center;">DIREKTUR RSUD dr. SOERATNO GEMOLONG</p>
+                            <p class="footer-title" style="text-align: center;">KABUPATEN SRAGEN</p>
 
-                        <div class="signature-wrapper">
-                            @if(!empty($data['ttd_image']))
-                                <img src="{{ public_path($data['ttd_image']) }}" alt="Tanda tangan">
-                            @else
-                                <div style="height: 90px"></div>
-                            @endif
+                            <div class="signature-wrapper">
+                                @if(!empty($data['ttd_image']))
+                                    <img src="{{ public_path($data['ttd_image']) }}" alt="Tanda tangan">
+                                @else
+                                    <div style="height: 90px"></div>
+                                @endif
+                            </div>
+                            @php
+                                $pejabatNama = trim($data['pejabat_nama'] ?? '') ?: 'KINIK DARSONO';
+                            @endphp
+
+                            <p class="signature-name" style="text-align: center;">{{ $pejabatNama }}</p>
                         </div>
-
-                        <p class="signature-name">{{ $data['pejabat_nama'] ?? 'KINIK DARSONO' }}</p>
-                        @if(!empty($data['pejabat_nip']))
-                            <p class="signature-nip">NIP. {{ $data['pejabat_nip'] }}</p>
-                        @endif
                     </td>
                 </tr>
             </table>

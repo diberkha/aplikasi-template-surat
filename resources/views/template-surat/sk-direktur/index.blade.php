@@ -1,5 +1,5 @@
 <x-template-header title="Template Surat Keputusan Direktur"
-    subtitle="Pilih dan gunakan template surat keputusan direktur yang tersedia" tableTitle="Daftar Template"
+    subtitle="Pilih dan gunakan template surat keputusan direktur yang tersedia" tableTitle="Daftar Template Surat Keputusan Direktur"
     searchPlaceholder="Cari template...">
 
     @if(session('success'))
@@ -15,7 +15,7 @@
         @foreach($templates as $index => $template)
             <x-template-row :templates="$template" :index="$loop->iteration" :actionButtons="['create', 'delete']"
                 createAction="openModal('modalCreateSK', 'Surat Keputusan Direktur', {{ $template->id_template_surat }})"
-                deleteAction="openDeleteModal('{!! addslashes($template->nama_template_surat ?? 'Template') !!}')" />
+                deleteAction="openDeleteModal('{!! addslashes($template->nama_template_surat ?? 'Template') !!}', {{ $template->id_template_surat }})" />
         @endforeach
     </x-template-table>
 </x-template-header>
@@ -63,6 +63,22 @@
             } else {
                 modal.classList.remove('hidden');
             }
+        }
+    }
+
+    function openDeleteModal(templateName, templateId) {
+        const modal = document.getElementById('modalDeleteTemplate');
+        const nameField = document.getElementById('delete-template-name');
+        const form = document.getElementById('formDeleteTemplate');
+        if (nameField) nameField.textContent = templateName || '-';
+        if (form) {
+            const deleteUrlTemplate = '{{ route('template-surat.sk-direktur.destroy', ['template_surat' => '__ID__']) }}';
+            form.action = deleteUrlTemplate.replace('__ID__', templateId);
+        }
+        if (modal) {
+            const alpineData = Alpine?.$data ? Alpine.$data(modal) : null;
+            if (alpineData) { alpineData.isOpen = true; }
+            else { modal.classList.remove('hidden'); }
         }
     }
 

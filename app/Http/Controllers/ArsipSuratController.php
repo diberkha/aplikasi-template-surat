@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use App\Models\TemplateSurat;
+use App\Models\SOP;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -15,7 +16,7 @@ class ArsipSuratController extends Controller
             ->orderBy('nama_template_surat')
             ->get();
 
-        $query = Surat::with(['template', 'createdBy', 'skDirektur'])
+        $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop', 'cuti'])
             ->orderBy('tanggal_dibuat', 'desc');
 
         if ($request->filled('search')) {
@@ -97,15 +98,7 @@ class ArsipSuratController extends Controller
         return response()->download($path, $filename);
     }
 
-    public function downloadWord($id)
-    {
-        return app(SKDirekturController::class)->downloadWord($id);
-    }
 
-    public function downloadRTF($id)
-    {
-        return app(SKDirekturController::class)->downloadRTF($id);
-    }
 
     public function destroy($id)
     {
