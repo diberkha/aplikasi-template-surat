@@ -122,18 +122,37 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">(Diisi jika ada catatan riwayat cuti sebelumnya)</p>
                     </div>
                     <div class="p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- N-2 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Catatan Cuti 2 Tahun Lalu (N-2)</label>
-                                <input type="text" name="form[catatan_n2]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N-2</label>
+                                <input type="text" name="form[catatan_n2]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
                             </div>
                             <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Catatan Cuti Tahun Lalu (N-1)</label>
-                                <input type="text" name="form[catatan_n1]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N-2</label>
+                                <input type="text" name="form[catatan_n2_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
+                            </div>
+                        </div>
+                        <!-- N-1 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N-1</label>
+                                <input type="text" name="form[catatan_n1]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
                             </div>
                             <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Catatan Cuti Tahun Ini (N)</label>
-                                <input type="text" name="form[catatan_n]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N-1</label>
+                                <input type="text" name="form[catatan_n1_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
+                            </div>
+                        </div>
+                        <!-- N -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N</label>
+                                <input type="text" name="form[catatan_n]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N</label>
+                                <input type="text" name="form[catatan_n_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
                             </div>
                         </div>
                     </div>
@@ -200,20 +219,9 @@
                                 <option value="TIDAK DISETUJUI">TIDAK DISETUJUI</option>
                             </select>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pejabat Berwenang</label>
-                                <input type="text" name="form[nama_pejabat]" placeholder="Contoh: Dr. dr. KINIK DARSONO, M.Pd.Ked." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP Pejabat</label>
-                                <input type="text" name="form[nip_pejabat]" placeholder="Contoh: 19710415 200903 1 001" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Pejabat Berwenang</label>
-                            <input type="text" name="form[jabatan_pejabat]" placeholder="Contoh: Direktur RSUD dr. Soeratno Gemolong Kabupaten Gemolong" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        </div>
+                        <input type="hidden" name="form[nama_pejabat]" value="DR. dr. KINIK DARSONO, M.Pd.Ked.">
+                        <input type="hidden" name="form[nip_pejabat]" value="19710415 200903 1 001">
+                        <input type="hidden" name="form[jabatan_pejabat]" value="DIREKTUR RSUD dr. SOERATNO GEMOLONG">
                     </div>
                 </div>
 

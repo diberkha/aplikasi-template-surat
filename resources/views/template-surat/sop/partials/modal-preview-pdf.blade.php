@@ -4,7 +4,7 @@
         
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Preview Standar Operasional Prosedur (SOP)</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="judulSurat ? 'Preview ' + judulSurat : 'Preview Dokumen'"></h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1"><span x-ref="suratNomor" x-text="nomorSurat || '-'"></span></p>
             </div>
             <div class="flex items-center space-x-3">
@@ -60,7 +60,7 @@
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
             <div class="text-sm text-gray-600 dark:text-gray-400">
                 <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                Standar Operasional Prosedur (SOP) berhasil dibuat dan disimpan
+                <span x-text="(judulSurat || 'Dokumen') + ' berhasil dibuat dan disimpan'"></span>
             </div>
             <a href="{{ route('arsip-surat.index') }}"
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
