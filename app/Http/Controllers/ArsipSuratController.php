@@ -17,7 +17,7 @@ class ArsipSuratController extends Controller
             ->get();
 
         $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop', 'cuti'])
-            ->orderBy('tanggal_dibuat', 'desc');
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('search')) {
             $search = $request->search;

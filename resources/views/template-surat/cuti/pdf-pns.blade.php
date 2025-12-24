@@ -12,7 +12,7 @@
         body { 
             font-family: 'Times New Roman', serif; 
             font-size: 10pt; 
-            line-height: 1.3;
+            line-height: 1.1;
             margin: 0;
             padding: 0;
             font-weight: normal;
@@ -23,11 +23,11 @@
         table { 
             border-collapse: collapse; 
             width: 100%; 
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
         td { 
             border: 1px solid #000; 
-            padding: 4px 6px; 
+            padding: 1px 2px; 
             vertical-align: top;
             font-size: 10pt;
         }
@@ -77,10 +77,10 @@
             font-weight: normal;
             text-align: center;
             margin: 15px 0;
-            font-size: 11pt;
+            font-size: 10pt;
         }
         .header-right {
-            font-size: 9pt;
+            font-size: 10pt;
             line-height: 1.4;
             text-align: left;
         }
@@ -90,16 +90,21 @@
     <?php 
         $f = $data['form'] ?? [];
         
-        // Fungsi untuk format tanggal Indonesia
         function formatTanggalIndonesia($tanggal) {
             if (empty($tanggal)) return '';
             
+            $namaHari = array(
+                0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 
+                4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'
+            );
+
             $bulan = array(
                 1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
             );
             
             $timestamp = strtotime($tanggal);
+            $hariKe = date('w', $timestamp);
             $hari = date('d', $timestamp);
             $bulanAngka = date('n', $timestamp);
             $tahun = date('Y', $timestamp);
@@ -109,21 +114,21 @@
     ?>
     
     <div class="container">
-        <!-- Header dengan tabel tanpa border -->
+        <!-- Header -->
         <table class="no-border">
             <tr class="no-border">
-                <td style="width: 45%"></td>
-                <td style="width: 55%" class="header-right">
-                    ANAK LAMPIRAN I b<br>
+                <td style="width: 52%"></td>
+                <td style="width: 48%" class="header-right">
+                    ANAK LAMPIRAN 1.b<br>
                     PERATURAN BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA NOMOR 24 TAHUN 2017<br>
                     TENTANG<br>
-                    TATA CARA PEMBERIAN CUTI PEGAWAI NEGERI SIPIL<br>
-                    <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
+                    TATA CARA PEMBERIAN CUTI PEGAWAI NEGERI SIPIL<br><br>
+                    <?= $f['tempat_surat'] ?? 'Sragen' ?>, <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
                     kepada :<br>
                     Yth. Direktur RSUD dr. Soeratno Gemolong<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kabupaten Sragen<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;di-<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SRAGEN
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;di-<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SRAGEN
                 </td>
             </tr>
         </table>
@@ -165,7 +170,7 @@
         <!-- II. JENIS CUTI YANG DIAMBIL -->
         <table>
             <tr>
-                <td colspan="4" class="section-header">II. JENIS CUTI YANG DIAMBIL **</td>
+                <td colspan="4" class="section-header">II. JENIS CUTI YANG DIAMBIL**</td>
             </tr>
             <tr>
                 <td style="width: 2.35in">1. Cuti Tahunan</td>
@@ -205,7 +210,7 @@
                 <td class="section-header">III. ALASAN CUTI</td>
             </tr>
             <tr>
-                <td style="min-height: 40px; padding: 8px;">
+                <td style="min-height: 40px;">
                     <?= nl2br($f['alasan'] ?? '') ?>
                 </td>
             </tr>
@@ -241,7 +246,7 @@
             <tr>
                 <td style="width: 0.5in;">Tahun</td>
                 <td style="width: 0.5in;">Sisa</td>
-                <td style="width: 1.20in;">Keterangan</td>
+                <td style="width: 1.5in;">Keterangan</td>
                 <td>3. CUTI SAKIT</td>
                 <td class="center">
                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Sakit') ? 'V' : '' ?>
@@ -249,7 +254,7 @@
             </tr>
             <tr>
                 <td style="text-align: left;">N-2</td>
-                <td style="text-align: center;"><?= $f['catatan_n2'] ?? '' ?></td>
+                <td style="text-align: left;"><?= $f['catatan_n2'] ?? '' ?></td>
                 <td style="text-align: left;"><?= $f['catatan_n2_keterangan'] ?? '' ?></td>
                 <td>4. CUTI MELAHIRKAN</td>
                 <td class="center">
@@ -258,7 +263,7 @@
             </tr>
             <tr>
                 <td style="text-align: left;">N-1</td>
-                <td style="text-align: center;"><?= $f['catatan_n1'] ?? '' ?></td>
+                <td style="text-align: left;"><?= $f['catatan_n1'] ?? '' ?></td>
                 <td style="text-align: left;"><?= $f['catatan_n1_keterangan'] ?? '' ?></td>
                 <td>5. CUTI KARENA ALASAN PENTING</td>
                 <td class="center">
@@ -267,7 +272,7 @@
             </tr>
             <tr>
                 <td style="text-align: left;">N</td>
-                <td style="text-align: center;"><?= $f['catatan_n'] ?? '' ?></td>
+                <td style="text-align: left;"><?= $f['catatan_n'] ?? '' ?></td>
                 <td style="text-align: left;"><?= $f['catatan_n_keterangan'] ?? '' ?></td>
                 <td>6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
                 <td class="center">
@@ -276,25 +281,24 @@
             </tr>
         </table>
 
-
-
         <!-- VI. ALAMAT SELAMA MENJALANKAN CUTI -->
         <table>
             <tr>
                 <td colspan="3" class="section-header">VI. ALAMAT SELAMA MENJALANKAN CUTI :</td>
             </tr>
             <tr>
-                <td style="width: 55%; padding: 8px; vertical-align: top;" rowspan="2">
+                <td style="width: 55%; vertical-align: top;">
                     <?= nl2br($f['alamat'] ?? '') ?>
                 </td>
-                <td style="width: 15%; padding: 4px;">TELP</td>
-                <td style="width: 30%; padding: 4px;"><?= $f['telp'] ?? '' ?></td>
+                <td style="width: 15%; vertical-align: top;">TELP</td>
+                <td style="width: 30%; vertical-align: top;"><?= $f['telp'] ?? '' ?></td>
             </tr>
             <tr>
-                <td colspan="2" style="width: 50%; text-align: center; vertical-align: bottom; padding-bottom: 8px;">
+                <td style="width: 45%; vertical-align: top;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: bottom; padding-bottom: 8px;">
                     Hormat saya,<br><br><br><br>
-                    <span class="underline">(<?= $f['nama'] ?? '' ?>)</span><br>
-                    NIP <?= $f['nip'] ?? '' ?>
+                    <span class="underline"><?= $f['nama'] ?? '' ?></span><br>
+                    NIP. <?= $f['nip'] ?? '' ?>
                 </td>
             </tr>
         </table>
@@ -305,28 +309,28 @@
                 <td colspan="4" class="section-header">VII. PERTIMBANGAN ATASAN LANGSUNG**</td>
             </tr>
             <tr>
-                <td style="width: 16%; padding: 8px;">DISETUJUI</td>
-                <td style="width: 17%; padding: 8px;">PERUBAHAN****</td>
-                <td style="width: 17%; padding: 8px;">DITANGGUHKAN****</td>
-                <td style="width: 50%; padding: 8px;">TIDAK DISETUJUI****</td>
+                <td style="width: 16%;">DISETUJUI</td>
+                <td style="width: 17%;">PERUBAHAN****</td>
+                <td style="width: 17%;">DITANGGUHKAN****</td>
+                <td style="width: 50%;">TIDAK DISETUJUI****</td>
             </tr>
             <tr>
-                <td style="text-align: center; padding: 4px; height: 25px;">
+                <td style="text-align: center; height: 20px;">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'DISETUJUI') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'PERUBAHAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'DITANGGUHKAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'TIDAK DISETUJUI') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
                 <td colspan="3" style="border: none;"></td>
-                <td style="text-align: center; vertical-align: middle; padding: 8px; height: 100px;">
+                <td style="text-align: center; vertical-align: middle; height: 100px;">
                     <?php if (!empty($f['jabatan_atasan'])): ?>
                         <?= strtoupper($f['jabatan_atasan']) ?><br><br><br><br>
                     <?php else: ?>
@@ -352,41 +356,62 @@
                 <td colspan="4" class="section-header">VIII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI**</td>
             </tr>
             <tr>
-                <td style="width: 16%; padding: 8px;">DISETUJUI</td>
-                <td style="width: 17%; padding: 8px;">PERUBAHAN****</td>
-                <td style="width: 17%; padding: 8px;">DITANGGUHKAN****</td>
-                <td style="width: 50%; padding: 8px;">TIDAK DISETUJUI****</td>
+                <td style="width: 16%;">DISETUJUI</td>
+                <td style="width: 17%;">PERUBAHAN****</td>
+                <td style="width: 17%;">DITANGGUHKAN****</td>
+                <td style="width: 50%;">TIDAK DISETUJUI****</td>
             </tr>
             <tr>
-                <td style="text-align: center; padding: 4px; height: 25px;">
+                <td style="text-align: center; height: 20px;">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'DISETUJUI') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'PERUBAHAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'DITANGGUHKAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center; padding: 4px;">
+                <td style="text-align: center;">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'TIDAK DISETUJUI') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
-                <td colspan="3" style="border: none; padding: 8px; vertical-align: top;">
-                    <div style="font-size: 9pt; line-height: 1.4;">
-                        Catatan:<br>
-                        * &nbsp;&nbsp;Coret yang tidak perlu<br>
-                        ** &nbsp;Pilih salah satu dengan memberi tanda centang (V)<br>
-                        *** diisi oleh pejabat yang menangani bidang<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kepegawaian sebelum PNS mengajukan cuti<br>
-                        **** diberi tanda centang dan alasannya...<br>
-                        <br>
-                        N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Cuti tahun berjalan<br>
-                        N-1 = Sisa cuti 1 tahun sebelumnya<br>
-                        N-2 = Sisa cuti 2 tahun sebelumnya
-                    </div>
+                <td colspan="3" style="border: none; vertical-align: top;">
+                    <table class="no-border" style="font-size: 10pt; line-height: 1.2; width: 100%;">
+                        <tr>
+                            <td colspan="2" style="padding: 1px;">Catatan:</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">*</td>
+                            <td style="padding: 1px;">Coret yang tidak perlu</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">**</td>
+                            <td style="padding: 1px;">Pilih salah satu dengan memberi tanda centang (V)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">***</td>
+                            <td style="padding: 1px;">diisi oleh pejabat yang menangani bidang kepegawaian sebelum PNS mengajukan cuti</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">****</td>
+                            <td style="padding: 1px;">diberi tanda centang dan alasannya...</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">N</td>
+                            <td style="padding: 1px;">= Cuti tahun berjalan</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">N-1</td>
+                            <td style="padding: 1px;">= Sisa cuti 1 tahun sebelumnya</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15px; padding: 1px;">N-2</td>
+                            <td style="padding: 1px;">= Sisa cuti 2 tahun sebelumnya</td>
+                        </tr>
+                    </table>
                 </td>
-                <td style="text-align: center; vertical-align: middle; padding: 8px;">
+                <td style="text-align: center; vertical-align: middle;">
                     KEPUTUSAN PEJABAT YANG<br>
                     BERWENANG MEMBERIKAN CUTI<br>
                     DIREKTUR RSUD dr. SOERATNO GEMOLONG<br>
@@ -398,7 +423,7 @@
                             NIP. <?= $f['nip_pejabat'] ?>
                         <?php endif; ?>
                     <?php else: ?>
-                        <u>dr. KINIK DARSONO, M.Pd.Ked.</u><br>
+                        <u>Dr. dr. KINIK DARSONO, M.Pd.Ked.</u><br>
                         NIP. 19710415 200903 1 001
                     <?php endif; ?>
                 </td>

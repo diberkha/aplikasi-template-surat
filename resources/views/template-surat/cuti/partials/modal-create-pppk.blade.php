@@ -14,10 +14,17 @@
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
+                <!-- Tempat dan Tanggal Surat -->
                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Surat <span class="text-red-500">*</span></label>
-                        <input type="date" name="form[tanggal_surat]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tempat Surat <span class="text-red-500">*</span></label>
+                            <input type="text" name="form[tempat_surat]" value="Sragen" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Surat <span class="text-red-500">*</span></label>
+                            <input type="date" name="form[tanggal_surat]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        </div>
                     </div>
                 </div>
 
@@ -85,7 +92,7 @@
                     </div>
                     <div class="p-4">
                         <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Jelaskan Alasan Pengajuan Cuti <span class="text-red-500">*</span></label>
+                            <!-- <label class="block mb-2 text-gray-700 dark:text-gray-300">Jelaskan Alasan Pengajuan Cuti <span class="text-red-500">*</span></label> -->
                             <textarea name="form[alasan]" required rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
@@ -115,7 +122,7 @@
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">V. ALAMAT SELAMA MENJALANKAN CUTI</h4>
+                        <h4 class="font-bold text-gray-900 dark:text-white">VI. ALAMAT SELAMA MENJALANKAN CUTI</h4>
                     </div>
                     <div class="p-4 space-y-4">
                         <div>
@@ -131,18 +138,10 @@
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">VI. PERTIMBANGAN ATASAN LANGSUNG</h4>
+                        <h4 class="font-bold text-gray-900 dark:text-white">VII. PERTIMBANGAN ATASAN LANGSUNG</h4>
                     </div>
                     <div class="p-4 space-y-4">
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Keputusan Atasan</label>
-                            <select name="form[atasan_setuju]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                <option value="DISETUJUI">DISETUJUI</option>
-                                <option value="PERUBAHAN">PERUBAHAN</option>
-                                <option value="DITANGGUHKAN">DITANGGUHKAN</option>
-                                <option value="TIDAK DISETUJUI">TIDAK DISETUJUI</option>
-                            </select>
-                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Atasan Langsung</label>
@@ -160,36 +159,7 @@
                     </div>
                 </div>
 
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">VII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI</h4>
-                    </div>
-                    <div class="p-4 space-y-4">
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Keputusan Pejabat</label>
-                            <select name="form[pejabat_keputusan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                <option value="DISETUJUI">DISETUJUI</option>
-                                <option value="PERUBAHAN">PERUBAHAN</option>
-                                <option value="DITANGGUHKAN">DITANGGUHKAN</option>
-                                <option value="TIDAK DISETUJUI">TIDAK DISETUJUI</option>
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pejabat Berwenang</label>
-                                <input type="text" name="form[nama_pejabat]" placeholder="Contoh: Dr. dr. KINIK DARSONO, M.Pd.Ked." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP Pejabat</label>
-                                <input type="text" name="form[nip_pejabat]" placeholder="Contoh: 19710415 200903 1 001" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Pejabat Berwenang</label>
-                            <input type="text" name="form[jabatan_pejabat]" placeholder="Contoh: Direktur RSUD dr. Soeratno Gemolong Kabupaten Gemolong" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        </div>
-                    </div>
-                </div>
+
 
             </div>
 
