@@ -259,6 +259,17 @@
                                         $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
                                     }
 
+                                    $docxUrl = '#'; // Default placeholder
+                                    if ($tipeSuratDisplay === 'Surat Izin Cuti' && isset($kategori)) {
+                                        if ($kategori === 'PNS') $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
+                                        elseif ($kategori === 'PPPK') $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);
+                                        elseif ($kategori === 'NON ASN') $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
+                                    } elseif ($tipeSuratDisplay === 'Surat Keputusan Direktur') {
+                                        $docxUrl = route('template-surat.sk-direktur.docx', $idSurat);
+                                    } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)') {
+                                        $docxUrl = route('template-surat.sop.docx', $idSurat);
+                                    }
+
                                     $badgeColor = [
                                         'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                                         'Standar Operasional Prosedur (SOP)' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
@@ -293,7 +304,8 @@
                                                 '{{ addslashes($tipeSuratDisplay) }}',
                                                 '{{ $tanggalDibuat }}',
                                                 '{{ addslashes($dibuatOleh) }}',
-                                                '{{ $filePath }}'
+                                                '{{ $filePath }}',
+                                                '{{ $docxUrl }}'
                                             )"
                                                 class="inline-flex items-center p-1.5 text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
                                                 <i class="fas fa-eye text-sm"></i>
@@ -313,16 +325,13 @@
                                                             <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
                                                             PDF
                                                         </a>
-                                                        <a href="#"
+                                                        @if($docxUrl !== '#')
+                                                        <a href="{{ $docxUrl }}"
                                                             class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                             <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
                                                             DOCX
                                                         </a>
-                                                        <a href="#"
-                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <i class="fas fa-file-alt text-purple-600 mr-2 w-4"></i>
-                                                            RTF
-                                                        </a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @else
@@ -406,7 +415,7 @@
         class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus Surat</h3>
+                <h3 class="text-lg font-semibold text-green-600 dark:text-green-400">Konfirmasi Hapus Surat</h3>
                 <button onclick="closeModal('modalDeleteSurat')" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times"></i>
                 </button>
@@ -414,7 +423,7 @@
 
             <div class="p-6">
                 <p class="text-gray-600 dark:text-gray-400 mb-4">Apakah Anda yakin ingin menghapus surat ini?</p>
-                <div class="mt-4 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                     <p class="text-sm mb-2">
                         <span class="font-medium text-gray-700 dark:text-gray-300">Nama Surat:</span>
                         <span id="delete-nama-surat" class="text-gray-800 dark:text-gray-200">-</span>
@@ -438,7 +447,7 @@
                 <form id="formDeleteSurat" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Hapus Surat
                     </button>
                 </form>
@@ -458,7 +467,7 @@
             }));
         });
 
-        function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, dibuatOleh, filePath) {
+        function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, dibuatOleh, filePath, docxUrl) {
             const formatDate = (dateString) => {
                 if (!dateString) return '-';
                 const date = new Date(dateString);
@@ -504,35 +513,22 @@
 
             const modal = document.getElementById('modalDetailSurat');
             modal.dataset.suratId = idSurat;
+            modal.dataset.docxUrl = docxUrl;
             modal.classList.remove('hidden');
         }
 
         function downloadAsWord() {
-            const suratId = document.getElementById('modalDetailSurat').dataset.suratId;
-            if (!suratId) {
-                alert('ID surat tidak ditemukan');
+            const modal = document.getElementById('modalDetailSurat');
+            const docxUrl = modal.dataset.docxUrl;
+            
+            if (!docxUrl || docxUrl === '#') {
+                alert('File Word tidak tersedia untuk tipe surat ini.');
                 return;
             }
             
             const form = document.createElement('form');
             form.method = 'GET';
-            form.action = `/arsip-surat/${suratId}/download-word`;
-            form.style.display = 'none';
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
-        }
-
-        function downloadAsRTF() {
-            const suratId = document.getElementById('modalDetailSurat').dataset.suratId;
-            if (!suratId) {
-                alert('ID surat tidak ditemukan');
-                return;
-            }
-            
-            const form = document.createElement('form');
-            form.method = 'GET';
-            form.action = `/arsip-surat/${suratId}/download-rtf`;
+            form.action = docxUrl;
             form.style.display = 'none';
             document.body.appendChild(form);
             form.submit();

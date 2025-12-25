@@ -59,6 +59,10 @@
                                         class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
                                     <span class="text-sm text-gray-600 dark:text-gray-300">bulan</span>
                                 </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Lama masa kerja dalam tahun dan bulan
+                                </p>
                             </div>
                         </div>
 
@@ -96,6 +100,10 @@
                     <div class="p-4">
                         <div>
                             <textarea name="form[alasan]" required rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Jelaskan alasan cuti secara singkat dan jelas
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -132,10 +140,18 @@
                         <div>
                             <label class="block mb-2 text-gray-700 dark:text-gray-300">Alamat Lengkap <span class="text-red-500">*</span></label>
                             <textarea name="form[alamat]" required rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Alamat lengkap selama menjalankan cuti
+                            </p>
                         </div>
                         <div>
                             <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Telepon <span class="text-red-500">*</span></label>
                             <input type="tel" name="form[telp]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <<i class="fas fa-info-circle mr-1"></i>
+                                Nomor yang dapat dihubungi saat cuti
+                            </p>
                         </div>
                     </div>
                 </div>

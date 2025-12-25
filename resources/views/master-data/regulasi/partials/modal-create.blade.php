@@ -25,7 +25,6 @@
                             placeholder="Contoh: Undang-undang Nomor 36 Tahun 2009 tentang Kesehatan"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
                                    dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 resize-y">{{ old('isi_regulasi') }}</textarea>
-
                         <div id="isiRegulasiCounter" class="absolute bottom-2 right-2 text-xs text-gray-500">
                             0 karakter
                         </div>

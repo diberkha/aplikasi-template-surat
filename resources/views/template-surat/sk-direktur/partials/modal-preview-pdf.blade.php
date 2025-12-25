@@ -29,17 +29,12 @@
                         <a :href="fileUrl" :download="downloadFilename"
                             class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-file-pdf text-red-600 mr-3 w-5"></i>
-                            Download PDF
+                            PDF
                         </a>
                         <button @click="downloadAs('docx'); openDropdown = false"
                             class="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-file-word text-green-600 mr-3 w-5"></i>
-                            Download DOCX
-                        </button>
-                        <button @click="downloadAs('rtf'); openDropdown = false"
-                            class="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-file-alt text-purple-600 mr-3 w-5"></i>
-                            Download RTF
+                            DOCX
                         </button>
                     </div>
                 </div>
@@ -82,14 +77,13 @@
             tanggalDibuat: '',
             
             get downloadFilename() {
-                if (this.judulSurat && this.nomorSurat && this.tanggalDibuat) {
-                    const cleanJudul = this.judulSurat.replace(/[^a-zA-Z0-9]/g, '_');
-                    const cleanNomor = this.nomorSurat.replace(/[^a-zA-Z0-9]/g, '_');
-                    return `${cleanJudul}_${cleanNomor}_${this.tanggalDibuat}.pdf`;
+                if (this.nomorSurat) {
+                    const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
+                    return `SK Direktur-${cleanNomor}.pdf`;
                 }
-                return this.nomorSurat ? this.nomorSurat + '.pdf' : 'surat.pdf';
+                return 'SK_Direktur.pdf';
             },
-            
+           
             open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;
@@ -136,10 +130,7 @@
                         downloadUrl = `/arsip-surat/${this.suratId}/download`;
                         break;
                     case 'docx':
-                        downloadUrl = `/arsip-surat/${this.suratId}/download-word`;
-                        break;
-                    case 'rtf':
-                        downloadUrl = `/arsip-surat/${this.suratId}/download-rtf`;
+                        downloadUrl = `/template-surat/sk-direktur/docx/${this.suratId}`;
                         break;
                     default:
                         downloadUrl = `/arsip-surat/${this.suratId}/download`;

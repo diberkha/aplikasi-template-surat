@@ -53,7 +53,9 @@ class IzinCutiController extends Controller
                 'form.tanggal_surat' => 'required|date',
             ]);
 
-            $generatedNomor = 'CUTI-' . strtoupper($request->kategori) . '-' . now()->format('YmdHis');
+            $kategori = strtoupper($request->kategori);
+            $namaPegawai = $request->input('form.nama') ?? 'DRAFT';
+            $generatedNomor = 'CUTI-' . $kategori . '-' . $namaPegawai;
 
             $surat = Surat::create([
                 'nama_surat' => 'Surat Izin Cuti',
@@ -63,6 +65,10 @@ class IzinCutiController extends Controller
                 'id_regulasi' => null,
                 'created_by' => auth()->id(),
             ]);
+
+            // Ensure uniqueness by appending ID to nomor_surat
+            $uniqueNomor = $generatedNomor . '-' . str_pad($surat->id_surat, 3, '0', STR_PAD_LEFT);
+            $surat->update(['nomor_surat' => $uniqueNomor]);
 
             $cuti = SuratIzinCuti::create([
                 'id_surat' => $surat->id_surat,
@@ -111,8 +117,9 @@ class IzinCutiController extends Controller
 
     private function generateAndSavePDF($surat, $data)
     {
-        $kategori = str_replace(' ', '-', $data['kategori'] ?? 'PNS');
-        $fileName = 'Cuti-' . $kategori . '-' . time() . '.pdf';
+        $jenis = $data['kategori'] ?? 'PNS';
+        $nama = $data['form']['nama'] ?? 'Dokumen';
+        $fileName = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
         $filePath = 'arsip/' . $fileName;
 
         $view = 'template-surat.cuti.cuti-pns.pdf';
@@ -132,6 +139,7 @@ class IzinCutiController extends Controller
         Storage::put($filePath, $pdf->output());
         $surat->update(['file_path' => $filePath]);
     }
+
 
     public function destroy(TemplateSurat $template_surat)
     {

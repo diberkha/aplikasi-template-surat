@@ -14,7 +14,7 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus regulasi ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <div class="mt-4 bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Regulasi:</p>
                 <p id="delete-preview" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                     -
@@ -32,7 +32,6 @@
                 @method('DELETE')
                 <button type="submit"
                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-trash mr-2"></i>
                     Hapus Regulasi
                 </button>
             </form>

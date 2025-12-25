@@ -66,34 +66,73 @@ class ArsipSuratController extends Controller
 
     public function show($id)
     {
-        $surat = Surat::findOrFail($id);
+        $surat = Surat::with('template', 'sop')->findOrFail($id);
 
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
             abort(404, 'File surat tidak ditemukan.');
         }
 
+        $templateName = $surat->template ? $surat->template->nama_template_surat : '';
+        $filename = 'surat.pdf'; // Fallback
+        
+        if (str_contains($templateName, 'Surat Izin Cuti')) {
+            $jenis = 'PNS';
+            if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
+            if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
+            $parts = explode('-', $surat->nomor_surat);
+            $nama = $parts[2] ?? 'Dokumen';
+            $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
+        } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
+            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+        } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
+            $sop = $surat->sop;
+            $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
+            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+        } else {
+            $cleanJudul = str_replace(' ', '-', trim($surat->nama_surat ?? $templateName));
+            $cleanNomor = str_replace('/', '-', trim($surat->nomor_surat));
+            $filename = "{$cleanJudul}-{$cleanNomor}.pdf";
+        }
+
         return response()->file($path, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
     }
 
     public function download($id)
     {
-        $surat = Surat::findOrFail($id);
-
+        $surat = Surat::with('template', 'sop')->findOrFail($id);
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
             return back()->with('error', 'File surat tidak ditemukan.');
         }
 
-        $cleanJudul = preg_replace('/\s+/', '_', trim($surat->judul_surat));
-        $cleanJudul = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanJudul);
-        $cleanNomor = preg_replace('/\s+/', '_', trim($surat->nomor_surat));
-        $cleanNomor = preg_replace('/[^a-zA-Z0-9_]/', '', $cleanNomor);
-        $tanggal = \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('d-m-Y');
-        $filename = "{$cleanJudul}_{$cleanNomor}_{$tanggal}.pdf";
+        $templateName = $surat->template ? $surat->template->nama_template_surat : '';
+        $filename = 'surat.pdf'; // Fallback
+        
+        if (str_contains($templateName, 'Surat Izin Cuti')) {
+            $jenis = 'PNS';
+            if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
+            if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
+            
+            // Try to get name from nomor_surat if possible, or fallback to full nomor
+            // nomor_surat format: CUTI-[KATEGORI]-[NAMA]-[ID]
+            $parts = explode('-', $surat->nomor_surat);
+            $nama = $parts[2] ?? 'Dokumen';
+            $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
+        } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
+            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+        } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
+            $sop = $surat->sop;
+            $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
+            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+        } else {
+            $cleanJudul = str_replace(' ', '-', trim($surat->nama_surat ?? $templateName));
+            $cleanNomor = str_replace('/', '-', trim($surat->nomor_surat));
+            $filename = "{$cleanJudul}-{$cleanNomor}.pdf";
+        }
 
         return response()->download($path, $filename);
     }

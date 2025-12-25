@@ -16,7 +16,10 @@
                     </button>
                     <div x-show="openDropdown" @click.outside="openDropdown = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-50">
                          <a :href="fileUrl" :download="downloadFilename" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-file-pdf text-red-600 mr-3 w-5"></i> PDF
+                            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
+                        </a>
+                        <a :href="'{{ url('template-surat/cuti/pppk/docx') }}/' + suratId" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-file-word text-green-600 mr-2 w-4"></i> DOCX
                         </a>
                     </div>
                 </div>
@@ -31,7 +34,7 @@
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
              <div class="text-sm text-gray-600 dark:text-gray-400">
                 <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                <span x-text="(judulSurat || 'Dokumen') + ' berhasil dibuat dan disimpan'"></span>
+                <span x-text="Surat berhasil dibuat dan disimpan"></span>
             </div>
             <a href="{{ route('arsip-surat.index') }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
                 <i class="fas fa-arrow-right mr-2"></i> Lihat di Arsip
@@ -49,7 +52,14 @@
             suratId: null,
             judulSurat: '',
             tanggalDibuat: '',
-            get downloadFilename() { return this.nomorSurat ? this.nomorSurat + '.pdf' : 'doc.pdf'; },
+            get downloadFilename() {
+                if (this.nomorSurat) {
+                    const parts = this.nomorSurat.split('-');
+                    const nama = parts[2] ?? 'Dokumen';
+                    return `Surat Izin Cuti-PPPK-${nama}.pdf`;
+                }
+                return 'Surat_Izin_Cuti_PPPK.pdf';
+            },
             open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;

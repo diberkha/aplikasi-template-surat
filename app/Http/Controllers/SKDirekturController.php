@@ -182,12 +182,27 @@ class SKDirekturController extends Controller
 
     public function file($id)
     {
-        $surat = Surat::findOrFail($id);
+        $surat = Surat::with('template', 'sop')->findOrFail($id);
         $path = storage_path('app/' . $surat->file_path);
         if (!file_exists($path)) {
             abort(404, 'File tidak ditemukan');
         }
-        return response()->file($path);
+
+        $templateName = $surat->template ? $surat->template->nama_template_surat : '';
+        $filename = 'surat.pdf'; // Fallback
+        
+        if (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
+            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+        } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
+            $sop = $surat->sop;
+            $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
+            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 
     public function destroy(TemplateSurat $template_surat)
@@ -230,7 +245,7 @@ class SKDirekturController extends Controller
 
     private function generateAndSavePDF($surat, $data)
     {
-        $fileName = 'SK-Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '-' . time() . '.pdf';
+        $fileName = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
         $filePath = 'arsip/' . $fileName;
 
         try {

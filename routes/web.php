@@ -12,6 +12,11 @@ use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\RegulasiController;
 use App\Http\Controllers\SOPController;
 use App\Http\Controllers\IzinCutiController;
+use App\Http\Controllers\IzinCutiPNSController;
+use App\Http\Controllers\IzinCutiPPPKController;
+use App\Http\Controllers\IzinCutiNonAsnController;
+use App\Http\Controllers\SKDirekturDocxController;
+use App\Http\Controllers\SOPDocxController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -75,6 +80,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/cuti/store', [IzinCutiController::class, 'store'])->name('cuti.store');
         Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');
         Route::get('/cuti/pdf/{id}', [TemplateSuratController::class, 'file'])->name('cuti.file');
+        
+        // Categorical DOCX Routes
+        Route::get('/cuti/pns/docx/{id}', [IzinCutiPNSController::class, 'download'])->name('cuti.pns.docx');
+        Route::get('/cuti/pppk/docx/{id}', [IzinCutiPPPKController::class, 'download'])->name('cuti.pppk.docx');
+        Route::get('/cuti/nonasn/docx/{id}', [IzinCutiNonAsnController::class, 'download'])->name('cuti.nonasn.docx');
+        
+        // SK Direktur & SOP DOCX Routes
+        Route::get('/sk-direktur/docx/{id}', [SKDirekturDocxController::class, 'download'])->name('sk-direktur.docx');
+        Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
     });
 
 

@@ -166,8 +166,8 @@ class SOPController extends Controller
 
     private function generateAndSavePDF($surat, $data)
     {
-        $nomor = $data['nomor_dokumen'] ?? str_replace('/', '-', $surat->nomor_surat);
-        $fileName = 'SOP-' . str_replace('/', '-', $nomor) . '-' . time() . '.pdf';
+        $nomor = $data['nomor_dokumen'] ?? $surat->nomor_surat;
+        $fileName = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
         $filePath = 'arsip/' . $fileName;
 
         try {

@@ -14,10 +14,12 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus ruangan ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <p class="text-sm mb-2">
-                <span class="font-medium text-gray-700 dark:text-gray-300">Nama Ruangan:</span>
-                <span id="delete-nama-ruangan" class="text-gray-800 dark:text-gray-200">-</span>
-            </p>
+            <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <p class="text-sm">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Nama Ruangan:</span>
+                    <span id="delete-nama-ruangan" class="text-gray-800 dark:text-gray-200">-</span>
+                </p>
+            </div>
         </div>
 
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
