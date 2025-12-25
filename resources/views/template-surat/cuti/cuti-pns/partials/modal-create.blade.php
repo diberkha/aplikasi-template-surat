@@ -95,7 +95,6 @@
                     </div>
                     <div class="p-4">
                         <div>
-                            <!-- <label class="block mb-2 text-gray-700 dark:text-gray-300">Jelaskan Alasan Pengajuan Cuti <span class="text-red-500">*</span></label> -->
                             <textarea name="form[alasan]" required rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
@@ -123,47 +122,7 @@
                     </div>
                 </div>
 
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">V. CATATAN CUTI</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">(Diisi jika ada catatan riwayat cuti sebelumnya)</p>
-                    </div>
-                    <div class="p-4">
-                        <!-- N-2 -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N-2</label>
-                                <input type="text" name="form[catatan_n2]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N-2</label>
-                                <input type="text" name="form[catatan_n2_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
-                            </div>
-                        </div>
-                        <!-- N-1 -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N-1</label>
-                                <input type="text" name="form[catatan_n1]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N-1</label>
-                                <input type="text" name="form[catatan_n1_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
-                            </div>
-                        </div>
-                        <!-- N -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Sisa Cuti N</label>
-                                <input type="text" name="form[catatan_n]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Sisa">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Keterangan N</label>
-                                <input type="text" name="form[catatan_n_keterangan]" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" placeholder="Keterangan">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
@@ -203,9 +162,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
@@ -221,6 +177,8 @@
 </div>
 
 <script>
+
+
 function submitCutiForm(e){
     e.preventDefault();
     const form = document.getElementById('cutiForm');
@@ -245,7 +203,7 @@ function submitCutiForm(e){
         }else if(res.data.success){
             closeModal('modalCreateCuti');
             form.reset();
-            openPreviewPDF(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti', new Date().toISOString().slice(0,10));
+            openPreviewPDFPNS(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti', new Date().toISOString().slice(0,10));
         }
     })
     .catch(err=>alert('Error: '+err.message))

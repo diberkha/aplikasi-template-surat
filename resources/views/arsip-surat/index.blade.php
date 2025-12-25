@@ -244,11 +244,10 @@
                                         $formData = $item->cuti->form_data ?? [];
                                         $namaPegawai = is_array($formData) ? ($formData['nama'] ?? '') : '';
                                         if ($namaPegawai) {
-                                            $namaPegawai = strtoupper(str_replace(' ', '-', $namaPegawai));
+                                            $namaPegawai = strtoupper(str_replace(' ', ' ', $namaPegawai));
                                             $nomorSurat = 'CUTI-' . $kategori . '-' . $namaPegawai;
                                         }
 
-                                        // tampilkan badge tipe generik, nama surat memuat kategori
                                         $kategoriLabel = trim($kategori);
                                         if (!$kategoriLabel) {
                                             $kategoriLabel = trim(str_ireplace('Surat Izin Cuti', '', $tipeSurat));

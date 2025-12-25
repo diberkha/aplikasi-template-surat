@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Surat;
@@ -11,7 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class CutiController extends Controller
+class IzinCutiController extends Controller
 {
     public function index(Request $request)
     {
@@ -116,9 +115,9 @@ class CutiController extends Controller
         $fileName = 'Cuti-' . $kategori . '-' . time() . '.pdf';
         $filePath = 'arsip/' . $fileName;
 
-        $view = 'template-surat.cuti.pdf-pns';
-        if ($data['kategori'] === 'PPPK') $view = 'template-surat.cuti.pdf-pppk';
-        if ($data['kategori'] === 'NON ASN') $view = 'template-surat.cuti.pdf-nonasn';
+        $view = 'template-surat.cuti.cuti-pns.pdf';
+        if ($data['kategori'] === 'PPPK') $view = 'template-surat.cuti.cuti-pppk.pdf';
+        if ($data['kategori'] === 'NON ASN') $view = 'template-surat.cuti.cuti-nonasn.pdf';
 
         $html = view($view, ['data' => $data, 'surat' => $surat])->render();
         $pdf = Pdf::loadHTML($html)
@@ -132,5 +131,44 @@ class CutiController extends Controller
         if (!Storage::exists('arsip')) Storage::makeDirectory('arsip');
         Storage::put($filePath, $pdf->output());
         $surat->update(['file_path' => $filePath]);
+    }
+
+    public function destroy(TemplateSurat $template_surat)
+    {
+        try {
+            $templateName = $template_surat->nama_template_surat;
+            $allowed = ['Surat Izin Cuti PNS', 'Surat Izin Cuti PPPK', 'Surat Izin Cuti Non ASN'];
+
+            if (!in_array($templateName, $allowed)) {
+                if (request()->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Template bukan Surat Izin Cuti',
+                    ], 403);
+                }
+                return redirect()->back()->with('error', 'Template bukan Surat Izin Cuti');
+            }
+
+            $template_surat->delete();
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Template berhasil dihapus',
+                    'name' => $templateName,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Template berhasil dihapus');
+        } catch (Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus template: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Gagal menghapus template.');
+        }
     }
 }

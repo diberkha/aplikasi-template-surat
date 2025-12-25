@@ -1,6 +1,6 @@
 <x-template-header title="Template Standar Operasional Prosedur (SOP)"
     subtitle="Pilih dan gunakan template Standar Operasional Prosedur (SOP) yang tersedia" tableTitle="Daftar Template Standar Operasional Prosedur (SOP)"
-    searchPlaceholder="Cari template Standar Operasional Prosedur (SOP)...">
+    searchPlaceholder="Cari template...">
 
     @if(session('success'))
         <div class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">

@@ -24,7 +24,7 @@
         }
         td, th { 
             border: 1px solid #000; 
-            padding: 0;
+            padding: 3px 5px !important;
             vertical-align: top;
             font-size: 10pt;
         }
@@ -34,42 +34,39 @@
         .center { text-align: center; }
         .underline { text-decoration: underline; }
         .section-header { 
-            padding: 0;
-            font-weight: normal;
+            padding: 2px 4px !important;
+        }
+        .header-right {
+            font-size: 10pt;
+            line-height: 1.4;
+            text-align: left;
+            margin-left: 120px; 
         }
         .form-title {
             font-weight: normal;
             text-align: center;
             margin: 15px 0;
-            font-size: 10pt; 
-        }
-        .header-right {
-            text-align: left;
-            margin-left: 100px; 
+            font-size: 10pt;
+            text-transform: uppercase;
         }
         .catatan-section td {
-             padding: 0;
+             padding: 1px;
              vertical-align: top;
+             font-size: 10pt; 
+             line-height: 1.2; 
         }
     </style>
 </head>
 <body>
     <?php 
         $f = $data['form'] ?? [];
-        
         function formatTanggalIndonesia($tanggal) {
             if (empty($tanggal)) return '';
-            
-            $bulan = array(
-                1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-            );
-            
+            $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
             $timestamp = strtotime($tanggal);
             $hari = date('d', $timestamp);
             $bulanAngka = date('n', $timestamp);
             $tahun = date('Y', $timestamp);
-            
             return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
         }
     ?>
@@ -81,7 +78,7 @@
                 <td style="width: 60%">
                     <div class="header-right">
                         <?= $f['tempat_surat'] ?? 'Sragen' ?>, <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
-                        Kepada :<br>
+                        kepada :<br>
                         Yth. Direktur RSUD dr. Soeratno Gemolong<br>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kabupaten Sragen<br>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;di-<br>
@@ -102,9 +99,9 @@
             </tr>
             <tr>
                 <td style="width: 15%">Nama</td>
-                <td style="width: 55%"><?= $f['nama'] ?? '' ?></td>
+                <td style="width: 45%"><?= $f['nama'] ?? '' ?></td>
                 <td style="width: 15%">Masa Kerja</td>
-                <td style="width: 45%">
+                <td style="width: 25%">
                     <?php
                         $mkTh = $f['masa_kerja_tahun'] ?? '';
                         $mkBl = $f['masa_kerja_bulan'] ?? '';
@@ -114,8 +111,9 @@
                 </td>
             </tr>
             <tr>
-                <td>Jabatan</td>
-                <td colspan="3"><?= $f['jabatan'] ?? '' ?></td>
+                <td style="width: 15%">Jabatan</td>
+                <td style="width: 45%"><?= $f['jabatan'] ?? '' ?></td>
+                <td colspan="2"></td>
             </tr>
             <tr>
                 <td>Unit Kerja</td>
@@ -129,20 +127,20 @@
                 <td colspan="2" class="section-header">II. JENIS CUTI YANG DIAMBIL**</td>
             </tr>
             <tr>
-                <td style="width: 55%">1. Cuti Tahunan</td>
-                <td style="width: 45%; text-align: center;">
+                <td style="width: 60%">1. Cuti Tahunan</td>
+                <td class="center" style="width: 40%">
                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Tahunan') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
                 <td>2. Cuti Besar</td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Besar') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
                 <td>3. Cuti Melahirkan</td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?>
                 </td>
             </tr>
@@ -154,7 +152,7 @@
                 <td class="section-header">III. ALASAN CUTI</td>
             </tr>
             <tr>
-                <td style="min-height: 40px; padding: 2px;">
+                <td style="min-height: 40px;">
                     <?= nl2br($f['alasan'] ?? '') ?>
                 </td>
             </tr>
@@ -167,7 +165,7 @@
             </tr>
             <tr>
                 <td style="width: 10%" class="center">Selama</td>
-                <td style="width: 15%" class="center"><?= $f['lama_cuti'] ?? '' ?> hari</td>
+                <td style="width: 15%"><?= $f['lama_cuti'] ?? '' ?> hari</td>
                 <td style="width: 15%" class="center">mulai tanggal</td>
                 <td style="width: 20%"><?= isset($f['mulai']) ? formatTanggalIndonesia($f['mulai']) : '' ?></td>
                 <td style="width: 10%" class="center">s/d</td>
@@ -180,11 +178,11 @@
             <tr>
                 <td colspan="5" class="section-header">V. CATATAN CUTI***</td>
             </tr>
-            <tr>
+             <tr>
                 <td colspan="3" style="width: 2.35in">1. CUTI TAHUNAN</td>
                 <td style="width: 2.35in">2. CUTI BESAR</td>
                 <td style="width: 0.89in" class="center">
-                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Besar') ? 'V' : '' ?>
+                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Besar') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
@@ -192,84 +190,70 @@
                 <td style="width: 0.5in;">Sisa</td>
                 <td style="width: 1.5in;">Keterangan</td>
                 <td>3. CUTI MELAHIRKAN</td>
-                <td style="text-align: center;">
-                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?>
+                <td class="center">
+                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: left;">N</td>
-                <td style="text-align: left;"><?= $f['catatan_n'] ?? '' ?></td>
-                <td style="text-align: left;"><?= $f['catatan_n_keterangan'] ?? '' ?></td>
-                <td></td>
-                <td></td>
+                <td>N</td>
+                <td><?= $f['catatan_n'] ?? '' ?></td>
+                <td><?= $f['catatan_n_keterangan'] ?? '' ?></td>
+                <td colspan="2"></td>
             </tr>
         </table>
 
         <!-- VI. ALAMAT SELAMA MENJALANKAN CUTI -->
         <table>
             <tr>
-                <td colspan="3" class="section-header">VI. ALAMAT SELAMA MENJALANKAN CUTI :</td>
+                <td colspan="3" class="section-header">VI. ALAMAT SELAMA MENJALANKAN CUTI</td>
             </tr>
             <tr>
-                <td style="width: 55%; vertical-align: top; border-bottom: none;">
+                <td style="width: 55%;">
                     <?= nl2br($f['alamat'] ?? '') ?>
                 </td>
-                <td style="width: 15%; vertical-align: top;">TELP</td>
-                <td style="width: 35%; vertical-align: top;">
-                    <?= $f['telp'] ?? '' ?>
-                </td>
+                <td style="width: 15%;">TELP</td>
+                <td style="width: 30%;"><?= $f['telp'] ?? '' ?></td>
             </tr>
             <tr>
-                <td style="width: 45%; vertical-align: top;"></td>
-                <td colspan="2" style="text-align: center; vertical-align: bottom; padding-bottom: 8px;">
+                <td style="width: 55%;"></td>
+                <td colspan="2" class="center" style="vertical-align: middle; padding: 8px;">
                     Hormat saya,<br><br><br><br>
-                    <span class="underline"><?= $f['nama'] ?? '' ?></span><br>
-                 </td>
+                    <span class="underline"><?= $f['nama'] ?? '' ?></span>
+                </td>
             </tr>
         </table>
 
         <!-- VII. PERTIMBANGAN ATASAN LANGSUNG -->
         <table>
             <tr>
-                <td colspan="4" class="section-header">VII. PERTIMBANGAN ATASAN LANGSUNG**</td>
+                <td colspan="4" class="section-header">VII. PERTIMBANGAN ATASAN LANGSUNG</td>
             </tr>
             <tr>
-                <td style="width: 16%;">DISETUJUI</td>
-                <td style="width: 17%;">PERUBAHAN****</td>
-                <td style="width: 17%;">DITANGGUHKAN****</td>
-                <td style="width: 50%;">TIDAK DISETUJUI****</td>
+                <td style="width: 16%">DISETUJUI</td>
+                <td style="width: 17%">PERUBAHAN****</td>
+                <td style="width: 17%">DITANGGUHKAN****</td>
+                <td style="width: 50%">TIDAK DISETUJUI****</td>
             </tr>
             <tr>
-                <td style="text-align: center; height: 20px;">
+                <td class="center" style="height: 20px;">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'DISETUJUI') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'PERUBAHAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'DITANGGUHKAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'TIDAK DISETUJUI') ? 'V' : '' ?>
                 </td>
             </tr>
-            <tr>
-                <td colspan="3" style="border: none;"></td>
-                <td style="text-align: center; vertical-align: middle; padding: 8px; height: 100px;">
-                    <?php if (!empty($f['jabatan_atasan'])): ?>
-                        <?= strtoupper($f['jabatan_atasan']) ?><br><br><br><br>
-                    <?php else: ?>
-                        KEPALA SEKSI KEPERAWATAN DAN<br>PENUNJANG NON MEDIS<br><br><br><br>
-                    <?php endif; ?>
-                    <?php if (!empty($f['nama_atasan'])): ?>
-                        <u><?= strtoupper($f['nama_atasan']) ?></u><br>
-                        <?php if (!empty($f['nip_atasan'])): ?>
-                            NIP. <?= $f['nip_atasan'] ?>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <u>LILIK SUBAGYO, S.Kep. Ns.</u><br>
-                        NIP. 19830804 201001 1 016
-                    <?php endif; ?>
+             <tr>
+                <td colspan="3" style="border: none; width: 100%;"></td>
+                 <td class="center" style="vertical-align: middle; padding: 8px;">
+                    <?= strtoupper($f['jabatan_atasan'] ?? 'Atasan') ?><br><br><br><br>
+                    <u><?= strtoupper($f['nama_atasan'] ?? '') ?></u><br>
+                    NIP. <?= $f['nip_atasan'] ?? '' ?>
                 </td>
             </tr>
         </table>
@@ -286,61 +270,50 @@
                 <td style="width: 50%;">TIDAK DISETUJUI****</td>
             </tr>
             <tr>
-                <td style="text-align: center; height: 20px;">
+                <td class="center" style="height: 20px;">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'DISETUJUI') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'PERUBAHAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'DITANGGUHKAN') ? 'V' : '' ?>
                 </td>
-                <td style="text-align: center;">
+                <td class="center">
                     <?= (isset($f['pejabat_keputusan']) && $f['pejabat_keputusan'] == 'TIDAK DISETUJUI') ? 'V' : '' ?>
                 </td>
             </tr>
             <tr>
-                <td colspan="3" style="border: none; vertical-align: top;">
-                    <table class="no-border" style="font-size: 10pt; line-height: 1.2; width: 100%;">
+                <td colspan="3" style="border: none;">
+                    <table class="no-border catatan-section" style="width: 100%;">
                         <tr>
                             <td colspan="2" style="padding: 1px;">Catatan:</td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">*</td>
-                            <td style="padding: 1px;">Coret yang tidak perlu</td>
+                            <td>Coret yang tidak perlu</td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">**</td>
-                            <td style="padding: 1px;">Pilih salah satu dengan memberi tanda centang (V)</td>
+                            <td>Pilih salah satu dengan memberi tanda centang (V)</td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">***</td>
-                            <td style="padding: 1px;">diisi oleh pejabat yang menangani bidang kepegawaian sebelum Non ASN mengajukan cuti</td>
+                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum PPPK mengajukan cuti</td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">****</td>
-                            <td style="padding: 1px;">diberi tanda centang dan alasannya...</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 15px; padding: 1px;">N</td>
-                            <td style="padding: 1px;">= Cuti tahun berjalan</td>
+                            <td>diberi tanda centang dan alasannya</td>
                         </tr>
                     </table>
                 </td>
-                <td style="text-align: center; vertical-align: middle; padding: 8px;">
+                <td class="center" style="vertical-align: middle; padding: 8px;">
                     KEPUTUSAN PEJABAT YANG<br>
                     BERWENANG MEMBERIKAN CUTI<br>
                     DIREKTUR RSUD dr. SOERATNO GEMOLONG<br>
                     KABUPATEN GEMOLONG<br><br><br><br>
-                    <?php if (!empty($f['nama_direktur'])): ?>
-                        <u><?= strtoupper($f['nama_direktur']) ?></u><br>
-                        <?php if (!empty($f['nip_direktur'])): ?>
-                            NIP. <?= $f['nip_direktur'] ?>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <u>Dr. dr. KINIK DARSONO, M.Pd.Ked.</u><br>
-                        NIP. 19710415 200903 1 001
-                    <?php endif; ?>
+                    <u>Dr. dr. KINIK DARSONO, M.Pd.Ked.</u><br>
+                    NIP. 19710415 200903 1 001
                 </td>
             </tr>
         </table>

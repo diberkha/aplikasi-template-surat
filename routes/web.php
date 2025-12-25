@@ -11,7 +11,7 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\RegulasiController;
 use App\Http\Controllers\SOPController;
-use App\Http\Controllers\CutiController;
+use App\Http\Controllers\IzinCutiController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -71,8 +71,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
         Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
         Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])->whereNumber('template_surat')->name('sop.destroy');
-        Route::get('/cuti', [CutiController::class, 'index'])->name('cuti.index');
-        Route::post('/cuti/store', [CutiController::class, 'store'])->name('cuti.store');
+        Route::get('/cuti', [IzinCutiController::class, 'index'])->name('cuti.index');
+        Route::post('/cuti/store', [IzinCutiController::class, 'store'])->name('cuti.store');
+        Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');
         Route::get('/cuti/pdf/{id}', [TemplateSuratController::class, 'file'])->name('cuti.file');
     });
 

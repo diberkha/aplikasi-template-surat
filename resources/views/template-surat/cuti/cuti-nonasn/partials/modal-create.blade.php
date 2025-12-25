@@ -1,24 +1,23 @@
-<div id="modalCreateCutiPPPK" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
+<div id="modalCreateCutiNonASN" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modalTitlePPPK">Buat Surat Izin Cuti PPPK</h3>
-            <button onclick="closeModal('modalCreateCutiPPPK')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modalTitleNonASN">Buat Surat Izin Cuti Non ASN</h3>
+            <button onclick="closeModal('modalCreateCutiNonASN')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
         </div>
 
-        <form action="{{ route('template-surat.cuti.store') }}" method="POST" id="cutiFormPPPK" onsubmit="submitCutiFormPPPK(event)">
+        <form action="{{ route('template-surat.cuti.store') }}" method="POST" id="cutiFormNonASN" onsubmit="submitCutiFormNonASN(event)">
             @csrf
-            <input type="hidden" name="template_id" id="template_surat_cuti_pppk">
-            <input type="hidden" name="kategori" id="kategori_cuti_pppk" value="PPPK">
+            <input type="hidden" name="template_id" id="template_surat_cuti_nonasn">
+            <input type="hidden" name="kategori" id="kategori_cuti_nonasn" value="NON ASN">
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
-                <!-- Tempat dan Tanggal Surat -->
                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tempat Surat <span class="text-red-500">*</span></label>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tempat <span class="text-red-500">*</span></label>
                             <input type="text" name="form[tempat_surat]" value="Sragen" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                         </div>
                         <div>
@@ -33,15 +32,9 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">I. DATA PEGAWAI</h4>
                     </div>
                     <div class="p-4 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
-                                <input type="text" name="form[nama]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP <span class="text-red-500">*</span></label>
-                                <input type="text" name="form[nip]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
+                            <input type="text" name="form[nama]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -52,11 +45,9 @@
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Masa Kerja</label>
                                 <div class="flex items-center space-x-2">
-                                    <input type="number" name="form[masa_kerja_tahun]" min="0" placeholder="0"
-                                        class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                                    <input type="number" name="form[masa_kerja_tahun]" min="0" placeholder="0" class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
                                     <span class="text-sm text-gray-600 dark:text-gray-300">tahun</span>
-                                    <input type="number" name="form[masa_kerja_bulan]" min="0" max="11" placeholder="0"
-                                        class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                                    <input type="number" name="form[masa_kerja_bulan]" min="0" max="11" placeholder="0" class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
                                     <span class="text-sm text-gray-600 dark:text-gray-300">bulan</span>
                                 </div>
                             </div>
@@ -79,7 +70,7 @@
                             <select name="form[jenis_cuti]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                                 <option value="">-- Pilih Jenis Cuti --</option>
                                 <option value="Cuti Tahunan">1. Cuti Tahunan</option>
-                                <option value="Cuti Sakit">2. Cuti Sakit</option>
+                                <option value="Cuti Besar">2. Cuti Besar</option>
                                 <option value="Cuti Melahirkan">3. Cuti Melahirkan</option>
                             </select>
                         </div>
@@ -92,7 +83,6 @@
                     </div>
                     <div class="p-4">
                         <div>
-                            <!-- <label class="block mb-2 text-gray-700 dark:text-gray-300">Jelaskan Alasan Pengajuan Cuti <span class="text-red-500">*</span></label> -->
                             <textarea name="form[alasan]" required rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
@@ -119,6 +109,8 @@
                         </div>
                     </div>
                 </div>
+
+
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
@@ -158,13 +150,10 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
 
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
-                <button type="button" onclick="document.getElementById('cutiFormPPPK').reset()" class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                <button type="button" onclick="document.getElementById('cutiFormNonASN').reset()" class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                     Reset
                 </button>
                 <button type="submit" class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
@@ -176,9 +165,11 @@
 </div>
 
 <script>
-function submitCutiFormPPPK(e){
+
+
+function submitCutiFormNonASN(e){
     e.preventDefault();
-    const form = document.getElementById('cutiFormPPPK');
+    const form = document.getElementById('cutiFormNonASN');
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true; 
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
@@ -198,9 +189,13 @@ function submitCutiFormPPPK(e){
         if(!res.ok){
             alert(res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.');
         }else if(res.data.success){
-            closeModal('modalCreateCutiPPPK');
+            closeModal('modalCreateCutiNonASN');
             form.reset();
-            openPreviewPDF(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti PPPK', new Date().toISOString().slice(0,10));
+            if(typeof openPreviewPDFNonASN === 'function') {
+                openPreviewPDFNonASN(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti Non ASN', new Date().toISOString().slice(0,10));
+            } else {
+                 alert('Berhasil dibuat!');
+            }
         }
     })
     .catch(err=>alert('Error: '+err.message))
