@@ -138,7 +138,7 @@
         @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
             <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-sm text-blue-800 dark:text-blue-300 font-medium">Filter aktif:</span>
+                    <span class="text-sm text-blue-800 dark:text-blue-300 font-medium">Filter:</span>
 
                     @if(request()->has('search'))
                         <span

@@ -35,36 +35,36 @@ class SOPDocxController extends Controller
             $phpWord->addTableStyle('SOPTable', $sopTableStyle);
             $table = $section->addTable('SOPTable');
 
-            // Row 1: Logo & Title
+            // Logo & Title
             $table->addRow((int) Converter::inchToTwip(1.0));
             $logoCell = $table->addCell((int) Converter::inchToTwip(1.87), ['vMerge' => 'restart', 'valign' => 'center']);
             $logoPath = public_path('img/logo-sragen.png');
             if (file_exists($logoPath)) {
                 $logoCell->addImage($logoPath, ['width' => (int) Converter::inchToPoint(0.8), 'alignment' => Jc::CENTER]);
             }
-            $logoCell->addText('RSUD dr. SOERATNO', ['bold' => true], ['alignment' => Jc::CENTER]);
-            $logoCell->addText('GEMOLONG', ['bold' => true], ['alignment' => Jc::CENTER]);
+            $logoCell->addText('RSUD dr. SOERATNO', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
+            $logoCell->addText('GEMOLONG', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
 
             $titleCell = $table->addCell((int) Converter::inchToTwip(4.0), ['gridSpan' => 3, 'valign' => 'center']);
             $titleCell->addText($data['judul_sop'] ?? '', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER]);
 
-            // Row 2: Info Grid
+            // Info
             $table->addRow();
             $table->addCell(null, ['vMerge' => 'continue']); 
             
-            $docNoCell = $table->addCell((int) Converter::inchToTwip(1.33), ['valign' => 'center']);
+            $docNoCell = $table->addCell((int) Converter::inchToTwip(2.1), ['valign' => 'center']);
             $docNoCell->addText('No. Dokumen', null, ['alignment' => Jc::CENTER]);
             $docNoCell->addText($data['nomor_dokumen'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.33), ['valign' => 'center']);
+            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.1), ['valign' => 'center']);
             $revNoCell->addText('No. Revisi', null, ['alignment' => Jc::CENTER]);
             $revNoCell->addText($data['nomor_revisi'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $pageCell = $table->addCell((int) Converter::inchToTwip(1.34), ['valign' => 'center']);
+            $pageCell = $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center']);
             $pageCell->addText('Halaman', null, ['alignment' => Jc::CENTER]);
             $pageCell->addText($data['halaman'] ?? '1/1', null, ['alignment' => Jc::CENTER]);
 
-            // Row 3: SPO Header
+            // SOP Header
             $table->addRow((int) Converter::inchToTwip(0.8));
             $spoCell = $table->addCell((int) Converter::inchToTwip(1.87), ['valign' => 'center']);
             $spoCell->addText('STANDAR', ['bold' => true], ['alignment' => Jc::CENTER]);
@@ -81,10 +81,10 @@ class SOPDocxController extends Controller
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(2);
-            $signCell->addText('Dr. dr. Kinik Darsono, M.Pd.Ked.', ['underline' => 'single', 'bold' => true], ['alignment' => Jc::CENTER]);
+            $signCell->addText('Dr. dr. Kinik Darsono, M.Pd.Ked.', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
 
-            // Content Rows
+            // CONTENT
             $contentRows = [
                 'Pengertian' => $data['pengertian'] ?? '',
                 'Tujuan' => $data['tujuan'] ?? '',
@@ -97,10 +97,21 @@ class SOPDocxController extends Controller
                 $table->addRow();
                 $table->addCell((int) Converter::inchToTwip(1.87))->addText($label);
                 $cell = $table->addCell((int) Converter::inchToTwip(5.4), ['gridSpan' => 3]);
-                
-                if (is_array($content)) {
-                    foreach ($content as $item) {
-                        $cell->addListItem(strip_tags($item), 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER]);
+
+                if (in_array($label, ['Kebijakan', 'Prosedur'])) {
+                    $items = is_array($content) ? $content : preg_split('/\r?\n|\r|\•|\d+\./', $content, -1, PREG_SPLIT_NO_EMPTY);
+                    $listStyle = $label . 'Numbering';
+                    $phpWord->addNumberingStyle($listStyle, [
+                        'type' => 'singleLevel',
+                        'levels' => [
+                            ['format' => 'decimal', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360]
+                        ]
+                    ]);
+                    foreach ($items as $item) {
+                        $text = trim(strip_tags($item));
+                        if ($text !== '') {
+                            $cell->addListItem($text, 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER, 'numStyle' => $listStyle]);
+                        }
                     }
                 } else {
                     $cell->addText($content, null, ['alignment' => Jc::BOTH]);
