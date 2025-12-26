@@ -74,7 +74,7 @@ class ArsipSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; // Fallback
+        $filename = 'surat.pdf';
         
         if (str_contains($templateName, 'Surat Izin Cuti')) {
             $jenis = 'PNS';
@@ -110,15 +110,12 @@ class ArsipSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; // Fallback
-        
+        $filename = 'surat.pdf'; 
         if (str_contains($templateName, 'Surat Izin Cuti')) {
             $jenis = 'PNS';
             if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
             if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
             
-            // Try to get name from nomor_surat if possible, or fallback to full nomor
-            // nomor_surat format: CUTI-[KATEGORI]-[NAMA]-[ID]
             $parts = explode('-', $surat->nomor_surat);
             $nama = $parts[2] ?? 'Dokumen';
             $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";

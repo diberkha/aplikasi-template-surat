@@ -259,7 +259,7 @@
                                         $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
                                     }
 
-                                    $docxUrl = '#'; // Default placeholder
+                                    $docxUrl = '#'; 
                                     if ($tipeSuratDisplay === 'Surat Izin Cuti' && isset($kategori)) {
                                         if ($kategori === 'PNS') $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
                                         elseif ($kategori === 'PPPK') $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);

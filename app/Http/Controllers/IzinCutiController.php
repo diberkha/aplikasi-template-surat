@@ -66,7 +66,6 @@ class IzinCutiController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
-            // Ensure uniqueness by appending ID to nomor_surat
             $uniqueNomor = $generatedNomor . '-' . str_pad($surat->id_surat, 3, '0', STR_PAD_LEFT);
             $surat->update(['nomor_surat' => $uniqueNomor]);
 

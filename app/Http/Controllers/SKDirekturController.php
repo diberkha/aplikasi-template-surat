@@ -189,7 +189,7 @@ class SKDirekturController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; // Fallback
+        $filename = 'surat.pdf'; 
         
         if (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
             $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';

@@ -31,7 +31,6 @@ class SOPDocxController extends Controller
                 'marginRight' => (int) Converter::inchToTwip(0.98),
             ]);
 
-            // Main SOP Table
             $sopTableStyle = ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 80];
             $phpWord->addTableStyle('SOPTable', $sopTableStyle);
             $table = $section->addTable('SOPTable');
@@ -51,7 +50,7 @@ class SOPDocxController extends Controller
 
             // Row 2: Info Grid
             $table->addRow();
-            $table->addCell(null, ['vMerge' => 'continue']); // Continue Logo Cell
+            $table->addCell(null, ['vMerge' => 'continue']); 
             
             $docNoCell = $table->addCell((int) Converter::inchToTwip(1.33), ['valign' => 'center']);
             $docNoCell->addText('No. Dokumen', null, ['alignment' => Jc::CENTER]);

@@ -41,11 +41,9 @@ class IzinCutiPPPKController extends Controller
                 return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
             };
 
-            // Table Styles
             $phpWord->addTableStyle('CutiTable', ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 20]);
             $phpWord->addTableStyle('NoBorderTable', ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 20]);
 
-            // Header - PPPK Specific (Regulation 7/2022)
             $table = $section->addTable('NoBorderTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(3.2));
@@ -93,7 +91,7 @@ class IzinCutiPPPKController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL (PPPK: 3 items)
+            // II. JENIS CUTI YANG DIAMBIL 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('II. JENIS CUTI YANG DIAMBIL**');
@@ -131,7 +129,7 @@ class IzinCutiPPPKController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI (PPPK: 3 items)
+            // V. CATATAN CUTI 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('V. CATATAN CUTI***');

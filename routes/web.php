@@ -81,12 +81,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');
         Route::get('/cuti/pdf/{id}', [TemplateSuratController::class, 'file'])->name('cuti.file');
         
-        // Categorical DOCX Routes
         Route::get('/cuti/pns/docx/{id}', [IzinCutiPNSController::class, 'download'])->name('cuti.pns.docx');
         Route::get('/cuti/pppk/docx/{id}', [IzinCutiPPPKController::class, 'download'])->name('cuti.pppk.docx');
         Route::get('/cuti/nonasn/docx/{id}', [IzinCutiNonAsnController::class, 'download'])->name('cuti.nonasn.docx');
         
-        // SK Direktur & SOP DOCX Routes
         Route::get('/sk-direktur/docx/{id}', [SKDirekturDocxController::class, 'download'])->name('sk-direktur.docx');
         Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
     });

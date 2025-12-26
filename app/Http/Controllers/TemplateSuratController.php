@@ -16,7 +16,7 @@ class TemplateSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; // Fallback
+        $filename = 'surat.pdf'; 
         
         if (str_contains($templateName, 'Surat Izin Cuti')) {
             $jenis = 'PNS';

@@ -41,11 +41,9 @@ class IzinCutiPNSController extends Controller
                 return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
             };
 
-            // Table Styles
             $phpWord->addTableStyle('CutiTable', ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 20]);
             $phpWord->addTableStyle('NoBorderTable', ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 20]);
 
-            // Header - PNS Specific (Regulation 24/2017)
             $table = $section->addTable('NoBorderTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(3.5));
@@ -86,7 +84,7 @@ class IzinCutiPNSController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL (PNS: 6 items in 2 columns)
+            // II. JENIS CUTI YANG DIAMBIL 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('II. JENIS CUTI YANG DIAMBIL**');
@@ -132,7 +130,7 @@ class IzinCutiPNSController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI (Full PNS structure)
+            // V. CATATAN CUTI 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
@@ -148,7 +146,6 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(2.35))->addText('3. CUTI SAKIT');
             $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Sakit' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
-            // N-2 row
             $table->addRow();
             $table->addCell()->addText('N-2');
             $table->addCell()->addText($data['catatan_n2'] ?? '');
@@ -156,7 +153,6 @@ class IzinCutiPNSController extends Controller
             $table->addCell()->addText('4. CUTI MELAHIRKAN');
             $table->addCell()->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
-            // N-1 row
             $table->addRow();
             $table->addCell()->addText('N-1');
             $table->addCell()->addText($data['catatan_n1'] ?? '');
@@ -164,7 +160,6 @@ class IzinCutiPNSController extends Controller
             $table->addCell()->addText('5. CUTI ALASAN PENTING');
             $table->addCell()->addText($jenisCuti == 'Cuti Karena Alasan Penting' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
-            // N row
             $table->addRow();
             $table->addCell()->addText('N');
             $table->addCell()->addText($data['catatan_n'] ?? '');

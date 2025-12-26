@@ -41,11 +41,9 @@ class IzinCutiNonAsnController extends Controller
                 return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
             };
 
-            // Table Styles
             $phpWord->addTableStyle('CutiTable', ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 20]);
             $phpWord->addTableStyle('NoBorderTable', ['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 20]);
 
-            // Header - Non-ASN Specific (Simple)
             $table = $section->addTable('NoBorderTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(3.5));
@@ -61,7 +59,7 @@ class IzinCutiNonAsnController extends Controller
             $section->addText('FORMULIR PERMINTAAN DAN PEMBERIAN CUTI', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(0.1)]);
 
-            // I. DATA PEGAWAI (No NIP for Non-ASN)
+            // I. DATA PEGAWAI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('I. DATA PEGAWAI');
@@ -81,7 +79,7 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL (Non-ASN: 3 items)
+            // II. JENIS CUTI YANG DIAMBIL
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('II. JENIS CUTI YANG DIAMBIL**');
@@ -119,7 +117,7 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI (Non-ASN Structure)
+            // V. CATATAN CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
@@ -158,7 +156,6 @@ class IzinCutiNonAsnController extends Controller
             $signCell->addText('Hormat saya,', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
             $signCell->addText($data['nama'] ?? '', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
-            // No NIP for Non-ASN
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
