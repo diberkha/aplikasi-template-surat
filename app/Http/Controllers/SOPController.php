@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SOP;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
+use App\Models\Regulasi;
 use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -55,7 +56,6 @@ class SOPController extends Controller
                 'pengertian' => 'required|string',
                 'tujuan' => 'required|string',
                 'kebijakan' => 'required|array|min:1',
-                'kebijakan.*' => 'required|string',
                 'prosedur' => 'required|array|min:1',
                 'prosedur.*' => 'required|string',
                 'unit_terkait' => 'required|string',
@@ -71,7 +71,24 @@ class SOPController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
-            $kebijakanText = implode("\n", array_filter($request->kebijakan));
+            $kebijakanIds = $request->kebijakan;
+            $regulasiModels = Regulasi::whereIn('id_regulasi', $kebijakanIds)->get();
+            $kebijakanTexts = [];
+            foreach ($kebijakanIds as $id) {
+                $reg = $regulasiModels->firstWhere('id_regulasi', $id);
+                if ($reg) {
+                    $kebijakanTexts[] = $reg->isi_regulasi;
+                } else {
+                    if (!is_numeric($id)) {
+                        $kebijakanTexts[] = $id;
+                    }
+                }
+            }
+            if (empty($kebijakanTexts)) {
+                 $kebijakanTexts = $request->kebijakan;
+            }
+
+            $kebijakanTextForDB = implode("\n", $kebijakanTexts);
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
             SOP::create([
@@ -83,13 +100,14 @@ class SOPController extends Controller
                 'tanggal_terbit' => $request->tanggal_terbit,
                 'pengertian' => $request->pengertian,
                 'tujuan' => $request->tujuan,
-                'kebijakan' => $kebijakanText,
+                'kebijakan' => $kebijakanTextForDB,
                 'prosedur' => $prosedurText,
                 'unit_terkait' => $request->unit_terkait,
             ]);
 
             $pdfData = $request->all();
             $pdfData['halaman'] = $request->filled('halaman') ? $request->halaman : '1/1';
+            $pdfData['kebijakan'] = $kebijakanTexts;
 
             $this->generateAndSavePDF($surat, $pdfData);
 

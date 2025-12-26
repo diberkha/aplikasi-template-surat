@@ -74,20 +74,29 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN</h4>
                     </div>
                     <div class="p-4">
-                        <div id="kebijakanContainer" class="space-y-3">
-                            <div class="kebijakan-item flex gap-3">
-                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
-                                <div class="flex-1">
-                                    <textarea name="kebijakan[]" rows="2" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                        <input type="hidden" name="kebijakan_check" id="kebijakan_check">
+
+                        <div class="mb-3">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
                                 </div>
+                                <input type="text" id="searchKebijakan" placeholder="Cari regulasi..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    onkeyup="filterKebijakan()">
                             </div>
                         </div>
-                        <button type="button" onclick="addKebijakanField()"
-                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>
-                            Tambah Kebijakan
-                        </button>
+
+                        <div id="kebijakanList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                            <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Memuat data
+                            </div>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Pilih satu atau lebih regulasi yang relevan
+                        </p>
                     </div>
                 </div>
 
@@ -140,7 +149,6 @@
 </div>
 
 <script>
-    let kebijakanCounter = 1;
     let prosedurCounter = 1;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -151,32 +159,67 @@
                 dateFormat: 'Y-m-d'
             });
         }
+        loadRegulasiOptions();
     });
 
-    function addKebijakanField() {
-        const container = document.getElementById('kebijakanContainer');
-        const index = ++kebijakanCounter;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'kebijakan-item flex gap-3';
-        wrapper.innerHTML = `
-            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${index}.</label>
-            <div class="flex-1 flex gap-2">
-                <textarea name="kebijakan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                <button type="button" onclick="removeKebijakanField(this)" class="mt-0 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" title="Hapus">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `;
-        container.appendChild(wrapper);
+    async function loadRegulasiOptions() {
+        try {
+            const response = await fetch('/api/regulasi');
+            let data = await response.json();
+            if (data.data) data = data.data;
+
+            const listContainer = document.getElementById('kebijakanList');
+            listContainer.innerHTML = '';
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Tidak ada data regulasi</div>';
+                return;
+            }
+            data.forEach((item, index) => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'kebijakan-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="kebijakan[]" value="${item.id_regulasi}" 
+                        id="kebijakan_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
+                        onchange="updateKebijakanCheck()">
+                    <label for="kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
+            });
+        } catch (error) {
+            console.error('Error loading regulasi options:', error);
+            const listContainer = document.getElementById('kebijakanList');
+            listContainer.innerHTML = '<div class="text-sm text-red-500 dark:text-red-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data</div>';
+        }
     }
 
-    function removeKebijakanField(button) {
-        const item = button.closest('.kebijakan-item');
-        const container = document.getElementById('kebijakanContainer');
-        if (container.querySelectorAll('.kebijakan-item').length <= 1) return;
-        item.remove();
-        kebijakanCounter = Math.max(1, kebijakanCounter - 1);
-        renumberItems('kebijakanContainer', 'kebijakan-item');
+    function updateKebijakanCheck() {
+        const checkboxes = document.querySelectorAll('input[name="kebijakan[]"]:checked');
+        document.getElementById('kebijakan_check').value = checkboxes.length > 0 ? 'yes' : '';
+    }
+
+    function filterKebijakan() {
+        const searchValue = document.getElementById('searchKebijakan').value.toLowerCase();
+        const items = document.querySelectorAll('#kebijakanList .kebijakan-item');
+        let visibleCount = 0;
+        items.forEach(item => {
+            const label = item.querySelector('label');
+            if (!label) return;
+            const text = label.textContent.toLowerCase();
+            if (text.includes(searchValue)) { item.style.display = ''; visibleCount++; }
+            else { item.style.display = 'none'; }
+        });
+        const noResultMsg = document.getElementById('noKebijakanResult');
+        if (visibleCount === 0 && items.length > 0) {
+            if (!noResultMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'noKebijakanResult';
+                msg.className = 'text-center text-gray-500 dark:text-gray-400 py-4';
+                msg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada regulasi yang cocok';
+                document.getElementById('kebijakanList').appendChild(msg);
+            }
+        } else if (noResultMsg) { noResultMsg.remove(); }
     }
 
     function addProsedurField() {
@@ -217,14 +260,11 @@
     function resetFormSOP() {
         const form = document.getElementById('sopForm');
         form.reset();
-        document.getElementById('kebijakanContainer').innerHTML = `
-            <div class="kebijakan-item flex gap-3">
-                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
-                <div class="flex-1">
-                    <textarea name="kebijakan[]" rows="2" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                </div>
-            </div>
-        `;
+        
+        const checkboxes = document.querySelectorAll('input[name="kebijakan[]"]');
+        checkboxes.forEach(cb => cb.checked = false);
+        document.getElementById('kebijakan_check').value = '';
+
         document.getElementById('prosedurContainer').innerHTML = `
             <div class="prosedur-item flex gap-3">
                 <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
@@ -233,7 +273,6 @@
                 </div>
             </div>
         `;
-        kebijakanCounter = 1;
         prosedurCounter = 1;
     }
 
@@ -241,16 +280,20 @@
         event.preventDefault();
         const form = document.getElementById('sopForm');
 
-        const kebijakanFields = Array.from(form.querySelectorAll('textarea[name="kebijakan[]"]')).map(i => i.value.trim()).filter(Boolean);
+        const kebijakanCheckboxes = form.querySelectorAll('input[name="kebijakan[]"]:checked');
         const prosedurFields = Array.from(form.querySelectorAll('textarea[name="prosedur[]"]')).map(i => i.value.trim()).filter(Boolean);
-        if (kebijakanFields.length === 0 || prosedurFields.length === 0) {
-            alert('Kebijakan dan Prosedur minimal 1 poin.');
+        
+        if (kebijakanCheckboxes.length === 0) {
+            alert('Minimal satu Kebijakan (Regulasi) harus dipilih.');
+            return;
+        }
+
+        if (prosedurFields.length === 0) {
+            alert('Prosedur minimal 1 poin.');
             return;
         }
 
         const formData = new FormData(form);
-        while (formData.has('kebijakan[]')) formData.delete('kebijakan[]');
-        kebijakanFields.forEach(v => formData.append('kebijakan[]', v));
         while (formData.has('prosedur[]')) formData.delete('prosedur[]');
         prosedurFields.forEach(v => formData.append('prosedur[]', v));
 
@@ -260,29 +303,30 @@
         fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
         .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, data })).catch(() => ({ status: response.status, ok: response.ok, parseError: true })))
         .then(result => {
-            if (result.parseError) { alert('Error: Response parsing failed.'); return; }
-            if (!result.ok) {
-                if (result.data?.errors) {
-                    let errorMsg = 'Validasi Gagal:\n\n';
-                    for (let [field, messages] of Object.entries(result.data.errors)) {
-                        const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
-                        errorMsg += `❌ ${field}: ${messageText}\n`;
-                    }
-                    alert(errorMsg);
-                } else {
-                    alert('Error: ' + (result.data?.message || 'Server error: ' + result.status));
-                }
-                return;
-            }
-
-            if (result.data.success) {
-                closeModal('modalCreateSOP');
-                form.reset(); kebijakanCounter = 1; prosedurCounter = 1;
-                showSuccessMessage('SOP berhasil dibuat!');
-                setTimeout(() => { 
-                    openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, result.data.judul_sop, result.data.tanggal_dibuat); 
-                }, 500);
-            } else { alert('Gagal membuat SOP: ' + (result.data.message || 'Kesalahan tidak diketahui')); }
+             if (result.parseError) { alert('Error: Response parsing failed.'); return; }
+             if (!result.ok) {
+                 if (result.data?.errors) {
+                     let errorMsg = 'Validasi Gagal:\n\n';
+                     for (let [field, messages] of Object.entries(result.data.errors)) {
+                         const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
+                         errorMsg += `❌ ${field}: ${messageText}\n`;
+                     }
+                     alert(errorMsg);
+                 } else {
+                     alert('Error: ' + (result.data?.message || 'Server error: ' + result.status));
+                 }
+                 return;
+             }
+ 
+             if (result.data.success) {
+                 closeModal('modalCreateSOP');
+                 form.reset(); 
+                 resetFormSOP();
+                 showSuccessMessage('SOP berhasil dibuat!');
+                 setTimeout(() => { 
+                     openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, result.data.judul_sop, result.data.tanggal_dibuat); 
+                 }, 500);
+             } else { alert('Gagal membuat SOP: ' + (result.data.message || 'Kesalahan tidak diketahui')); }
         })
         .catch(error => { console.error('Fetch error:', error); alert('Terjadi kesalahan: ' + error.message); })
         .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = 'Simpan'; });
