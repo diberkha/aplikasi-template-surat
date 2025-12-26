@@ -152,23 +152,25 @@
 
                 <div class="flex items-center space-x-1 sm:space-x-2">
                     <button @click="prevPage()" :disabled="currentPage === 1"
-                        class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
+                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
                     <template x-for="page in pages()" :key="page">
-                        <button @click="goToPage(page)"
-                            class="min-w-[32px] sm:min-w-[38px] px-2 sm:px-3 py-1 rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
+                        <button @click="page !== '...' && goToPage(page)"
+                            class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                             :class="page === currentPage
                                 ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'"
-                            x-show="totalPages <= 5 || page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1">
+                                : (page === '...' 
+                                    ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
+                                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')"
+                            :disabled="page === '...'">
                             <span x-text="page"></span>
                         </button>
                     </template>
 
                     <button @click="nextPage()" :disabled="currentPage === totalPages"
-                        class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
+                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -204,17 +206,37 @@
                     return Math.max(1, Math.ceil(this.filteredUsers().length / this.itemsPerPage));
                 },
                 pages() {
-                    const total = this.totalPages;
-                    if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
+                     const total = this.totalPages;
+                     if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
 
-                    let start = Math.max(1, this.currentPage - 4);
-                    let end = start + 9;
-                    if (end > total) {
-                        end = total;
-                        start = Math.max(1, end - 9);
-                    }
+                     const delta = 1; 
+                     const range = [];
+                     const rangeWithDots = [];
+                     let l;
 
-                    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+                     range.push(1);
+                     for (let i = this.currentPage - delta; i <= this.currentPage + delta; i++) {
+                         if (i < total && i > 1) {
+                             range.push(i);
+                         }
+                     }
+                     range.push(total);
+
+                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
+
+                     for (let i of uniqueRange) {
+                         if (l) {
+                             if (i - l === 2) {
+                                 rangeWithDots.push(l + 1);
+                             } else if (i - l !== 1) {
+                                 rangeWithDots.push('...');
+                             }
+                         }
+                         rangeWithDots.push(i);
+                         l = i;
+                     }
+                     
+                     return rangeWithDots;
                 },
                 goToPage(page) {
                     this.currentPage = page;

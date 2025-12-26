@@ -32,11 +32,11 @@
             <iframe x-ref="pdfFrame" src="" frameborder="0" class="w-full h-full"></iframe>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
-             <div class="text-sm text-gray-600 dark:text-gray-400">
+            <div class="text-sm text-gray-600 dark:text-gray-400">
                 <i class="fas fa-check-circle text-green-600 mr-2"></i>
-                <span x-text="Surat berhasil dibuat dan disimpan"></span>
+                Surat berhasil dibuat dan disimpan
             </div>
-             <a href="{{ route('arsip-surat.index') }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+            <a href="{{ route('arsip-surat.index') }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
                 <i class="fas fa-arrow-right mr-2"></i> Lihat di Arsip
             </a>
         </div>

@@ -312,27 +312,55 @@
                                             </button>
 
                                             @if($filePath)
-                                                <div x-data="{ openDownload: false }" class="relative">
-                                                    <button type="button" @click="openDownload = !openDownload"
+                                                <div x-data="{ 
+                                                    openDownload: false,
+                                                    toggle() {
+                                                        if (this.openDownload) {
+                                                            this.openDownload = false;
+                                                            return;
+                                                        }
+                                                        this.openDownload = true;
+                                                        this.$nextTick(() => {
+                                                            const button = this.$refs.button;
+                                                            const dropdown = this.$refs.dropdown;
+                                                            const rect = button.getBoundingClientRect();
+                                                            
+                                                            dropdown.style.position = 'fixed';
+                                                            dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                            dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                        });
+                                                    }
+                                                }" 
+                                                @scroll.window="openDownload = false"
+                                                class="relative">
+                                                    <button type="button" 
+                                                        x-ref="button"
+                                                        @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                         <i class="fas fa-download text-sm"></i>
                                                     </button>
                                                     
-                                                    <div x-show="openDownload" @click.outside="openDownload = false" x-transition
-                                                        class="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-50">
-                                                        <a href="{{ route('arsip-surat.download', $idSurat) }}"
-                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
-                                                            PDF
-                                                        </a>
-                                                        @if($docxUrl !== '#')
-                                                        <a href="{{ $docxUrl }}"
-                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
-                                                            DOCX
-                                                        </a>
-                                                        @endif
-                                                    </div>
+                                                    <template x-teleport="body">
+                                                        <div x-show="openDownload" 
+                                                            x-ref="dropdown"
+                                                            @click.outside="openDownload = false" 
+                                                            x-transition
+                                                            class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]"
+                                                            style="display: none;">
+                                                            <a href="{{ route('arsip-surat.download', $idSurat) }}"
+                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
+                                                                PDF
+                                                            </a>
+                                                            @if($docxUrl !== '#')
+                                                            <a href="{{ $docxUrl }}"
+                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
+                                                                DOCX
+                                                            </a>
+                                                            @endif
+                                                        </div>
+                                                    </template>
                                                 </div>
                                             @else
                                                 <a href="#"
@@ -370,14 +398,14 @@
 
                         <div class="flex items-center space-x-1 sm:space-x-2">
                             <button id="arsipPrevBtn" onclick="arsipPrev()"
-                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
                             <div id="arsipPageButtons" class="flex items-center space-x-1 sm:space-x-2"></div>
 
                             <button id="arsipNextBtn" onclick="arsipNext()"
-                                class="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm">
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -481,7 +509,10 @@
             document.getElementById('detail-nama-surat').textContent = nama;
             document.getElementById('detail-nomor-surat').textContent = nomor;
             document.getElementById('detail-tanggal-dibuat').textContent = formatDate(tanggal);
-            document.getElementById('detail-dibuat-oleh').textContent = dibuatOleh;
+            const dibuatOlehEl = document.getElementById('detail-dibuat-oleh');
+            if (dibuatOlehEl) {
+                dibuatOlehEl.textContent = dibuatOleh;
+            }
 
             const tipeBadge = {
                 'Surat Keputusan Direktur': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
@@ -576,41 +607,64 @@
             if (pageButtonsEl) {
                 pageButtonsEl.innerHTML = '';
 
-                const getPages = () => {
-                    if (totalPages <= 10) return Array.from({ length: totalPages }, (_, i) => i + 1);
-
-                    let start = Math.max(1, arsipCurrentPage - 4);
-                    let end = start + 9;
-                    if (end > totalPages) {
-                        end = totalPages;
-                        start = Math.max(1, end - 9);
-                    }
-                    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-                };
-
-                const isMobile = window.innerWidth < 640;
-
-                getPages().forEach(p => {
-                    if (isMobile && totalPages > 5) {
-                        if (p !== 1 && p !== totalPages && Math.abs(p - arsipCurrentPage) > 1) {
-                            return;
-                        }
-                    }
-
+                const createBtn = (p, text = null) => {
                     const btn = document.createElement('button');
-                    btn.textContent = p;
-                    btn.className = 'min-w-[32px] sm:min-w-[38px] px-2 sm:px-3 py-1 rounded-lg border text-xs sm:text-sm font-semibold transition-colors';
+                    btn.textContent = text || p;
+                    btn.className = 'h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors';
+                    
                     if (p === arsipCurrentPage) {
                         btn.classList.add('bg-green-600', 'text-white', 'border-green-600', 'shadow-sm');
+                    } else if (p === '...') {
+                        btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400', 'cursor-default');
+                        btn.disabled = true;
                     } else {
                         btn.classList.add('bg-white', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600', 'hover:bg-gray-100', 'dark:hover:bg-gray-600');
+                        btn.addEventListener('click', () => {
+                            arsipCurrentPage = p;
+                            renderArsipPagination();
+                        });
                     }
-                    btn.addEventListener('click', () => {
-                        arsipCurrentPage = p;
-                        renderArsipPagination();
-                    });
-                    pageButtonsEl.appendChild(btn);
-                });
+                    return btn;
+                };
+
+                const getPages = () => {
+                     const delta = 1; 
+                     const range = [];
+                     const rangeWithDots = [];
+                     let l;
+
+                     range.push(1);
+                     for (let i = arsipCurrentPage - delta; i <= arsipCurrentPage + delta; i++) {
+                         if (i < totalPages && i > 1) {
+                             range.push(i);
+                         }
+                     }
+                     range.push(totalPages);
+
+                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
+
+                     for (let i of uniqueRange) {
+                         if (l) {
+                             if (i - l === 2) {
+                                 rangeWithDots.push(l + 1);
+                             } else if (i - l !== 1) {
+                                 rangeWithDots.push('...');
+                             }
+                         }
+                         rangeWithDots.push(i);
+                         l = i;
+                     }
+                     
+                     return rangeWithDots;
+                };
+
+                if (totalPages === 1) {
+                     pageButtonsEl.appendChild(createBtn(1));
+                } else {
+                     getPages().forEach(p => {
+                         pageButtonsEl.appendChild(createBtn(p));
+                     });
+                }
             }
 
             const prevBtn = document.getElementById('arsipPrevBtn');

@@ -19,6 +19,14 @@ class ArsipSuratController extends Controller
         $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop', 'cuti'])
             ->orderBy('created_at', 'desc');
 
+        $user = auth()->user();
+        if (!$user->hasRole('Admin')) {
+            $roomId = $user->id_ruangan;
+            $query->whereHas('createdBy', function ($q) use ($roomId) {
+                $q->where('id_ruangan', $roomId);
+            });
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -67,6 +75,12 @@ class ArsipSuratController extends Controller
     public function show($id)
     {
         $surat = Surat::with('template', 'sop')->findOrFail($id);
+        
+        if (!auth()->user()->hasRole('Admin')) {
+             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
+                 abort(403, 'Unauthorized');
+             }
+        }
 
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
@@ -104,6 +118,13 @@ class ArsipSuratController extends Controller
     public function download($id)
     {
         $surat = Surat::with('template', 'sop')->findOrFail($id);
+        
+        if (!auth()->user()->hasRole('Admin')) {
+             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
+                 abort(403, 'Unauthorized');
+             }
+        }
+
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
             return back()->with('error', 'File surat tidak ditemukan.');

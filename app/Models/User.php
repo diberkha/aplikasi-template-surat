@@ -34,4 +34,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Regulasi::class, 'created_by');
     }
+
+    public function hasRole($roles)
+    {
+        if (is_string($roles)) {
+            $roles = [$roles];
+        }
+
+        if (!$this->ruangan) {
+            return false;
+        }
+
+        return in_array($this->ruangan->nama_ruangan, $roles);
+    }
 }

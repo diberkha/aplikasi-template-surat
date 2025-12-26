@@ -204,6 +204,7 @@
                     <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
+                        @if(Auth::user()->hasRole(['Admin', 'Direktur', 'Tata Usaha']))
                         <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -217,6 +218,7 @@
                             <i class="fas fa-clipboard-list w-4 text-center"></i>
                             <span>Standar Operasional Prosedur (SOP)</span>
                         </a>
+                        @endif
 
                         <a href="{{ route('template-surat.cuti.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
@@ -229,6 +231,7 @@
                     <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
                         @click.outside="flyout = false"
                         class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
+                        @if(Auth::user()->hasRole(['Admin', 'Direktur', 'Tata Usaha']))
                         <a href="{{ route('template-surat.sk-direktur.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -242,6 +245,7 @@
                             <i class="fas fa-clipboard-list w-4 text-center"></i>
                             <span> Standar Operasional Prosedur (SOP)</span>
                         </a>
+                        @endif
 
                         <a href="{{ route('template-surat.cuti.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
@@ -260,6 +264,7 @@
                     <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Arsip Surat</span>
                 </a>
 
+                @if(Auth::user()->hasRole(['Admin', 'Direktur', 'Tata Usaha']))
                 <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
                     <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
                         class="flex items-center justify-between w-full py-3 rounded-xl transition-all
@@ -275,6 +280,7 @@
                     <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
+                        @if(Auth::user()->hasRole('Admin'))
                         <a href="{{ route('master-data.user.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -288,6 +294,7 @@
                             <i class="fas fa-door-open w-4 text-center"></i>
                             <span>Ruangan</span>
                         </a>
+                        @endif
 
                         <a href="{{ route('master-data.regulasi.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
@@ -301,6 +308,7 @@
                     <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
                         @click.outside="flyout = false"
                         class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
+                        @if(Auth::user()->hasRole('Admin'))
                         <a href="{{ route('master-data.user.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -314,6 +322,7 @@
                             <i class="fas fa-door-open w-4 text-center"></i>
                             <span>Ruangan</span>
                         </a>
+                        @endif
 
                         <a href="{{ route('master-data.regulasi.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
@@ -323,6 +332,7 @@
                         </a>
                     </div>
                 </div>
+                @endif
             </nav>
         </aside>
 
