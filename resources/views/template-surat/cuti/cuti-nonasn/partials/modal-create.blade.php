@@ -32,28 +32,48 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">I. DATA PEGAWAI</h4>
                     </div>
                     <div class="p-4 space-y-4">
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
-                            <input type="text" name="form[nama]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="relative">
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <input type="text" id="pegawai_search_nonasn" autocomplete="off" 
+                                        class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" 
+                                        placeholder="Cari nama...">
+                                    <button type="button" id="pegawai_reset_nonasn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                        <i class="fas fa-times-circle text-lg"></i>
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Minimal 2 karakter
+                                </p>
+                                <input type="hidden" name="form[nama]" id="nama_pegawai_nonasn">
+                                <div id="pegawai_results_nonasn" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP <span class="text-red-500">*</span></label>
+                                <input type="text" name="form[nip]" id="nip_pegawai_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
-                                <input type="text" name="form[jabatan]" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <input type="text" name="form[jabatan]" id="jabatan_pegawai_nonasn" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                             </div>
-                            <div>
+                            <div class="col-span-2 md:col-span-1">
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Masa Kerja</label>
                                 <div class="flex items-center space-x-2">
-                                    <input type="number" name="form[masa_kerja_tahun]" min="0" placeholder="0" class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                                    <input type="number" name="form[masa_kerja_tahun]" id="masa_kerja_tahun_nonasn" readonly
+                                        class="w-24 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
                                     <span class="text-sm text-gray-600 dark:text-gray-300">tahun</span>
-                                    <input type="number" name="form[masa_kerja_bulan]" min="0" max="11" placeholder="0" class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                                    <input type="number" name="form[masa_kerja_bulan]" id="masa_kerja_bulan_nonasn" readonly
+                                        class="w-24 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
                                     <span class="text-sm text-gray-600 dark:text-gray-300">bulan</span>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Lama masa kerja dalam tahun dan bulan
-                                </p>
                             </div>
                         </div>
 
@@ -104,7 +124,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Selama (hari) <span class="text-red-500">*</span></label>
-                                <input type="number" name="form[lama_cuti]" required min="1" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <input type="number" name="form[lama_cuti]" id="lama_cuti_nonasn" required min="1" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                             </div>
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Mulai Tanggal <span class="text-red-500">*</span></label>
@@ -117,8 +137,23 @@
                         </div>
                     </div>
                 </div>
-
-
+                
+                <div id="sisa_cuti_container_nonasn" class="hidden border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                        <h4 class="font-bold text-gray-900 dark:text-white">V. CATATAN CUTI</h4>
+                    </div>
+                    <div class="p-4">
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Sisa Cuti Tahunan</label>
+                            <div class="relative">
+                                <input type="text" id="sisa_cuti_display_nonasn" readonly 
+                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
+                                     value="0 Hari">
+                                <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden_nonasn">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
@@ -151,13 +186,29 @@
                     <div class="p-4 space-y-4">
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
+                            <div class="relative">
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Atasan Langsung</label>
-                                <input type="text" name="form[nama_atasan]" placeholder="Contoh: LILIK SUBAGYO, S.Kep, Ns." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <input type="text" id="atasan_search_nonasn" autocomplete="off" 
+                                        class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" 
+                                        placeholder="Cari nama...">
+                                    <button type="button" id="atasan_reset_nonasn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                        <i class="fas fa-times-circle text-lg"></i>
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Minimal 2 karakter
+                                </p>
+                                <input type="hidden" name="form[nama_atasan]" id="nama_atasan_nonasn">
+                                <div id="atasan_results_nonasn" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
                             </div>
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP Atasan</label>
-                                <input type="text" name="form[nip_atasan]" placeholder="Contoh: 19830804 201001 1 016" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <input type="text" name="form[nip_atasan]" id="nip_atasan_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                             </div>
                         </div>
                         <div>
@@ -180,8 +231,196 @@
     </div>
 </div>
 
+</script>
 <script>
+(function(){
+    let sisaCutiGlobal = 0;
 
+    const searchInput = document.getElementById('pegawai_search_nonasn');
+    const resultsContainer = document.getElementById('pegawai_results_nonasn');
+    let dobounceTimer;
+    
+    if(!searchInput || !resultsContainer) return;
+
+    searchInput.addEventListener('input', function(e){
+        clearTimeout(dobounceTimer);
+        const term = e.target.value;
+        if(term.length < 2) {
+            resultsContainer.classList.add('hidden');
+            return;
+        }
+
+        dobounceTimer = setTimeout(() => {
+            fetch(`/api/pegawai/search?term=${term}`)
+                .then(r => r.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+                    if(data.length > 0){
+                        data.forEach(p => {
+                            const div = document.createElement('div');
+                            div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-700 dark:text-gray-200';
+                            div.textContent = `${p.nama} - ${p.nip}`;
+                            div.onclick = () => selectPegawai(p.id);
+                            resultsContainer.appendChild(div);
+                        });
+                        resultsContainer.classList.remove('hidden');
+                    } else {
+                        resultsContainer.classList.add('hidden');
+                    }
+                });
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e){
+        if(searchInput && !searchInput.contains(e.target) && resultsContainer && !resultsContainer.contains(e.target)){
+            resultsContainer.classList.add('hidden');
+        }
+    });
+
+    function selectPegawai(id){
+        fetch(`/api/pegawai/${id}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('nama_pegawai_nonasn').value = data.nama;
+                document.getElementById('pegawai_search_nonasn').value = data.nama;
+                document.getElementById('pegawai_search_nonasn').readOnly = true;
+                document.getElementById('pegawai_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('pegawai_reset_nonasn').classList.remove('hidden');
+
+                document.getElementById('nip_pegawai_nonasn').value = data.nip;
+                document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun;
+                document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan;
+                
+                sisaCutiGlobal = data.sisa_cuti_tahunan;
+                updateSisaCutiDisplay();
+                resultsContainer.classList.add('hidden');
+            });
+    }
+
+    const resetBtn = document.getElementById('pegawai_reset_nonasn');
+    if(resetBtn){
+        resetBtn.addEventListener('click', function(){
+            document.getElementById('nama_pegawai_nonasn').value = '';
+            document.getElementById('pegawai_search_nonasn').value = '';
+            document.getElementById('pegawai_search_nonasn').readOnly = false;
+            document.getElementById('pegawai_search_nonasn').classList.remove('bg-gray-100', 'cursor-not-allowed');
+            this.classList.add('hidden');
+
+            document.getElementById('nip_pegawai_nonasn').value = '';
+            document.getElementById('masa_kerja_tahun_nonasn').value = '';
+            document.getElementById('masa_kerja_bulan_nonasn').value = '';
+            
+            sisaCutiGlobal = 0;
+            updateSisaCutiDisplay();
+            searchInput.focus();
+        });
+    }
+
+    const atasanSearchInput = document.getElementById('atasan_search_nonasn');
+    const atasanResultsContainer = document.getElementById('atasan_results_nonasn');
+    let atasanDebounceTimer;
+
+    if(atasanSearchInput && atasanResultsContainer) {
+        atasanSearchInput.addEventListener('input', function(e){
+            clearTimeout(atasanDebounceTimer);
+            const term = e.target.value;
+            if(term.length < 2) {
+                atasanResultsContainer.classList.add('hidden');
+                return;
+            }
+
+            atasanDebounceTimer = setTimeout(() => {
+                fetch(`/api/pegawai/search?term=${term}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        atasanResultsContainer.innerHTML = '';
+                        if(data.length > 0){
+                            data.forEach(p => {
+                                const div = document.createElement('div');
+                                div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-700 dark:text-gray-200';
+                                div.textContent = `${p.nama} - ${p.nip}`;
+                                div.onclick = () => selectAtasan(p.id);
+                                atasanResultsContainer.appendChild(div);
+                            });
+                            atasanResultsContainer.classList.remove('hidden');
+                        } else {
+                            atasanResultsContainer.classList.add('hidden');
+                        }
+                    });
+            }, 300);
+        });
+
+        document.addEventListener('click', function(e){
+            if(atasanSearchInput && !atasanSearchInput.contains(e.target) && atasanResultsContainer && !atasanResultsContainer.contains(e.target)){
+                atasanResultsContainer.classList.add('hidden');
+            }
+        });
+    }
+
+    function selectAtasan(id){
+        fetch(`/api/pegawai/${id}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('nama_atasan_nonasn').value = data.nama;
+                document.getElementById('atasan_search_nonasn').value = data.nama;
+                document.getElementById('atasan_search_nonasn').readOnly = true;
+                document.getElementById('atasan_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('atasan_reset_nonasn').classList.remove('hidden');
+
+                document.getElementById('nip_atasan_nonasn').value = data.nip;
+                atasanResultsContainer.classList.add('hidden');
+            });
+    }
+
+    const atasanResetBtn = document.getElementById('atasan_reset_nonasn');
+    if(atasanResetBtn){
+        atasanResetBtn.addEventListener('click', function(){
+            document.getElementById('nama_atasan_nonasn').value = '';
+            document.getElementById('atasan_search_nonasn').value = '';
+            document.getElementById('atasan_search_nonasn').readOnly = false;
+            document.getElementById('atasan_search_nonasn').classList.remove('bg-gray-100', 'cursor-not-allowed');
+            this.classList.add('hidden');
+
+            document.getElementById('nip_atasan_nonasn').value = '';
+            atasanSearchInput.focus();
+        });
+    }
+
+    const jenisCutiSelect = document.querySelector('#modalCreateCutiNonASN select[name="form[jenis_cuti]"]');
+    const lamaCutiInput = document.getElementById('lama_cuti_nonasn');
+    const sisaCutiContainer = document.getElementById('sisa_cuti_container_nonasn');
+    const sisaCutiDisplay = document.getElementById('sisa_cuti_display_nonasn');
+
+    if(jenisCutiSelect){
+        jenisCutiSelect.addEventListener('change', function(e){
+            updateSisaCutiDisplay();
+        });
+    }
+
+    if(lamaCutiInput){
+        lamaCutiInput.addEventListener('input', function(e){
+            updateSisaCutiDisplay();
+        });
+    }
+
+    function updateSisaCutiDisplay(){
+        if(!jenisCutiSelect || !sisaCutiContainer || !sisaCutiDisplay) return;
+        
+        const selected = jenisCutiSelect.value;
+        const sisaCutiHidden = document.getElementById('sisa_cuti_tahunan_hidden_nonasn');
+        const lamaCutiValue = parseInt(lamaCutiInput ? lamaCutiInput.value : 0) || 0;
+
+        if(selected === 'Cuti Tahunan'){
+            const sisaSetelahCuti = Math.max(0, sisaCutiGlobal - lamaCutiValue);
+            sisaCutiContainer.classList.remove('hidden');
+            sisaCutiDisplay.value = sisaSetelahCuti + ' Hari';
+            if(sisaCutiHidden) sisaCutiHidden.value = sisaSetelahCuti;
+        } else {
+            sisaCutiContainer.classList.add('hidden');
+            if(sisaCutiHidden) sisaCutiHidden.value = '';
+        }
+    }
+})();
 
 function submitCutiFormNonASN(e){
     e.preventDefault();

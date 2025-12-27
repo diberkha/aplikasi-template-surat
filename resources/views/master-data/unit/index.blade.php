@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Data Pengguna - E-Office')
+@section('title', 'Data Unit - E-Office')
 
 @section('content')
-    <div x-data="userTable()" x-init="init()" class="space-y-6">
+    <div x-data="unitTable()" class="space-y-6">
 
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Pengguna</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data pengguna</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Unit</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data unit</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
@@ -17,27 +17,27 @@
                     <button type="button" @click="toggleFilter = !toggleFilter"
                         class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300" x-text="sortOrderText"></span>
+                        <span class="text-gray-700 dark:text-gray-300" x-text="sortText"></span>
                         <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                     </button>
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
                         class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1">
-                            <li><button @click="sortOrder='a-z'; toggleFilter=false"
+                            <li><button @click="sortOption='a-z'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                             </li>
-                            <li><button @click="sortOrder='z-a'; toggleFilter=false"
+                            <li><button @click="sortOption='z-a'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
                             </li>
-                            <li><button @click="sortOrder='latest'; toggleFilter=false"
+                            <li><button @click="sortOption='latest'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
                             </li>
-                            <li><button @click="sortOrder='oldest'; toggleFilter=false"
+                            <li><button @click="sortOption='oldest'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
                             </li>
                             <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                <button @click="sortOrder=null; toggleFilter=false"
+                                <button @click="sortOption=null; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
                             </li>
                         </ul>
@@ -48,14 +48,14 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-sm"></i>
                     </div>
-                    <input type="text" x-model="search" placeholder="Cari pengguna..."
+                    <input type="text" x-model="search" placeholder="Cari unit..."
                         class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
                 </div>
 
                 <button @click="openCreateModal()"
                     class="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm whitespace-nowrap">
                     <i class="fas fa-plus"></i>
-                    <span class="hidden sm:inline">Tambah Pengguna</span>
+                    <span class="hidden sm:inline">Tambah Unit</span>
                     <span class="sm:hidden">Tambah</span>
                 </button>
             </div>
@@ -81,9 +81,8 @@
 
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Pengguna</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Unit</h3>
             </div>
 
             <div class="overflow-x-auto">
@@ -95,43 +94,28 @@
                                 No</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Username</th>
-                            <th
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Nama Ruangan</th>
+                                Nama Unit</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Actions</th>
                         </tr>
                     </thead>
-
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <template x-for="(user, index) in paginatedUsers()" :key="user.id">
+                        <template x-for="(item, index) in paginatedData()" :key="item.id_unit">
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap"
                                     x-text="index + 1 + ((currentPage - 1) * itemsPerPage)"></td>
-                                <td class="px-6 py-4">
-                                    <span x-text="user.username"></span>
-                                    <span
-                                        class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                        x-show="user.id === {{ auth()->id() }}">Anda</span>
-                                </td>
-                                <td class="px-6 py-4" x-text="user.ruangan || 'Tidak ada ruangan'"></td>
+                                <td class="px-6 py-4" x-text="item.nama_unit"></td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
-                                        <button @click="openEdit(user)"
+                                        <button @click="openEditModal(item.id_unit, item.nama_unit)"
                                             class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                             <i class="fas fa-edit text-sm"></i>
                                         </button>
-                                        <button @click="openDelete(user)"
-                                            class="inline-flex items-center p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                            x-show="user.id !== {{ auth()->id() }}">
+                                        <button @click="openDeleteModal(item.id_unit, item.nama_unit)"
+                                            class="inline-flex items-center p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                                             <i class="fas fa-trash text-sm"></i>
                                         </button>
-                                        <span class="inline-flex items-center p-2 text-gray-400 cursor-not-allowed"
-                                            x-show="user.id === {{ auth()->id() }}">
-                                            <i class="fas fa-trash text-sm"></i>
-                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -145,7 +129,7 @@
 
                 <div class="flex items-center space-x-2">
                     <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
-                    <select x-model.number="itemsPerPage"
+                    <select x-model.number="itemsPerPage" @change="currentPage = 1"
                         class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
                         <option>5</option>
                         <option>10</option>
@@ -156,7 +140,7 @@
 
                 <div class="flex items-center space-x-1 sm:space-x-2">
                     <button @click="prevPage()" :disabled="currentPage === 1"
-                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
@@ -173,8 +157,8 @@
                         </button>
                     </template>
 
-                    <button @click="nextPage()" :disabled="currentPage === totalPages"
-                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <button @click="nextPage()" :disabled="currentPage === totalPages || totalPages === 0"
+                        class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -183,32 +167,36 @@
                     <span x-text="startItem"></span> -
                     <span x-text="endItem"></span>
                     dari
-                    <span x-text="filteredUsers().length"></span>
+                    <span x-text="filteredSortedData().length"></span>
                 </div>
 
             </div>
         </div>
 
-        @include('master-data.user.partials.modal-create')
-        @include('master-data.user.partials.modal-edit')
-        @include('master-data.user.partials.modal-delete')
+        @include('master-data.unit.partials.modal-create')
+        @include('master-data.unit.partials.modal-edit')
+        @include('master-data.unit.partials.modal-delete')
+
     </div>
 
     <script>
-        function userTable() {
+        function unitTable() {
             return {
                 search: '',
-                sortOrder: null,
-                users: @json($usersJs),
+                sortOption: null,
+                data: @json($units),
 
                 itemsPerPage: 10,
                 currentPage: 1,
 
-                init() { },
+                get totalItems() {
+                    return this.filteredSortedData().length;
+                },
 
                 get totalPages() {
-                    return Math.max(1, Math.ceil(this.filteredUsers().length / this.itemsPerPage));
+                    return Math.ceil(this.totalItems / this.itemsPerPage) || 1;
                 },
+
                 pages() {
                      const total = this.totalPages;
                      if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
@@ -231,7 +219,7 @@
                      for (let i of uniqueRange) {
                          if (l) {
                              if (i - l === 2) {
-                                 rangeWithDots.push(l + 1);
+                                  rangeWithDots.push(l + 1);
                              } else if (i - l !== 1) {
                                  rangeWithDots.push('...');
                              }
@@ -242,28 +230,23 @@
                      
                      return rangeWithDots;
                 },
-                goToPage(page) {
-                    this.currentPage = page;
-                },
-                pages() {
-                    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-                },
+
                 goToPage(page) {
                     this.currentPage = page;
                 },
 
                 get startItem() {
-                    return this.filteredUsers().length === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
+                    return this.totalItems === 0 ? 0 : ((this.currentPage - 1) * this.itemsPerPage + 1);
                 },
 
                 get endItem() {
-                    return Math.min(this.currentPage * this.itemsPerPage, this.filteredUsers().length);
+                    return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
                 },
 
-                paginatedUsers() {
+                paginatedData() {
                     const start = (this.currentPage - 1) * this.itemsPerPage;
                     const end = this.currentPage * this.itemsPerPage;
-                    return this.filteredUsers().slice(start, end);
+                    return this.filteredSortedData().slice(start, end);
                 },
 
                 nextPage() {
@@ -274,8 +257,8 @@
                     if (this.currentPage > 1) this.currentPage--;
                 },
 
-                get sortOrderText() {
-                    switch (this.sortOrder) {
+                get sortText() {
+                    switch (this.sortOption) {
                         case null: return 'Filter';
                         case 'a-z': return 'A-Z';
                         case 'z-a': return 'Z-A';
@@ -284,53 +267,56 @@
                     }
                 },
 
-                filteredUsers() {
-                    let result = this.users.filter(u =>
-                        u.username.toLowerCase().includes(this.search.toLowerCase()) ||
-                        (u.ruangan && u.ruangan.toLowerCase().includes(this.search.toLowerCase()))
+                filteredSortedData() {
+                    let filtered = this.data.filter(item =>
+                        item.nama_unit.toLowerCase().includes(this.search.toLowerCase())
                     );
 
-                    switch (this.sortOrder) {
-                        case 'a-z': return result.sort((a, b) => a.username.localeCompare(b.username));
-                        case 'z-a': return result.sort((a, b) => b.username.localeCompare(a.username));
-                        case 'latest': return result.sort((a, b) => b.id - a.id);
-                        case 'oldest': return result.sort((a, b) => a.id - b.id);
+                    switch (this.sortOption) {
+                        case 'a-z':
+                            filtered.sort((a, b) => a.nama_unit.localeCompare(b.nama_unit));
+                            break;
+                        case 'z-a':
+                            filtered.sort((a, b) => b.nama_unit.localeCompare(a.nama_unit));
+                            break;
+                        case 'latest':
+                            filtered.sort((a, b) => b.id_unit - a.id_unit);
+                            break;
+                        case 'oldest':
+                            filtered.sort((a, b) => a.id_unit - b.id_unit);
+                            break;
                     }
-                    return result;
+
+                    return filtered;
                 },
 
                 openCreateModal() {
-                    document.getElementById('modalCreateUser').classList.remove('hidden');
+                    document.getElementById('modalCreateUnit').classList.remove('hidden');
                 },
 
-                openEdit(user) {
-                    this.originalUser = { ...user };
-                    const modal = document.getElementById('modalEditUser');
+                openEditModal(id, nama) {
+                    window.originalUnit = { id_unit: id, nama_unit: nama };
+                    const modal = document.getElementById('modalEditUnit');
                     modal.classList.remove('hidden');
-
-                    document.getElementById('edit_id').value = user.id;
-                    document.getElementById('edit_username').value = user.username;
-                    document.getElementById('edit_id_ruangan').value = user.id_ruangan;
-                    document.getElementById('password_edit').value = '';
-                    document.getElementById('password_confirmation_edit').value = '';
-                    document.getElementById('formEditUser').action = "{{ route('master-data.user.update', '') }}/" + user.id;
+                    document.getElementById('edit_id_unit').value = id;
+                    document.getElementById('edit_nama_unit').value = nama;
+                    document.getElementById('formEditUnit').action = "{{ route('master-data.unit.update', '') }}/" + id;
                 },
 
-                resetEditUser() {
-                    document.getElementById('edit_username').value = this.originalUser.username;
-                    document.getElementById('edit_id_ruangan').value = this.originalUser.id_ruangan;
-                    document.getElementById('password_edit').value = '';
-                    document.getElementById('password_confirmation_edit').value = '';
+                resetEditUnit() {
+                    if (window.originalUnit) {
+                        document.getElementById('edit_nama_unit').value = window.originalUnit.nama_unit;
+                    }
                 },
 
-                openDelete(user) {
-                    const modal = document.getElementById('modalDeleteUser');
+                openDeleteModal(id, nama) {
+                    const modal = document.getElementById('modalDeleteUnit');
                     modal.classList.remove('hidden');
-                    document.getElementById('delete-username').textContent = user.username;
-                    document.getElementById('delete-ruangan-user').textContent = user.ruangan || 'Tidak ada ruangan';
-                    document.getElementById('formDeleteUser').action = "{{ route('master-data.user.destroy', '') }}/" + user.id;
+                    document.getElementById('delete-nama-unit').textContent = nama;
+                    document.getElementById('formDeleteUnit').action = "{{ route('master-data.unit.destroy', '') }}/" + id;
                 }
             }
         }
     </script>
+
 @endsection

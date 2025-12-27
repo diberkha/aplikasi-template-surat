@@ -162,7 +162,7 @@ class IzinCutiPNSController extends Controller
             
             $table->addRow();
             $table->addCell()->addText('N');
-            $table->addCell()->addText($data['catatan_n'] ?? '');
+            $table->addCell()->addText($data['catatan_n'] ?? $data['sisa_cuti_tahunan'] ?? '');
             $table->addCell()->addText($data['catatan_n_keterangan'] ?? '');
             $table->addCell()->addText('6. CLTN');
             $table->addCell()->addText($jenisCuti == 'Cuti di Luar Tanggungan Negara' ? 'V' : '', null, ['alignment' => Jc::CENTER]);

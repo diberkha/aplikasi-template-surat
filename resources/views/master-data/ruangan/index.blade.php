@@ -8,7 +8,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Ruangan</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi dan pengaturan ruangan</p>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data ruangan</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
@@ -22,7 +22,7 @@
                     </button>
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
-                        class="absolute mt-2 right-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                        class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1">
                             <li><button @click="sortOption='a-z'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
@@ -35,6 +35,10 @@
                             </li>
                             <li><button @click="sortOption='oldest'; toggleFilter=false"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                            </li>
+                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <button @click="sortOption=null; toggleFilter=false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
                             </li>
                         </ul>
                     </div>

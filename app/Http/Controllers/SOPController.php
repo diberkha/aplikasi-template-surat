@@ -58,7 +58,7 @@ class SOPController extends Controller
                 'kebijakan' => 'required|array|min:1',
                 'prosedur' => 'required|array|min:1',
                 'prosedur.*' => 'required|string',
-                'unit_terkait' => 'required|string',
+                'unit_terkait' => 'required|array|min:1',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
             ]);
 
@@ -88,6 +88,24 @@ class SOPController extends Controller
                  $kebijakanTexts = $request->kebijakan;
             }
 
+            $unitIds = $request->unit_terkait;
+            $unitModels = \App\Models\Unit::whereIn('id_unit', $unitIds)->get();
+            $unitNames = [];
+            foreach ($unitIds as $id) {
+                $unit = $unitModels->firstWhere('id_unit', $id);
+                if ($unit) {
+                    $unitNames[] = $unit->nama_unit;
+                } else {
+                    if (!is_numeric($id)) {
+                        $unitNames[] = $id;
+                    }
+                }
+            }
+            if (empty($unitNames)) {
+                $unitNames = $request->unit_terkait;
+            }
+            $unitTextForDB = implode(", ", $unitNames);
+
             $kebijakanTextForDB = implode("\n", $kebijakanTexts);
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
@@ -102,12 +120,13 @@ class SOPController extends Controller
                 'tujuan' => $request->tujuan,
                 'kebijakan' => $kebijakanTextForDB,
                 'prosedur' => $prosedurText,
-                'unit_terkait' => $request->unit_terkait,
+                'unit_terkait' => $unitTextForDB,
             ]);
 
             $pdfData = $request->all();
             $pdfData['halaman'] = $request->filled('halaman') ? $request->halaman : '1/1';
             $pdfData['kebijakan'] = $kebijakanTexts;
+            $pdfData['unit_terkait'] = $unitTextForDB;
 
             $this->generateAndSavePDF($surat, $pdfData);
 

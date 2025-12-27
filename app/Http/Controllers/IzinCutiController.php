@@ -75,6 +75,18 @@ class IzinCutiController extends Controller
                 'form_data' => $request->form,
             ]);
 
+            if (isset($request->form['jenis_cuti']) && $request->form['jenis_cuti'] == 'Cuti Tahunan') {
+                $lamaCuti = (int) ($request->form['lama_cuti'] ?? 0);
+                $nip = $request->form['nip'] ?? null;
+                if ($nip) {
+                     $pegawai = \App\Models\Pegawai::where('nip', $nip)->first();
+                     if ($pegawai) {
+                         $pegawai->sisa_cuti_tahunan = max(0, $pegawai->sisa_cuti_tahunan - $lamaCuti);
+                         $pegawai->save();
+                     }
+                }
+            }
+
             $pdfData = [
                 'kategori' => $request->kategori,
                 'form' => $request->form,

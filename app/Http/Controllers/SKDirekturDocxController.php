@@ -119,7 +119,6 @@ class SKDirekturDocxController extends Controller
             $mt->addCell((int) Converter::inchToTwip(0.2))->addText(':');
             $contentCell = $mt->addCell((int) Converter::inchToTwip(6.0));
             
-            // Menimbang
             $menimbangLines = preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
             $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
             

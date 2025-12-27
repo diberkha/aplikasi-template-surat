@@ -26,6 +26,12 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('units', function (Blueprint $table) {
+            $table->id('id_unit');
+            $table->string('nama_unit');
+            $table->timestamps();
+        });
+
         Schema::create('template_surat', function (Blueprint $table) {
             $table->id('id_template_surat');
             $table->string('nama_template_surat');
@@ -72,6 +78,15 @@ return new class extends Migration {
             $table->text('isi_regulasi');
             $table->timestamps();
         });
+        
+        Schema::create('pegawais', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->string('nip')->unique();
+            $table->date('tanggal_masuk');
+            $table->integer('sisa_cuti_tahunan')->default(12);
+            $table->timestamps();
+        });
 
         Schema::table('surat', function (Blueprint $table) {
             $table->unsignedBigInteger('id_regulasi')->nullable()->after('id_template_surat');
@@ -113,7 +128,7 @@ return new class extends Migration {
             $table->text('tujuan');
             $table->text('kebijakan');
             $table->text('prosedur');
-            $table->string('unit_terkait');
+            $table->text('unit_terkait');
             $table->timestamps();
 
             $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
@@ -138,11 +153,13 @@ return new class extends Migration {
         Schema::dropIfExists('surat_izin_cuti');
         Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');
-        Schema::dropIfExists('regulasi');
         Schema::dropIfExists('surat');
+        Schema::dropIfExists('regulasi');
         Schema::dropIfExists('users');
         Schema::dropIfExists('template_surat');
         Schema::dropIfExists('ruangan');
+        Schema::dropIfExists('units');
+        Schema::dropIfExists('pegawais');
         Schema::dropIfExists('failed_jobs');
     }
 };

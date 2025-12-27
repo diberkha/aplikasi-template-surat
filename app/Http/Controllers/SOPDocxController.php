@@ -84,7 +84,7 @@ class SOPDocxController extends Controller
             $signCell->addText('Dr. dr. Kinik Darsono, M.Pd.Ked.', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
 
-            // CONTENT
+            // Content
             $contentRows = [
                 'Pengertian' => $data['pengertian'] ?? '',
                 'Tujuan' => $data['tujuan'] ?? '',

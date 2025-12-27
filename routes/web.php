@@ -8,6 +8,7 @@ use App\Http\Controllers\ArsipSuratController;
 use App\Http\Controllers\SKDirekturController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\RegulasiController;
 use App\Http\Controllers\SOPController;
@@ -45,6 +46,13 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{ruangan}', [RuanganController::class, 'destroy'])->name('master-data.ruangan.destroy');
         });
 
+        Route::prefix('unit')->middleware('role:Admin')->group(function () {
+            Route::get('/', [UnitController::class, 'index'])->name('master-data.unit.index');
+            Route::post('/', [UnitController::class, 'store'])->name('master-data.unit.store');
+            Route::put('/{unit}', [UnitController::class, 'update'])->name('master-data.unit.update');
+            Route::delete('/{unit}', [UnitController::class, 'destroy'])->name('master-data.unit.destroy');
+        });
+
         Route::prefix('user')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('master-data.user.index');
             Route::post('/', [UserController::class, 'store'])->name('master-data.user.store');
@@ -61,11 +69,27 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
         });
+
+        Route::prefix('pegawai')->name('master-data.pegawai.')->middleware('role:Admin')->controller(\App\Http\Controllers\PegawaiController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+        });
     });
 
     Route::prefix('api/regulasi')->group(function () {
         Route::get('/', [RegulasiController::class, 'getRegulasiList']);
         Route::get('/{id}/data', [RegulasiController::class, 'getRegulasiData']);
+    });
+
+    Route::prefix('api/unit')->group(function () {
+        Route::get('/', [UnitController::class, 'getUnitList']);
+    });
+
+    Route::prefix('api/pegawai')->controller(\App\Http\Controllers\PegawaiController::class)->group(function () {
+        Route::get('/search', 'search')->name('api.pegawai.search');
+        Route::get('/{id}', 'getDetail')->name('api.pegawai.detail');
     });
 
     Route::prefix('template-surat')->name('template-surat.')->group(function () {

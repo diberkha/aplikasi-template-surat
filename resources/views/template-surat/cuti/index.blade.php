@@ -1,5 +1,5 @@
 <x-template-header title="Template Surat Izin Cuti"
-    subtitle="Pilih dan gunakan template surat izin cuti yang tersedia" tableTitle="Daftar Template Surat Izin Cuti"
+    subtitle="Pilih dan gunakan template Surat Izin Cuti yang tersedia" tableTitle="Daftar Template Surat Izin Cuti"
     searchPlaceholder="Cari template...">
 
     @if(session('success'))
@@ -52,7 +52,6 @@
         if (modal) {
             modal.classList.remove('hidden');
             
-            // Set template ID based on modal type
             let inputId = 'template_surat_cuti';
             if (modalId === 'modalCreateCutiPPPK') inputId = 'template_surat_cuti_pppk';
             if (modalId === 'modalCreateCutiNonASN') inputId = 'template_surat_cuti_nonasn';
@@ -60,7 +59,6 @@
             const input = document.getElementById(inputId);
             if (input) input.value = templateId;
             
-            // Set Title
             let titleId = 'modalTitle';
             if (modalId === 'modalCreateCutiPPPK') titleId = 'modalTitlePPPK';
             if (modalId === 'modalCreateCutiNonASN') titleId = 'modalTitleNonASN';

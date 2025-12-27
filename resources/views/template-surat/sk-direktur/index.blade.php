@@ -1,5 +1,5 @@
 <x-template-header title="Template Surat Keputusan Direktur"
-    subtitle="Pilih dan gunakan template surat keputusan direktur yang tersedia" tableTitle="Daftar Template Surat Keputusan Direktur"
+    subtitle="Pilih dan gunakan template Surat Keputusan Direktur yang tersedia" tableTitle="Daftar Template Surat Keputusan Direktur"
     searchPlaceholder="Cari template...">
 
     @if(session('success'))

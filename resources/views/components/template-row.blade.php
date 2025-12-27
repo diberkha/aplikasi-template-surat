@@ -59,7 +59,7 @@
 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
     @if ($showNumber)
         <td class="px-6 py-4 whitespace-nowrap">
-            <span class="text-sm text-gray-900 dark:text-white font-medium">{{ $index }}</span>
+            <span class="text-sm text-gray-900 dark:text-white">{{ $index }}</span>
         </td>
     @endif
 

@@ -127,8 +127,29 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT</h4>
                     </div>
                     <div class="p-4">
-                        <input type="text" name="unit_terkait" required 
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        <input type="hidden" name="unit_terkait_check" id="unit_terkait_check">
+
+                        <div class="mb-3">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" id="searchUnit" placeholder="Cari unit..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    onkeyup="filterUnit()">
+                            </div>
+                        </div>
+
+                        <div id="unitList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                            <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Memuat data
+                            </div>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Pilih satu atau lebih unit yang terkait
+                        </p>
                     </div>
                 </div>
 
@@ -160,6 +181,7 @@
             });
         }
         loadRegulasiOptions();
+        loadUnitOptions();
     });
 
     async function loadRegulasiOptions() {
@@ -197,6 +219,66 @@
     function updateKebijakanCheck() {
         const checkboxes = document.querySelectorAll('input[name="kebijakan[]"]:checked');
         document.getElementById('kebijakan_check').value = checkboxes.length > 0 ? 'yes' : '';
+    }
+
+    async function loadUnitOptions() {
+        try {
+            const response = await fetch('/api/unit');
+            let data = await response.json();
+            if (data.data) data = data.data;
+
+            const listContainer = document.getElementById('unitList');
+            listContainer.innerHTML = '';
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Tidak ada data unit</div>';
+                return;
+            }
+            data.forEach((item, index) => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'unit-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="unit_terkait[]" value="${item.id_unit}" 
+                        id="unit_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
+                        onchange="updateUnitCheck()">
+                    <label for="unit_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.nama_unit}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
+            });
+        } catch (error) {
+            console.error('Error loading unit options:', error);
+            const listContainer = document.getElementById('unitList');
+            listContainer.innerHTML = '<div class="text-sm text-red-500 dark:text-red-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data</div>';
+        }
+    }
+
+    function updateUnitCheck() {
+        const checkboxes = document.querySelectorAll('input[name="unit_terkait[]"]:checked');
+        document.getElementById('unit_terkait_check').value = checkboxes.length > 0 ? 'yes' : '';
+    }
+
+    function filterUnit() {
+        const searchValue = document.getElementById('searchUnit').value.toLowerCase();
+        const items = document.querySelectorAll('#unitList .unit-item');
+        let visibleCount = 0;
+        items.forEach(item => {
+            const label = item.querySelector('label');
+            if (!label) return;
+            const text = label.textContent.toLowerCase();
+            if (text.includes(searchValue)) { item.style.display = ''; visibleCount++; }
+            else { item.style.display = 'none'; }
+        });
+        const noResultMsg = document.getElementById('noUnitResult');
+        if (visibleCount === 0 && items.length > 0) {
+            if (!noResultMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'noUnitResult';
+                msg.className = 'text-center text-gray-500 dark:text-gray-400 py-4';
+                msg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada unit yang cocok';
+                document.getElementById('unitList').appendChild(msg);
+            }
+        } else if (noResultMsg) { noResultMsg.remove(); }
     }
 
     function filterKebijakan() {
@@ -265,6 +347,10 @@
         checkboxes.forEach(cb => cb.checked = false);
         document.getElementById('kebijakan_check').value = '';
 
+        const unitCheckboxes = document.querySelectorAll('input[name="unit_terkait[]"]');
+        unitCheckboxes.forEach(cb => cb.checked = false);
+        document.getElementById('unit_terkait_check').value = '';
+
         document.getElementById('prosedurContainer').innerHTML = `
             <div class="prosedur-item flex gap-3">
                 <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
@@ -281,10 +367,16 @@
         const form = document.getElementById('sopForm');
 
         const kebijakanCheckboxes = form.querySelectorAll('input[name="kebijakan[]"]:checked');
+        const unitCheckboxes = form.querySelectorAll('input[name="unit_terkait[]"]:checked');
         const prosedurFields = Array.from(form.querySelectorAll('textarea[name="prosedur[]"]')).map(i => i.value.trim()).filter(Boolean);
         
         if (kebijakanCheckboxes.length === 0) {
             alert('Minimal satu Kebijakan (Regulasi) harus dipilih.');
+            return;
+        }
+
+        if (unitCheckboxes.length === 0) {
+            alert('Minimal satu Unit Terkait harus dipilih.');
             return;
         }
 

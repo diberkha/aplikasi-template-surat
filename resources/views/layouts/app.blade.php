@@ -288,11 +288,25 @@
                             <span>User</span>
                         </a>
 
+                        <a href="{{ route('master-data.pegawai.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-id-card w-4 text-center"></i>
+                            <span>Pegawai</span>
+                        </a>
+
                         <a href="{{ route('master-data.ruangan.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-door-open w-4 text-center"></i>
                             <span>Ruangan</span>
+                        </a>
+
+                        <a href="{{ route('master-data.unit.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-layer-group w-4 text-center"></i>
+                            <span>Unit</span>
                         </a>
                         @endif
 
@@ -316,12 +330,28 @@
                             <span>User</span>
                         </a>
 
+                        @if(Auth::user()->hasRole('Admin'))
+                        <a href="{{ route('master-data.pegawai.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-id-card w-4 text-center"></i>
+                            <span>Pegawai</span>
+                        </a>
+
                         <a href="{{ route('master-data.ruangan.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-door-open w-4 text-center"></i>
                             <span>Ruangan</span>
                         </a>
+
+                        <a href="{{ route('master-data.unit.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-layer-group w-4 text-center"></i>
+                            <span>Unit</span>
+                        </a>
+                        @endif
                         @endif
 
                         <a href="{{ route('master-data.regulasi.index') }}"

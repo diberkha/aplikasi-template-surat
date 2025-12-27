@@ -72,7 +72,8 @@ class IzinCutiNonAsnController extends Controller
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Jabatan');
             $table->addCell((int) Converter::inchToTwip(2.54))->addText($data['jabatan'] ?? '');
-            $table->addCell(null, ['gridSpan' => 2]);
+            $table->addCell((int) Converter::inchToTwip(1.09))->addText('NIP');
+            $table->addCell((int) Converter::inchToTwip(2.55))->addText($data['nip'] ?? '');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Unit Kerja');
             $table->addCell(null, ['gridSpan' => 3])->addText($data['unit'] ?? 'RSUD dr. Soeratno Gemolong');
@@ -135,7 +136,7 @@ class IzinCutiNonAsnController extends Controller
             
             $table->addRow();
             $table->addCell()->addText('N');
-            $table->addCell()->addText($data['catatan_n'] ?? '');
+            $table->addCell()->addText($data['catatan_n'] ?? $data['sisa_cuti_tahunan'] ?? '');
             $table->addCell()->addText($data['catatan_n_keterangan'] ?? '');
             $table->addCell(null, ['gridSpan' => 2]);
 

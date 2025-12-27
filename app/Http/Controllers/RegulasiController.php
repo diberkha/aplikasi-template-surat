@@ -9,7 +9,7 @@ class RegulasiController extends Controller
 {
     public function index()
     {
-        $regulasis = Regulasi::all();
+        $regulasis = Regulasi::orderBy('id_regulasi', 'asc')->get();
 
         return view('master-data.regulasi.index', compact('regulasis'));
     }

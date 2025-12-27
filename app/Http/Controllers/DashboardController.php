@@ -11,21 +11,15 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // Template Filtering Logic
         $templateQuery = TemplateSurat::query();
         if (!$user->hasRole(['Admin', 'Direktur', 'Tata Usaha'])) {
-            // Other roles only see Cuti templates
             $templateQuery->where('nama_template_surat', 'LIKE', '%Cuti%');
         }
         $totalTemplate = $templateQuery->count();
 
-        // Surat Filtering Logic
         $suratQuery = Surat::query();
         if (!$user->hasRole('Admin')) {
-            // Non-admin roles only see letters from their own room
             $suratQuery->whereHas('createdBy', function ($q) use ($user) {
-                // If user has no room (e.g. legacy/error), strict check or allow? 
-                // Assuming all users have room as per Seeder.
                 $q->where('id_ruangan', $user->id_ruangan);
             });
         }

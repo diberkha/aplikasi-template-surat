@@ -324,7 +324,7 @@
                     KEPUTUSAN PEJABAT YANG<br>
                     BERWENANG MEMBERIKAN CUTI<br>
                     DIREKTUR RSUD dr. SOERATNO GEMOLONG<br>
-                    KABUPATEN GEMOLONG<br><br><br><br>
+                    KABUPATEN SRAGEN<br><br><br><br>
                     <u>Dr. dr. KINIK DARSONO, M.Pd.Ked.</u><br>
                     NIP. 19710415 200903 1 001
                 </td>

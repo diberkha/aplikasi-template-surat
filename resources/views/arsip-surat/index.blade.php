@@ -22,7 +22,7 @@
                     </button>
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
-                        class="absolute mt-2 right-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1">
                             <li>
                                 <button type="button" onclick="setTemplateFilter('')"
@@ -48,7 +48,7 @@
                     </button>
 
                     <div x-show="toggleDate" @click.away="toggleDate = false" x-transition
-                        class="absolute mt-2 right-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
+                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
                         <div class="space-y-2">
                             <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
                             <input type="date" id="simpleStartDate" name="start_date" value="{{ request('start_date') }}"
@@ -278,7 +278,7 @@
                                 @endphp
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-sm text-gray-900 dark:text-white font-medium">{{ $index + 1 }}</span>
+                                        <span class="text-sm text-gray-900 dark:text-white">{{ $index + 1 }}</span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
@@ -594,7 +594,11 @@
             const end = Math.min(arsipCurrentPage * arsipItemsPerPage, total);
 
             rows.forEach(r => r.style.display = 'none');
-            matched.slice(start - 1, end).forEach(r => r.style.display = '');
+            matched.slice(start - 1, end).forEach((r, idx) => {
+                r.style.display = '';
+                const noSpan = r.querySelector('td:first-child span');
+                if (noSpan) noSpan.textContent = start + idx;
+            });
 
             const startEl = document.getElementById('arsipStart');
             const endEl = document.getElementById('arsipEnd');

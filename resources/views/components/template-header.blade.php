@@ -55,12 +55,15 @@
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                         </button>
                         <div x-show="open" @click.away="open=false" x-cloak 
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <div class="py-1">
                                 <button @click.prevent="setSort('a-z'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                                 <button @click.prevent="setSort('z-a'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
                                 <button @click.prevent="setSort('latest'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
                                 <button @click.prevent="setSort('oldest'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                                <div class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button @click.prevent="setSort(null); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                                </div>
                             </div>
                         </div>
                     </div>
