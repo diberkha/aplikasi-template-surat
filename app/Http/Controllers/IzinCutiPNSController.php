@@ -149,21 +149,21 @@ class IzinCutiPNSController extends Controller
             $table->addRow();
             $table->addCell()->addText('N-2');
             $table->addCell()->addText($data['catatan_n2'] ?? '');
-            $table->addCell()->addText($data['catatan_n2_keterangan'] ?? '');
+            $table->addCell()->addText((isset($data['n2_used']) && $data['n2_used'] > 0) ? 'Terpakai '.$data['n2_used'] : '');
             $table->addCell()->addText('4. CUTI MELAHIRKAN');
             $table->addCell()->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
             $table->addRow();
             $table->addCell()->addText('N-1');
             $table->addCell()->addText($data['catatan_n1'] ?? '');
-            $table->addCell()->addText($data['catatan_n1_keterangan'] ?? '');
+            $table->addCell()->addText((isset($data['n1_used']) && $data['n1_used'] > 0) ? 'Terpakai '.$data['n1_used'] : '');
             $table->addCell()->addText('5. CUTI ALASAN PENTING');
             $table->addCell()->addText($jenisCuti == 'Cuti Karena Alasan Penting' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
             $table->addRow();
             $table->addCell()->addText('N');
-            $table->addCell()->addText($data['catatan_n'] ?? $data['sisa_cuti_tahunan'] ?? '');
-            $table->addCell()->addText($data['catatan_n_keterangan'] ?? '');
+            $table->addCell()->addText($data['catatan_n'] ?? '');
+            $table->addCell()->addText((isset($data['n_used']) && $data['n_used'] > 0) ? 'Terpakai '.$data['n_used'] : '');
             $table->addCell()->addText('6. CLTN');
             $table->addCell()->addText($jenisCuti == 'Cuti di Luar Tanggungan Negara' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 

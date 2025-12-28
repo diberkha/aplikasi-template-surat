@@ -54,7 +54,8 @@ class SOPController extends Controller
                 'halaman' => 'nullable|string',
                 'tanggal_terbit' => 'required|date',
                 'pengertian' => 'required|string',
-                'tujuan' => 'required|string',
+                'tujuan' => 'required|array|min:1',
+                'tujuan.*' => 'required|string',
                 'kebijakan' => 'required|array|min:1',
                 'prosedur' => 'required|array|min:1',
                 'prosedur.*' => 'required|string',
@@ -107,6 +108,7 @@ class SOPController extends Controller
             $unitTextForDB = implode(", ", $unitNames);
 
             $kebijakanTextForDB = implode("\n", $kebijakanTexts);
+            $tujuanText = implode("\n", array_filter($request->tujuan));
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
             SOP::create([
@@ -117,7 +119,7 @@ class SOPController extends Controller
                 'halaman' => $request->filled('halaman') ? $request->halaman : '1/1',
                 'tanggal_terbit' => $request->tanggal_terbit,
                 'pengertian' => $request->pengertian,
-                'tujuan' => $request->tujuan,
+                'tujuan' => $tujuanText,
                 'kebijakan' => $kebijakanTextForDB,
                 'prosedur' => $prosedurText,
                 'unit_terkait' => $unitTextForDB,
@@ -125,6 +127,7 @@ class SOPController extends Controller
 
             $pdfData = $request->all();
             $pdfData['halaman'] = $request->filled('halaman') ? $request->halaman : '1/1';
+            $pdfData['tujuan'] = array_filter($request->tujuan);
             $pdfData['kebijakan'] = $kebijakanTexts;
             $pdfData['unit_terkait'] = $unitTextForDB;
 

@@ -151,15 +151,22 @@
                         <td class="section-separator">:</td>
                         <td class="section-content">
                             @php
-                                $menimbangLines = preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
-                                $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
-                                $menimbangLines = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbangLines);
+                                $menimbang = $data['menimbang'] ?? [];
+                                if (is_string($menimbang)) {
+                                    $menimbang = array_filter(explode("\n", $menimbang));
+                                }
+                                $menimbang = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbang);
+                                $menimbang = array_values(array_filter($menimbang));
                             @endphp
-                            <ol type="a">
-                                @foreach($menimbangLines as $line)
-                                    <li>{{ trim($line) }}</li>
-                                @endforeach
-                            </ol>
+                            @if(count($menimbang) <= 1)
+                                {{ $menimbang[0] ?? '' }}
+                            @else
+                                <ol type="a">
+                                    @foreach($menimbang as $line)
+                                        <li>{{ trim($line) }}</li>
+                                    @endforeach
+                                </ol>
+                            @endif
                         </td>
                     </tr>
                 </table>

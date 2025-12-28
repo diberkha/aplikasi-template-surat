@@ -82,6 +82,9 @@
                                 NIP</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Jenis Pegawai</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Tanggal Masuk</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -95,6 +98,7 @@
                                     x-text="index + 1 + ((currentPage - 1) * itemsPerPage)"></td>
                                 <td class="px-6 py-4 text-gray-900 dark:text-white" x-text="item.nama"></td>
                                 <td class="px-6 py-4" x-text="item.nip"></td>
+                                <td class="px-6 py-4" x-text="item.jenis_pegawai"></td>
                                 <td class="px-6 py-4" x-text="formatDate(item.tanggal_masuk)"></td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
@@ -250,8 +254,8 @@
                 get sortText() {
                     switch (this.sortOption) {
                         case null: return 'Filter';
-                        case 'a-z': return 'Nama A-Z';
-                        case 'z-a': return 'Nama Z-A';
+                        case 'a-z': return 'A-Z';
+                        case 'z-a': return 'Z-A';
                         case 'latest': return 'Terbaru';
                         case 'oldest': return 'Terlama';
                     }
@@ -306,8 +310,18 @@
                             document.getElementById('edit_id_pegawai').value = data.id;
                             document.getElementById('edit_nama_pegawai').value = data.nama;
                             document.getElementById('edit_nip_pegawai').value = data.nip;
+                            document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
                             document.getElementById('edit_tanggal_masuk_pegawai').value = data.tanggal_masuk;
+                            
+                            document.getElementById('edit_sisa_cuti_n').value = data.sisa_cuti_n;
+                            document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1;
+                            document.getElementById('edit_sisa_cuti_n2').value = data.sisa_cuti_n2;
+
                             document.getElementById('formEditPegawai').action = "{{ route('master-data.pegawai.update', '') }}/" + data.id;
+                            
+                            if (typeof toggleNIPField === 'function') {
+                                toggleNIPField(data.jenis_pegawai, 'edit');
+                            }
                         });
                 },
 

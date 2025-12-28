@@ -64,7 +64,7 @@ class SOPDocxController extends Controller
             $pageCell->addText('Halaman', null, ['alignment' => Jc::CENTER]);
             $pageCell->addText($data['halaman'] ?? '1/1', null, ['alignment' => Jc::CENTER]);
 
-            // SOP Header
+            // Header
             $table->addRow((int) Converter::inchToTwip(0.8));
             $spoCell = $table->addCell((int) Converter::inchToTwip(1.87), ['valign' => 'center']);
             $spoCell->addText('STANDAR', ['bold' => true], ['alignment' => Jc::CENTER]);
@@ -98,20 +98,26 @@ class SOPDocxController extends Controller
                 $table->addCell((int) Converter::inchToTwip(1.87))->addText($label);
                 $cell = $table->addCell((int) Converter::inchToTwip(5.4), ['gridSpan' => 3]);
 
-                if (in_array($label, ['Kebijakan', 'Prosedur'])) {
+                if (in_array($label, ['Tujuan', 'Kebijakan', 'Prosedur'])) {
                     $items = is_array($content) ? $content : preg_split('/\r?\n|\r|\•|\d+\./', $content, -1, PREG_SPLIT_NO_EMPTY);
-                    $listStyle = $label . 'Numbering';
-                    $phpWord->addNumberingStyle($listStyle, [
-                        'type' => 'singleLevel',
-                        'levels' => [
-                            ['format' => 'decimal', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360]
-                        ]
-                    ]);
-                    foreach ($items as $item) {
-                        $text = trim(strip_tags($item));
-                        if ($text !== '') {
-                            $cell->addListItem($text, 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER, 'numStyle' => $listStyle]);
+                    $items = array_values(array_filter(array_map('trim', $items)));
+                    
+                    if (count($items) > 1 || in_array($label, ['Kebijakan', 'Prosedur'])) {
+                        $listStyle = $label . 'Numbering';
+                        $phpWord->addNumberingStyle($listStyle, [
+                            'type' => 'singleLevel',
+                            'levels' => [
+                                ['format' => 'decimal', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360]
+                            ]
+                        ]);
+                        foreach ($items as $item) {
+                            $text = trim(strip_tags($item));
+                            if ($text !== '') {
+                                $cell->addListItem($text, 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER, 'numStyle' => $listStyle]);
+                            }
                         }
+                    } else {
+                        $cell->addText($items[0] ?? $content, null, ['alignment' => Jc::BOTH]);
                     }
                 } else {
                     $cell->addText($content, null, ['alignment' => Jc::BOTH]);

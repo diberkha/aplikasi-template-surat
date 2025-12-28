@@ -27,7 +27,7 @@
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                 Batal
             </button>
-            <form id="formDeleteRegulasi" method="POST">
+            <form id="formDeleteRegulasi" method="POST" onsubmit="this.querySelector('button[type=submit]').disabled = true; this.querySelector('button[type=submit]').innerHTML = '<i class=\'fas fa-spinner fa-spin mr-2\'></i>Menghapus...';">
                 @csrf
                 @method('DELETE')
                 <button type="submit"

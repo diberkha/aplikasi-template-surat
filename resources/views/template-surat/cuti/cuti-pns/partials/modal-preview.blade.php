@@ -1,6 +1,5 @@
 <div id="modalPreviewPDFPNS" x-data="previewPDFPNS()" x-show="isOpen" x-cloak
     class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-2 z-50">
-    <!-- Content mirrored from shared preview modal but with scoped ID/Function -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-[95vw] w-full h-[97vh] flex flex-col">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div>

@@ -2,7 +2,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
 
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Keputusan Direktur</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Surat Keputusan Direktur</h3>
             <button onclick="closeModal('modalCreateSK')"
                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                 <i class="fas fa-times text-lg"></i>
@@ -301,6 +301,15 @@
         mengingatCheckboxes.forEach(checkbox => { checkbox.checked = false; });
         updateMengingatCheck();
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modalCreateSK');
+        if (modal) {
+            modal.addEventListener('modal-closed', function() {
+                resetFormSK();
+            });
+        }
+    });
 
     function addMenimbangField() {
         const container = document.getElementById('menimbangContainer');
@@ -391,19 +400,13 @@
             if (result.data.success) {
                 closeModal('modalCreateSK');
                 form.reset(); memutuskanCounter = 2;
-                showSuccessMessage('Surat berhasil dibuat!');
+                resetFormSK(); 
+                notify('success', 'Berhasil', 'Surat berhasil dibuat!');
                 setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat); }, 500);
-            } else { alert('Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui')); }
+            } else { notify('error', 'Gagal', 'Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
         })
-        .catch(error => { console.error('Fetch error:', error); alert('Terjadi kesalahan: ' + error.message); })
+        .catch(error => { console.error('Fetch error:', error); notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + error.message, false); })
         .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = 'Simpan'; });
     }
 
-    function showSuccessMessage(message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center animate-pulse';
-        alertDiv.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
-        document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
-    }
 </script>

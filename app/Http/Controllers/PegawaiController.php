@@ -18,9 +18,15 @@ class PegawaiController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:50|unique:pegawais,nip',
+            'nip' => 'nullable|string|max:50|unique:pegawais,nip',
+            'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
             'tanggal_masuk' => 'required|date',
+            'sisa_cuti_n' => 'nullable|integer',
+            'sisa_cuti_n1' => 'nullable|integer',
+            'sisa_cuti_n2' => 'nullable|integer',
         ]);
+
+        $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
 
         Pegawai::create($validated);
 
@@ -33,9 +39,15 @@ class PegawaiController extends Controller
         
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:50|unique:pegawais,nip,' . $id,
+            'nip' => 'nullable|string|max:50|unique:pegawais,nip,' . $id,
+            'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
             'tanggal_masuk' => 'required|date',
+            'sisa_cuti_n' => 'nullable|integer',
+            'sisa_cuti_n1' => 'nullable|integer',
+            'sisa_cuti_n2' => 'nullable|integer',
         ]);
+
+        $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
 
         $pegawai->update($validated);
 
@@ -76,10 +88,14 @@ class PegawaiController extends Controller
             'id' => $pegawai->id,
             'nama' => $pegawai->nama,
             'nip' => $pegawai->nip,
+            'jenis_pegawai' => $pegawai->jenis_pegawai,
             'tanggal_masuk' => $pegawai->tanggal_masuk,
             'masa_kerja_tahun' => $years,
             'masa_kerja_bulan' => $months,
             'sisa_cuti_tahunan' => $pegawai->sisa_cuti_tahunan,
+            'sisa_cuti_n' => $pegawai->sisa_cuti_n,
+            'sisa_cuti_n1' => $pegawai->sisa_cuti_n1,
+            'sisa_cuti_n2' => $pegawai->sisa_cuti_n2,
         ]);
     }
 }

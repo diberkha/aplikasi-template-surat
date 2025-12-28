@@ -97,11 +97,7 @@ class SKDirekturController extends Controller
             }
 
             $menimbangArray = $request->menimbang;
-            $menimbangText = '';
-            foreach ($menimbangArray as $index => $item) {
-                $letter = chr(ord('a') + $index);
-                $menimbangText .= $letter . '. ' . trim($item) . "\n";
-            }
+            $menimbangText = implode("\n", array_map('trim', $menimbangArray));
 
             $mengingatIds = is_array($request->mengingat) ? implode(',', $request->mengingat) : $request->mengingat;
 
@@ -121,7 +117,7 @@ class SKDirekturController extends Controller
             $pdfData = $request->all();
             $pdfData['memutuskan'] = trim($memutuskanText);
             $pdfData['mengingat'] = trim($mengingatText);
-            $pdfData['menimbang'] = trim($menimbangText);
+            $pdfData['menimbang'] = array_map('trim', $menimbangArray);
             $pdfData['tempat_surat'] = $request->tempat_dibuat;
 
             $this->generateAndSavePDF($surat, $pdfData);

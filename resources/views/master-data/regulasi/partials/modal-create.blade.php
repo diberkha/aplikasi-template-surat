@@ -72,5 +72,14 @@
             updateCounter(isiRegulasiField, isiRegulasiCounter);
             isiRegulasiField.addEventListener('input', () => updateCounter(isiRegulasiField, isiRegulasiCounter));
         }
+        
+        const modal = document.getElementById('modalCreate');
+        if (modal) {
+            modal.addEventListener('modal-closed', function() {
+                if (isiRegulasiCounter) {
+                    isiRegulasiCounter.textContent = '0 karakter';
+                }
+            });
+        }
     });
 </script>

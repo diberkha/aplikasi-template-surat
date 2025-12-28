@@ -32,32 +32,33 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">I. DATA PEGAWAI</h4>
                     </div>
                     <div class="p-4 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <i class="fas fa-search"></i>
-                                    </div>
-                                    <input type="text" id="pegawai_search_nonasn" autocomplete="off" 
-                                        class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" 
-                                        placeholder="Cari nama...">
-                                    <button type="button" id="pegawai_reset_nonasn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                                        <i class="fas fa-times-circle text-lg"></i>
-                                    </button>
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fas fa-search"></i>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
-                                </p>
-                                <input type="hidden" name="form[nama]" id="nama_pegawai_nonasn">
-                                <div id="pegawai_results_nonasn" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
+                                <input type="text" id="pegawai_search_nonasn" autocomplete="off" 
+                                    class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" 
+                                    placeholder="Cari nama...">
+                                <button type="button" id="pegawai_reset_nonasn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                    <i class="fas fa-times-circle text-lg"></i>
+                                </button>
                             </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP <span class="text-red-500">*</span></label>
-                                <input type="text" name="form[nip]" id="nip_pegawai_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
-                            </div>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Ketik minimal 2 karakter
+                            </p>
+                            <input type="hidden" name="form[nama]" id="nama_pegawai_nonasn">
+                            <div id="pegawai_results_nonasn" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
                         </div>
+                        
+                        <div id="nip_container_nonasn" style="display: none;">
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP</label>
+                            <input type="text" name="form[nip]" id="nip_pegawai_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                        </div>
+                    </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -201,7 +202,7 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
+                                    Ketik minimal 2 karakter
                                 </p>
                                 <input type="hidden" name="form[nama_atasan]" id="nama_atasan_nonasn">
                                 <div id="atasan_results_nonasn" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
@@ -287,7 +288,16 @@
                 document.getElementById('pegawai_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
                 document.getElementById('pegawai_reset_nonasn').classList.remove('hidden');
 
-                document.getElementById('nip_pegawai_nonasn').value = data.nip;
+                const nipContainer = document.getElementById('nip_container_nonasn');
+                const nipInput = document.getElementById('nip_pegawai_nonasn');
+                if (data.nip && data.nip.trim() !== '') {
+                    nipInput.value = data.nip;
+                    if (nipContainer) nipContainer.style.display = 'block';
+                } else {
+                    nipInput.value = '';
+                    if (nipContainer) nipContainer.style.display = 'none';
+                }
+                
                 document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun;
                 document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan;
                 
@@ -306,6 +316,8 @@
             document.getElementById('pegawai_search_nonasn').classList.remove('bg-gray-100', 'cursor-not-allowed');
             this.classList.add('hidden');
 
+            const nipContainer = document.getElementById('nip_container_nonasn');
+            if (nipContainer) nipContainer.style.display = 'none';
             document.getElementById('nip_pegawai_nonasn').value = '';
             document.getElementById('masa_kerja_tahun_nonasn').value = '';
             document.getElementById('masa_kerja_bulan_nonasn').value = '';
@@ -420,6 +432,46 @@
             if(sisaCutiHidden) sisaCutiHidden.value = '';
         }
     }
+
+    const modal = document.getElementById('modalCreateCutiNonASN');
+    if(modal) {
+        modal.addEventListener('modal-closed', function() {
+            if(searchInput) {
+                searchInput.value = '';
+                searchInput.readOnly = false;
+                searchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(resultsContainer) {
+                resultsContainer.classList.add('hidden');
+            }
+            const pegawaiResetBtn = document.getElementById('pegawai_reset_nonasn');
+            if(pegawaiResetBtn) {
+                pegawaiResetBtn.classList.add('hidden');
+            }
+
+            if(atasanSearchInput) {
+                atasanSearchInput.value = '';
+                atasanSearchInput.readOnly = false;
+                atasanSearchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(atasanResultsContainer) {
+                atasanResultsContainer.classList.add('hidden');
+            }
+            const atasanResetBtn = document.getElementById('atasan_reset_nonasn');
+            if(atasanResetBtn) {
+                atasanResetBtn.classList.add('hidden');
+            }
+
+            if(sisaCutiContainer) {
+                sisaCutiContainer.classList.add('hidden');
+            }
+            if(sisaCutiDisplay) {
+                sisaCutiDisplay.value = '0 Hari';
+            }
+
+            sisaCutiGlobal = 0;
+        });
+    }
 })();
 
 function submitCutiFormNonASN(e){
@@ -442,18 +494,19 @@ function submitCutiFormNonASN(e){
     .then(r=>r.json().then(d=>({ok:r.ok,status:r.status,data:d})))
     .then(res=>{
         if(!res.ok){
-            alert(res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.');
+            notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
         }else if(res.data.success){
+            notify('success', 'Berhasil', 'Surat cuti Non ASN berhasil dibuat!');
             closeModal('modalCreateCutiNonASN');
             form.reset();
             if(typeof openPreviewPDFNonASN === 'function') {
                 openPreviewPDFNonASN(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti Non ASN', new Date().toISOString().slice(0,10));
             } else {
-                 alert('Berhasil dibuat!');
+                 notify('success', 'Berhasil', 'Berhasil dibuat!');
             }
         }
     })
-    .catch(err=>alert('Error: '+err.message))
+    .catch(err=>notify('error', 'Gagal', 'Terjadi kesalahan sistem: '+err.message, false))
     .finally(()=>{
         submitBtn.disabled=false; 
         submitBtn.innerHTML='Simpan';

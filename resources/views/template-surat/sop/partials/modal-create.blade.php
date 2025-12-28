@@ -64,8 +64,20 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN</h4>
                     </div>
                     <div class="p-4">
-                        <textarea name="tujuan" rows="3" required 
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                        <div id="tujuanContainer" class="space-y-3">
+                            <div class="tujuan-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
+                                <div class="flex-1">
+                                    <textarea name="tujuan[]" rows="2" required
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addTujuanField()"
+                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Tambah Tujuan
+                        </button>
                     </div>
                 </div>
 
@@ -170,6 +182,7 @@
 </div>
 
 <script>
+    let tujuanCounter = 1;
     let prosedurCounter = 1;
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -304,6 +317,32 @@
         } else if (noResultMsg) { noResultMsg.remove(); }
     }
 
+    function addTujuanField() {
+        const container = document.getElementById('tujuanContainer');
+        const index = ++tujuanCounter;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'tujuan-item flex gap-3';
+        wrapper.innerHTML = `
+            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${index}.</label>
+            <div class="flex-1 flex gap-2">
+                <textarea name="tujuan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                <button type="button" onclick="removeTujuanField(this)" class="mt-0 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" title="Hapus">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(wrapper);
+    }
+
+    function removeTujuanField(button) {
+        const item = button.closest('.tujuan-item');
+        const container = document.getElementById('tujuanContainer');
+        if (container.querySelectorAll('.tujuan-item').length <= 1) return;
+        item.remove();
+        tujuanCounter = Math.max(1, tujuanCounter - 1);
+        renumberItems('tujuanContainer', 'tujuan-item');
+    }
+
     function addProsedurField() {
         const container = document.getElementById('prosedurContainer');
         const index = ++prosedurCounter;
@@ -351,6 +390,16 @@
         unitCheckboxes.forEach(cb => cb.checked = false);
         document.getElementById('unit_terkait_check').value = '';
 
+        document.getElementById('tujuanContainer').innerHTML = `
+            <div class="tujuan-item flex gap-3">
+                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
+                <div class="flex-1">
+                    <textarea name="tujuan[]" rows="2" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                </div>
+            </div>
+        `;
+        tujuanCounter = 1;
+
         document.getElementById('prosedurContainer').innerHTML = `
             <div class="prosedur-item flex gap-3">
                 <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
@@ -361,6 +410,15 @@
         `;
         prosedurCounter = 1;
     }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modalCreateSOP');
+        if (modal) {
+            modal.addEventListener('modal-closed', function() {
+                resetFormSOP();
+            });
+        }
+    });
 
     function submitSOPForm(event) {
         event.preventDefault();
@@ -368,6 +426,7 @@
 
         const kebijakanCheckboxes = form.querySelectorAll('input[name="kebijakan[]"]:checked');
         const unitCheckboxes = form.querySelectorAll('input[name="unit_terkait[]"]:checked');
+        const tujuanFields = Array.from(form.querySelectorAll('textarea[name="tujuan[]"]')).map(i => i.value.trim()).filter(Boolean);
         const prosedurFields = Array.from(form.querySelectorAll('textarea[name="prosedur[]"]')).map(i => i.value.trim()).filter(Boolean);
         
         if (kebijakanCheckboxes.length === 0) {
@@ -380,12 +439,19 @@
             return;
         }
 
+        if (tujuanFields.length === 0) {
+            alert('Tujuan minimal 1 poin.');
+            return;
+        }
+
         if (prosedurFields.length === 0) {
             alert('Prosedur minimal 1 poin.');
             return;
         }
 
         const formData = new FormData(form);
+        while (formData.has('tujuan[]')) formData.delete('tujuan[]');
+        tujuanFields.forEach(v => formData.append('tujuan[]', v));
         while (formData.has('prosedur[]')) formData.delete('prosedur[]');
         prosedurFields.forEach(v => formData.append('prosedur[]', v));
 
@@ -398,14 +464,9 @@
              if (result.parseError) { alert('Error: Response parsing failed.'); return; }
              if (!result.ok) {
                  if (result.data?.errors) {
-                     let errorMsg = 'Validasi Gagal:\n\n';
-                     for (let [field, messages] of Object.entries(result.data.errors)) {
-                         const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
-                         errorMsg += `❌ ${field}: ${messageText}\n`;
-                     }
-                     alert(errorMsg);
+                     handleValidationErrors(result.data.errors);
                  } else {
-                     alert('Error: ' + (result.data?.message || 'Server error: ' + result.status));
+                     notify('error', 'Gagal', 'Error: ' + (result.data?.message || 'Server error: ' + result.status), false);
                  }
                  return;
              }
@@ -414,21 +475,14 @@
                  closeModal('modalCreateSOP');
                  form.reset(); 
                  resetFormSOP();
-                 showSuccessMessage('SOP berhasil dibuat!');
+                 notify('success', 'Berhasil', 'SOP berhasil dibuat!');
                  setTimeout(() => { 
                      openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, result.data.judul_sop, result.data.tanggal_dibuat); 
                  }, 500);
-             } else { alert('Gagal membuat SOP: ' + (result.data.message || 'Kesalahan tidak diketahui')); }
+             } else { notify('error', 'Gagal', 'Gagal membuat SOP: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
         })
-        .catch(error => { console.error('Fetch error:', error); alert('Terjadi kesalahan: ' + error.message); })
+        .catch(error => { console.error('Fetch error:', error); notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + error.message, false); })
         .finally(() => { submitBtn.disabled = false; submitBtn.innerHTML = 'Simpan'; });
     }
 
-    function showSuccessMessage(message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center animate-pulse';
-        alertDiv.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
-        document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 3000);
-    }
 </script>

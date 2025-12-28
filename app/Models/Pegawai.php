@@ -12,7 +12,11 @@ class Pegawai extends Model
     protected $fillable = [
         'nama',
         'nip',
+        'jenis_pegawai',
         'tanggal_masuk',
         'sisa_cuti_tahunan',
+        'sisa_cuti_n',
+        'sisa_cuti_n1',
+        'sisa_cuti_n2',
     ];
 }

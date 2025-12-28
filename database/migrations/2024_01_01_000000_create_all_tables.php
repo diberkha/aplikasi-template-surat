@@ -82,9 +82,13 @@ return new class extends Migration {
         Schema::create('pegawais', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('nip')->unique();
+            $table->string('nip')->nullable()->unique();
+            $table->string('jenis_pegawai')->default('PNS'); // PNS, NON ASN, PPPK
             $table->date('tanggal_masuk');
             $table->integer('sisa_cuti_tahunan')->default(12);
+            $table->integer('sisa_cuti_n')->default(12);
+            $table->integer('sisa_cuti_n1')->default(0);
+            $table->integer('sisa_cuti_n2')->default(0);
             $table->timestamps();
         });
 

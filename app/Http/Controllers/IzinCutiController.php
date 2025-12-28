@@ -79,11 +79,68 @@ class IzinCutiController extends Controller
                 $lamaCuti = (int) ($request->form['lama_cuti'] ?? 0);
                 $nip = $request->form['nip'] ?? null;
                 if ($nip) {
-                     $pegawai = \App\Models\Pegawai::where('nip', $nip)->first();
-                     if ($pegawai) {
-                         $pegawai->sisa_cuti_tahunan = max(0, $pegawai->sisa_cuti_tahunan - $lamaCuti);
-                         $pegawai->save();
-                     }
+                    $pegawai = \App\Models\Pegawai::where('nip', $nip)->first();
+                    if ($pegawai) {
+                        if ($kategori === 'PNS') {
+                            $n2_used = 0;
+                            $n1_used = 0;
+                            $n_used = 0;
+                            
+                            $remainingToSubtract = $lamaCuti;
+
+                            $request->merge([
+                                'form' => array_merge($request->form, [
+                                    'catatan_n2_awal' => $pegawai->sisa_cuti_n2,
+                                    'catatan_n1_awal' => $pegawai->sisa_cuti_n1,
+                                    'catatan_n_awal' => $pegawai->sisa_cuti_n,
+                                ])
+                            ]);
+
+                            if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n2 > 0) {
+                                $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n2);
+                                $pegawai->sisa_cuti_n2 -= $deduct;
+                                $remainingToSubtract -= $deduct;
+                                $n2_used = $deduct;
+                            }
+
+                            if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n1 > 0) {
+                                $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n1);
+                                $pegawai->sisa_cuti_n1 -= $deduct;
+                                $remainingToSubtract -= $deduct;
+                                $n1_used = $deduct;
+                            }
+
+                            if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n > 0) {
+                                $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n);
+                                $pegawai->sisa_cuti_n -= $deduct;
+                                $remainingToSubtract -= $deduct;
+                                $n_used = $deduct;
+                            }
+
+                            $pegawai->sisa_cuti_tahunan = $pegawai->sisa_cuti_n + $pegawai->sisa_cuti_n1 + $pegawai->sisa_cuti_n2;
+                            
+                            $form = $request->form;
+                            $form['catatan_n2'] = $pegawai->sisa_cuti_n2 > 0 ? $pegawai->sisa_cuti_n2 : '';
+                            $form['catatan_n1'] = $pegawai->sisa_cuti_n1 > 0 ? $pegawai->sisa_cuti_n1 : '';
+                            $form['catatan_n'] = $pegawai->sisa_cuti_n > 0 ? $pegawai->sisa_cuti_n : '';
+                            $form['n2_used'] = ''; 
+                            $form['n1_used'] = '';
+                            $form['n_used'] = '';
+                            
+                            $cuti->update(['form_data' => $form]);
+                            $request->merge(['form' => $form]);
+                        } else {
+                            $pegawai->sisa_cuti_tahunan = max(0, $pegawai->sisa_cuti_tahunan - $lamaCuti);
+                            
+                            $form = $request->form;
+                            $form['catatan_n'] = $pegawai->sisa_cuti_tahunan > 0 ? $pegawai->sisa_cuti_tahunan : '';
+                            $form['catatan_n_keterangan'] = ''; 
+
+                            $cuti->update(['form_data' => $form]);
+                            $request->merge(['form' => $form]);
+                        }
+                        $pegawai->save();
+                    }
                 }
             }
 

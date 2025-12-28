@@ -14,7 +14,6 @@
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
-                <!-- Tempat dan Tanggal Surat -->
                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -49,7 +48,7 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
+                                    Ketik minimal 2 karakter
                                 </p>
                                 <input type="hidden" name="form[nama]" id="nama_pegawai_pppk">
                                 <div id="pegawai_results_pppk" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
@@ -202,7 +201,7 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
+                                    Ketik minimal 2 karakter
                                 </p>
                                 <input type="hidden" name="form[nama_atasan]" id="nama_atasan_pppk">
                                 <div id="atasan_results_pppk" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
@@ -421,6 +420,46 @@
             if(sisaCutiHidden) sisaCutiHidden.value = '';
         }
     }
+
+    const modal = document.getElementById('modalCreateCutiPPPK');
+    if(modal) {
+        modal.addEventListener('modal-closed', function() {
+            if(searchInput) {
+                searchInput.value = '';
+                searchInput.readOnly = false;
+                searchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(resultsContainer) {
+                resultsContainer.classList.add('hidden');
+            }
+            const pegawaiResetBtn = document.getElementById('pegawai_reset_pppk');
+            if(pegawaiResetBtn) {
+                pegawaiResetBtn.classList.add('hidden');
+            }
+
+            if(atasanSearchInput) {
+                atasanSearchInput.value = '';
+                atasanSearchInput.readOnly = false;
+                atasanSearchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(atasanResultsContainer) {
+                atasanResultsContainer.classList.add('hidden');
+            }
+            const atasanResetBtn = document.getElementById('atasan_reset_pppk');
+            if(atasanResetBtn) {
+                atasanResetBtn.classList.add('hidden');
+            }
+
+            if(sisaCutiContainer) {
+                sisaCutiContainer.classList.add('hidden');
+            }
+            if(sisaCutiDisplay) {
+                sisaCutiDisplay.value = '0 Hari';
+            }
+
+            sisaCutiGlobal = 0;
+        });
+    }
 })();
 
 function submitCutiFormPPPK(e){
@@ -443,14 +482,15 @@ function submitCutiFormPPPK(e){
     .then(r=>r.json().then(d=>({ok:r.ok,status:r.status,data:d})))
     .then(res=>{
         if(!res.ok){
-            alert(res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.');
+            notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
         }else if(res.data.success){
+            notify('success', 'Berhasil', 'Surat cuti PPPK berhasil dibuat!');
             closeModal('modalCreateCutiPPPK');
             form.reset();
             openPreviewPDFPPPK(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti PPPK', new Date().toISOString().slice(0,10));
         }
     })
-    .catch(err=>alert('Error: '+err.message))
+    .catch(err=>notify('error', 'Gagal', 'Terjadi kesalahan sistem: '+err.message, false))
     .finally(()=>{
         submitBtn.disabled=false; 
         submitBtn.innerHTML='Simpan';

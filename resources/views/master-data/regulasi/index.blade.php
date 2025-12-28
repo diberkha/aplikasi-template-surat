@@ -22,17 +22,17 @@
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
                         class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1">
-                            <li><button @click="sortOption='latest'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
-                            </li>
-                            <li><button @click="sortOption='oldest'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
-                            </li>
                             <li><button @click="sortOption='a-z'; toggleFilter=false; filterRegulasi()"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                             </li>
                             <li><button @click="sortOption='z-a'; toggleFilter=false; filterRegulasi()"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
+                            </li>
+                            <li><button @click="sortOption='latest'; toggleFilter=false; filterRegulasi()"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
+                            </li>
+                            <li><button @click="sortOption='oldest'; toggleFilter=false; filterRegulasi()"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
                             </li>
                             <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
                                 <button @click="sortOption=null; toggleFilter=false; filterRegulasi()"
@@ -137,7 +137,6 @@
                                         <i class="fas fa-inbox text-2xl"></i>
                                     </div>
                                     <p class="text-lg font-medium text-gray-700 dark:text-gray-300">Belum ada data regulasi</p>
-                                    <p class="text-sm mt-1 text-gray-500 dark:text-gray-400">Klik "Tambah Regulasi" untuk menambahkan data pertama</p>
                                     <button @click="openModal('modalCreate')"
                                         class="mt-4 inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                                         <i class="fas fa-plus"></i>

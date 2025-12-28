@@ -1,5 +1,3 @@
-// Global helper functions for notifications and auto-refresh
-
 /**
  * Show global notification (jika ada fungsi showNotification di layout)
  * Fallback ke alert jika fungsi tidak tersedia
@@ -67,23 +65,31 @@ function handleValidationErrors(errors) {
         'password': 'Password',
         'role': 'Role'
     };
-    
+
     let errorMsg = '';
     for (let [field, messages] of Object.entries(errors)) {
         const fieldLabel = fieldLabels[field] || field;
         const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
         errorMsg += `• ${fieldLabel}: ${messageText}\n`;
     }
-    
+
     notify('error', 'Validasi Gagal', errorMsg.trim(), false);
 }
 
 /**
- * Close modal by ID
+ * Close modal by ID and reset its form
  */
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        const forms = modal.querySelectorAll('form');
+        forms.forEach(form => form.reset());
+
+        modal.dispatchEvent(new CustomEvent('modal-closed', {
+            bubbles: true,
+            detail: { modalId }
+        }));
+        
         modal.classList.add('hidden');
     }
 }

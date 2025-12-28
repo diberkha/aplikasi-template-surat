@@ -14,7 +14,6 @@
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
-                <!-- Tempat dan Tanggal Surat -->
                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -49,7 +48,7 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
+                                    Ketik minimal 2 karakter
                                 </p>
                                 <input type="hidden" name="form[nama]" id="nama_pegawai">
                                 <div id="pegawai_results" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
@@ -61,7 +60,6 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Jabatan Removed as per request -->
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
                                 <input type="text" name="form[jabatan]" id="jabatan_pegawai" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
@@ -147,16 +145,34 @@
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                         <h4 class="font-bold text-gray-900 dark:text-white">V. CATATAN CUTI</h4>
                     </div>
-                    <div class="p-4">
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Sisa Cuti Tahunan</label>
-                            <div class="relative">
-                                <input type="text" id="sisa_cuti_display" readonly 
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N-2</label>
+                                <input type="text" id="val_n2_display" readonly 
                                     class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
-                                    value="0 Hari">
-                                <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden">
+                                     value="0 Hari">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N-1</label>
+                                <input type="text" id="val_n1_display" readonly 
+                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
+                                     value="0 Hari">
+                            </div>
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N</label>
+                                <input type="text" id="val_n_display" readonly 
+                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
+                                     value="0 Hari">
                             </div>
                         </div>
+                        
+                        <div id="calculation_preview" class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg hidden">
+                            <p class="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-2">Simulasi Pengurangan Cuti:</p>
+                            <div class="space-y-1 text-xs text-blue-600 dark:text-blue-400" id="calc_details">
+                            </div>
+                        </div>
+                        <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden">
                     </div>
                 </div>
 
@@ -206,7 +222,7 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Minimal 2 karakter
+                                    Ketik minimal 2 karakter
                                 </p>
                                 <input type="hidden" name="form[nama_atasan]" id="nama_atasan">
                                 <div id="atasan_results" class="hidden absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto mt-1"></div>
@@ -240,6 +256,9 @@
 <script>
 (function(){
     let sisaCutiGlobal = 0;
+    let sisaN = 0;
+    let sisaN1 = 0;
+    let sisaN2 = 0;
 
     const searchInput = document.getElementById('pegawai_search');
     const resultsContainer = document.getElementById('pegawai_results');
@@ -297,6 +316,14 @@
                 document.getElementById('masa_kerja_bulan').value = data.masa_kerja_bulan;
 
                 sisaCutiGlobal = data.sisa_cuti_tahunan;
+                sisaN = data.sisa_cuti_n;
+                sisaN1 = data.sisa_cuti_n1;
+                sisaN2 = data.sisa_cuti_n2;
+                
+                document.getElementById('val_n_display').value = sisaN + ' Hari';
+                document.getElementById('val_n1_display').value = sisaN1 + ' Hari';
+                document.getElementById('val_n2_display').value = sisaN2 + ' Hari';
+
                 updateSisaCutiDisplay();
                 resultsContainer.classList.add('hidden');
             });
@@ -316,6 +343,13 @@
             document.getElementById('masa_kerja_bulan').value = '';
             
             sisaCutiGlobal = 0;
+            sisaN = 0;
+            sisaN1 = 0;
+            sisaN2 = 0;
+            document.getElementById('val_n_display').value = '0 Hari';
+            document.getElementById('val_n1_display').value = '0 Hari';
+            document.getElementById('val_n2_display').value = '0 Hari';
+
             updateSisaCutiDisplay();
             searchInput.focus();
         });
@@ -409,21 +443,139 @@
     }
 
     function updateSisaCutiDisplay(){
-        if(!jenisCutiSelect || !sisaCutiContainer || !sisaCutiDisplay) return;
+        if(!jenisCutiSelect || !sisaCutiContainer ) return;
         
         const selected = jenisCutiSelect.value;
         const sisaCutiHidden = document.getElementById('sisa_cuti_tahunan_hidden');
         const lamaCutiValue = parseInt(lamaCutiInput ? lamaCutiInput.value : 0) || 0;
         
+        const calcPreview = document.getElementById('calculation_preview');
+        const calcDetails = document.getElementById('calc_details');
+
         if(selected === 'Cuti Tahunan'){
-            const sisaSetelahCuti = Math.max(0, sisaCutiGlobal - lamaCutiValue);
             sisaCutiContainer.classList.remove('hidden');
-            sisaCutiDisplay.value = sisaSetelahCuti + ' Hari';
-            if(sisaCutiHidden) sisaCutiHidden.value = sisaSetelahCuti;
+            
+            if(lamaCutiValue > 0) {
+                calcPreview.classList.remove('hidden');
+                calcPreview.classList.remove('hidden');
+                let rem = lamaCutiValue;
+                
+                let usedN2 = Math.min(rem, sisaN2);
+                let finalN2 = sisaN2 - usedN2;
+                rem -= usedN2;
+                
+                let usedN1 = Math.min(rem, sisaN1);
+                let finalN1 = sisaN1 - usedN1;
+                rem -= usedN1;
+                
+                let usedN = Math.min(rem, sisaN);
+                let finalN = sisaN - usedN;
+                rem -= usedN;
+
+                let tableHtml = `
+                <div class="overflow-hidden rounded-lg border border-blue-100 dark:border-blue-700 mt-2">
+                    <table class="min-w-full text-xs">
+                        <thead class="bg-blue-50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200">
+                            <tr>
+                                <th class="px-3 py-2 text-left font-semibold">Tahun</th>
+                                <th class="px-3 py-2 text-center font-semibold">Jatah Cuti</th>
+                                <th class="px-3 py-2 text-center font-semibold text-red-600 dark:text-red-400">Terpakai</th>
+                                <th class="px-3 py-2 text-center font-semibold">Sisa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-blue-50 dark:divide-blue-800 bg-white dark:bg-gray-800">
+                            <tr class="${usedN2 > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
+                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N-2</td>
+                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN2}</td>
+                                <td class="px-3 py-2 text-center font-bold ${usedN2 > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN2}</td>
+                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN2}</td>
+                            </tr>
+                            <tr class="${usedN1 > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
+                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N-1</td>
+                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN1}</td>
+                                <td class="px-3 py-2 text-center font-bold ${usedN1 > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN1}</td>
+                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN1}</td>
+                            </tr>
+                            <tr class="${usedN > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
+                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N</td>
+                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN}</td>
+                                <td class="px-3 py-2 text-center font-bold ${usedN > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN}</td>
+                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>`;
+
+                if(rem > 0) {
+                    tableHtml += `<div class="mt-2 text-xs text-red-600 font-bold flex items-center justify-center p-2 bg-red-50 rounded border border-red-100 dark:bg-red-900/20 dark:border-red-900"><i class="fas fa-exclamation-triangle mr-2"></i> Peringatan: Cuti melebihi jatah (${rem} hari)!</div>`;
+                }
+                
+                calcDetails.innerHTML = tableHtml;
+            } else {
+                calcPreview.classList.add('hidden');
+            }
+
+            const totalSisa = Math.max(0, sisaCutiGlobal - lamaCutiValue);
+            if(sisaCutiHidden) sisaCutiHidden.value = totalSisa;
         } else {
             sisaCutiContainer.classList.add('hidden');
             if(sisaCutiHidden) sisaCutiHidden.value = '';
         }
+    }
+
+    const modal = document.getElementById('modalCreateCuti');
+    if(modal) {
+        modal.addEventListener('modal-closed', function() {
+            if(searchInput) {
+                searchInput.value = '';
+                searchInput.readOnly = false;
+                searchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(resultsContainer) {
+                resultsContainer.classList.add('hidden');
+            }
+            const pegawaiResetBtn = document.getElementById('pegawai_reset');
+            if(pegawaiResetBtn) {
+                pegawaiResetBtn.classList.add('hidden');
+            }
+
+            if(atasanSearchInput) {
+                atasanSearchInput.value = '';
+                atasanSearchInput.readOnly = false;
+                atasanSearchInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            }
+            if(atasanResultsContainer) {
+                atasanResultsContainer.classList.add('hidden');
+            }
+            const atasanResetBtn = document.getElementById('atasan_reset');
+            if(atasanResetBtn) {
+                atasanResetBtn.classList.add('hidden');
+            }
+
+            if(sisaCutiContainer) {
+                sisaCutiContainer.classList.add('hidden');
+            }
+            const calcPreview = document.getElementById('calculation_preview');
+            if(calcPreview) {
+                calcPreview.classList.add('hidden');
+            }
+            const calcDetails = document.getElementById('calc_details');
+            if(calcDetails) {
+                calcDetails.innerHTML = '';
+            }
+
+            const valN2Display = document.getElementById('val_n2_display');
+            const valN1Display = document.getElementById('val_n1_display');
+            const valNDisplay = document.getElementById('val_n_display');
+            if(valN2Display) valN2Display.value = '0 Hari';
+            if(valN1Display) valN1Display.value = '0 Hari';
+            if(valNDisplay) valNDisplay.value = '0 Hari';
+
+            sisaCutiGlobal = 0;
+            sisaN = 0;
+            sisaN1 = 0;
+            sisaN2 = 0;
+        });
     }
 })();
 
@@ -447,14 +599,15 @@ function submitCutiForm(e){
     .then(r=>r.json().then(d=>({ok:r.ok,status:r.status,data:d})))
     .then(res=>{
         if(!res.ok){
-            alert(res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.');
+            notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
         }else if(res.data.success){
+            notify('success', 'Berhasil', 'Surat cuti PNS berhasil dibuat!');
             closeModal('modalCreateCuti');
             form.reset();
             openPreviewPDFPNS(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti', new Date().toISOString().slice(0,10));
         }
     })
-    .catch(err=>alert('Error: '+err.message))
+    .catch(err=>notify('error', 'Gagal', 'Terjadi kesalahan sistem: '+err.message, false))
     .finally(()=>{
         submitBtn.disabled=false; 
         submitBtn.innerHTML='Simpan';

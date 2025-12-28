@@ -114,7 +114,23 @@
         </tr>
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Tujuan</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">{{ $data['tujuan'] ?? '' }}</td>
+            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
+                @php
+                    $tujuan = $data['tujuan'] ?? [];
+                    if (is_string($tujuan)) {
+                        $tujuan = array_filter(explode("\n", $tujuan));
+                    }
+                @endphp
+                @if(count($tujuan) <= 1)
+                    {{ $tujuan[0] ?? ($data['tujuan'] ?? '') }}
+                @else
+                    <ol style="margin:0; padding-left:18px;">
+                        @foreach($tujuan as $item)
+                            <li>{{ $item }}</li>
+                        @endforeach
+                    </ol>
+                @endif
+            </td>
         </tr>
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Kebijakan</td>

@@ -119,31 +119,36 @@ class SKDirekturDocxController extends Controller
             $mt->addCell((int) Converter::inchToTwip(0.2))->addText(':');
             $contentCell = $mt->addCell((int) Converter::inchToTwip(6.0));
             
-            $menimbangLines = preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
-            $menimbangLines = array_filter($menimbangLines, fn($line) => trim($line) !== '');
+            $menimbangLines = is_array($data['menimbang'] ?? '') 
+                ? $data['menimbang'] 
+                : preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
             
-            $phpWord->addNumberingStyle(
-                'menimbangList',
-                [
-                    'type' => 'multilevel',
-                    'levels' => [
-                        [
-                            'format' => 'lowerLetter',
-                            'text' => '%1.',
-                            'alignment' => 'left',
-                            'tabPos' => 720,
-                            'left' => 360,
-                            'hanging' => 360
+            $menimbangLines = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbangLines);
+            $menimbangLines = array_values(array_filter($menimbangLines));
+            
+            if (count($menimbangLines) > 1) {
+                $phpWord->addNumberingStyle(
+                    'menimbangList',
+                    [
+                        'type' => 'multilevel',
+                        'levels' => [
+                            [
+                                'format' => 'lowerLetter',
+                                'text' => '%1.',
+                                'alignment' => 'left',
+                                'tabPos' => 720,
+                                'left' => 360,
+                                'hanging' => 360
+                            ]
                         ]
                     ]
-                ]
-            );
-            
-            foreach ($menimbangLines as $line) {
-                $line = trim($line);
-                if ($line === '') continue;
-                $cleanedLine = preg_replace('/^[a-z]\.\s*/', '', $line);
-                $contentCell->addListItem($cleanedLine, 0, null, 'menimbangList', ['alignment' => Jc::BOTH]);
+                );
+                
+                foreach ($menimbangLines as $line) {
+                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH]);
+                }
+            } else {
+                $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH]);
             }
 
             $section->addTextBreak(1);

@@ -421,9 +421,9 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Belum ada surat</h3>
                     <p class="text-gray-500 dark:text-gray-400">
                         @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
-                            Tidak ada surat yang sesuai dengan filter yang dipilih.
+                            Tidak ada surat yang sesuai dengan filter yang dipilih
                         @else
-                            Surat yang dibuat akan muncul di sini.
+                            Surat yang dibuat akan muncul di sini
                         @endif
                     </p>
 

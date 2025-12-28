@@ -78,7 +78,13 @@ class RegulasiController extends Controller
 
     public function destroy($id_regulasi)
     {
-        $regulasi = Regulasi::findOrFail($id_regulasi);
+        $regulasi = Regulasi::find($id_regulasi);
+
+        if (!$regulasi) {
+            return redirect()->route('master-data.regulasi.index')
+                ->with('error', 'Data regulasi tidak ditemukan atau sudah dihapus');
+        }
+
         $regulasi->delete();
 
         return redirect()->route('master-data.regulasi.index')
