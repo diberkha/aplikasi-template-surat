@@ -1,15 +1,15 @@
 <div id="modalEditPegawai" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative flex flex-col max-h-[90vh]">
         <button type="button" onclick="closeModal('modalEditPegawai')"
-            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 z-10">
             <i class="fas fa-times"></i>
         </button>
 
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-none">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Pegawai</h3>
         </div>
 
-        <div class="p-6">
+        <div class="p-6 overflow-y-auto custom-scrollbar">
             <form id="formEditPegawai" method="POST">
                 @csrf
                 @method('PUT')
@@ -19,7 +19,7 @@
                     <div>
                         <label class="block mb-2 text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit')"
+                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateTanggalMasukLabel(this.value, 'edit')"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                             <option value="PNS">PNS</option>
                             <option value="NON ASN">NON ASN</option>
@@ -41,7 +41,13 @@
                             placeholder="Masukkan NIP...">
                     </div>
                     <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Masuk <span
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan</label>
+                        <input type="text" name="jabatan" id="edit_jabatan_pegawai"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                            placeholder="Masukkan jabatan...">
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300" id="label_tanggal_masuk_edit">Tanggal Masuk <span
                                 class="text-red-500">*</span></label>
                         <input type="date" name="tanggal_masuk" id="edit_tanggal_masuk_pegawai" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">

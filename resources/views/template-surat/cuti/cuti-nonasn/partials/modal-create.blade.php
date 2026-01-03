@@ -63,7 +63,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
-                                <input type="text" name="form[jabatan]" id="jabatan_pegawai_nonasn" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <input type="text" name="form[jabatan]" id="jabatan_pegawai_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                             </div>
                             <div class="col-span-2 md:col-span-1">
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Masa Kerja</label>
@@ -214,7 +214,7 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Atasan</label>
-                            <input type="text" name="form[jabatan_atasan]" placeholder="Contoh: Kepala Seksi Keperawatan dan Penunjang Non Medis" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            <input type="text" name="form[jabatan_atasan]" id="jabatan_atasan_nonasn" readonly class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
         }
 
         dobounceTimer = setTimeout(() => {
-            fetch(`/api/pegawai/search?term=${term}`)
+            fetch(`/api/pegawai/search?term=${term}&type=NON ASN`)
                 .then(r => r.json())
                 .then(data => {
                     resultsContainer.innerHTML = '';
@@ -300,6 +300,7 @@
                 
                 document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun;
                 document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan;
+                document.getElementById('jabatan_pegawai_nonasn').value = data.jabatan;
                 
                 sisaCutiGlobal = data.sisa_cuti_tahunan;
                 updateSisaCutiDisplay();
@@ -319,6 +320,7 @@
             const nipContainer = document.getElementById('nip_container_nonasn');
             if (nipContainer) nipContainer.style.display = 'none';
             document.getElementById('nip_pegawai_nonasn').value = '';
+            document.getElementById('jabatan_pegawai_nonasn').value = '';
             document.getElementById('masa_kerja_tahun_nonasn').value = '';
             document.getElementById('masa_kerja_bulan_nonasn').value = '';
             
@@ -342,7 +344,7 @@
             }
 
             atasanDebounceTimer = setTimeout(() => {
-                fetch(`/api/pegawai/search?term=${term}`)
+                fetch(`/api/pegawai/search?term=${term}&is_atasan=true`)
                     .then(r => r.json())
                     .then(data => {
                         atasanResultsContainer.innerHTML = '';
@@ -380,6 +382,7 @@
                 document.getElementById('atasan_reset_nonasn').classList.remove('hidden');
 
                 document.getElementById('nip_atasan_nonasn').value = data.nip;
+                document.getElementById('jabatan_atasan_nonasn').value = data.jabatan;
                 atasanResultsContainer.classList.add('hidden');
             });
     }
@@ -394,6 +397,7 @@
             this.classList.add('hidden');
 
             document.getElementById('nip_atasan_nonasn').value = '';
+            document.getElementById('jabatan_atasan_nonasn').value = '';
             atasanSearchInput.focus();
         });
     }

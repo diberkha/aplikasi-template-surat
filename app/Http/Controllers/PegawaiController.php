@@ -24,6 +24,7 @@ class PegawaiController extends Controller
             'sisa_cuti_n' => 'nullable|integer',
             'sisa_cuti_n1' => 'nullable|integer',
             'sisa_cuti_n2' => 'nullable|integer',
+            'jabatan' => 'nullable|string|max:255',
         ]);
 
         $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
@@ -45,6 +46,7 @@ class PegawaiController extends Controller
             'sisa_cuti_n' => 'nullable|integer',
             'sisa_cuti_n1' => 'nullable|integer',
             'sisa_cuti_n2' => 'nullable|integer',
+            'jabatan' => 'nullable|string|max:255',
         ]);
 
         $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
@@ -65,11 +67,35 @@ class PegawaiController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('term');
+        $type = $request->get('type');
+        $isAtasan = $request->get('is_atasan');
         
-        $pegawai = Pegawai::where('nama', 'LIKE', "%$search%")
-            ->orWhere('nip', 'LIKE', "%$search%")
-            ->limit(10)
-            ->get(['id', 'nama', 'nip']);
+        $query = Pegawai::query();
+
+        // Filter by search term (name or NIP)
+        $query->where(function($q) use ($search) {
+            $q->where('nama', 'LIKE', "%$search%")
+              ->orWhere('nip', 'LIKE', "%$search%");
+        });
+
+        // Filter by Employee Type (PNS, PPPK, NON ASN)
+        if ($type) {
+            $query->where('jenis_pegawai', $type);
+        }
+
+        // Filter for Atasan (Directors, Heads, etc.)
+        if ($isAtasan === 'true') {
+            $query->where(function($q) {
+                $q->where('jabatan', 'LIKE', '%Direktur%')
+                  ->orWhere('jabatan', 'LIKE', '%Kepala%')
+                  ->orWhere('jabatan', 'LIKE', '%Kasi%')
+                  ->orWhere('jabatan', 'LIKE', '%Kasubag%')
+                  ->orWhere('jabatan', 'LIKE', '%Kabid%')
+                  ->orWhere('jabatan', 'LIKE', '%Kabag%');
+            });
+        }
+
+        $pegawai = $query->limit(10)->get(['id', 'nama', 'nip', 'jabatan', 'jenis_pegawai']);
 
         return response()->json($pegawai);
     }
@@ -96,6 +122,7 @@ class PegawaiController extends Controller
             'sisa_cuti_n' => $pegawai->sisa_cuti_n,
             'sisa_cuti_n1' => $pegawai->sisa_cuti_n1,
             'sisa_cuti_n2' => $pegawai->sisa_cuti_n2,
+            'jabatan' => $pegawai->jabatan,
         ]);
     }
 }

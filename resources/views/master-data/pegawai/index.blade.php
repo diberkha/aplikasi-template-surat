@@ -82,6 +82,9 @@
                                 NIP</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Jabatan</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Jenis Pegawai</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -98,6 +101,7 @@
                                     x-text="index + 1 + ((currentPage - 1) * itemsPerPage)"></td>
                                 <td class="px-6 py-4 text-gray-900 dark:text-white" x-text="item.nama"></td>
                                 <td class="px-6 py-4" x-text="item.nip"></td>
+                                <td class="px-6 py-4" x-text="item.jabatan || '-'"></td>
                                 <td class="px-6 py-4" x-text="item.jenis_pegawai"></td>
                                 <td class="px-6 py-4" x-text="formatDate(item.tanggal_masuk)"></td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -264,7 +268,8 @@
                 filteredSortedData() {
                     let filtered = this.data.filter(item =>
                         item.nama.toLowerCase().includes(this.search.toLowerCase()) ||
-                        item.nip.toLowerCase().includes(this.search.toLowerCase())
+                        item.nip.toLowerCase().includes(this.search.toLowerCase()) ||
+                        (item.jabatan && item.jabatan.toLowerCase().includes(this.search.toLowerCase()))
                     );
 
                     switch (this.sortOption) {
@@ -310,6 +315,7 @@
                             document.getElementById('edit_id_pegawai').value = data.id;
                             document.getElementById('edit_nama_pegawai').value = data.nama;
                             document.getElementById('edit_nip_pegawai').value = data.nip;
+                            document.getElementById('edit_jabatan_pegawai').value = data.jabatan;
                             document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
                             document.getElementById('edit_tanggal_masuk_pegawai').value = data.tanggal_masuk;
                             
@@ -322,6 +328,9 @@
                             if (typeof toggleNIPField === 'function') {
                                 toggleNIPField(data.jenis_pegawai, 'edit');
                             }
+                            if (typeof updateTanggalMasukLabel === 'function') {
+                                updateTanggalMasukLabel(data.jenis_pegawai, 'edit');
+                            }
                         });
                 },
 
@@ -332,6 +341,20 @@
                     document.getElementById('delete-nip-pegawai').textContent = nip || '-';
                     document.getElementById('formDeletePegawai').action = "{{ route('master-data.pegawai.destroy', '') }}/" + id;
                 }
+            }
+        }
+    </script>
+
+    <script>
+        function updateTanggalMasukLabel(type, context) {
+            const labelId = context === 'create' ? 'label_tanggal_masuk_create' : 'label_tanggal_masuk_edit';
+            const label = document.getElementById(labelId);
+            if (!label) return;
+
+            if (type === 'PNS' || type === 'PPPK') {
+                label.innerHTML = 'TMT CPNS <span class="text-red-500">*</span>';
+            } else {
+                label.innerHTML = 'Tanggal Masuk <span class="text-red-500">*</span>';
             }
         }
     </script>

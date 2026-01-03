@@ -83,6 +83,7 @@ return new class extends Migration {
             $table->id();
             $table->string('nama');
             $table->string('nip')->nullable()->unique();
+            $table->string('jabatan')->nullable();
             $table->string('jenis_pegawai')->default('PNS'); // PNS, NON ASN, PPPK
             $table->date('tanggal_masuk');
             $table->integer('sisa_cuti_tahunan')->default(12);
