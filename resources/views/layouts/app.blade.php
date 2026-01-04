@@ -264,7 +264,7 @@
                     <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Arsip Surat</span>
                 </a>
 
-                @if(Auth::user()->hasRole(['Admin', 'Direktur', 'Tata Usaha']))
+                @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                 <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
                     <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
                         class="flex items-center justify-between w-full py-3 rounded-xl transition-all
@@ -287,14 +287,18 @@
                             <i class="fas fa-users w-4 text-center"></i>
                             <span>User</span>
                         </a>
+                        @endif
 
+                        @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Tata Usaha'))
                         <a href="{{ route('master-data.pegawai.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-id-card w-4 text-center"></i>
                             <span>Pegawai</span>
                         </a>
+                        @endif
 
+                        @if(Auth::user()->hasRole('Admin'))
                         <a href="{{ route('master-data.ruangan.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -310,12 +314,14 @@
                         </a>
                         @endif
 
+                        @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                         <a href="{{ route('master-data.regulasi.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-file w-4 text-center"></i>
                             <span>Regulasi</span>
                         </a>
+                        @endif
 
                     </div>
 
@@ -330,7 +336,7 @@
                             <span>User</span>
                         </a>
 
-                        @if(Auth::user()->hasRole('Admin'))
+                        @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                         <a href="{{ route('master-data.pegawai.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -354,12 +360,14 @@
                         @endif
                         @endif
 
+                        @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                         <a href="{{ route('master-data.regulasi.index') }}"
                             class="flex items-center space-x-3 py-2 px-3 rounded-lg
                             {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-file w-4 text-center"></i>
                             <span>Regulasi</span>
                         </a>
+                        @endif
                     </div>
                 </div>
                 @endif

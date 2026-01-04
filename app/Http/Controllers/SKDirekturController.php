@@ -16,30 +16,25 @@ class SKDirekturController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur');
-        
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'a-z':
-                    $query->orderBy('nama_template_surat', 'asc');
-                    break;
-                case 'z-a':
-                    $query->orderBy('nama_template_surat', 'desc');
-                    break;
-                case 'latest':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
-                    break;
-                default:
-                    $query->orderBy('nama_template_surat');
-            }
-        } else {
-            $query->orderBy('nama_template_surat');
-        }
+        $templates = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur')
+            ->orderBy('id_template_surat', 'desc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id_template_surat' => $t->id_template_surat,
+                    'nama_template_surat' => $t->nama_template_surat,
+                    'description' => 'Template Surat Keputusan Direktur',
+                    'icon' => 'file-alt',
+                    'iconColor' => 'blue',
+                    'iconBgColor' => 'blue-100',
+                    'iconDarkBgColor' => 'green-900',
+                    'iconTextColor' => 'green-600',
+                    'iconDarkTextColor' => 'green-400',
+                    'created_at' => $t->created_at->toISOString(),
+                    'updated_at' => $t->updated_at ? $t->updated_at->format('d/m/Y') : '-'
+                ];
+            });
 
-        $templates = $query->get();
         return view('template-surat.sk-direktur.index', compact('templates'));
     }
 
@@ -125,7 +120,7 @@ class SKDirekturController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Surat berhasil dibuat',
+                    'message' => 'Surat Keputusan Direktur berhasil dibuat',
                     'surat_id' => $surat->id_surat,
                     'nomor_surat' => $surat->nomor_surat,
                     'tanggal_dibuat' => \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('Y-m-d'),
@@ -133,7 +128,7 @@ class SKDirekturController extends Controller
                 ]);
             }
 
-            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dibuat');
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat Keputusan Direktur berhasil dibuat');
         } catch (ValidationException $e) {
             Log::warning('Validation failed for store', [
                 'errors' => $e->errors(),
@@ -221,12 +216,12 @@ class SKDirekturController extends Controller
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Template berhasil dihapus',
+                    'message' => 'Surat Keputusan Direktur berhasil dihapus',
                     'name' => $templateName,
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Template berhasil dihapus');
+            return redirect()->back()->with('success', 'Surat Keputusan Direktur berhasil dihapus');
         } catch (Exception $e) {
             if (request()->expectsJson()) {
                 return response()->json([

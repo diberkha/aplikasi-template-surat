@@ -17,30 +17,25 @@ class SOPController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TemplateSurat::where('nama_template_surat', 'like', '%SOP%');
+        $templates = TemplateSurat::where('nama_template_surat', 'like', '%SOP%')
+            ->orderBy('id_template_surat', 'desc')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'id_template_surat' => $t->id_template_surat,
+                    'nama_template_surat' => $t->nama_template_surat,
+                    'description' => 'Template Standar Operasional Prosedur',
+                    'icon' => 'file-alt',
+                    'iconColor' => 'blue',
+                    'iconBgColor' => 'blue-100',
+                    'iconDarkBgColor' => 'green-900',
+                    'iconTextColor' => 'green-600',
+                    'iconDarkTextColor' => 'green-400',
+                    'created_at' => $t->created_at->toISOString(),
+                    'updated_at' => $t->updated_at ? $t->updated_at->format('d/m/Y') : '-'
+                ];
+            });
 
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'a-z':
-                    $query->orderBy('nama_template_surat', 'asc');
-                    break;
-                case 'z-a':
-                    $query->orderBy('nama_template_surat', 'desc');
-                    break;
-                case 'latest':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
-                    break;
-                default:
-                    $query->orderBy('nama_template_surat');
-            }
-        } else {
-            $query->orderBy('nama_template_surat');
-        }
-
-        $templates = $query->get();
         return view('template-surat.sop.index', compact('templates'));
     }
 
@@ -186,12 +181,12 @@ class SOPController extends Controller
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Template berhasil dihapus',
+                    'message' => 'Standar Operasional Prosedur (SOP) berhasil dihapus',
                     'name' => $templateName,
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Template berhasil dihapus');
+            return redirect()->back()->with('success', 'Standar Operasional Prosedur (SOP) berhasil dihapus');
         } catch (Exception $e) {
             if (request()->expectsJson()) {
                 return response()->json([

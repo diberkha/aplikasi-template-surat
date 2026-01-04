@@ -60,33 +60,6 @@
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                    <div>
-                        <p class="text-green-800 dark:text-green-200 font-medium">Berhasil!</p>
-                        <p class="text-green-700 dark:text-green-300 text-sm mt-1">{{ session('success') }}</p>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
-                    <div>
-                        <p class="text-red-800 dark:text-red-200 font-medium">Terjadi kesalahan!</p>
-                        <ul class="text-red-700 dark:text-red-300 text-sm mt-1 list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        @endif
 
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -150,7 +123,7 @@
             </div>
 
             @if($regulasis->count() > 0)
-                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center space-x-2">
                             <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
@@ -165,11 +138,11 @@
 
                         <div class="flex items-center space-x-1 sm:space-x-2">
                             <button @click="prevPage()" :disabled="currentPage === 1"
-                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
-                            <template x-for="page in pages()" :key="page">
+                            <template x-for="(page, index) in pages()" :key="index">
                                 <button @click="page !== '...' && goToPage(page)"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="page === currentPage
@@ -183,7 +156,7 @@
                             </template>
 
                             <button @click="nextPage()" :disabled="currentPage === totalPages"
-                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -245,36 +218,33 @@
                 
                 pages() {
                      const total = this.totalPages;
-                     if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
+                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
-                     const delta = 1; 
-                     const range = [];
-                     const rangeWithDots = [];
-                     let l;
+                     const current = this.currentPage;
+                     const range = [1];
 
-                     range.push(1);
-                     for (let i = this.currentPage - delta; i <= this.currentPage + delta; i++) {
-                         if (i < total && i > 1) {
-                             range.push(i);
-                         }
+                     if (current > 3) range.push('...');
+
+                     let start = Math.max(2, current - 1);
+                     let end = Math.min(total - 1, current + 1);
+
+                     if (current <= 3) {
+                         end = 4;
                      }
+
+                     if (current >= total - 2) {
+                         start = total - 3;
+                     }
+
+                     for (let i = start; i <= end; i++) {
+                         range.push(i);
+                     }
+
+                     if (current < total - 2) range.push('...');
+
                      range.push(total);
-
-                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
-
-                     for (let i of uniqueRange) {
-                         if (l) {
-                             if (i - l === 2) {
-                                 rangeWithDots.push(l + 1);
-                             } else if (i - l !== 1) {
-                                 rangeWithDots.push('...');
-                             }
-                         }
-                         rangeWithDots.push(i);
-                         l = i;
-                     }
                      
-                     return rangeWithDots;
+                     return range;
                 },
                 
                 goToPage(page) {
@@ -364,8 +334,7 @@
                     throw new Error('Gagal mengambil data untuk edit');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Gagal memuat data untuk edit');
+                notify('error', 'Gagal', 'Gagal memuat data untuk edit', false);
             }
         }
 

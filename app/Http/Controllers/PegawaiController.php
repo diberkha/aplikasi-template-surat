@@ -20,7 +20,7 @@ class PegawaiController extends Controller
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:50|unique:pegawais,nip',
             'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
-            'tanggal_masuk' => 'required|date',
+            'masa_kerja' => 'required|date',
             'sisa_cuti_n' => 'nullable|integer',
             'sisa_cuti_n1' => 'nullable|integer',
             'sisa_cuti_n2' => 'nullable|integer',
@@ -42,7 +42,7 @@ class PegawaiController extends Controller
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:50|unique:pegawais,nip,' . $id,
             'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
-            'tanggal_masuk' => 'required|date',
+            'masa_kerja' => 'required|date',
             'sisa_cuti_n' => 'nullable|integer',
             'sisa_cuti_n1' => 'nullable|integer',
             'sisa_cuti_n2' => 'nullable|integer',
@@ -53,7 +53,7 @@ class PegawaiController extends Controller
 
         $pegawai->update($validated);
 
-        return redirect()->route('master-data.pegawai.index')->with('success', 'Pegawai berhasil diupdate');
+        return redirect()->route('master-data.pegawai.index')->with('success', 'Pegawai berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -72,18 +72,15 @@ class PegawaiController extends Controller
         
         $query = Pegawai::query();
 
-        // Filter by search term (name or NIP)
         $query->where(function($q) use ($search) {
             $q->where('nama', 'LIKE', "%$search%")
               ->orWhere('nip', 'LIKE', "%$search%");
         });
 
-        // Filter by Employee Type (PNS, PPPK, NON ASN)
         if ($type) {
             $query->where('jenis_pegawai', $type);
         }
 
-        // Filter for Atasan (Directors, Heads, etc.)
         if ($isAtasan === 'true') {
             $query->where(function($q) {
                 $q->where('jabatan', 'LIKE', '%Direktur%')
@@ -104,7 +101,7 @@ class PegawaiController extends Controller
     {
         $pegawai = Pegawai::findOrFail($id);
         
-        $joinDate = Carbon::parse($pegawai->tanggal_masuk);
+        $joinDate = Carbon::parse($pegawai->masa_kerja);
         $now = Carbon::now();
         
         $years = $joinDate->diffInYears($now);
@@ -115,7 +112,7 @@ class PegawaiController extends Controller
             'nama' => $pegawai->nama,
             'nip' => $pegawai->nip,
             'jenis_pegawai' => $pegawai->jenis_pegawai,
-            'tanggal_masuk' => $pegawai->tanggal_masuk,
+            'masa_kerja' => $pegawai->masa_kerja,
             'masa_kerja_tahun' => $years,
             'masa_kerja_bulan' => $months,
             'sisa_cuti_tahunan' => $pegawai->sisa_cuti_tahunan,

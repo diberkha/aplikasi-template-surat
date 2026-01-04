@@ -14,7 +14,7 @@ class Pegawai extends Model
         'nip',
         'jabatan',
         'jenis_pegawai',
-        'tanggal_masuk',
+        'masa_kerja',
         'sisa_cuti_tahunan',
         'sisa_cuti_n',
         'sisa_cuti_n1',

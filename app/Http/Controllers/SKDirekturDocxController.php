@@ -123,7 +123,9 @@ class SKDirekturDocxController extends Controller
                 ? $data['menimbang'] 
                 : preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
             
-            $menimbangLines = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbangLines);
+            $menimbangLines = array_map(function($line) {
+                return preg_replace('/^[a-z]\.\s*/', '', trim($line));
+            }, $menimbangLines);
             $menimbangLines = array_values(array_filter($menimbangLines));
             
             if (count($menimbangLines) > 1) {
@@ -164,7 +166,7 @@ class SKDirekturDocxController extends Controller
             $mengingatLines = [];
             
             $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-            $lines = array_filter($lines, fn($line) => trim($line) !== '');
+            $lines = array_filter($lines, function($line) { return trim($line) !== ''; });
             
             $allAreIds = true;
             $ids = [];

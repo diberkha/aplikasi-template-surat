@@ -430,22 +430,22 @@
         const prosedurFields = Array.from(form.querySelectorAll('textarea[name="prosedur[]"]')).map(i => i.value.trim()).filter(Boolean);
         
         if (kebijakanCheckboxes.length === 0) {
-            alert('Minimal satu Kebijakan (Regulasi) harus dipilih.');
+            notify('error', 'Validasi Gagal', 'Minimal satu Kebijakan (Regulasi) harus dipilih.', false);
             return;
         }
 
         if (unitCheckboxes.length === 0) {
-            alert('Minimal satu Unit Terkait harus dipilih.');
+            notify('error', 'Validasi Gagal', 'Minimal satu Unit Terkait harus dipilih.', false);
             return;
         }
 
         if (tujuanFields.length === 0) {
-            alert('Tujuan minimal 1 poin.');
+            notify('error', 'Validasi Gagal', 'Tujuan minimal 1 poin.', false);
             return;
         }
 
         if (prosedurFields.length === 0) {
-            alert('Prosedur minimal 1 poin.');
+            notify('error', 'Validasi Gagal', 'Prosedur minimal 1 poin.', false);
             return;
         }
 
@@ -461,7 +461,7 @@
         fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
         .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, data })).catch(() => ({ status: response.status, ok: response.ok, parseError: true })))
         .then(result => {
-             if (result.parseError) { alert('Error: Response parsing failed.'); return; }
+             if (result.parseError) { notify('error', 'Gagal', 'Error: Response parsing failed.', false); return; }
              if (!result.ok) {
                  if (result.data?.errors) {
                      handleValidationErrors(result.data.errors);
@@ -475,7 +475,7 @@
                  closeModal('modalCreateSOP');
                  form.reset(); 
                  resetFormSOP();
-                 notify('success', 'Berhasil', 'SOP berhasil dibuat!');
+                 notify('success', 'Berhasil', result.data.message);
                  setTimeout(() => { 
                      openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, result.data.judul_sop, result.data.tanggal_dibuat); 
                  }, 500);

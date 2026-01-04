@@ -1,29 +1,105 @@
 <x-template-header title="Template Standar Operasional Prosedur (SOP)"
     subtitle="Pilih dan gunakan template Standar Operasional Prosedur (SOP) yang tersedia" tableTitle="Daftar Template Standar Operasional Prosedur (SOP)"
-    searchPlaceholder="Cari template...">
+    searchPlaceholder="Cari template..."
+    x-init="items = {{ json_encode($templates) }}">
 
-    @if(session('success'))
-        <div class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                <span class="text-green-800 dark:text-green-200">{{ session('success') }}</span>
-            </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Template Surat</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <template x-for="(item, idx) in paginatedData" :key="item.id_template_surat">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm text-gray-900 dark:text-white" x-text="idx + 1 + ((currentPage - 1) * itemsPerPage)"></span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                <div :class="'p-2 bg-' + item.iconBgColor + ' dark:bg-' + item.iconDarkBgColor + ' rounded-lg mr-3'">
+                                    <i :class="'fas fa-' + item.icon + ' text-' + item.iconTextColor + ' dark:text-' + item.iconDarkTextColor"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white" x-text="item.nama_template_surat"></span>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="item.description"></p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center space-x-2">
+                                <button @click="openModal('modalCreateSOP', 'Standar Operasional Prosedur (SOP)', item.id_template_surat)"
+                                    class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                                    title="Buat Surat">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
+                                @if(auth()->user()->hasRole('Admin'))
+                                <button @click="openDeleteModal(item.id_template_surat, item.nama_template_surat)"
+                                    class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                                    title="Hapus Template">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+                <tr x-show="filteredData.length === 0">
+                    <td colspan="3" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                        Tidak ada template surat yang ditemukan
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-3" x-show="filteredData.length > 0">
+        <div class="flex items-center space-x-2">
+            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
+            <select x-model.number="itemsPerPage" @change="currentPage = 1" class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
         </div>
-    @endif
 
-    <x-template-table :templates="$templates" :columns="['no', 'template', 'actions']">
-        @forelse($templates as $index => $template)
-            <x-template-row :templates="$template" :index="$loop->iteration" :actionButtons="['create', 'delete']"
-                createAction="openModal('modalCreateSOP', 'Standar Operasional Prosedur (SOP)', {{ $template->id_template_surat }})"
-                deleteAction="openDeleteModal({{ $template->id_template_surat }}, '{!! addslashes($template->nama_template_surat ?? 'Template Standar Operasional Prosedur (SOP)') !!}')" />
-        @empty
-            <tr>
-                <td colspan="3" class="px-6 py-6 text-center text-gray-500 dark:text-gray-400">
-                    Belum ada template Standar Operasional Prosedur (SOP).
-                </td>
-            </tr>
-        @endforelse
-    </x-template-table>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+            <button @click="prevPage()" :disabled="currentPage === 1"
+                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <template x-for="(p, index) in pages()" :key="index">
+                <button @click="p !== '...' && goToPage(p)"
+                    x-text="p"
+                    :disabled="p === '...'"
+                    class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
+                    :class="p === currentPage 
+                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
+                        : (p === '...' 
+                            ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
+                            : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')">
+                </button>
+            </template>
+
+            <button @click="nextPage()" :disabled="currentPage === totalPages"
+                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
+            <span x-text="startItem"></span> -
+            <span x-text="endItem"></span>
+            dari
+            <span x-text="filteredData.length"></span>
+        </div>
+    </div>
 </x-template-header>
 
 @include('template-surat.sop.partials.modal-create')

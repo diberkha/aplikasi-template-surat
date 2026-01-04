@@ -8,163 +8,124 @@ use Carbon\Carbon;
 
 class PegawaiSeeder extends Seeder
 {
+    private const DEFAULT_MASA_KERJA = '2000-01-01';
+
     public function run()
     {
         Pegawai::truncate();
 
-        /**
-         * =====================
-         * PNS
-         * =====================
-         */
-        Pegawai::create([
-            'nama' => 'Dr. dr. Kinik Darsono, M.Pd.Ked.',
-            'nip' => '197104152009031001',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Direktur',
-            'tanggal_masuk' => Carbon::create(2009, 3, 1), 
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 6, 'sisa_cuti_n2' => 0,
-        ]);
+        $files = [
+            base_path('database/seeders/data/database_pegawai_pns_151.csv'),
+            base_path('database/seeders/data/database_pegawai_pppk_76.csv'),
+            base_path('database/seeders/data/database_pegawai_non_asn_68.csv'),
+        ];
 
-        Pegawai::create([
-            'nama' => 'dr. Budi Santosa, Sp.PD., FINASIM',
-            'nip' => '197508202005011005',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Dokter Spesialis Penyakit Dalam',
-            'tanggal_masuk' => Carbon::create(2005, 1, 1),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 12, 'sisa_cuti_n2' => 6,
-        ]);
+        foreach ($files as $path) {
+            $this->seedFromCsv($path);
+        }
+    }
 
-        Pegawai::create([
-            'nama' => 'Hj. Siti Aminah, S.Kep., Ns., M.Kes.',
-            'nip' => '198002152003122003',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Kepala Bidang Keperawatan',
-            'tanggal_masuk' => Carbon::create(2003, 12, 1),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+    private function seedFromCsv(string $path): void
+    {
+        if (!file_exists($path)) {
+            throw new \RuntimeException("File CSV tidak ditemukan: {$path}");
+        }
 
-        Pegawai::create([
-            'nama' => 'Drs. H. Ahmad Wijaya, M.M.',
-            'nip' => '197806102006041002',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Kepala Bagian Tata Usaha',
-            'tanggal_masuk' => Carbon::create(2006, 4, 1),
-            'sisa_cuti_tahunan' => 9,
-            'sisa_cuti_n' => 9, 'sisa_cuti_n1' => 3, 'sisa_cuti_n2' => 0,
-        ]);
-        
-        Pegawai::create([
-            'nama' => 'Andi Prasetyo, S.Kom',
-            'nip' => '199005102019031004',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Pranata Komputer Ahli Pertama',
-            'tanggal_masuk' => Carbon::create(2019, 3, 1),
-            'sisa_cuti_tahunan' => 6,
-            'sisa_cuti_n' => 6, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+        $file = new \SplFileObject($path);
+        $file->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY);
+        $file->setCsvControl(',');
 
-        Pegawai::create([
-            'nama' => 'Rina Wulandari, A.Md.Keb.',
-            'nip' => '199511152020122005',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Bidan Pelaksana',
-            'tanggal_masuk' => Carbon::create(2020, 12, 1),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+        $header = null;
 
-        Pegawai::create([
-            'nama' => 'Bambang Suryono, S.E.',
-            'nip' => '198807222014021003',
-            'jenis_pegawai' => 'PNS',
-            'jabatan' => 'Bendahara Pengeluaran',
-            'tanggal_masuk' => Carbon::create(2014, 2, 1),
-            'sisa_cuti_tahunan' => 0,
-            'sisa_cuti_n' => 0, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+        foreach ($file as $row) {
+            if ($row === [null] || $row === false) {
+                continue;
+            }
 
-        /**
-         * =====================
-         * PPPK 
-         * =====================
-         */
-        Pegawai::create([
-            'nama' => 'Ns. Ratna Sari, S.Kep.',
-            'nip' => '199203102022212001',
-            'jenis_pegawai' => 'PPPK',
-            'jabatan' => 'Perawat Ahli Pertama',
-            'tanggal_masuk' => Carbon::create(2022, 1, 1),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+            if ($header === null) {
+                $header = array_map(fn ($h) => $this->clean($h), $row);
 
-        Pegawai::create([
-            'nama' => 'Eko Prasetyo, A.Md.Rad.',
-            'nip' => '199408152023211002',
-            'jenis_pegawai' => 'PPPK',
-            'jabatan' => 'Radiografer',
-            'tanggal_masuk' => Carbon::create(2023, 3, 1),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+                if (isset($header[0])) {
+                    $header[0] = preg_replace('/^\xEF\xBB\xBF/', '', $header[0]);
+                }
+                continue;
+            }
 
-        Pegawai::create([
-            'nama' => 'Dewi Sartika, S.Farm., Apt.',
-            'nip' => '199105202022212003',
-            'jenis_pegawai' => 'PPPK',
-            'jabatan' => 'Apoteker',
-            'tanggal_masuk' => Carbon::create(2022, 5, 1),
-            'sisa_cuti_tahunan' => 5,
-            'sisa_cuti_n' => 5, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+            $data = [];
+            foreach ($header as $i => $key) {
+                if ($key === null || $key === '') continue;
+                $data[$key] = isset($row[$i]) ? $this->clean($row[$i]) : null;
+            }
 
-        /**
-         * =====================
-         * NON ASN 
-         * =====================
-         */
-        Pegawai::create([
-            'nama' => 'Joko Susilio',
-            'nip' => null, 
-            'jenis_pegawai' => 'NON ASN',
-            'jabatan' => 'Petugas Keamanan',
-            'tanggal_masuk' => Carbon::now()->subYears(5),
-            'sisa_cuti_tahunan' => 12,
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+            if (empty(array_filter($data, fn ($v) => $v !== null && $v !== ''))) {
+                continue;
+            }
 
-        Pegawai::create([
-            'nama' => 'Sri Wahyuni, A.Md.',
-            'nip' => null,
-            'jenis_pegawai' => 'NON ASN',
-            'jabatan' => 'Staf Administrasi',
-            'tanggal_masuk' => Carbon::now()->subYears(3),
-            'sisa_cuti_tahunan' => 6,
-            'sisa_cuti_n' => 6, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+            $masaKerja = $this->parseDateOrDefault($data['masa_kerja'] ?? null);
 
-        Pegawai::create([
-            'nama' => 'Agus Setiawan',
-            'nip' => null,
-            'jenis_pegawai' => 'NON ASN',
-            'jabatan' => 'Driver',
-            'tanggal_masuk' => Carbon::now()->subMonths(10), 
-            'sisa_cuti_tahunan' => 0, 
-            'sisa_cuti_n' => 0, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
-        
-        Pegawai::create([
-            'nama' => 'Lestari Indah, S.E.',
-            'nip' => null,
-            'jenis_pegawai' => 'NON ASN',
-            'jabatan' => 'Staf Keuangan',
-            'tanggal_masuk' => Carbon::now()->subYears(8), 
-            'sisa_cuti_tahunan' => 12, 
-            'sisa_cuti_n' => 12, 'sisa_cuti_n1' => 0, 'sisa_cuti_n2' => 0,
-        ]);
+            $nip = $data['nip'] ?? null;
+            $nip = ($nip !== null && $nip !== '') ? (string) $nip : null;
+
+            Pegawai::create([
+                'nama' => $data['nama'] ?? null,
+                'nip' => $nip,
+                'jenis_pegawai' => $data['jenis_pegawai'] ?? null,
+                'jabatan' => $data['jabatan'] ?? null,
+                'masa_kerja' => $masaKerja,
+
+                'sisa_cuti_tahunan' => 12,
+                'sisa_cuti_n' => 12,
+                'sisa_cuti_n1' => 0,
+                'sisa_cuti_n2' => 0,
+            ]);
+        }
+    }
+
+    private function clean($value): ?string
+    {
+        if ($value === null) return null;
+        $v = trim((string) $value);
+        return $v === '' ? null : $v;
+    }
+
+    private function parseDateOrDefault(?string $value): Carbon
+    {
+        $default = Carbon::parse(self::DEFAULT_MASA_KERJA);
+
+        if ($value === null || trim($value) === '') {
+            return $default;
+        }
+
+        $raw = trim($value);
+
+        if (is_numeric($raw)) {
+            try {
+                return Carbon::create(1899, 12, 30)->addDays((int) $raw);
+            } catch (\Throwable $e) {
+                return $default;
+            }
+        }
+
+        $formats = [
+            'Y-m-d',
+            'Y-m-d H:i:s',
+            'd/m/Y',
+            'd/m/Y H:i:s',
+            'd-m-Y',
+            'd-m-Y H:i:s',
+        ];
+
+        foreach ($formats as $fmt) {
+            try {
+                return Carbon::createFromFormat($fmt, $raw);
+            } catch (\Throwable $e) {
+            }
+        }
+
+        try {
+            return Carbon::parse($raw);
+        } catch (\Throwable $e) {
+            return $default;
+        }
     }
 }

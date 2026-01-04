@@ -8,95 +8,109 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Arsip Surat</h1>
                 <p class="text-gray-600 dark:text-gray-400 mt-1">
-                    Total {{ $totalSurat }} surat tersimpan dalam sistem
+                    Total <span x-text="filteredData.length"></span> surat tersimpan dalam sistem
                 </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
+                <div x-data="{ toggleSort: false }" class="relative">
+                    <button type="button" @click="toggleSort = !toggleSort"
+                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
+                        <span class="text-gray-700 dark:text-gray-300" x-text="sortLabel"></span>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                    </button>
+
+                    <div x-show="toggleSort" @click.away="toggleSort = false" x-transition
+                        class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                        <ul class="py-1">
+                            <li><button type="button" @click="sortOption = 'a-z'; toggleSort = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
+                            </li>
+                            <li><button type="button" @click="sortOption = 'z-a'; toggleSort = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
+                            </li>
+                            <li><button type="button" @click="sortOption = 'latest'; toggleSort = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
+                            </li>
+                            <li><button type="button" @click="sortOption = 'oldest'; toggleSort = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                            </li>
+                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <button type="button" @click="sortOption = ''; toggleSort = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div x-data="{ toggleFilter: false }" class="relative">
                     <button type="button" @click="toggleFilter = !toggleFilter"
                         class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300">Template</span>
+                        <i class="fas fa-copy text-gray-600 dark:text-gray-400"></i>
+                        <span class="text-gray-700 dark:text-gray-300" x-text="selectedTemplateName"></span>
                         <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                     </button>
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
-                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                        <ul class="py-1">
-                            <li>
-                                <button type="button" onclick="setTemplateFilter('')"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Semua
-                                    Template</button>
-                            </li>
+                        class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                        <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
                             @foreach($templateOptions as $template)
                                 <li>
-                                    <button type="button" onclick="setTemplateFilter('{{ $template->id_template_surat }}')"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">{{ $template->nama_template_surat }}</button>
+                                    <button type="button" @click="templateFilter = '{{ $template->id_template_surat }}'; toggleFilter = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                        {{ $template->nama_template_surat }}
+                                    </button>
                                 </li>
                             @endforeach
+                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <button type="button" @click="templateFilter = ''; toggleFilter = false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
+                                    Hapus Filter
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <div x-data="{ toggleDate: false }" class="relative">
-                    <button type="button" @click="toggleDate = !toggleDate"
+                <div x-data="{ open: false }" class="relative">
+                    <button type="button" @click="open = !open"
                         class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300">Tanggal</span>
+                        <span class="text-gray-700 dark:text-gray-300" x-text="dateDisplay"></span>
                         <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                     </button>
 
-                    <div x-show="toggleDate" @click.away="toggleDate = false" x-transition
+                    <div x-show="open" @click.away="open = false" x-transition
                         class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
                         <div class="space-y-2">
                             <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                            <input type="date" id="simpleStartDate" name="start_date" value="{{ request('start_date') }}"
+                            <input type="date" x-model="startDate" x-ref="startDatePicker"
                                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
                             <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                            <input type="date" id="simpleEndDate" name="end_date" value="{{ request('end_date') }}"
+                            <input type="date" x-model="endDate" x-ref="endDatePicker"
                                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
                             <div class="flex space-x-2 pt-2">
-                                <button type="button"
-                                    onclick="setDateFilter(document.getElementById('simpleStartDate').value, document.getElementById('simpleEndDate').value)"
+                                <button type="button" @click="applyDateFilter(); open = false"
                                     class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
-                                <button type="button" onclick="clearDateFilter()"
+                                <button type="button" @click="clearDateFilter(); open = false"
                                     class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
                             </div>
                         </div>
                     </div>
-                    <script>
-                        flatpickr('input[name="start_date"]', {
-                            locale: 'id',
-                            dateFormat: 'Y-m-d'
-                        });
-                        flatpickr('input[name="end_date"]', {
-                            locale: 'id',
-                            dateFormat: 'Y-m-d'
-                        });
-                    </script>
                 </div>
 
                 <div class="relative flex-1 sm:flex-initial">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-sm"></i>
                     </div>
-                    <input type="text" id="searchInput" placeholder="Cari surat..." value="{{ request('search') }}"
+                    <input type="text" x-model.debounce.300ms="search" placeholder="Cari arsip..."
                         class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
                 </div>
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                    <span class="text-green-800 dark:text-green-200">{{ session('success') }}</span>
-                </div>
-            </div>
-        @endif
 
         @if(isset($debugRecent) && $debugRecent)
             <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mt-4">
@@ -126,69 +140,8 @@
             </div>
         @endif
 
-        @if(session('error'))
-            <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle text-red-600 dark:text-red-400 mr-2"></i>
-                    <span class="text-red-800 dark:text-red-200">{{ session('error') }}</span>
-                </div>
-            </div>
-        @endif
 
-        @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
-            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-sm text-blue-800 dark:text-blue-300 font-medium">Filter:</span>
 
-                    @if(request()->has('search'))
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                            Pencarian: "{{ request('search') }}"
-                            <a href="{{ route('arsip-surat.index', request()->except('search')) }}"
-                                class="ml-1.5 text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </span>
-                    @endif
-
-                    @if(request()->has('template') && $selectedTemplate = $templateOptions->firstWhere('id_template_surat', request('template')))
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                            Template: {{ $selectedTemplate->nama_template_surat }}
-                            <a href="{{ route('arsip-surat.index', request()->except('template')) }}"
-                                class="ml-1.5 text-purple-600 hover:text-purple-800">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </span>
-                    @endif
-
-                    @if(request()->has('start_date') || request()->has('end_date'))
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                            Tanggal:
-                            @if(request()->has('start_date') && request()->has('end_date'))
-                                {{ \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') }} -
-                                {{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') }}
-                            @elseif(request()->has('start_date'))
-                                Dari {{ \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') }}
-                            @else
-                                Hingga {{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') }}
-                            @endif
-                            <a href="{{ route('arsip-surat.index', request()->except(['start_date', 'end_date'])) }}"
-                                class="ml-1.5 text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </span>
-                    @endif
-
-                    <a href="{{ route('arsip-surat.index') }}"
-                        class="ml-auto text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                        <i class="fas fa-times mr-1"></i>
-                        Hapus semua filter
-                    </a>
-                </div>
-            </div>
-        @endif
 
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -221,197 +174,136 @@
                                     Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
-                            id="suratTableBody">
-                            @foreach($surat as $index => $item)
-                                @php
-                                    $idSurat = is_object($item) ? $item->id_surat : ($item['id_surat'] ?? '');
-                                    $namaSurat = is_object($item) ? $item->nama_surat : ($item['nama_surat'] ?? '');
-                                    $nomorSurat = is_object($item) ? $item->nomor_surat : ($item['nomor_surat'] ?? '');
-                                    $tipeSurat = is_object($item) ? $item->tipe_surat : ($item['tipe_surat'] ?? '');
-                                    $tipeSuratDisplay = $tipeSurat;
-                                    $tanggalDibuat = is_object($item) ? $item->tanggal_dibuat : ($item['tanggal_dibuat'] ?? '');
-                                    $dibuatOleh = is_object($item) ? ($item->createdBy->username ?? ($item->created_by ?? 'Unknown')) : ($item['username'] ?? 'Unknown');
-                                    $filePath = is_object($item) ? $item->file_path : ($item['file_path'] ?? '');
-                                    $namaSuratDisplay = $namaSurat;
-
-                                    if ($tipeSurat === 'Standar Operasional Prosedur (SOP)' && is_object($item) && $item->sop) {
-                                        $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
-                                    }
-
-                                    if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && is_object($item) && $item->cuti) {
-                                        $kategori = strtoupper($item->cuti->kategori ?? '');
-                                        $formData = $item->cuti->form_data ?? [];
-                                        $namaPegawai = is_array($formData) ? ($formData['nama'] ?? '') : '';
-                                        if ($namaPegawai) {
-                                            $namaPegawai = strtoupper(str_replace(' ', ' ', $namaPegawai));
-                                            $nomorSurat = 'CUTI-' . $kategori . '-' . $namaPegawai;
-                                        }
-
-                                        $kategoriLabel = trim($kategori);
-                                        if (!$kategoriLabel) {
-                                            $kategoriLabel = trim(str_ireplace('Surat Izin Cuti', '', $tipeSurat));
-                                        }
-                                        if (strtoupper($kategoriLabel) === 'NON ASN') {
-                                            $kategoriLabel = 'Non ASN';
-                                        }
-                                        $tipeSuratDisplay = 'Surat Izin Cuti';
-                                        $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
-                                    }
-
-                                    $docxUrl = '#'; 
-                                    if ($tipeSuratDisplay === 'Surat Izin Cuti' && isset($kategori)) {
-                                        if ($kategori === 'PNS') $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
-                                        elseif ($kategori === 'PPPK') $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);
-                                        elseif ($kategori === 'NON ASN') $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
-                                    } elseif ($tipeSuratDisplay === 'Surat Keputusan Direktur') {
-                                        $docxUrl = route('template-surat.sk-direktur.docx', $idSurat);
-                                    } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)') {
-                                        $docxUrl = route('template-surat.sop.docx', $idSurat);
-                                    }
-
-                                    $badgeColor = [
-                                        'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-                                        'Standar Operasional Prosedur (SOP)' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-                                        'Surat Izin Cuti' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-                                    ][$tipeSuratDisplay] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-                                @endphp
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <template x-for="(item, index) in paginatedData" :key="item.id_surat">
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-sm text-gray-900 dark:text-white">{{ $index + 1 }}</span>
+                                        <span class="text-sm text-gray-900 dark:text-white" x-text="(currentPage - 1) * itemsPerPage + index + 1"></span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeColor }}">
-                                            {{ $tipeSuratDisplay }}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                            :class="item.badge_color" x-text="item.tipe_surat_display">
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $namaSuratDisplay }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                        {{ $nomorSurat }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                        {{ \Carbon\Carbon::parse($tanggalDibuat)->translatedFormat('d F Y') }}
-                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white" x-text="item.nama_surat_display"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" x-text="item.nomor_surat"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" x-text="formatDate(item.tanggal_dibuat)"></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-2">
-                                            <button type="button" onclick="showDetailSurat(
-                                                '{{ $idSurat }}',
-                                                '{{ addslashes($namaSuratDisplay) }}',
-                                                '{{ addslashes($nomorSurat) }}',
-                                                '{{ addslashes($tipeSuratDisplay) }}',
-                                                '{{ $tanggalDibuat }}',
-                                                '{{ addslashes($dibuatOleh) }}',
-                                                '{{ $filePath }}',
-                                                '{{ $docxUrl }}'
-                                            )"
+                                            <button type="button" @click="showDetailSurat(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display, item.tanggal_dibuat, item.username, item.file_path, item.docx_url)"
                                                 class="inline-flex items-center p-1.5 text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
                                                 <i class="fas fa-eye text-sm"></i>
                                             </button>
 
-                                            @if($filePath)
+                                            <template x-if="item.file_path">
                                                 <div x-data="{ 
                                                     openDownload: false,
                                                     toggle() {
+                                                        this.openDownload = !this.openDownload;
                                                         if (this.openDownload) {
-                                                            this.openDownload = false;
-                                                            return;
+                                                            this.$nextTick(() => {
+                                                                const button = this.$refs.button;
+                                                                const dropdown = this.$refs.dropdown;
+                                                                const rect = button.getBoundingClientRect();
+                                                                dropdown.style.position = 'fixed';
+                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                            });
                                                         }
-                                                        this.openDownload = true;
-                                                        this.$nextTick(() => {
-                                                            const button = this.$refs.button;
-                                                            const dropdown = this.$refs.dropdown;
-                                                            const rect = button.getBoundingClientRect();
-                                                            
-                                                            dropdown.style.position = 'fixed';
-                                                            dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                            dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                        });
                                                     }
-                                                }" 
-                                                @scroll.window="openDownload = false"
-                                                class="relative">
-                                                    <button type="button" 
-                                                        x-ref="button"
-                                                        @click="toggle()"
+                                                }" @scroll.window="openDownload = false" class="relative">
+                                                    <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                         <i class="fas fa-download text-sm"></i>
                                                     </button>
-                                                    
                                                     <template x-teleport="body">
-                                                        <div x-show="openDownload" 
-                                                            x-ref="dropdown"
-                                                            @click.outside="openDownload = false" 
-                                                            x-transition
-                                                            class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]"
-                                                            style="display: none;">
-                                                            <a href="{{ route('arsip-surat.download', $idSurat) }}"
-                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i>
-                                                                PDF
+                                                        <div x-show="openDownload" x-ref="dropdown" @click.outside="openDownload = false" x-transition
+                                                            class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
+                                                            <a :href="item.download_url" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
                                                             </a>
-                                                            @if($docxUrl !== '#')
-                                                            <a href="{{ $docxUrl }}"
-                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
-                                                                DOCX
-                                                            </a>
-                                                            @endif
+                                                            <template x-if="item.docx_url !== '#'">
+                                                                <a :href="item.docx_url" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i> DOCX
+                                                                </a>
+                                                            </template>
                                                         </div>
                                                     </template>
                                                 </div>
-                                            @else
-                                                <a href="#"
-                                                    class="inline-flex items-center p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 transition-colors"
-                                                    onclick="alert('File surat tidak tersedia untuk diunduh')">
+                                            </template>
+                                            <template x-if="!item.file_path">
+                                                <button type="button" @click="notify('error', 'Gagal', 'File surat tidak tersedia untuk diunduh', false)"
+                                                    class="inline-flex items-center p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
-                                                </a>
-                                            @endif
+                                                </button>
+                                            </template>
 
-                                            <button type="button"
-                                                onclick="openDeleteModal({{ $idSurat }}, '{{ addslashes($namaSuratDisplay) }}', '{{ addslashes($nomorSurat) }}', '{{ addslashes($tipeSuratDisplay) }}')"
+                                            @if(auth()->user()->hasRole('Admin'))
+                                            <button type="button" @click="openDeleteModal(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display)"
                                                 class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                                                 <i class="fas fa-trash text-sm"></i>
                                             </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            </template>
+                            <template x-if="paginatedData.length === 0">
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-inbox text-4xl mb-4"></i>
+                                            <p class="text-lg font-medium">Tidak ada surat ditemukan</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center space-x-2">
                             <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
-                            <select id="arsipItemsPerPage" onchange="arsipSetItemsPerPage(this.value)"
+                            <select x-model="itemsPerPage" @change="currentPage = 1"
                                 class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
                                 <option value="5">5</option>
-                                <option value="10" selected>10</option>
+                                <option value="10">10</option>
                                 <option value="15">15</option>
                                 <option value="20">20</option>
                             </select>
                         </div>
 
                         <div class="flex items-center space-x-1 sm:space-x-2">
-                            <button id="arsipPrevBtn" onclick="arsipPrev()"
-                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <button @click="setPage(currentPage - 1)" :disabled="currentPage <= 1"
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
-                            <div id="arsipPageButtons" class="flex items-center space-x-1 sm:space-x-2"></div>
+                            <template x-for="(p, index) in pages()" :key="index">
+                                <button @click="p !== '...' && setPage(p)"
+                                    x-text="p"
+                                    :disabled="p === '...'"
+                                    class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
+                                    :class="p === currentPage 
+                                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
+                                        : (p === '...' 
+                                            ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
+                                            : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')">
+                                </button>
+                            </template>
 
-                            <button id="arsipNextBtn" onclick="arsipNext()"
-                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <button @click="setPage(currentPage + 1)" :disabled="currentPage >= totalPages"
+                                class="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
 
-                        <div class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
-                            <span id="arsipStart">0</span> - <span id="arsipEnd">0</span> dari <span id="arsipTotal">0</span>
+                        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
+                            <span x-text="filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1"></span> - 
+                            <span x-text="Math.min(currentPage * itemsPerPage, filteredData.length)"></span> dari 
+                            <span x-text="filteredData.length"></span>
                         </div>
                     </div>
                 </div>
@@ -490,13 +382,151 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('arsipSurat', () => ({
+                allData: @json($surat),
+                templateOptions: @json($templateOptions),
+                search: '',
+                sortOption: '',
+                templateFilter: '',
+                startDate: '',
+                endDate: '',
+                itemsPerPage: 10,
+                currentPage: 1,
+                toggleSort: false,
                 toggleFilter: false,
-                init() { }
+                
+                get filteredData() {
+                    let data = [...this.allData];
+
+                    if (this.search) {
+                        const s = this.search.toLowerCase();
+                        data = data.filter(item => 
+                            item.nama_surat_display.toLowerCase().includes(s) ||
+                            item.nomor_surat.toLowerCase().includes(s) ||
+                            item.username.toLowerCase().includes(s) ||
+                            item.tipe_surat_display.toLowerCase().includes(s)
+                        );
+                    }
+
+                    if (this.templateFilter) {
+                        data = data.filter(item => item.id_template_surat == this.templateFilter);
+                    }
+
+                    if (this.startDate) {
+                        data = data.filter(item => item.tanggal_dibuat >= this.startDate);
+                    }
+                    if (this.endDate) {
+                        data = data.filter(item => item.tanggal_dibuat <= this.endDate);
+                    }
+
+                    if (this.sortOption === 'a-z') {
+                        data.sort((a, b) => a.nama_surat_display.localeCompare(b.nama_surat_display));
+                    } else if (this.sortOption === 'z-a') {
+                        data.sort((a, b) => b.nama_surat_display.localeCompare(a.nama_surat_display));
+                    } else if (this.sortOption === 'latest') {
+                        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    } else if (this.sortOption === 'oldest') {
+                        data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    }
+
+                    return data;
+                },
+
+                get paginatedData() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    return this.filteredData.slice(start, start + this.itemsPerPage);
+                },
+
+                get totalPages() {
+                    return Math.max(1, Math.ceil(this.filteredData.length / this.itemsPerPage));
+                },
+
+                pages() {
+                     const total = this.totalPages;
+                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+                     const current = this.currentPage;
+                     const range = [1];
+
+                     if (current > 3) range.push('...');
+
+                     let start = Math.max(2, current - 1);
+                     let end = Math.min(total - 1, current + 1);
+
+                     if (current <= 3) {
+                         end = 4;
+                     }
+
+                     if (current >= total - 2) {
+                         start = total - 3;
+                     }
+
+                     for (let i = start; i <= end; i++) {
+                         range.push(i);
+                     }
+
+                     if (current < total - 2) range.push('...');
+
+                     range.push(total);
+                     
+                     return range;
+                },
+
+                get sortLabel() {
+                    switch (this.sortOption) {
+                        case 'a-z': return 'A-Z';
+                        case 'z-a': return 'Z-A';
+                        case 'latest': return 'Terbaru';
+                        case 'oldest': return 'Terlama';
+                        default: return 'Filter';
+                    }
+                },
+
+                get selectedTemplateName() {
+                    if (!this.templateFilter) return 'Template';
+                    const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
+                    return tpl ? tpl.nama_template_surat : 'Template';
+                },
+
+                get dateDisplay() {
+                    if (this.startDate && this.endDate) {
+                        return `${this.formatDate(this.startDate)} - ${this.formatDate(this.endDate)}`;
+                    } else if (this.startDate) {
+                        return `Dari ${this.formatDate(this.startDate)}`;
+                    } else if (this.endDate) {
+                        return `Hingga ${this.formatDate(this.endDate)}`;
+                    }
+                    return 'Tanggal';
+                },
+
+                formatDate(dateStr) {
+                    if (!dateStr) return '';
+                    const d = new Date(dateStr);
+                    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                },
+
+                setPage(page) {
+                    if (page >= 1 && page <= this.totalPages) {
+                        this.currentPage = page;
+                    }
+                },
+
+                applyDateFilter() {
+                   this.open = false;
+                   this.currentPage = 1;
+                },
+
+                clearDateFilter() {
+                    this.startDate = '';
+                    this.endDate = '';
+                    this.currentPage = 1;
+                    this.open = false;
+                }
             }));
+
         });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, dibuatOleh, filePath, docxUrl) {
-            const formatDate = (dateString) => {
+            const formatLongDate = (dateString) => {
                 if (!dateString) return '-';
                 const date = new Date(dateString);
                 return date.toLocaleDateString('id-ID', {
@@ -508,7 +538,7 @@
 
             document.getElementById('detail-nama-surat').textContent = nama;
             document.getElementById('detail-nomor-surat').textContent = nomor;
-            document.getElementById('detail-tanggal-dibuat').textContent = formatDate(tanggal);
+            document.getElementById('detail-tanggal-dibuat').textContent = formatLongDate(tanggal);
             const dibuatOlehEl = document.getElementById('detail-dibuat-oleh');
             if (dibuatOlehEl) {
                 dibuatOlehEl.textContent = dibuatOleh;
@@ -532,9 +562,7 @@
 
                 const fileName = filePath.split('/').pop();
                 document.getElementById('detail-file-nama').textContent = fileName;
-
                 document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
-                
                 document.getElementById('detail-pdf-preview').src = `/arsip-surat/${idSurat}`;
             } else {
                 document.getElementById('detail-file-exists').classList.add('hidden');
@@ -553,7 +581,7 @@
             const docxUrl = modal.dataset.docxUrl;
             
             if (!docxUrl || docxUrl === '#') {
-                alert('File Word tidak tersedia untuk tipe surat ini.');
+                notify('error', 'Gagal', 'File Word tidak tersedia untuk tipe surat ini.', false);
                 return;
             }
             
@@ -578,428 +606,9 @@
             document.getElementById('modalDeleteSurat').classList.remove('hidden');
         }
 
-        let arsipSearchTimeout;
-        let arsipItemsPerPage = 10;
-        let arsipCurrentPage = 1;
-
-        function renderArsipPagination() {
-            const rows = Array.from(document.querySelectorAll('#suratTableBody tr'));
-            const matched = rows.filter(r => r.dataset.match === '1');
-            const total = matched.length;
-            const totalPages = Math.max(1, Math.ceil(total / arsipItemsPerPage));
-
-            if (arsipCurrentPage > totalPages) arsipCurrentPage = totalPages;
-
-            const start = total === 0 ? 0 : (arsipCurrentPage - 1) * arsipItemsPerPage + 1;
-            const end = Math.min(arsipCurrentPage * arsipItemsPerPage, total);
-
-            rows.forEach(r => r.style.display = 'none');
-            matched.slice(start - 1, end).forEach((r, idx) => {
-                r.style.display = '';
-                const noSpan = r.querySelector('td:first-child span');
-                if (noSpan) noSpan.textContent = start + idx;
-            });
-
-            const startEl = document.getElementById('arsipStart');
-            const endEl = document.getElementById('arsipEnd');
-            const totalEl = document.getElementById('arsipTotal');
-            const pageButtonsEl = document.getElementById('arsipPageButtons');
-            if (startEl) startEl.textContent = start;
-            if (endEl) endEl.textContent = end;
-            if (totalEl) totalEl.textContent = total;
-
-            if (pageButtonsEl) {
-                pageButtonsEl.innerHTML = '';
-
-                const createBtn = (p, text = null) => {
-                    const btn = document.createElement('button');
-                    btn.textContent = text || p;
-                    btn.className = 'h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors';
-                    
-                    if (p === arsipCurrentPage) {
-                        btn.classList.add('bg-green-600', 'text-white', 'border-green-600', 'shadow-sm');
-                    } else if (p === '...') {
-                        btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400', 'cursor-default');
-                        btn.disabled = true;
-                    } else {
-                        btn.classList.add('bg-white', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-100', 'border-gray-300', 'dark:border-gray-600', 'hover:bg-gray-100', 'dark:hover:bg-gray-600');
-                        btn.addEventListener('click', () => {
-                            arsipCurrentPage = p;
-                            renderArsipPagination();
-                        });
-                    }
-                    return btn;
-                };
-
-                const getPages = () => {
-                     const delta = 1; 
-                     const range = [];
-                     const rangeWithDots = [];
-                     let l;
-
-                     range.push(1);
-                     for (let i = arsipCurrentPage - delta; i <= arsipCurrentPage + delta; i++) {
-                         if (i < totalPages && i > 1) {
-                             range.push(i);
-                         }
-                     }
-                     range.push(totalPages);
-
-                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
-
-                     for (let i of uniqueRange) {
-                         if (l) {
-                             if (i - l === 2) {
-                                 rangeWithDots.push(l + 1);
-                             } else if (i - l !== 1) {
-                                 rangeWithDots.push('...');
-                             }
-                         }
-                         rangeWithDots.push(i);
-                         l = i;
-                     }
-                     
-                     return rangeWithDots;
-                };
-
-                if (totalPages === 1) {
-                     pageButtonsEl.appendChild(createBtn(1));
-                } else {
-                     getPages().forEach(p => {
-                         pageButtonsEl.appendChild(createBtn(p));
-                     });
-                }
-            }
-
-            const prevBtn = document.getElementById('arsipPrevBtn');
-            const nextBtn = document.getElementById('arsipNextBtn');
-            if (prevBtn) prevBtn.disabled = arsipCurrentPage === 1;
-            if (nextBtn) nextBtn.disabled = arsipCurrentPage >= totalPages;
-        }
-
-        function arsipSetItemsPerPage(val) {
-            arsipItemsPerPage = parseInt(val) || 10;
-            arsipCurrentPage = 1;
-            renderArsipPagination();
-        }
-
-        function arsipNext() {
-            const rows = Array.from(document.querySelectorAll('#suratTableBody tr'));
-            const total = rows.filter(r => r.dataset.match === '1').length;
-            const totalPages = Math.max(1, Math.ceil(total / arsipItemsPerPage));
-            if (arsipCurrentPage < totalPages) {
-                arsipCurrentPage++;
-                renderArsipPagination();
-            }
-        }
-
-        function arsipPrev() {
-            if (arsipCurrentPage > 1) {
-                arsipCurrentPage--;
-                renderArsipPagination();
-            }
-        }
-
-        function setTemplateFilter(value) {
-            const url = new URL(window.location.href);
-            if (value === '' || value === null) {
-                url.searchParams.delete('template');
-            } else {
-                url.searchParams.set('template', value);
-            }
-            window.location.href = url.toString();
-        }
-
-        function setDateFilter(start, end) {
-            const url = new URL(window.location.href);
-            if (start) {
-                url.searchParams.set('start_date', start);
-            } else {
-                url.searchParams.delete('start_date');
-            }
-
-            if (end) {
-                url.searchParams.set('end_date', end);
-            } else {
-                url.searchParams.delete('end_date');
-            }
-
-            window.location.href = url.toString();
-        }
-
-        function clearDateFilter() {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('start_date');
-            url.searchParams.delete('end_date');
-            window.location.href = url.toString();
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-            clearTimeout(arsipSearchTimeout);
-            const input = e.target;
-            arsipSearchTimeout = setTimeout(() => {
-                const searchValue = input.value.toLowerCase();
-                const rows = Array.from(document.querySelectorAll('#suratTableBody tr'));
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const namaSurat = (cells[2]?.textContent || '').toLowerCase();
-                    const nomorSurat = (cells[3]?.textContent || '').toLowerCase();
-                    const tipeSurat = (cells[1]?.textContent || '').toLowerCase();
-                    const dibuatOleh = (cells[5]?.textContent || '').toLowerCase();
-
-                    const shouldShow =
-                        namaSurat.includes(searchValue) ||
-                        nomorSurat.includes(searchValue) ||
-                        tipeSurat.includes(searchValue) ||
-                        dibuatOleh.includes(searchValue);
-
-                    row.dataset.match = shouldShow ? '1' : '0';
-                });
-
-                arsipCurrentPage = 1;
-                renderArsipPagination();
-            }, 300);
-        });
-
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const searchValue = this.value;
-                const currentUrl = new URL(window.location.href);
-
-                if (searchValue) {
-                    currentUrl.searchParams.set('search', searchValue);
-                } else {
-                    currentUrl.searchParams.delete('search');
-                }
-
-                window.location.href = currentUrl.toString();
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeModal('modalDetailSurat');
-                closeModal('modalDeleteSurat');
-            }
-        });
-
-        document.getElementById('modalDetailSurat').addEventListener('click', function (event) {
-            if (event.target === this) {
-                closeModal('modalDetailSurat');
-            }
-        });
-
-        document.getElementById('modalDeleteSurat').addEventListener('click', function (event) {
-            if (event.target === this) {
-                closeModal('modalDeleteSurat');
-            }
-        });
-
-        function loadFlatpickr() {
-            return new Promise((resolve, reject) => {
-                if (window.flatpickr) {
-                    resolve();
-                    return;
-                }
-
-                if (!document.querySelector('link[href*="flatpickr.min.css"]')) {
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
-                    document.head.appendChild(link);
-                }
-
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
-                script.onload = () => {
-                    const idScript = document.createElement('script');
-                    idScript.src = 'https://npmcdn.com/flatpickr/dist/l10n/id.js';
-                    idScript.onload = resolve;
-                    idScript.onerror = reject;
-                    document.head.appendChild(idScript);
-                };
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-
-        let flatpickrInstance = null;
-
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('dateFilter', () => ({
-                open: false,
-                init() {
-                    this.$watch('open', (value) => {
-                        if (value && !flatpickrInstance) {
-                            this.initFlatpickr();
-                        }
-                    });
-                },
-                async initFlatpickr() {
-                    try {
-                        await loadFlatpickr();
-
-                        const rangeEl = document.querySelector('#flatpickrRange');
-                        if (!rangeEl) {
-                            updateDateRangeDisplay();
-                            return;
-                        }
-
-                        flatpickrInstance = flatpickr(rangeEl, {
-                            mode: "range",
-                            locale: "id",
-                            dateFormat: "Y-m-d",
-                            defaultDate: [
-                                @if(request()->has('start_date')) "{{ request('start_date') }}" @endif,
-                                @if(request()->has('end_date')) "{{ request('end_date') }}" @endif
-                        ],
-                            onChange: function (selectedDates, dateStr, instance) {
-                                if (selectedDates.length === 2) {
-                                    const [startDate, endDate] = selectedDates;
-                                    document.getElementById('flatpickrStartDate').value =
-                                        flatpickrInstance.formatDate(startDate, "Y-m-d");
-                                    document.getElementById('flatpickrEndDate').value =
-                                        flatpickrInstance.formatDate(endDate, "Y-m-d");
-
-                                    const startDisplay = startDate.toLocaleDateString('id-ID', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric'
-                                    });
-                                    const endDisplay = endDate.toLocaleDateString('id-ID', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric'
-                                    });
-                                    document.getElementById('dateRangeDisplay').textContent =
-                                        `${startDisplay} - ${endDisplay}`;
-                                } else if (selectedDates.length === 1) {
-                                    document.getElementById('flatpickrStartDate').value =
-                                        flatpickrInstance.formatDate(selectedDates[0], "Y-m-d");
-                                    document.getElementById('flatpickrEndDate').value = '';
-
-                                    const startDisplay = selectedDates[0].toLocaleDateString('id-ID', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric'
-                                    });
-                                    document.getElementById('dateRangeDisplay').textContent =
-                                        `Dari ${startDisplay}`;
-                                }
-                            }
-                        });
-
-                        updateDateRangeDisplay();
-                    } catch (error) {
-                        console.error('Failed to load flatpickr:', error);
-                        const rangeElFail = document.getElementById('flatpickrRange');
-                        if (rangeElFail) rangeElFail.style.display = 'none';
-
-                        const container = document.querySelector('#dateFilterForm .space-y-3');
-                        const fallbackHTML = `
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Tanggal Mulai</label>
-                            <input type="date" 
-                                   name="start_date_fallback"
-                                   value="{{ request('start_date') }}"
-                                   class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                                   onchange="document.getElementById('flatpickrStartDate').value = this.value; updateDateRangeDisplay()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Tanggal Akhir</label>
-                            <input type="date" 
-                                   name="end_date_fallback"
-                                   value="{{ request('end_date') }}"
-                                   class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                                   onchange="document.getElementById('flatpickrEndDate').value = this.value; updateDateRangeDisplay()">
-                        </div>
-                    `;
-                        container.insertAdjacentHTML('afterbegin', fallbackHTML);
-                    }
-                }
-            }));
-        });
-
-        function updateDateRangeDisplay() {
-            const startDate = document.getElementById('flatpickrStartDate')?.value;
-            const endDate = document.getElementById('flatpickrEndDate')?.value;
-            const display = document.getElementById('dateRangeDisplay');
-
-            if (!display) return;
-
-            if (startDate && endDate) {
-                const start = new Date(startDate).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                const end = new Date(endDate).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                display.textContent = `${start} - ${end}`;
-            } else if (startDate) {
-                const start = new Date(startDate).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                display.textContent = `Dari ${start}`;
-            } else if (endDate) {
-                const end = new Date(endDate).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                display.textContent = `Hingga ${end}`;
-            } else {
-                display.textContent = 'Pilih rentang tanggal';
-            }
-        }
-
-        function applyDateRange() {
-            const form = document.getElementById('dateFilterForm');
-
-            const startDate = document.getElementById('flatpickrStartDate').value;
-            const endDate = document.getElementById('flatpickrEndDate').value;
-
-            if (startDate && !endDate) {
-                document.getElementById('flatpickrEndDate').value = startDate;
-            } else if (!startDate && endDate) {
-                document.getElementById('flatpickrStartDate').value = endDate;
-            }
-
-            form.submit();
-        }
-
-        function clearDateRange() {
-            if (flatpickrInstance) {
-                flatpickrInstance.clear();
-            }
-            document.getElementById('flatpickrStartDate').value = '';
-            document.getElementById('flatpickrEndDate').value = '';
-            document.getElementById('dateRangeDisplay').textContent = 'Pilih rentang tanggal';
-
-            const startFallback = document.querySelector('input[name="start_date_fallback"]');
-            const endFallback = document.querySelector('input[name="end_date_fallback"]');
-            if (startFallback) startFallback.value = '';
-            if (endFallback) endFallback.value = '';
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            loadFlatpickr().catch(() => {
-                console.log('Flatpickr loading failed, will use fallback');
-            });
-
-            updateDateRangeDisplay();
-            try {
-                const rows = Array.from(document.querySelectorAll('#suratTableBody tr'));
-                rows.forEach(r => r.dataset.match = '1');
-                const totalEl = document.getElementById('arsipTotal');
-                if (totalEl) totalEl.textContent = rows.length;
-                renderArsipPagination();
-            } catch (e) {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                ['modalDetailSurat', 'modalDeleteSurat'].forEach(id => closeModal(id));
             }
         });
     </script>

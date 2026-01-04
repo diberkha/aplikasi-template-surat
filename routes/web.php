@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('master-data.user.destroy');
         });
 
-        Route::prefix('regulasi')->name('master-data.regulasi.')->controller(RegulasiController::class)->group(function () {
+        Route::prefix('regulasi')->name('master-data.regulasi.')->middleware('role:Admin,Tata Usaha')->controller(RegulasiController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/get-surat/{templateId}', 'getSuratByTemplate')->name('get.surat');
@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
         });
 
-        Route::prefix('pegawai')->name('master-data.pegawai.')->middleware('role:Admin')->controller(\App\Http\Controllers\PegawaiController::class)->group(function () {
+        Route::prefix('pegawai')->name('master-data.pegawai.')->middleware('role:Admin,Tata Usaha')->controller(\App\Http\Controllers\PegawaiController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::put('/{id}', 'update')->name('update');

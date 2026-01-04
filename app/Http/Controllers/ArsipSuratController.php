@@ -27,49 +27,90 @@ class ArsipSuratController extends Controller
             });
         }
 
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_surat', 'LIKE', "%{$search}%")
-                    ->orWhere('nomor_surat', 'LIKE', "%{$search}%")
-                    ->orWhereHas('template', function ($query) use ($search) {
-                        $query->where('nama_template_surat', 'LIKE', "%{$search}%");
-                    })
-                    ->orWhereHas('createdBy', function ($query) use ($search) {
-                        $query->where('username', 'LIKE', "%{$search}%");
-                    });
-            });
-        }
+        $suratData = $query->get()->map(function ($item) {
+            $idSurat = $item->id_surat;
+            $namaSurat = $item->nama_surat;
+            $nomorSurat = $item->nomor_surat;
+            $tipeSurat = $item->tipe_surat;
+            $tipeSuratDisplay = $tipeSurat;
+            $namaSuratDisplay = $namaSurat;
+            $kategoriLabel = '';
 
-        if ($request->filled('template')) {
-            $query->where('id_template_surat', $request->template);
-        }
-
-        if ($request->filled('start_date')) {
-            $query->where('tanggal_dibuat', '>=', $request->start_date);
-        }
-
-        if ($request->filled('end_date')) {
-            $query->where('tanggal_dibuat', '<=', $request->end_date);
-        }
-
-        $surat = $query->get();
-        foreach ($surat as $item) {
-            \Log::info('Surat:', $item->toArray());
-            if ($item->skDirektur) {
-                \Log::info('SKDirektur:', $item->skDirektur->toArray());
-            } else {
-                \Log::info('SKDirektur: null');
+            if ($tipeSurat === 'Standar Operasional Prosedur (SOP)' && $item->sop) {
+                $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
             }
-        }
-        $totalSurat = $surat->count();
+
+            if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && $item->cuti) {
+                $kategori = strtoupper($item->cuti->kategori ?? '');
+                $formData = $item->cuti->form_data ?? [];
+                $namaPegawai = is_array($formData) ? ($formData['nama'] ?? '') : '';
+                if ($namaPegawai) {
+                    $namaPegawai = strtoupper(str_replace(' ', ' ', $namaPegawai));
+                    $nomorSurat = 'CUTI-' . $kategori . '-' . $namaPegawai;
+                }
+
+                $kategoriLabel = trim($kategori);
+                if (!$kategoriLabel) {
+                    $kategoriLabel = trim(str_ireplace('Surat Izin Cuti', '', $tipeSurat));
+                }
+                if (strtoupper($kategoriLabel) === 'NON ASN') {
+                    $kategoriLabel = 'Non ASN';
+                }
+                $tipeSuratDisplay = 'Surat Izin Cuti';
+                $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
+            }
+
+            $docxUrl = '#'; 
+            if ($tipeSuratDisplay === 'Surat Izin Cuti' && $kategoriLabel) {
+                $kat = strtoupper($kategoriLabel);
+                if ($kat === 'PNS') $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
+                elseif ($kat === 'PPPK') $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);
+                elseif ($kat === 'NON ASN') $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
+            } elseif ($tipeSuratDisplay === 'Surat Keputusan Direktur') {
+                $docxUrl = route('template-surat.sk-direktur.docx', $idSurat);
+            } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)') {
+                $docxUrl = route('template-surat.sop.docx', $idSurat);
+            }
+
+            $badgeColor = [
+                'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+                'Standar Operasional Prosedur (SOP)' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                'Surat Izin Cuti' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+            ][$tipeSuratDisplay] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+
+            return [
+                'id_surat' => $idSurat,
+                'nama_surat' => $namaSurat,
+                'nomor_surat' => $nomorSurat,
+                'tipe_surat' => $tipeSurat,
+                'tipe_surat_display' => $tipeSuratDisplay,
+                'nama_surat_display' => $namaSuratDisplay,
+                'tanggal_dibuat' => $item->tanggal_dibuat,
+                'created_at' => $item->created_at->toDateTimeString(),
+                'username' => $item->createdBy->username ?? 'Unknown',
+                'ruangan' => $item->createdBy->ruangan->nama_ruangan ?? '-',
+                'docx_url' => $docxUrl,
+                'show_url' => route('arsip-surat.show', $idSurat),
+                'download_url' => route('arsip-surat.download', $idSurat),
+                'badge_color' => $badgeColor,
+                'id_template_surat' => $item->id_template_surat,
+                'file_path' => $item->file_path
+            ];
+        });
+
+        $totalSurat = $suratData->count();
 
         $debugRecent = null;
         if ($request->query('debug') == '1') {
             $debugRecent = Surat::orderBy('created_at', 'desc')->take(5)->get();
         }
 
-        return view('arsip-surat.index', compact('surat', 'totalSurat', 'templateOptions', 'debugRecent'));
+        return view('arsip-surat.index', [
+            'surat' => $suratData,
+            'totalSurat' => $totalSurat,
+            'templateOptions' => $templateOptions,
+            'debugRecent' => $debugRecent
+        ]);
     }
 
     public function show($id)

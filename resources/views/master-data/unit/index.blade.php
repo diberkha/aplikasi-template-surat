@@ -61,23 +61,6 @@
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                    <span class="text-green-800 dark:text-green-200">{{ session('success') }}</span>
-                </div>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle text-red-600 dark:text-red-400 mr-2"></i>
-                    <span class="text-red-800 dark:text-red-200">{{ session('error') }}</span>
-                </div>
-            </div>
-        @endif
 
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -144,7 +127,7 @@
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
-                    <template x-for="page in pages()" :key="page">
+                    <template x-for="(page, index) in pages()" :key="index">
                         <button @click="page !== '...' && goToPage(page)"
                             class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                             :class="page === currentPage
@@ -199,36 +182,33 @@
 
                 pages() {
                      const total = this.totalPages;
-                     if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
+                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
-                     const delta = 1; 
-                     const range = [];
-                     const rangeWithDots = [];
-                     let l;
+                     const current = this.currentPage;
+                     const range = [1];
 
-                     range.push(1);
-                     for (let i = this.currentPage - delta; i <= this.currentPage + delta; i++) {
-                         if (i < total && i > 1) {
-                             range.push(i);
-                         }
+                     if (current > 3) range.push('...');
+
+                     let start = Math.max(2, current - 1);
+                     let end = Math.min(total - 1, current + 1);
+
+                     if (current <= 3) {
+                         end = 4;
                      }
+
+                     if (current >= total - 2) {
+                         start = total - 3;
+                     }
+
+                     for (let i = start; i <= end; i++) {
+                         range.push(i);
+                     }
+
+                     if (current < total - 2) range.push('...');
+
                      range.push(total);
-
-                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
-
-                     for (let i of uniqueRange) {
-                         if (l) {
-                             if (i - l === 2) {
-                                  rangeWithDots.push(l + 1);
-                             } else if (i - l !== 1) {
-                                 rangeWithDots.push('...');
-                             }
-                         }
-                         rangeWithDots.push(i);
-                         l = i;
-                     }
                      
-                     return rangeWithDots;
+                     return range;
                 },
 
                 goToPage(page) {

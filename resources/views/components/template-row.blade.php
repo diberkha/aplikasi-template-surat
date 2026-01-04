@@ -109,7 +109,7 @@
                 </button>
             @endif
 
-            @if (in_array('delete', $actionButtons))
+            @if (in_array('delete', $actionButtons) && auth()->user()->hasRole('Admin'))
                 <button 
                     @if($deleteAction) onclick="{{ $deleteAction }}" @endif
                     class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"

@@ -155,7 +155,7 @@
                                 if (is_string($menimbang)) {
                                     $menimbang = array_filter(explode("\n", $menimbang));
                                 }
-                                $menimbang = array_map(fn($line) => preg_replace('/^[a-z]\.\s*/', '', trim($line)), $menimbang);
+                                $menimbang = array_map(function($line) { return preg_replace('/^[a-z]\.\s*/', '', trim($line)); }, $menimbang);
                                 $menimbang = array_values(array_filter($menimbang));
                             @endphp
                             @if(count($menimbang) <= 1)
@@ -183,7 +183,7 @@
                                 $mengingatLines = [];
                                 
                                 $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-                                $lines = array_filter($lines, fn($line) => trim($line) !== '');
+                                $lines = array_filter($lines, function($line) { return trim($line) !== ''; });
                                 
                                 $allAreIds = true;
                                 $ids = [];

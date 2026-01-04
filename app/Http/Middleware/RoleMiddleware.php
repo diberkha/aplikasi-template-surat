@@ -11,9 +11,9 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next, string $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!Auth::check() || !Auth::user()->hasRole($role)) {
+        if (!Auth::check() || !Auth::user()->hasRole($roles)) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized.'], 403);
             }

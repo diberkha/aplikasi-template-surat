@@ -500,13 +500,13 @@ function submitCutiFormNonASN(e){
         if(!res.ok){
             notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
         }else if(res.data.success){
-            notify('success', 'Berhasil', 'Surat cuti Non ASN berhasil dibuat!');
+            notify('success', 'Berhasil', res.data.message);
             closeModal('modalCreateCutiNonASN');
             form.reset();
             if(typeof openPreviewPDFNonASN === 'function') {
                 openPreviewPDFNonASN(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti Non ASN', new Date().toISOString().slice(0,10));
             } else {
-                 notify('success', 'Berhasil', 'Berhasil dibuat!');
+                 notify('success', 'Berhasil', res.data.message);
             }
         }
     })

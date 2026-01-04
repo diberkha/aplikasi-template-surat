@@ -14,32 +14,31 @@ class IzinCutiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TemplateSurat::whereIn('nama_template_surat', [
+        $templates = TemplateSurat::whereIn('nama_template_surat', [
             'Surat Izin Cuti PNS', 'Surat Izin Cuti PPPK', 'Surat Izin Cuti Non ASN'
-        ]);
+        ])
+        ->orderBy('id_template_surat', 'desc')
+        ->get()
+        ->map(function ($t) {
+            $desc = 'Template Surat Izin Cuti ASN';
+            if (stripos($t->nama_template_surat, 'PPPK') !== false) $desc = 'Template Surat Izin Cuti PPPK';
+            elseif (stripos($t->nama_template_surat, 'Non ASN') !== false) $desc = 'Template Surat Izin Cuti Non ASN';
 
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'a-z':
-                    $query->orderBy('nama_template_surat', 'asc');
-                    break;
-                case 'z-a':
-                    $query->orderBy('nama_template_surat', 'desc');
-                    break;
-                case 'latest':
-                    $query->orderBy('created_at', 'desc');
-                    break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
-                    break;
-                default:
-                    $query->orderBy('nama_template_surat');
-            }
-        } else {
-            $query->orderBy('nama_template_surat');
-        }
+            return [
+                'id_template_surat' => $t->id_template_surat,
+                'nama_template_surat' => $t->nama_template_surat,
+                'description' => $desc,
+                'icon' => 'file-alt',
+                'iconColor' => 'blue',
+                'iconBgColor' => 'blue-100',
+                'iconDarkBgColor' => 'green-900',
+                'iconTextColor' => 'green-600',
+                'iconDarkTextColor' => 'green-400',
+                'created_at' => $t->created_at->toISOString(),
+                'updated_at' => $t->updated_at ? $t->updated_at->format('d/m/Y') : '-'
+            ];
+        });
 
-        $templates = $query->get();
         return view('template-surat.cuti.index', compact('templates'));
     }
 
@@ -230,12 +229,12 @@ class IzinCutiController extends Controller
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Template berhasil dihapus',
+                    'message' => 'Surat Izin Cuti berhasil dihapus',
                     'name' => $templateName,
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Template berhasil dihapus');
+            return redirect()->back()->with('success', 'Surat Izin Cuti berhasil dihapus');
         } catch (Exception $e) {
             if (request()->expectsJson()) {
                 return response()->json([

@@ -19,7 +19,7 @@
                     <div>
                         <label class="block mb-2 text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateTanggalMasukLabel(this.value, 'edit')"
+                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateMasaKerjaLabel(this.value, 'edit')"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                             <option value="PNS">PNS</option>
                             <option value="NON ASN">NON ASN</option>
@@ -47,9 +47,9 @@
                             placeholder="Masukkan jabatan...">
                     </div>
                     <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300" id="label_tanggal_masuk_edit">Tanggal Masuk <span
-                                class="text-red-500">*</span></label>
-                        <input type="date" name="tanggal_masuk" id="edit_tanggal_masuk_pegawai" required
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300" id="label_masa_kerja_edit">Masa Kerja (TMT) <span
+                            class="text-red-500">*</span></label>
+                        <input type="date" name="masa_kerja" id="edit_masa_kerja_pegawai" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                     </div>
 

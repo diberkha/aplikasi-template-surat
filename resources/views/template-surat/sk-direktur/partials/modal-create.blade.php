@@ -172,7 +172,7 @@
             const mengingatCheckboxes = document.querySelectorAll('input[name="mengingat[]"]:checked');
             if (mengingatCheckboxes.length === 0) {
                 e.preventDefault();
-                alert('Silakan pilih minimal satu Mengingat');
+                notify('error', 'Peringatan', 'Silakan pilih minimal satu Mengingat', false);
                 return false;
             }
         });
@@ -240,7 +240,7 @@
 
     function addMemutuskanField() {
         const maxAllowed = 6;
-        if (memutuskanCounter >= maxAllowed) { alert('Maksimal sampai keenam.'); return; }
+        if (memutuskanCounter >= maxAllowed) { notify('warning', 'Peringatan', 'Maksimal sampai keenam.', false); return; }
         const container = document.getElementById('memutuskanContainer');
         const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam'];
         const label = labels[memutuskanCounter] || `Ke-${memutuskanCounter + 1}`;
@@ -352,14 +352,14 @@
 
         const memutuskanAreas = document.querySelectorAll('#memutuskanContainer textarea[name="memutuskan[]"]');
         if (memutuskanAreas.length < 2 || !memutuskanAreas[0].value.trim() || !memutuskanAreas[1].value.trim()) {
-            alert('Memutuskan minimal harus mengisi kesatu dan kedua.');
+            notify('error', 'Validasi Gagal', 'Memutuskan minimal harus mengisi kesatu dan kedua.', false);
             return;
         }
 
         const menimbangInputs = document.querySelectorAll('#menimbangContainer input[name="menimbang[]"]');
         const nonEmptyMenimbang = Array.from(menimbangInputs).filter(i => i.value.trim() !== '');
         if (nonEmptyMenimbang.length === 0) {
-            alert('Minimal satu poin Menimbang harus diisi.');
+            notify('error', 'Validasi Gagal', 'Minimal satu poin Menimbang harus diisi.', false);
             return;
         }
 
@@ -379,7 +379,7 @@
         fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
         .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, data })).catch(() => ({ status: response.status, ok: response.ok, parseError: true })))
         .then(result => {
-            if (result.parseError) { alert('Error: Response parsing failed.'); return; }
+            if (result.parseError) { notify('error', 'Gagal', 'Error: Response parsing failed.', false); return; }
             if (!result.ok) {
                 if (result.data?.errors) {
                     const fieldLabels = { 'nomor_surat': 'Nomor Surat', 'tentang': 'Tentang', 'menimbang': 'Menimbang', 'mengingat': 'Mengingat', 'menetapkan': 'Menetapkan', 'memutuskan': 'Memutuskan', 'tempat_dibuat': 'Tempat', 'tanggal_dibuat': 'Tanggal Surat' };
@@ -390,9 +390,9 @@
                         const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
                         errorMsg += `❌ ${fieldLabel}: ${messageText}\n`;
                     }
-                    alert(errorMsg);
+                    notify('error', 'Validasi Gagal', errorMsg, false);
                 } else {
-                    alert('Error: ' + (result.data?.message || 'Server error: ' + result.status));
+                    notify('error', 'Gagal', (result.data?.message || 'Server error: ' + result.status), false);
                 }
                 return;
             }
@@ -401,7 +401,7 @@
                 closeModal('modalCreateSK');
                 form.reset(); memutuskanCounter = 2;
                 resetFormSK(); 
-                notify('success', 'Berhasil', 'Surat berhasil dibuat!');
+                notify('success', 'Berhasil', result.data.message);
                 setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat); }, 500);
             } else { notify('error', 'Gagal', 'Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
         })

@@ -38,7 +38,7 @@ class UnitController extends Controller
         ]);
 
         return redirect()->route('master-data.unit.index')
-            ->with('success', 'Unit berhasil diperbarui.');
+            ->with('success', 'Unit berhasil diperbarui');
     }
 
     public function destroy(Unit $unit)

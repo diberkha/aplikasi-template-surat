@@ -85,7 +85,7 @@ return new class extends Migration {
             $table->string('nip')->nullable()->unique();
             $table->string('jabatan')->nullable();
             $table->string('jenis_pegawai')->default('PNS'); // PNS, NON ASN, PPPK
-            $table->date('tanggal_masuk');
+            $table->date('masa_kerja');
             $table->integer('sisa_cuti_tahunan')->default(12);
             $table->integer('sisa_cuti_n')->default(12);
             $table->integer('sisa_cuti_n1')->default(0);

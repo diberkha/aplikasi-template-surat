@@ -38,7 +38,7 @@ class RuanganController extends Controller
         ]);
 
         return redirect()->route('master-data.ruangan.index')
-            ->with('success', 'Ruangan berhasil diperbarui.');
+            ->with('success', 'Ruangan berhasil diperbarui');
     }
 
     public function destroy(Ruangan $ruangan)

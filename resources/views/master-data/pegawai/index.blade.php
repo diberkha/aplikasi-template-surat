@@ -43,6 +43,34 @@
                         </ul>
                     </div>
                 </div>
+                
+                <div x-data="{ toggleType: false }" class="relative">
+                    <button type="button" @click="toggleType = !toggleType"
+                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        <i class="fas fa-users text-gray-600 dark:text-gray-400"></i>
+                        <span class="text-gray-700 dark:text-gray-300" x-text="selectedType === '' ? 'Jenis Pegawai' : selectedType"></span>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                    </button>
+
+                    <div x-show="toggleType" @click.away="toggleType = false" x-transition
+                        class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                        <ul class="py-1">
+                            <li><button @click="selectedType='PNS'; toggleType=false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">PNS</button>
+                            </li>
+                            <li><button @click="selectedType='PPPK'; toggleType=false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">PPPK</button>
+                            </li>
+                            <li><button @click="selectedType='NON ASN'; toggleType=false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">NON ASN</button>
+                            </li>
+                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <button @click="selectedType=''; toggleType=false"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="relative flex-1 sm:flex-initial">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -77,7 +105,7 @@
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Nama</th>
-                            <th
+                            <th x-show="selectedType !== 'NON ASN'"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 NIP</th>
                             <th
@@ -88,7 +116,7 @@
                                 Jenis Pegawai</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Tanggal Masuk</th>
+                                Masa Kerja (TMT)</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Actions</th>
@@ -100,10 +128,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap"
                                     x-text="index + 1 + ((currentPage - 1) * itemsPerPage)"></td>
                                 <td class="px-6 py-4 text-gray-900 dark:text-white" x-text="item.nama"></td>
-                                <td class="px-6 py-4" x-text="item.nip"></td>
+                                <td class="px-6 py-4" x-text="item.nip" x-show="selectedType !== 'NON ASN'"></td>
                                 <td class="px-6 py-4" x-text="item.jabatan || '-'"></td>
                                 <td class="px-6 py-4" x-text="item.jenis_pegawai"></td>
-                                <td class="px-6 py-4" x-text="formatDate(item.tanggal_masuk)"></td>
+                                <td class="px-6 py-4" x-text="formatDate(item.masa_kerja)"></td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
                                         <button @click="openEditModal(item.id)"
@@ -142,7 +170,7 @@
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
-                    <template x-for="page in pages()" :key="page">
+                    <template x-for="(page, index) in pages()" :key="index">
                         <button @click="page !== '...' && goToPage(page)"
                             class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                             :class="page === currentPage
@@ -182,6 +210,7 @@
             return {
                 search: '',
                 sortOption: null,
+                selectedType: '',
                 data: @json($pegawai),
 
                 itemsPerPage: 10,
@@ -197,36 +226,33 @@
 
                 pages() {
                      const total = this.totalPages;
-                     if (total <= 10) return Array.from({ length: total }, (_, i) => i + 1);
+                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
-                     const delta = 1; 
-                     const range = [];
-                     const rangeWithDots = [];
-                     let l;
+                     const current = this.currentPage;
+                     const range = [1];
 
-                     range.push(1);
-                     for (let i = this.currentPage - delta; i <= this.currentPage + delta; i++) {
-                         if (i < total && i > 1) {
-                             range.push(i);
-                         }
+                     if (current > 3) range.push('...');
+
+                     let start = Math.max(2, current - 1);
+                     let end = Math.min(total - 1, current + 1);
+
+                     if (current <= 3) {
+                         end = 4;
                      }
+
+                     if (current >= total - 2) {
+                         start = total - 3;
+                     }
+
+                     for (let i = start; i <= end; i++) {
+                         range.push(i);
+                     }
+
+                     if (current < total - 2) range.push('...');
+
                      range.push(total);
-
-                     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
-
-                     for (let i of uniqueRange) {
-                         if (l) {
-                             if (i - l === 2) {
-                                 rangeWithDots.push(l + 1);
-                             } else if (i - l !== 1) {
-                                 rangeWithDots.push('...');
-                             }
-                         }
-                         rangeWithDots.push(i);
-                         l = i;
-                     }
                      
-                     return rangeWithDots;
+                     return range;
                 },
 
                 goToPage(page) {
@@ -266,11 +292,15 @@
                 },
 
                 filteredSortedData() {
-                    let filtered = this.data.filter(item =>
-                        item.nama.toLowerCase().includes(this.search.toLowerCase()) ||
-                        item.nip.toLowerCase().includes(this.search.toLowerCase()) ||
-                        (item.jabatan && item.jabatan.toLowerCase().includes(this.search.toLowerCase()))
-                    );
+                    let filtered = this.data.filter(item => {
+                        const matchesSearch = item.nama.toLowerCase().includes(this.search.toLowerCase()) ||
+                            (item.nip && item.nip.toLowerCase().includes(this.search.toLowerCase())) ||
+                            (item.jabatan && item.jabatan.toLowerCase().includes(this.search.toLowerCase()));
+                        
+                        const matchesType = this.selectedType === '' || item.jenis_pegawai === this.selectedType;
+
+                        return matchesSearch && matchesType;
+                    });
 
                     switch (this.sortOption) {
                         case 'a-z':
@@ -317,7 +347,7 @@
                             document.getElementById('edit_nip_pegawai').value = data.nip;
                             document.getElementById('edit_jabatan_pegawai').value = data.jabatan;
                             document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
-                            document.getElementById('edit_tanggal_masuk_pegawai').value = data.tanggal_masuk;
+                            document.getElementById('edit_masa_kerja_pegawai').value = data.masa_kerja;
                             
                             document.getElementById('edit_sisa_cuti_n').value = data.sisa_cuti_n;
                             document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1;
@@ -328,8 +358,8 @@
                             if (typeof toggleNIPField === 'function') {
                                 toggleNIPField(data.jenis_pegawai, 'edit');
                             }
-                            if (typeof updateTanggalMasukLabel === 'function') {
-                                updateTanggalMasukLabel(data.jenis_pegawai, 'edit');
+                            if (typeof updateMasaKerjaLabel === 'function') {
+                                updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
                             }
                         });
                 },
@@ -346,15 +376,15 @@
     </script>
 
     <script>
-        function updateTanggalMasukLabel(type, context) {
-            const labelId = context === 'create' ? 'label_tanggal_masuk_create' : 'label_tanggal_masuk_edit';
+        function updateMasaKerjaLabel(type, context) {
+            const labelId = context === 'create' ? 'label_masa_kerja_create' : 'label_masa_kerja_edit';
             const label = document.getElementById(labelId);
             if (!label) return;
 
             if (type === 'PNS' || type === 'PPPK') {
                 label.innerHTML = 'TMT CPNS <span class="text-red-500">*</span>';
             } else {
-                label.innerHTML = 'Tanggal Masuk <span class="text-red-500">*</span>';
+                label.innerHTML = 'Masa Kerja <span class="text-red-500">*</span>';
             }
         }
     </script>
