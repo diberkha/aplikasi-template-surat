@@ -374,11 +374,17 @@
             </nav>
         </aside>
 
-        <main class="flex-1 p-4 md:p-6 transition-all duration-300 w-full"
+        <main class="flex-1 pt-4 px-4 pb-0 md:pt-6 md:px-6 md:pb-0 transition-all duration-300 w-full flex flex-col"
             x-bind:style="isDesktop
                 ? { marginLeft: sidebarCollapsed ? '80px' : '256px', width: 'calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ')' }
                 : { marginLeft: '0', width: '100%' }">
             @yield('content')
+
+            <footer class="mt-auto pt-16 pb-6">
+                <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    &copy; 2025 <span class="text-green-600 dark:text-green-400 font-semibold">RSUD dr. Soeratno Gemolong</span>. All rights reserved.
+                </p>
+            </footer>
         </main>
     </div>
 
