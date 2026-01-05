@@ -9,7 +9,7 @@
 
 @extends('layouts.app')
 
-@section('title', $title . ' - E-Office')
+@section('title', $title)
 
 @section('content')
 <div class="space-y-6" {{ $attributes }} x-data="{

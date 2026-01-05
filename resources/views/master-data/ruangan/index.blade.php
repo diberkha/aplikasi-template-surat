@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Data Ruangan - E-Office')
+@section('title', 'Data Ruangan')
 
 @section('content')
     <div x-data="ruanganTable()" class="space-y-6">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Regulasi - E-Office')
+@section('title', 'Regulasi')
 
 @section('content')
     <div class="space-y-6" x-data="regulasi()" x-init="init()">

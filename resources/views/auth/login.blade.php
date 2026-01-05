@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Login E-Office')
+@section('title', 'Login')
 
 @section('content')
     <div class="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8" x-data="{ show: false }">
