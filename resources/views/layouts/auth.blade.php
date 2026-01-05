@@ -18,8 +18,14 @@
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4">
-    @yield('content')
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full flex-grow flex items-center justify-center">
+        @yield('content')
+    </div>
+
+    <footer class="text-center text-white/90 text-sm py-4">
+        &copy; 2025 <span class="font-semibold">RSUD dr. Soeratno Gemolong</span>. All rights reserved.
+    </footer>
 </body>
 
 </html>
