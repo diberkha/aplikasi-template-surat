@@ -32,7 +32,7 @@
             } elseif (stripos($templateName, 'Non ASN') !== false) {
                 $description = 'Template Surat Izin Cuti Non ASN';
             } else {
-                $description = 'Template Surat Izin Cuti ASN';
+                $description = 'Template Surat Izin Cuti PNS';
             }
         } else {
             $description = $templateName;

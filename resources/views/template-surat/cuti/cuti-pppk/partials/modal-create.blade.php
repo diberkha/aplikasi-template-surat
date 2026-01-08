@@ -11,6 +11,7 @@
             @csrf
             <input type="hidden" name="template_id" id="template_surat_cuti_pppk">
             <input type="hidden" name="kategori" id="kategori_cuti_pppk" value="PPPK">
+            <input type="hidden" name="form[pegawai_id]" id="pegawai_id_pppk">
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
@@ -146,9 +147,12 @@
                         <div>
                             <label class="block mb-2 text-gray-700 dark:text-gray-300">Sisa Cuti Tahunan</label>
                             <div class="relative">
-                                <input type="text" id="sisa_cuti_display_pppk" readonly 
-                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
-                                    value="0 Hari">
+                                <input type="text" id="sisa_cuti_display_pppk" class="w-full bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 cursor-not-allowed" readonly value="0 Hari">
+                                <div id="calc_preview_pppk" class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg hidden">
+                                    <p class="text-xs font-semibold text-red-700 dark:text-red-300 mb-2">Peringatan:</p>
+                                    <div class="space-y-1 text-xs text-red-600 dark:text-red-400" id="calc_details_pppk">
+                                    </div>
+                                </div>
                                 <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden_pppk">
                             </div>
                         </div>
@@ -282,6 +286,7 @@
             .then(r => r.json())
             .then(data => {
                 document.getElementById('nama_pegawai_pppk').value = data.nama;
+                document.getElementById('pegawai_id_pppk').value = data.id;
                 document.getElementById('pegawai_search_pppk').value = data.nama;
                 document.getElementById('pegawai_search_pppk').readOnly = true;
                 document.getElementById('pegawai_search_pppk').classList.add('bg-gray-100', 'cursor-not-allowed');
@@ -302,6 +307,7 @@
     if(resetBtn){
         resetBtn.addEventListener('click', function(){
             document.getElementById('nama_pegawai_pppk').value = '';
+            document.getElementById('pegawai_id_pppk').value = '';
             document.getElementById('pegawai_search_pppk').value = '';
             document.getElementById('pegawai_search_pppk').readOnly = false;
             document.getElementById('pegawai_search_pppk').classList.remove('bg-gray-100', 'cursor-not-allowed');
@@ -419,9 +425,24 @@
             sisaCutiContainer.classList.remove('hidden');
             sisaCutiDisplay.value = sisaSetelahCuti + ' Hari';
             if(sisaCutiHidden) sisaCutiHidden.value = sisaSetelahCuti;
+
+            const calcPreview = document.getElementById('calc_preview_pppk');
+            const calcDetails = document.getElementById('calc_details_pppk');
+            
+            if(lamaCutiValue > sisaCutiGlobal) {
+                const excess = lamaCutiValue - sisaCutiGlobal;
+                calcPreview.classList.remove('hidden');
+                calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari.</div>`;
+            } else {
+                calcPreview.classList.add('hidden');
+                calcDetails.innerHTML = '';
+            }
         } else {
             sisaCutiContainer.classList.add('hidden');
             if(sisaCutiHidden) sisaCutiHidden.value = '';
+            
+            const calcPreview = document.getElementById('calc_preview_pppk');
+            if(calcPreview) calcPreview.classList.add('hidden');
         }
     }
 

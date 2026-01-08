@@ -11,6 +11,7 @@
             @csrf
             <input type="hidden" name="template_id" id="template_surat_cuti_nonasn">
             <input type="hidden" name="kategori" id="kategori_cuti_nonasn" value="NON ASN">
+            <input type="hidden" name="form[pegawai_id]" id="pegawai_id_nonasn">
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
@@ -150,7 +151,13 @@
                                 <input type="text" id="sisa_cuti_display_nonasn" readonly 
                                     class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" 
                                      value="0 Hari">
+                                <div id="calc_preview_nonasn" class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg hidden">
+                                    <p class="text-xs font-semibold text-red-700 dark:text-red-300 mb-2">Peringatan:</p>
+                                    <div class="space-y-1 text-xs text-red-600 dark:text-red-400" id="calc_details_nonasn">
+                                    </div>
+                                </div>
                                 <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden_nonasn">
+                                <input type="hidden" name="form[catatan_n]" id="catatan_n_hidden_nonasn">
                             </div>
                         </div>
                     </div>
@@ -260,7 +267,7 @@
                         data.forEach(p => {
                             const div = document.createElement('div');
                             div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-700 dark:text-gray-200';
-                            div.textContent = `${p.nama} - ${p.nip}`;
+                            div.textContent = p.nip ? `${p.nama} - ${p.nip}` : p.nama;
                             div.onclick = () => selectPegawai(p.id);
                             resultsContainer.appendChild(div);
                         });
@@ -283,6 +290,7 @@
             .then(r => r.json())
             .then(data => {
                 document.getElementById('nama_pegawai_nonasn').value = data.nama;
+                document.getElementById('pegawai_id_nonasn').value = data.id;
                 document.getElementById('pegawai_search_nonasn').value = data.nama;
                 document.getElementById('pegawai_search_nonasn').readOnly = true;
                 document.getElementById('pegawai_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
@@ -312,6 +320,7 @@
     if(resetBtn){
         resetBtn.addEventListener('click', function(){
             document.getElementById('nama_pegawai_nonasn').value = '';
+            document.getElementById('pegawai_id_nonasn').value = '';
             document.getElementById('pegawai_search_nonasn').value = '';
             document.getElementById('pegawai_search_nonasn').readOnly = false;
             document.getElementById('pegawai_search_nonasn').classList.remove('bg-gray-100', 'cursor-not-allowed');
@@ -431,9 +440,30 @@
             sisaCutiContainer.classList.remove('hidden');
             sisaCutiDisplay.value = sisaSetelahCuti + ' Hari';
             if(sisaCutiHidden) sisaCutiHidden.value = sisaSetelahCuti;
+            
+            const catatanNHidden = document.getElementById('catatan_n_hidden_nonasn');
+            if(catatanNHidden) catatanNHidden.value = sisaSetelahCuti;
+
+            const calcPreview = document.getElementById('calc_preview_nonasn');
+            const calcDetails = document.getElementById('calc_details_nonasn');
+            
+            if(lamaCutiValue > sisaCutiGlobal) {
+                const excess = lamaCutiValue - sisaCutiGlobal;
+                calcPreview.classList.remove('hidden');
+                calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari.</div>`;
+            } else {
+                calcPreview.classList.add('hidden');
+                calcDetails.innerHTML = '';
+            }
         } else {
             sisaCutiContainer.classList.add('hidden');
             if(sisaCutiHidden) sisaCutiHidden.value = '';
+            
+            const catatanNHidden = document.getElementById('catatan_n_hidden_nonasn');
+            if(catatanNHidden) catatanNHidden.value = '';
+
+            const calcPreview = document.getElementById('calc_preview_nonasn');
+            if(calcPreview) calcPreview.classList.add('hidden');
         }
     }
 

@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RegulasiSeeder::class,
             TemplateSuratSeeder::class,
-            PegawaiSeeder::class,
         ]);
     }
 }

@@ -11,6 +11,7 @@
             @csrf
             <input type="hidden" name="template_id" id="template_surat_cuti">
             <input type="hidden" name="kategori" id="kategori_cuti" value="PNS">
+            <input type="hidden" name="form[pegawai_id]" id="pegawai_id_pns">
 
             <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 
@@ -306,6 +307,7 @@
             .then(r => r.json())
             .then(data => {
                 document.getElementById('nama_pegawai').value = data.nama;
+                document.getElementById('pegawai_id_pns').value = data.id;
                 document.getElementById('pegawai_search').value = data.nama;
                 document.getElementById('pegawai_search').readOnly = true;
                 document.getElementById('pegawai_search').classList.add('bg-gray-100', 'cursor-not-allowed');
@@ -334,6 +336,7 @@
     if(resetBtn){
         resetBtn.addEventListener('click', function(){
             document.getElementById('nama_pegawai').value = '';
+            document.getElementById('pegawai_id_pns').value = '';
             document.getElementById('pegawai_search').value = '';
             document.getElementById('pegawai_search').readOnly = false;
             document.getElementById('pegawai_search').classList.remove('bg-gray-100', 'cursor-not-allowed');
@@ -451,6 +454,15 @@
         
         const selected = jenisCutiSelect.value;
         const sisaCutiHidden = document.getElementById('sisa_cuti_tahunan_hidden');
+        
+        const catatanN2Hidden = document.getElementById('catatan_n2_hidden');
+        const catatanN1Hidden = document.getElementById('catatan_n1_hidden');
+        const catatanNHidden = document.getElementById('catatan_n_hidden');
+        
+        const n2UsedHidden = document.getElementById('n2_used_hidden');
+        const n1UsedHidden = document.getElementById('n1_used_hidden');
+        const nUsedHidden = document.getElementById('n_used_hidden');
+
         const lamaCutiValue = parseInt(lamaCutiInput ? lamaCutiInput.value : 0) || 0;
         
         const calcPreview = document.getElementById('calculation_preview');
@@ -460,7 +472,6 @@
             sisaCutiContainer.classList.remove('hidden');
             
             if(lamaCutiValue > 0) {
-                calcPreview.classList.remove('hidden');
                 calcPreview.classList.remove('hidden');
                 let rem = lamaCutiValue;
                 
@@ -476,47 +487,48 @@
                 let finalN = sisaN - usedN;
                 rem -= usedN;
 
-                let tableHtml = `
-                <div class="overflow-hidden rounded-lg border border-blue-100 dark:border-blue-700 mt-2">
-                    <table class="min-w-full text-xs">
-                        <thead class="bg-blue-50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200">
-                            <tr>
-                                <th class="px-3 py-2 text-left font-semibold">Tahun</th>
-                                <th class="px-3 py-2 text-center font-semibold">Jatah Cuti</th>
-                                <th class="px-3 py-2 text-center font-semibold text-red-600 dark:text-red-400">Terpakai</th>
-                                <th class="px-3 py-2 text-center font-semibold">Sisa</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-blue-50 dark:divide-blue-800 bg-white dark:bg-gray-800">
-                            <tr class="${usedN2 > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
-                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N-2</td>
-                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN2}</td>
-                                <td class="px-3 py-2 text-center font-bold ${usedN2 > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN2}</td>
-                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN2}</td>
-                            </tr>
-                            <tr class="${usedN1 > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
-                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N-1</td>
-                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN1}</td>
-                                <td class="px-3 py-2 text-center font-bold ${usedN1 > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN1}</td>
-                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN1}</td>
-                            </tr>
-                            <tr class="${usedN > 0 ? 'bg-red-50 dark:bg-red-900/10' : ''}">
-                                <td class="px-3 py-2 font-medium text-gray-700 dark:text-gray-300">N</td>
-                                <td class="px-3 py-2 text-center text-gray-600 dark:text-gray-400">${sisaN}</td>
-                                <td class="px-3 py-2 text-center font-bold ${usedN > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-400'}">-${usedN}</td>
-                                <td class="px-3 py-2 text-center font-medium text-gray-700 dark:text-gray-300">${finalN}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>`;
-
-                if(rem > 0) {
-                    tableHtml += `<div class="mt-2 text-xs text-red-600 font-bold flex items-center justify-center p-2 bg-red-50 rounded border border-red-100 dark:bg-red-900/20 dark:border-red-900"><i class="fas fa-exclamation-triangle mr-2"></i> Peringatan: Cuti melebihi jatah (${rem} hari)!</div>`;
-                }
+                if(catatanN2Hidden) catatanN2Hidden.value = finalN2;
+                if(catatanN1Hidden) catatanN1Hidden.value = finalN1;
+                if(catatanNHidden) catatanNHidden.value = finalN;
                 
-                calcDetails.innerHTML = tableHtml;
+                if(n2UsedHidden) n2UsedHidden.value = usedN2;
+                if(n1UsedHidden) n1UsedHidden.value = usedN1;
+                if(nUsedHidden) nUsedHidden.value = usedN;
+
+                if(document.getElementById('val_n2_display')) document.getElementById('val_n2_display').value = finalN2 + ' Hari';
+                if(document.getElementById('val_n1_display')) document.getElementById('val_n1_display').value = finalN1 + ' Hari';
+                if(document.getElementById('val_n_display')) document.getElementById('val_n_display').value = finalN + ' Hari';
+
+                
+                if(document.getElementById('val_n2_display')) document.getElementById('val_n2_display').value = finalN2 + ' Hari';
+                if(document.getElementById('val_n1_display')) document.getElementById('val_n1_display').value = finalN1 + ' Hari';
+                if(document.getElementById('val_n_display')) document.getElementById('val_n_display').value = finalN + ' Hari';
+
+                let calcDetails = document.getElementById('calc_details');
+                if(rem > 0) {
+                    calcPreview.classList.remove('hidden');
+                    calcPreview.className = "mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg";
+                    calcPreview.querySelector('p').className = "text-xs font-semibold text-red-700 dark:text-red-300 mb-2";
+                    calcPreview.querySelector('p').textContent = "Peringatan:";
+                    
+                    calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${rem} hari.</div>`;
+                } else {
+                     calcPreview.classList.add('hidden');
+                     calcDetails.innerHTML = '';
+                }
             } else {
                 calcPreview.classList.add('hidden');
+                if(catatanN2Hidden) catatanN2Hidden.value = sisaN2;
+                if(catatanN1Hidden) catatanN1Hidden.value = sisaN1;
+                if(catatanNHidden) catatanNHidden.value = sisaN;
+                
+                if(document.getElementById('val_n2_display')) document.getElementById('val_n2_display').value = sisaN2 + ' Hari';
+                if(document.getElementById('val_n1_display')) document.getElementById('val_n1_display').value = sisaN1 + ' Hari';
+                if(document.getElementById('val_n_display')) document.getElementById('val_n_display').value = sisaN + ' Hari';
+
+                if(n2UsedHidden) n2UsedHidden.value = 0;
+                if(n1UsedHidden) n1UsedHidden.value = 0;
+                if(nUsedHidden) nUsedHidden.value = 0;
             }
 
             const totalSisa = Math.max(0, sisaCutiGlobal - lamaCutiValue);
@@ -524,6 +536,13 @@
         } else {
             sisaCutiContainer.classList.add('hidden');
             if(sisaCutiHidden) sisaCutiHidden.value = '';
+            
+            if(catatanN2Hidden) catatanN2Hidden.value = '';
+            if(catatanN1Hidden) catatanN1Hidden.value = '';
+            if(catatanNHidden) catatanNHidden.value = '';
+            if(n2UsedHidden) n2UsedHidden.value = '';
+            if(n1UsedHidden) n1UsedHidden.value = '';
+            if(nUsedHidden) nUsedHidden.value = '';
         }
     }
 

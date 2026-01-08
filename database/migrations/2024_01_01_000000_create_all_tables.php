@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     /**
@@ -148,6 +149,11 @@ return new class extends Migration {
 
             $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
         });
+
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kasi', 'Kepala Seksi')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kabid', 'Kepala Bidang')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kasubag', 'Kepala Sub Bagian')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kabag', 'Kepala Bagian')");
     }
 
     /**
@@ -155,6 +161,11 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Seksi', 'Kasi')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Bidang', 'Kabid')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Sub Bagian', 'Kasubag')");
+        DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Bagian', 'Kabag')");
+
         Schema::dropIfExists('surat_izin_cuti');
         Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');

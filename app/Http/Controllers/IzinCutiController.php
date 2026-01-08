@@ -20,7 +20,7 @@ class IzinCutiController extends Controller
         ->orderBy('id_template_surat', 'desc')
         ->get()
         ->map(function ($t) {
-            $desc = 'Template Surat Izin Cuti ASN';
+            $desc = 'Template Surat Izin Cuti PNS';
             if (stripos($t->nama_template_surat, 'PPPK') !== false) $desc = 'Template Surat Izin Cuti PPPK';
             elseif (stripos($t->nama_template_surat, 'Non ASN') !== false) $desc = 'Template Surat Izin Cuti Non ASN';
 
@@ -77,9 +77,22 @@ class IzinCutiController extends Controller
             if (isset($request->form['jenis_cuti']) && $request->form['jenis_cuti'] == 'Cuti Tahunan') {
                 $lamaCuti = (int) ($request->form['lama_cuti'] ?? 0);
                 $nip = $request->form['nip'] ?? null;
-                if ($nip) {
+                $nip = $request->form['nip'] ?? null;
+                $pegawaiId = $request->form['pegawai_id'] ?? null;
+                $pegawai = null;
+
+                if ($pegawaiId) {
+                    $pegawai = \App\Models\Pegawai::find($pegawaiId);
+                } elseif ($nip) {
                     $pegawai = \App\Models\Pegawai::where('nip', $nip)->first();
-                    if ($pegawai) {
+                } else {
+                    $nama = $request->form['nama'] ?? null;
+                    if ($nama) {
+                         $pegawai = \App\Models\Pegawai::where('nama', $nama)->first();
+                    }
+                }
+
+                if ($pegawai) {
                         if ($kategori === 'PNS') {
                             $n2_used = 0;
                             $n1_used = 0;
@@ -139,7 +152,6 @@ class IzinCutiController extends Controller
                             $request->merge(['form' => $form]);
                         }
                         $pegawai->save();
-                    }
                 }
             }
 

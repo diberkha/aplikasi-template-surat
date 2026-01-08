@@ -120,9 +120,9 @@
             </tr>
             <tr>
                 <td style="width: 15%">Nama</td>
-                <td style="width: 35%"><?= $f['nama'] ?? '' ?></td>
+                <td style="width: 40%"><?= $f['nama'] ?? '' ?></td>
                 <td style="width: 15%">NIP</td>
-                <td style="width: 35%"><?= $f['nip'] ?? '' ?></td>
+                <td style="width: 30%"><?= $f['nip'] ?? '' ?></td>
             </tr>
             <tr>
                 <td>Jabatan</td>
@@ -130,10 +130,9 @@
                 <td>Masa Kerja</td>
                 <td>
                     <?php
-                        $mkTh = $f['masa_kerja_tahun'] ?? '';
-                        $mkBl = $f['masa_kerja_bulan'] ?? '';
-                        echo ($mkTh ? $mkTh.' th' : '');
-                        echo ($mkBl ? ' '.$mkBl.' bln' : '');
+                        $mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
+                        $mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
+                        echo $mkTh.' th '.$mkBl.' bln';
                     ?>
                 </td>
             </tr>
@@ -149,8 +148,8 @@
                 <td colspan="2" class="section-header">II. JENIS CUTI YANG DIAMBIL**</td>
             </tr>
             <tr>
-                <td style="width: 70%">1. Cuti Tahunan</td>
-                <td style="width: 30%" class="center">
+                <td style="width: 55%">1. Cuti Tahunan</td>
+                <td style="width: 45%" class="center">
                     <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Tahunan') ? 'V' : '' ?>
                 </td>
             </tr>
@@ -186,11 +185,11 @@
                 <td colspan="6" class="section-header">IV. LAMANYA CUTI</td>
             </tr>
             <tr>
-                <td style="width: 10%" class="center">Selama</td>
+                <td style="width: 10%">Selama</td>
                 <td style="width: 15%"><?= $f['lama_cuti'] ?? '' ?> hari</td>
-                <td style="width: 15%" class="center">mulai tanggal</td>
+                <td style="width: 15%">mulai tanggal</td>
                 <td style="width: 20%"><?= isset($f['mulai']) ? formatTanggalIndonesia($f['mulai']) : '' ?></td>
-                <td style="width: 10%" class="center">s/d</td>
+                <td style="width: 10%">s/d</td>
                 <td style="width: 30%"><?= isset($f['sampai']) ? formatTanggalIndonesia($f['sampai']) : '' ?></td>
             </tr>
         </table>
@@ -201,8 +200,8 @@
                 <td colspan="2" class="section-header">V. CATATAN CUTI***</td>
             </tr>
              <tr>
-                <td style="width: 70%">1. CUTI TAHUNAN</td>
-                <td style="width: 30%" class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Tahunan') ? 'V' : '' ?></td>
+                <td style="width: 55%">1. CUTI TAHUNAN</td>
+                <td style="width: 45%" class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Tahunan') ? 'V' : '' ?></td>
             </tr>
             <tr>
                 <td>2. CUTI SAKIT</td>

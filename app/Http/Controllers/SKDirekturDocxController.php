@@ -225,7 +225,7 @@ class SKDirekturDocxController extends Controller
 
             $section->addTextBreak(1);
             
-            // MEMUTUSKAN
+            // Memutuskan
             $section->addText('MEMUTUSKAN', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
 

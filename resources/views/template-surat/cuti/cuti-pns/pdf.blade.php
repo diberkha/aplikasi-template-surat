@@ -80,8 +80,8 @@
         <!-- Header -->
         <table class="no-border">
             <tr class="no-border">
-                <td style="width: 52%"></td>
-                <td style="width: 48%" class="header-right">
+                <td style="width: 48%"></td>
+                <td style="width: 52%" class="header-right">
                     <!-- ANAK LAMPIRAN 1.b<br> -->
                     PERATURAN BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA NOMOR 24 TAHUN 2017<br>
                     TENTANG<br>
@@ -117,10 +117,9 @@
                 <td>Masa Kerja</td>
                 <td>
                     <?php
-                        $mkTh = $f['masa_kerja_tahun'] ?? '';
-                        $mkBl = $f['masa_kerja_bulan'] ?? '';
-                        echo ($mkTh ? $mkTh.' th' : '');
-                        echo ($mkBl ? ' '.$mkBl.' bln' : '');
+                        $mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
+                        $mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
+                        echo $mkTh.' th '.$mkBl.' bln';
                     ?>
                 </td>
             </tr>
@@ -185,11 +184,11 @@
                 <td colspan="6" class="section-header">IV. LAMANYA CUTI</td>
             </tr>
             <tr>
-                <td style="width: 10%" class="center">Selama</td>
+                <td style="width: 10%">Selama</td>
                 <td style="width: 15%"><?= $f['lama_cuti'] ?? '' ?> hari</td>
-                <td style="width: 15%" class="center">mulai tanggal</td>
+                <td style="width: 15%">mulai tanggal</td>
                 <td style="width: 20%"><?= isset($f['mulai']) ? formatTanggalIndonesia($f['mulai']) : '' ?></td>
-                <td style="width: 10%" class="center">s/d</td>
+                <td style="width: 10%">s/d</td>
                 <td style="width: 30%"><?= isset($f['sampai']) ? formatTanggalIndonesia($f['sampai']) : '' ?></td>
             </tr>
         </table>
@@ -334,7 +333,7 @@
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">***</td>
-                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum PPPK mengajukan cuti</td>
+                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum PNS mengajukan cuti</td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">****</td>

@@ -59,39 +59,46 @@ class IzinCutiNonAsnController extends Controller
             $section->addText('FORMULIR PERMINTAAN DAN PEMBERIAN CUTI', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(0.1)]);
 
-            // I. DATA PEGAWAI
+            // I. DATA PEGAWAI 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('I. DATA PEGAWAI');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Nama');
-            $table->addCell((int) Converter::inchToTwip(2.54))->addText($data['nama'] ?? '');
+            $table->addCell((int) Converter::inchToTwip(3.27))->addText($data['nama'] ?? '');
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Masa Kerja');
-            $mk = ($data['masa_kerja_tahun'] ?? '') . ' th ' . ($data['masa_kerja_bulan'] ?? '') . ' bln';
-            $table->addCell((int) Converter::inchToTwip(2.55))->addText($mk);
+            $tahun = isset($data['masa_kerja_tahun']) && $data['masa_kerja_tahun'] !== '' ? $data['masa_kerja_tahun'] : 0;
+            $bulan = isset($data['masa_kerja_bulan']) && $data['masa_kerja_bulan'] !== '' ? $data['masa_kerja_bulan'] : 0;
+            $mk = $tahun . ' th ' . $bulan . ' bln';
+            $table->addCell((int) Converter::inchToTwip(1.82))->addText($mk);
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Jabatan');
-            $table->addCell((int) Converter::inchToTwip(2.54))->addText($data['jabatan'] ?? '');
-            $table->addCell((int) Converter::inchToTwip(1.09))->addText('NIP');
-            $table->addCell((int) Converter::inchToTwip(2.55))->addText($data['nip'] ?? '');
+            $table->addCell((int) Converter::inchToTwip(3.27))->addText($data['jabatan'] ?? '');
+            $table->addCell((int) Converter::inchToTwip(2.91), ['gridSpan' => 2])->addText('');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(1.09))->addText('Unit Kerja');
-            $table->addCell(null, ['gridSpan' => 3])->addText($data['unit'] ?? 'RSUD dr. Soeratno Gemolong');
+            $table->addCell((int) Converter::inchToTwip(6.18), ['gridSpan' => 3])->addText($data['unit'] ?? 'RSUD dr. Soeratno Gemolong');
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL
+            // II. JENIS CUTI YANG DIAMBIL 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('II. JENIS CUTI YANG DIAMBIL**');
             
             $jenisCuti = $data['jenis_cuti'] ?? '';
-            $types = ['1. Cuti Tahunan' => 'Cuti Tahunan', '2. Cuti Besar' => 'Cuti Besar', '3. Cuti Melahirkan' => 'Cuti Melahirkan'];
-            foreach ($types as $label => $val) {
-                $table->addRow();
-                $table->addCell((int) Converter::inchToTwip(5.48))->addText($label);
-                $table->addCell((int) Converter::inchToTwip(1.79))->addText($jenisCuti == $val ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            }
+            
+            $table->addRow();
+            $table->addCell((int) Converter::inchToTwip(4.36))->addText('1. Cuti Tahunan');
+            $table->addCell((int) Converter::inchToTwip(2.91))->addText($jenisCuti == 'Cuti Tahunan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            
+            $table->addRow();
+            $table->addCell((int) Converter::inchToTwip(4.36))->addText('2. Cuti Besar');
+            $table->addCell((int) Converter::inchToTwip(2.91))->addText($jenisCuti == 'Cuti Besar' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            
+            $table->addRow();
+            $table->addCell((int) Converter::inchToTwip(4.36))->addText('3. Cuti Melahirkan');
+            $table->addCell((int) Converter::inchToTwip(2.91))->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
@@ -111,34 +118,35 @@ class IzinCutiNonAsnController extends Controller
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(0.7))->addText('Selama');
             $table->addCell((int) Converter::inchToTwip(1.0))->addText(($data['lama_cuti'] ?? '') . ' hari');
-            $table->addCell((int) Converter::inchToTwip(1.3))->addText('mulai tgl');
+            $table->addCell((int) Converter::inchToTwip(1.3))->addText('mulai tanggal');
             $table->addCell((int) Converter::inchToTwip(1.5))->addText(isset($data['mulai']) ? $formatTanggalIndonesia($data['mulai']) : '');
             $table->addCell((int) Converter::inchToTwip(0.5))->addText('s/d');
             $table->addCell((int) Converter::inchToTwip(1.27))->addText(isset($data['sampai']) ? $formatTanggalIndonesia($data['sampai']) : '');
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI
+            // V. CATATAN CUTI 
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
             
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(2.35), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
-            $table->addCell((int) Converter::inchToTwip(2.35))->addText('2. CUTI BESAR');
+            $table->addCell((int) Converter::inchToTwip(3.64), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
+            $table->addCell((int) Converter::inchToTwip(3.64))->addText('2. CUTI BESAR');
             $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Besar' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(0.5))->addText('Tahun');
             $table->addCell((int) Converter::inchToTwip(0.5))->addText('Sisa');
             $table->addCell((int) Converter::inchToTwip(1.35))->addText('Keterangan');
-            $table->addCell((int) Converter::inchToTwip(2.35))->addText('3. CUTI MELAHIRKAN');
+            $table->addCell((int) Converter::inchToTwip(3.64))->addText('3. CUTI MELAHIRKAN');
             $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             
             $table->addRow();
             $table->addCell()->addText('N');
             $table->addCell()->addText($data['catatan_n'] ?? $data['sisa_cuti_tahunan'] ?? '');
             $table->addCell()->addText($data['catatan_n_keterangan'] ?? '');
-            $table->addCell(null, ['gridSpan' => 2]);
+            $table->addCell(null, ['gridSpan' => 2])->addText('');
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
@@ -164,28 +172,40 @@ class IzinCutiNonAsnController extends Controller
             $defaultBorder = ['borderSize' => 6, 'borderColor' => '000000'];
             $noBottom = ['borderTopSize' => 6, 'borderLeftSize' => 6, 'borderRightSize' => 6, 'borderBottomSize' => 0, 'borderColor' => '000000'];
             $fullBorder = ['borderSize' => 6, 'borderColor' => '000000'];
-
+            
             // VII. PERTIMBANGAN ATASAN LANGSUNG
             $table = $section->addTable('ApprovalTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), array_merge(['gridSpan' => 4], $fullBorder))->addText('VII. PERTIMBANGAN ATASAN LANGSUNG**');
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('DISETUJUI');
+            $table->addCell((int) Converter::inchToTwip(1.1), $fullBorder)->addText('DISETUJUI');
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
-            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('DITANGGUHKAN****');
+            $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
             
             $table->addRow();
             $atasan = $data['atasan_setuju'] ?? '';
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($atasan == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($atasan == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.5), $noBottom)->addText($atasan == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText($atasan == 'TIDAK DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(3.9), ['gridSpan' => 3, 'borderSize' => 0]);
-            $signCell = $table->addCell((int) Converter::inchToTwip(3.37), array_merge(['gridSpan' => 1], $fullBorder));
-            $signCell->addText(strtoupper($data['jabatan_atasan'] ?? 'Atasan'), null, ['alignment' => Jc::CENTER]);
+            $emptyCell = $table->addCell((int) Converter::inchToTwip(3.9), [
+                'gridSpan' => 3,
+                'borderTopSize' => 0,
+                'borderLeftSize' => 0,
+                'borderRightSize' => 0,
+                'borderBottomSize' => 0,
+                'borderColor' => 'FFFFFF'
+            ]);
+            
+            $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
+                'gridSpan' => 1,
+                'borderSize' => 6,
+                'borderColor' => '000000'
+            ]);
+            $signCell->addText(strtoupper($data['jabatan_atasan'] ?? 'KEPALA BIDANG PENGEMBANGAN DAN INFORMASI'), null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
             $signCell->addText(strtoupper($data['nama_atasan'] ?? ''), ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. ' . ($data['nip_atasan'] ?? ''), null, ['alignment' => Jc::CENTER]);
@@ -197,28 +217,42 @@ class IzinCutiNonAsnController extends Controller
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), array_merge(['gridSpan' => 4], $fullBorder))->addText('VIII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI**');
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('DISETUJUI');
+            $table->addCell((int) Converter::inchToTwip(1.1), $fullBorder)->addText('DISETUJUI');
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
-            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('DITANGGUHKAN****');
+            $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
             
             $table->addRow();
             $pejabat = $data['pejabat_keputusan'] ?? '';
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($pejabat == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($pejabat == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.5), $noBottom)->addText($pejabat == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText($pejabat == 'TIDAK DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
-            $catatanCell = $table->addCell((int) Converter::inchToTwip(3.9), ['gridSpan' => 3, 'borderSize' => 0]);
-            $catatanText = ['size' => 8];
+            $catatanCell = $table->addCell((int) Converter::inchToTwip(3.9), [
+                'gridSpan' => 3,
+                'borderTopSize' => 0,
+                'borderLeftSize' => 0,
+                'borderRightSize' => 0,
+                'borderBottomSize' => 0,
+                'borderColor' => 'FFFFFF'
+            ]);
+            $catatanText = ['size' => 10];
             $catatanCell->addText('Catatan:', $catatanText);
             $catatanCell->addText('* Coret yang tidak perlu', $catatanText);
             $catatanCell->addText('** Pilih salah satu dengan memberi tanda centang (V)', $catatanText);
             $catatanCell->addText('*** diisi oleh pejabat yang menangani bidang kepegawaian', $catatanText);
+            $catatanCell->addText('     sebelum Non ASN mengajukan cuti', $catatanText);
             $catatanCell->addText('**** diberi tanda centang dan alasannya', $catatanText);
-            
-            $signCell = $table->addCell((int) Converter::inchToTwip(3.37), array_merge(['gridSpan' => 1], $fullBorder));
+
+            $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
+                'gridSpan' => 1,
+                'borderSize' => 6,
+                'borderColor' => '000000'
+            ]);
+            $signCell->addText('KEPUTUSAN PEJABAT YANG', null, ['alignment' => Jc::CENTER]);
+            $signCell->addText('BERWENANG MEMBERIKAN CUTI', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
@@ -226,9 +260,10 @@ class IzinCutiNonAsnController extends Controller
             $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+            $fileName = 'Surat Izin Cuti-Non ASN-' . ($data['nama'] ?? 'Unknown') . '.docx';
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
             $objWriter->save($tempFile);
-            $fileName = 'Surat Izin Cuti-Non ASN-' . ($data['nama'] ?? 'Unknown') . '.docx';
+
             return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal membuat file: ' . $e->getMessage());

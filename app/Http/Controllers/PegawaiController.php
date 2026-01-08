@@ -85,10 +85,10 @@ class PegawaiController extends Controller
             $query->where(function($q) {
                 $q->where('jabatan', 'LIKE', '%Direktur%')
                   ->orWhere('jabatan', 'LIKE', '%Kepala%')
-                  ->orWhere('jabatan', 'LIKE', '%Kasi%')
-                  ->orWhere('jabatan', 'LIKE', '%Kasubag%')
-                  ->orWhere('jabatan', 'LIKE', '%Kabid%')
-                  ->orWhere('jabatan', 'LIKE', '%Kabag%');
+                  ->orWhere('jabatan', 'LIKE', '%Kepala Seksi%')
+                  ->orWhere('jabatan', 'LIKE', '%Kepala Sub Bagian%')
+                  ->orWhere('jabatan', 'LIKE', '%Kepala Bidang%')
+                  ->orWhere('jabatan', 'LIKE', '%Kepala Bagian%');
             });
         }
 
