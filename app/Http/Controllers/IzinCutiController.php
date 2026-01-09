@@ -17,7 +17,7 @@ class IzinCutiController extends Controller
         $templates = TemplateSurat::whereIn('nama_template_surat', [
             'Surat Izin Cuti PNS', 'Surat Izin Cuti PPPK', 'Surat Izin Cuti Non ASN'
         ])
-        ->orderBy('id_template_surat', 'desc')
+        ->orderBy('nama_template_surat', 'asc')
         ->get()
         ->map(function ($t) {
             $desc = 'Template Surat Izin Cuti PNS';

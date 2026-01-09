@@ -1,6 +1,7 @@
 <x-template-header title="Template Standar Operasional Prosedur (SOP)"
     subtitle="Pilih dan gunakan template Standar Operasional Prosedur (SOP) yang tersedia" tableTitle="Daftar Template Standar Operasional Prosedur (SOP)"
     searchPlaceholder="Cari template..."
+    :count="$templates->count()"
     x-init="items = {{ json_encode($templates) }}">
 
 
@@ -48,11 +49,16 @@
                         </td>
                     </tr>
                 </template>
-                <tr x-show="filteredData.length === 0">
-                    <td colspan="3" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                        Tidak ada template surat yang ditemukan
-                    </td>
-                </tr>
+                <template x-if="paginatedData.length === 0">
+                    <tr>
+                        <td colspan="3" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data template surat</h6>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
         </table>
     </div>

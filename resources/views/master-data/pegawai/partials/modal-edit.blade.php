@@ -1,11 +1,11 @@
 <div id="modalEditPegawai" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative flex flex-col max-h-[90vh]">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full relative flex flex-col max-h-[90vh]">
         <button type="button" onclick="closeModal('modalEditPegawai')"
-            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 z-10">
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 z-10 transition-colors">
             <i class="fas fa-times"></i>
         </button>
 
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-none">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-none bg-gray-50 dark:bg-gray-700/50 rounded-t-xl">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Pegawai</h3>
         </div>
 
@@ -15,74 +15,120 @@
                 @method('PUT')
                 <input type="hidden" id="edit_id_pegawai">
                 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Jenis Pegawai <span
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    
+                    <div class="lg:col-span-1">
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
                         <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateMasaKerjaLabel(this.value, 'edit')"
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                             <option value="PNS">PNS</option>
                             <option value="NON ASN">NON ASN</option>
                             <option value="PPPK">PPPK</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Pegawai <span
+
+                    <div class="lg:col-span-1">
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Nama Pegawai <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="nama" id="edit_nama_pegawai" required
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                            placeholder="Masukkan nama lengkap...">
-                    </div>
-                    <div id="nip_field_edit">
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" name="nip" id="edit_nip_pegawai" required
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                            placeholder="Masukkan NIP...">
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan</label>
-                        <input type="text" name="jabatan" id="edit_jabatan_pegawai"
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                            placeholder="Masukkan jabatan...">
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-gray-700 dark:text-gray-300" id="label_masa_kerja_edit">Masa Kerja (TMT) <span
-                            class="text-red-500">*</span></label>
-                        <input type="date" name="masa_kerja" id="edit_masa_kerja_pegawai" required
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
-                    <div class="border-t pt-4 mt-4 dark:border-gray-700">
-                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Sisa Cuti Tahunan (Opsional)</h4>
+                    <div class="lg:col-span-1" id="nip_field_edit">
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">NIP <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="nip" id="edit_nip_pegawai" required
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                    </div>
+
+                    <div class="lg:col-span-1">
+                        <div class="relative" x-data="{ 
+                            open: false, search: '', selected: '', options: jabatanOptions,
+                            init() {
+                                window.addEventListener('populate-edit-modal', (e) => {
+                                    this.selected = this.options.includes(e.detail.jabatan) ? e.detail.jabatan : '';
+                                });
+                            }
+                        }" @click.outside="open = false">
+                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
+                            <input type="hidden" name="jabatan" :value="selected" required>
+                            
+                            <div class="relative">
+                                <button type="button" @click="open = !open"
+                                    class="w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
+                                    <span x-text="selected || 'Pilih Jabatan...'" :class="!selected && 'text-gray-400 font-normal'"></span>
+                                    <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="open && 'rotate-180'"></i>
+                                </button>
+
+                                <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:leave="transition ease-in duration-75" x-transition:leave-end="opacity-0 transform scale-95"
+                                    class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
+                                    style="display: none;">
+                                    <div class="p-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                                        <div class="relative text-gray-400 focus-within:text-green-500">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-search text-xs"></i>
+                                            </div>
+                                            <input type="text" x-model="search" placeholder="Cari jabatan..."
+                                                class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded-md dark:bg-gray-700 focus:ring-1 focus:ring-green-500 outline-none">
+                                        </div>
+                                    </div>
+                                    <ul class="max-h-56 overflow-y-auto py-1 custom-scrollbar">
+                                        <template x-for="opt in options.filter(o => o.toLowerCase().includes(search.toLowerCase()))" :key="opt">
+                                            <li>
+                                                <button type="button" @click="selected = opt; open = false; search = ''"
+                                                    class="w-full text-left px-4 py-2 text-sm hover:bg-green-50 dark:hover:bg-green-900/30 text-gray-700 dark:text-gray-300 transition-colors"
+                                                    :class="selected === opt && 'bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-medium'">
+                                                    <span x-text="opt"></span>
+                                                </button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-1">
+                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" id="label_masa_kerja_edit">Masa Kerja (TMT) <span
+                            class="text-red-500">*</span></label>
+                        <input type="date" name="masa_kerja" id="edit_masa_kerja_pegawai" required
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                    </div>
+
+                    <div class="lg:col-span-2 border-t pt-5 mt-2 dark:border-gray-700">
+                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            Sisa Cuti Tahunan (Opsional)
+                        </h4>
                         
                         <div class="grid grid-cols-3 gap-4">
                             <div>
-                                <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Tahun N (Saat Ini)</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N</label>
                                 <input type="number" name="sisa_cuti_n" id="edit_sisa_cuti_n" placeholder="12" min="0"
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                             
                             <div id="cuti_n1_container_edit">
-                                <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Tahun N-1</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N-1</label>
                                 <input type="number" name="sisa_cuti_n1" id="edit_sisa_cuti_n1" placeholder="0" min="0"
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                             
                             <div id="cuti_n2_container_edit">
-                                <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Tahun N-2</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N-2</label>
                                 <input type="number" name="sisa_cuti_n2" id="edit_sisa_cuti_n2" placeholder="0" min="0"
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal('modalEditPegawai')"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white text-sm">
-                        Batal
+
+                <div class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 border-t dark:border-gray-700 rounded-b-xl">
+                    <button type="button" @click="resetEditPegawai()"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
+                        Reset
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-sm">
                         Perbarui
                     </button>
                 </div>

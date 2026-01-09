@@ -6,7 +6,7 @@
     <div class="space-y-6" x-data="regulasi()" x-init="init()">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Regulasi</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Data Regulasi</h1>
                 <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data regulasi</p>
             </div>
 
@@ -67,7 +67,8 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Regulasi</h3>
             </div>
 
-            <div class="overflow-x-auto">
+            @if($regulasis->count() > 0)
+                <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -103,21 +104,16 @@
                                     </div>
                                 </td>
                         </template>
-                        <tr x-show="filteredCount === 0">
-                            <td colspan="3" class="px-6 py-12 text-center">
-                                <div class="text-gray-500 dark:text-gray-400">
-                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
-                                        <i class="fas fa-inbox text-2xl"></i>
+                        <template x-if="paginatedData().length === 0">
+                            <tr>
+                                <td colspan="3" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                        <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data regulasi</h6>
                                     </div>
-                                    <p class="text-lg font-medium text-gray-700 dark:text-gray-300">Belum ada data regulasi</p>
-                                    <button @click="openModal('modalCreate')"
-                                        class="mt-4 inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                                        <i class="fas fa-plus"></i>
-                                        <span>Tambah Regulasi</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -170,7 +166,12 @@
                     </div>
                 </div>
             @endif
-        </div>
+            @else
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data regulasi</h6>
+                </div>
+            @endif
     </div>
 
     @include('master-data.regulasi.partials.modal-create')

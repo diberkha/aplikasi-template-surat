@@ -10,8 +10,9 @@ class PegawaiController extends Controller
 {
     public function index()
     {
-        $pegawai = Pegawai::orderBy('nama')->get();
-        return view('master-data.pegawai.index', compact('pegawai'));
+        $pegawai = Pegawai::all();
+        $jabatans = \App\Models\Jabatan::all();
+        return view('master-data.pegawai.index', compact('pegawai', 'jabatans'));
     }
 
     public function store(Request $request)

@@ -95,7 +95,8 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Pegawai</h3>
             </div>
 
-            <div class="overflow-x-auto">
+            @if($pegawai->count() > 0)
+                <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -142,6 +143,16 @@
                                             class="inline-flex items-center p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                                             <i class="fas fa-trash text-sm"></i>
                                         </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="paginatedData().length === 0">
+                            <tr>
+                                <td :colspan="selectedType !== 'NON ASN' ? 7 : 6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                        <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data pegawai</h6>
                                     </div>
                                 </td>
                             </tr>
@@ -197,7 +208,12 @@
                 </div>
 
             </div>
-        </div>
+            @else
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data pegawai</h6>
+                </div>
+            @endif
 
         @include('master-data.pegawai.partials.modal-create')
         @include('master-data.pegawai.partials.modal-edit')
@@ -205,6 +221,9 @@
 
     </div>
 
+    <script>
+        const jabatanOptions = @json($jabatans->pluck('nama_jabatan'));
+    </script>
     <script>
         function pegawaiTable() {
             return {
@@ -342,10 +361,18 @@
                     fetch(`/api/pegawai/${id}`)
                         .then(r => r.json())
                         .then(data => {
+                            // Store original data for reset
+                            window.originalPegawai = { ...data };
+                            
                             document.getElementById('edit_id_pegawai').value = data.id;
                             document.getElementById('edit_nama_pegawai').value = data.nama;
                             document.getElementById('edit_nip_pegawai').value = data.nip;
-                            document.getElementById('edit_jabatan_pegawai').value = data.jabatan;
+                            
+                            // Handle Jabatan with Custom Event for Alpine
+                            window.dispatchEvent(new CustomEvent('populate-edit-modal', { 
+                                detail: { jabatan: data.jabatan } 
+                            }));
+                            
                             document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
                             document.getElementById('edit_masa_kerja_pegawai').value = data.masa_kerja;
                             
@@ -362,6 +389,31 @@
                                 updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
                             }
                         });
+                },
+
+                resetEditPegawai() {
+                    const data = window.originalPegawai;
+                    if (!data) return;
+
+                    document.getElementById('edit_nama_pegawai').value = data.nama;
+                    document.getElementById('edit_nip_pegawai').value = data.nip || '';
+                    document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
+                    document.getElementById('edit_masa_kerja_pegawai').value = data.masa_kerja;
+                    document.getElementById('edit_sisa_cuti_n').value = data.sisa_cuti_n;
+                    document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1;
+                    document.getElementById('edit_sisa_cuti_n2').value = data.sisa_cuti_n2;
+
+                    // Reset Jabatan in Alpine
+                    window.dispatchEvent(new CustomEvent('populate-edit-modal', { 
+                        detail: { jabatan: data.jabatan } 
+                    }));
+
+                    if (typeof toggleNIPField === 'function') {
+                        toggleNIPField(data.jenis_pegawai, 'edit');
+                    }
+                    if (typeof updateMasaKerjaLabel === 'function') {
+                        updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
+                    }
                 },
 
                 openDeleteModal(id, nama, nip) {
@@ -385,6 +437,20 @@
                 label.innerHTML = 'TMT CPNS <span class="text-red-500">*</span>';
             } else {
                 label.innerHTML = 'Masa Kerja <span class="text-red-500">*</span>';
+            }
+        }
+
+        function toggleNIPField(type, context) {
+            const nipField = document.getElementById(`nip_field_${context}`);
+            const nipInput = document.getElementById(context === 'create' ? 'nip_input_create' : 'edit_nip_pegawai');
+            
+            if (type === 'NON ASN') {
+                nipField.classList.add('hidden');
+                nipInput.removeAttribute('required');
+                nipInput.value = '';
+            } else {
+                nipField.classList.remove('hidden');
+                nipInput.setAttribute('required', 'required');
             }
         }
     </script>

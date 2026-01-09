@@ -252,8 +252,8 @@
                                 <tr>
                                     <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
-                                            <i class="fas fa-inbox text-4xl mb-4"></i>
-                                            <p class="text-lg font-medium">Tidak ada surat ditemukan</p>
+                                            <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data surat</h6>
                                         </div>
                                     </td>
                                 </tr>
@@ -310,14 +310,8 @@
             @else
                 <div class="text-center py-12">
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Belum ada surat</h3>
-                    <p class="text-gray-500 dark:text-gray-400">
-                        @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
-                            Tidak ada surat yang sesuai dengan filter yang dipilih
-                        @else
-                            Surat yang dibuat akan muncul di sini
-                        @endif
-                    </p>
+                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data surat</h6>
+
 
                     @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
                         <a href="{{ route('arsip-surat.index') }}"

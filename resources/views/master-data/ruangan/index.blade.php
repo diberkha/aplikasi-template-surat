@@ -68,7 +68,8 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Ruangan</h3>
             </div>
 
-            <div class="overflow-x-auto">
+            @if($ruangan->count() > 0)
+                <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -99,6 +100,16 @@
                                             class="inline-flex items-center p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                                             <i class="fas fa-trash text-sm"></i>
                                         </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        <template x-if="paginatedData().length === 0">
+                            <tr>
+                                <td colspan="3" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                        <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data ruangan</h6>
                                     </div>
                                 </td>
                             </tr>
@@ -154,7 +165,12 @@
                 </div>
 
             </div>
-        </div>
+            @else
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data ruangan</h6>
+                </div>
+            @endif
 
         @include('master-data.ruangan.partials.modal-create')
         @include('master-data.ruangan.partials.modal-edit')

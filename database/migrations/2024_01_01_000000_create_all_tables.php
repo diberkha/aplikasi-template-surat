@@ -94,6 +94,12 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('jabatans', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_jabatan')->unique();
+            $table->timestamps();
+        });
+
         Schema::table('surat', function (Blueprint $table) {
             $table->unsignedBigInteger('id_regulasi')->nullable()->after('id_template_surat');
             $table->foreign('id_regulasi')
@@ -177,5 +183,6 @@ return new class extends Migration {
         Schema::dropIfExists('units');
         Schema::dropIfExists('pegawais');
         Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('jabatans');
     }
 };

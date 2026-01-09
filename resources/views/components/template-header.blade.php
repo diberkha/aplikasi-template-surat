@@ -4,7 +4,9 @@
     'showSearch' => true,
     'showFilter' => true,
     'tableTitle' => 'Daftar Template Surat',
-    'searchPlaceholder' => 'Cari template...'
+    'searchPlaceholder' => 'Cari template...',
+    'count' => 0,
+    'emptyMessage' => 'Belum ada data template surat'
 ])
 
 @extends('layouts.app')
@@ -163,13 +165,20 @@
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-        @if ($tableTitle)
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $tableTitle }}</h3>
+        @if ($count > 0)
+            @if ($tableTitle)
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $tableTitle }}</h3>
+                </div>
+            @endif
+
+            {{ $slot }}
+        @else
+            <div class="text-center py-12">
+                <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">{{ $emptyMessage }}</h6>
             </div>
         @endif
-
-        {{ $slot }}
     </div>
 </div>
 @endsection

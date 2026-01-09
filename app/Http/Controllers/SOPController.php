@@ -18,7 +18,7 @@ class SOPController extends Controller
     public function index(Request $request)
     {
         $templates = TemplateSurat::where('nama_template_surat', 'like', '%SOP%')
-            ->orderBy('id_template_surat', 'desc')
+            ->orderBy('nama_template_surat', 'asc')
             ->get()
             ->map(function ($t) {
                 return [

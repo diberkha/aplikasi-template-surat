@@ -18,6 +18,7 @@ use App\Http\Controllers\IzinCutiPPPKController;
 use App\Http\Controllers\IzinCutiNonAsnController;
 use App\Http\Controllers\SKDirekturDocxController;
 use App\Http\Controllers\SOPDocxController;
+use App\Http\Controllers\JabatanController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -58,6 +59,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [UserController::class, 'store'])->name('master-data.user.store');
             Route::put('/{user}', [UserController::class, 'update'])->name('master-data.user.update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('master-data.user.destroy');
+        });
+
+        Route::prefix('jabatan')->middleware('role:Admin')->group(function () {
+            Route::get('/', [JabatanController::class, 'index'])->name('master-data.jabatan.index');
+            Route::post('/', [JabatanController::class, 'store'])->name('master-data.jabatan.store');
+            Route::put('/{jabatan}', [JabatanController::class, 'update'])->name('master-data.jabatan.update');
+            Route::delete('/{jabatan}', [JabatanController::class, 'destroy'])->name('master-data.jabatan.destroy');
         });
 
         Route::prefix('regulasi')->name('master-data.regulasi.')->middleware('role:Admin,Tata Usaha')->controller(RegulasiController::class)->group(function () {

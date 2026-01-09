@@ -17,7 +17,7 @@ class SKDirekturController extends Controller
     public function index(Request $request)
     {
         $templates = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur')
-            ->orderBy('id_template_surat', 'desc')
+            ->orderBy('nama_template_surat', 'asc')
             ->get()
             ->map(function ($t) {
                 return [
