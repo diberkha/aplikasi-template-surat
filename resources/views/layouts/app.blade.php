@@ -22,6 +22,10 @@
             display: none !important; 
         }
 
+        html, body {
+            height: 100%;
+        }
+
         html {
             overflow-y: scroll;
             scrollbar-gutter: stable;
@@ -104,10 +108,10 @@
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen" style="scrollbar-gutter: stable;" x-cloak>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col" style="scrollbar-gutter: stable;" x-cloak>
 
     <nav
-        class="h-20 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between pl-4 pr-4 md:pl-6 md:pr-6 sticky top-0 z-50"
+        class="h-20 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between pl-4 pr-4 md:pl-6 md:pr-6 sticky top-0 z-50 flex-shrink-0"
         x-bind:style="isDesktop ? 'margin-left:' + (sidebarCollapsed ? '80px' : '256px') + '; width: calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ');' : ''">
         <div class="flex items-center">
             <button @click="sidebarOpen = true; backdrop = true"
@@ -165,7 +169,7 @@
     <div x-show="backdrop && sidebarOpen" x-transition class="sidebar-backdrop md:hidden"
         @click="sidebarOpen = false; backdrop = false"></div>
 
-    <div class="flex min-h-[calc(100vh-5rem)] pt-20 md:pt-0">
+    <div class="flex flex-1 pt-20 md:pt-0">
         <aside x-show="isDesktop || sidebarOpen" x-transition
             :class="[
                 sidebarCollapsed && isDesktop ? 'w-16 md:w-20 overflow-visible' : 'w-64 md:w-64 overflow-y-auto',
@@ -387,9 +391,11 @@
             x-bind:style="isDesktop
                 ? { marginLeft: sidebarCollapsed ? '80px' : '256px', width: 'calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ')' }
                 : { marginLeft: '0', width: '100%' }">
-            @yield('content')
-
-            <footer class="mt-auto pt-16 pb-6">
+            <div class="flex-1">
+                @yield('content')
+            </div>
+            
+            <footer class="flex-shrink-0 pt-16 pb-6">
                 <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
                     &copy; 2025 <span class="text-green-600 dark:text-green-400 font-semibold">RSUD dr. Soeratno Gemolong</span>. All rights reserved.
                 </p>

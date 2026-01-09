@@ -70,6 +70,35 @@ INSERT INTO `migrations` VALUES (1,'2024_01_01_000000_create_all_tables',1);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `jabatans`
+-- Add this after the `migrations` table and before `pegawais` table
+--
+
+DROP TABLE IF EXISTS `jabatans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jabatans` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nama_jabatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `jabatans_nama_jabatan_unique` (`nama_jabatan`)
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jabatans`
+--
+
+LOCK TABLES `jabatans` WRITE;
+/*!40000 ALTER TABLE `jabatans` DISABLE KEYS */;
+INSERT INTO `jabatans` VALUES 
+(1,'Direktur','2026-01-09 00:00:00','2026-01-09 00:00:00'),(2,'Kepala Bidang Pelayanan dan Penunjang','2026-01-09 00:00:00','2026-01-09 00:00:00'),(3,'Kepala Bidang Pengembangan dan Informasi','2026-01-09 00:00:00','2026-01-09 00:00:00'),(4,'Kepala Seksi Pelayanan Medis dan Penunjang Medis','2026-01-09 00:00:00','2026-01-09 00:00:00'),(5,'Kepala Seksi Pengembangan Kerjasama dan Diklat','2026-01-09 00:00:00','2026-01-09 00:00:00'),(6,'Kepala Seksi Informasi dan Pemasaran','2026-01-09 00:00:00','2026-01-09 00:00:00'),(7,'Kepala Seksi Keperawatan dan Penunjang Non Medis','2026-01-09 00:00:00','2026-01-09 00:00:00'),(8,'Kepala Sub Bagian Perencanaan, Evaluasi dan Pelaporan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(9,'Kepala Sub Bagian Umum dan Kepegawaian','2026-01-09 00:00:00','2026-01-09 00:00:00'),(10,'Kepala Sub Bagian Keuangan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(11,'Dokter','2026-01-09 00:00:00','2026-01-09 00:00:00'),(12,'Dokter Umum','2026-01-09 00:00:00','2026-01-09 00:00:00'),(13,'Dokter Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00'),(14,'Dokter Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(15,'Dokter Madya','2026-01-09 00:00:00','2026-01-09 00:00:00'),(16,'Perawat Ahli Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00'),(17,'Perawat Ahli Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(18,'Perawat Mahir','2026-01-09 00:00:00','2026-01-09 00:00:00'),(19,'Perawat Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(20,'Perawat Terampil','2026-01-09 00:00:00','2026-01-09 00:00:00'),(21,'Perawat Gigi Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(22,'Perawat Gigi Terampil','2026-01-09 00:00:00','2026-01-09 00:00:00'),(23,'Bidan Ahli Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00'),(24,'Bidan Mahir','2026-01-09 00:00:00','2026-01-09 00:00:00'),(25,'Bidan Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(26,'Bidan Terampil','2026-01-09 00:00:00','2026-01-09 00:00:00'),(27,'Apoteker Ahli Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00'),(28,'Apoteker Ahli Madya','2026-01-09 00:00:00','2026-01-09 00:00:00'),(29,'Asisten Apoteker Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(30,'Asisten Apoteker Pelaksana','2026-01-09 00:00:00','2026-01-09 00:00:00'),(31,'Asisten Apoteker Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(32,'Nutrisionis Madya','2026-01-09 00:00:00','2026-01-09 00:00:00'),(33,'Nutrisionis Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(34,'Sanitarian Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(35,'Sanitarian Pelaksana','2026-01-09 00:00:00','2026-01-09 00:00:00'),(36,'Sanitarian Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(37,'Epidemiolog Kesehatan Ahli Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00'),(38,'Radiografer Pelaksana','2026-01-09 00:00:00','2026-01-09 00:00:00'),(39,'Radiografer Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(40,'Radiografer Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(41,'Fisioterapis Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(42,'Fisioterapis Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(43,'Teknisi Elektromedis Terampil','2026-01-09 00:00:00','2026-01-09 00:00:00'),(44,'Teknisi Elektromedis Mahir','2026-01-09 00:00:00','2026-01-09 00:00:00'),(45,'Teknisi Elektromedis Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(46,'Pranata Lab. Kes. Penyelia','2026-01-09 00:00:00','2026-01-09 00:00:00'),(47,'Pranata Lab. Kes. Pelaksana','2026-01-09 00:00:00','2026-01-09 00:00:00'),(48,'Pranata Lab. Kes. Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(49,'Perekam Medis Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(50,'Perekam Medis Pelaksana','2026-01-09 00:00:00','2026-01-09 00:00:00'),(51,'Perekam Medis Pelaksana Lanjutan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(52,'Pranata Komputer Terampil','2026-01-09 00:00:00','2026-01-09 00:00:00'),(53,'Pranata Komputer Ahli Muda','2026-01-09 00:00:00','2026-01-09 00:00:00'),(54,'Pengadministrasi Umum','2026-01-09 00:00:00','2026-01-09 00:00:00'),(55,'Penyusun Laporan Keuangan','2026-01-09 00:00:00','2026-01-09 00:00:00'),(56,'Administrator Kesehatan Ahli Pertama','2026-01-09 00:00:00','2026-01-09 00:00:00');
+/*!40000 ALTER TABLE `jabatans` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `pegawais`
 --
 
