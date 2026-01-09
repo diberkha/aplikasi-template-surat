@@ -139,7 +139,7 @@
             @endforeach
         </div>
 
-        <div style="text-align: center; margin: 12px 0 18px 0;">
+        <div style="text-align: center; margin: 32px 0 18px 0;">
             <p>DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</p>
         </div>
 

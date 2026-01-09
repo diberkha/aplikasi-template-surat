@@ -14,8 +14,12 @@ class RuanganSeeder extends Seeder
             ['nama_ruangan' => 'Direktur'],
             ['nama_ruangan' => 'Tata Usaha'],
             ['nama_ruangan' => 'Pelayanan'],
+            ['nama_ruangan' => 'Pengembangan'],
+            ['nama_ruangan' => 'Pengadaan'],
+            ['nama_ruangan' => 'Keuangan'],
             ['nama_ruangan' => 'Keperawatan'],
-            ['nama_ruangan' => 'IT'],
+            ['nama_ruangan' => 'Farmasi'],
+            ['nama_ruangan' => 'IT RSUD'],
         ];
 
         Ruangan::insert($ruangan);

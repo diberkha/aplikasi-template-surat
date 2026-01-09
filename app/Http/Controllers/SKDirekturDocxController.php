@@ -95,7 +95,7 @@ class SKDirekturDocxController extends Controller
             
             // Tentang
             $tentang = strtoupper($data['tentang'] ?? '-');
-            $section->addText($tentang, null, ['alignment' => Jc::CENTER]);
+            $section->addText($tentang, null, ['alignment' => Jc::CENTER, 'indentation' => ['left' => 1700, 'right' => 1700], 'lineHeight' => 1.35]);
             $section->addTextBreak(1);
             $section->addText('DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
@@ -147,10 +147,10 @@ class SKDirekturDocxController extends Controller
                 );
                 
                 foreach ($menimbangLines as $line) {
-                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH]);
+                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
                 }
             } else {
-                $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH]);
+                $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
             }
 
             $section->addTextBreak(1);
@@ -220,7 +220,7 @@ class SKDirekturDocxController extends Controller
             
             foreach ($mengingatLines as $line) {
                 if (trim($line) === '') continue;
-                $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH]);
+                $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
             }
 
             $section->addTextBreak(1);
@@ -234,7 +234,7 @@ class SKDirekturDocxController extends Controller
             $m->addRow();
             $m->addCell((int) Converter::inchToTwip(1.2))->addText('Menetapkan');
             $m->addCell((int) Converter::inchToTwip(0.2))->addText(':');
-            $m->addCell((int) Converter::inchToTwip(6.0))->addText(trim($data['menetapkan'] ?? ''));
+            $m->addCell((int) Converter::inchToTwip(6.0))->addText(trim($data['menetapkan'] ?? ''), null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
 
             $memutuskanText = $data['memutuskan'] ?? '';
             $lines = explode("\n", $memutuskanText);
@@ -256,7 +256,7 @@ class SKDirekturDocxController extends Controller
                 $m->addRow();
                 $m->addCell((int) Converter::inchToTwip(1.2))->addText(strtoupper($item['label']));
                 $m->addCell((int) Converter::inchToTwip(0.2))->addText(':');
-                $m->addCell((int) Converter::inchToTwip(6.0))->addText($item['text'], null, ['alignment' => Jc::BOTH]);
+                $m->addCell((int) Converter::inchToTwip(6.0))->addText($item['text'], null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
             }
 
             $section->addTextBreak(2);

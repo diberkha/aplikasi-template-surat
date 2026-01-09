@@ -12,7 +12,6 @@ class DatabaseSeeder extends Seeder
             RuanganSeeder::class,
             UnitSeeder::class,
             UserSeeder::class,
-            RegulasiSeeder::class,
             TemplateSuratSeeder::class,
         ]);
     }
