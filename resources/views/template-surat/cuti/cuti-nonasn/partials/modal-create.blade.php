@@ -160,6 +160,12 @@
                                 <input type="hidden" name="form[catatan_n]" id="catatan_n_hidden_nonasn">
                             </div>
                         </div>
+                        <div class="mt-4">
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Keterangan (Opsional)</label>
+                            <textarea name="form[catatan_n_keterangan]" rows="2" 
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"
+                                placeholder="Tambahkan keterangan untuk catatan cuti jika diperlukan..."></textarea>
+                        </div>
                     </div>
                 </div>
 

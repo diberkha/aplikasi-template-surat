@@ -135,9 +135,9 @@ class IzinCutiController extends Controller
                             $form['catatan_n2'] = $pegawai->sisa_cuti_n2 > 0 ? $pegawai->sisa_cuti_n2 : '';
                             $form['catatan_n1'] = $pegawai->sisa_cuti_n1 > 0 ? $pegawai->sisa_cuti_n1 : '';
                             $form['catatan_n'] = $pegawai->sisa_cuti_n > 0 ? $pegawai->sisa_cuti_n : '';
-                            $form['n2_used'] = ''; 
-                            $form['n1_used'] = '';
-                            $form['n_used'] = '';
+                            $form['n2_used'] = $n2_used ?? ''; 
+                            $form['n1_used'] = $n1_used ?? '';
+                            $form['n_used'] = $n_used ?? '';
                             
                             $cuti->update(['form_data' => $form]);
                             $request->merge(['form' => $form]);
@@ -146,7 +146,6 @@ class IzinCutiController extends Controller
                             
                             $form = $request->form;
                             $form['catatan_n'] = $pegawai->sisa_cuti_tahunan > 0 ? $pegawai->sisa_cuti_tahunan : '';
-                            $form['catatan_n_keterangan'] = ''; 
 
                             $cuti->update(['form_data' => $form]);
                             $request->merge(['form' => $form]);

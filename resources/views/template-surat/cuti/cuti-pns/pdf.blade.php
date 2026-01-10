@@ -215,21 +215,21 @@
             <tr>
                 <td>N-2</td>
                 <td><?= $f['catatan_n2'] ?? '' ?></td>
-                <td><?= (isset($f['n2_used']) && $f['n2_used'] > 0) ? 'Terpakai '.$f['n2_used'] : '' ?></td>
+                <td><?= $f['catatan_n2_keterangan'] ?? '' ?></td>
                 <td>4. CUTI MELAHIRKAN</td>
                 <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?></td>
             </tr>
             <tr>
                 <td>N-1</td>
                 <td><?= $f['catatan_n1'] ?? '' ?></td>
-                <td><?= (isset($f['n1_used']) && $f['n1_used'] > 0) ? 'Terpakai '.$f['n1_used'] : '' ?></td>
+                <td><?= $f['catatan_n1_keterangan'] ?? '' ?></td>
                 <td>5. CUTI KARENA ALASAN PENTING</td>
                 <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Karena Alasan Penting') ? 'V' : '' ?></td>
             </tr>
             <tr>
                 <td>N</td>
                 <td><?= $f['catatan_n'] ?? '' ?></td>
-                <td><?= (isset($f['n_used']) && $f['n_used'] > 0) ? 'Terpakai '.$f['n_used'] : '' ?></td>
+                <td><?= $f['catatan_n_keterangan'] ?? '' ?></td>
                 <td>6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
                 <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti di Luar Tanggungan Negara') ? 'V' : '' ?></td>
             </tr>

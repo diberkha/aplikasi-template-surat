@@ -281,6 +281,9 @@
                         case 'oldest':
                             filtered.sort((a, b) => a.id_unit - b.id_unit);
                             break;
+                        default:
+                            filtered.sort((a, b) => b.id_unit - a.id_unit);
+                            break;
                     }
 
                     return filtered;

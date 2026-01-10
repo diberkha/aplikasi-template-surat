@@ -17,7 +17,7 @@
                     <div class="lg:col-span-1">
                         <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <select name="jenis_pegawai" id="jenis_pegawai_create" required onchange="toggleNIPField(this.value, 'create'); updateMasaKerjaLabel(this.value, 'create')"
+                        <select name="jenis_pegawai" id="jenis_pegawai_create" required onchange="toggleNIPField(this.value, 'create'); updateMasaKerjaLabel(this.value, 'create'); toggleLeaveFields(this.value, 'create')"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                             <option value="PNS">PNS</option>
                             <option value="NON ASN">NON ASN</option>
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 border-t dark:border-gray-700 rounded-b-xl">
-                    <button type="button" @click="document.getElementById('formCreatePegawai').reset(); toggleNIPField('PNS', 'create'); updateMasaKerjaLabel('PNS', 'create')"
+                    <button type="button" @click="document.getElementById('formCreatePegawai').reset(); toggleNIPField('PNS', 'create'); updateMasaKerjaLabel('PNS', 'create'); toggleLeaveFields('PNS', 'create')"
                         class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                         Reset
                     </button>

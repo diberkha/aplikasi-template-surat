@@ -20,7 +20,7 @@
                     <div class="lg:col-span-1">
                         <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateMasaKerjaLabel(this.value, 'edit')"
+                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateMasaKerjaLabel(this.value, 'edit'); toggleLeaveFields(this.value, 'edit')"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                             <option value="PNS">PNS</option>
                             <option value="NON ASN">NON ASN</option>

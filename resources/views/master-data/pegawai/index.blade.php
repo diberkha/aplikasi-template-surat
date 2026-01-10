@@ -334,6 +334,9 @@
                         case 'oldest':
                             filtered.sort((a, b) => a.id - b.id);
                             break;
+                        default:
+                            filtered.sort((a, b) => b.id - a.id);
+                            break;
                     }
 
                     return filtered;
@@ -352,6 +355,15 @@
                 openCreateModal() {
                     const modal = document.getElementById('modalCreatePegawai');
                     modal.classList.remove('hidden');
+                    if (typeof toggleLeaveFields === 'function') {
+                        toggleLeaveFields('PNS', 'create');
+                    }
+                    if (typeof toggleNIPField === 'function') {
+                        toggleNIPField('PNS', 'create');
+                    }
+                    if (typeof updateMasaKerjaLabel === 'function') {
+                        updateMasaKerjaLabel('PNS', 'create');
+                    }
                 },
 
                 openEditModal(id) {
@@ -361,14 +373,12 @@
                     fetch(`/api/pegawai/${id}`)
                         .then(r => r.json())
                         .then(data => {
-                            // Store original data for reset
                             window.originalPegawai = { ...data };
                             
                             document.getElementById('edit_id_pegawai').value = data.id;
                             document.getElementById('edit_nama_pegawai').value = data.nama;
                             document.getElementById('edit_nip_pegawai').value = data.nip;
                             
-                            // Handle Jabatan with Custom Event for Alpine
                             window.dispatchEvent(new CustomEvent('populate-edit-modal', { 
                                 detail: { jabatan: data.jabatan } 
                             }));
@@ -388,6 +398,9 @@
                             if (typeof updateMasaKerjaLabel === 'function') {
                                 updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
                             }
+                            if (typeof toggleLeaveFields === 'function') {
+                                toggleLeaveFields(data.jenis_pegawai, 'edit');
+                            }
                         });
                 },
 
@@ -403,7 +416,6 @@
                     document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1;
                     document.getElementById('edit_sisa_cuti_n2').value = data.sisa_cuti_n2;
 
-                    // Reset Jabatan in Alpine
                     window.dispatchEvent(new CustomEvent('populate-edit-modal', { 
                         detail: { jabatan: data.jabatan } 
                     }));
@@ -413,6 +425,9 @@
                     }
                     if (typeof updateMasaKerjaLabel === 'function') {
                         updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
+                    }
+                    if (typeof toggleLeaveFields === 'function') {
+                        toggleLeaveFields(data.jenis_pegawai, 'edit');
                     }
                 },
 
@@ -451,6 +466,19 @@
             } else {
                 nipField.classList.remove('hidden');
                 nipInput.setAttribute('required', 'required');
+            }
+        }
+
+        function toggleLeaveFields(type, context) {
+            const n1 = document.getElementById(`cuti_n1_container_${context}`);
+            const n2 = document.getElementById(`cuti_n2_container_${context}`);
+            
+            if (type === 'PNS') {
+                n1?.classList.remove('hidden');
+                n2?.classList.remove('hidden');
+            } else {
+                n1?.classList.add('hidden');
+                n2?.classList.add('hidden');
             }
         }
     </script>

@@ -274,6 +274,8 @@
                         filtered.sort((a, b) => a.isi_regulasi.localeCompare(b.isi_regulasi));
                     } else if (this.sortOption === 'z-a') {
                         filtered.sort((a, b) => b.isi_regulasi.localeCompare(a.isi_regulasi));
+                    } else {
+                        filtered.sort((a, b) => b.id_regulasi - a.id_regulasi);
                     }
 
                     this.filteredCount = filtered.length;

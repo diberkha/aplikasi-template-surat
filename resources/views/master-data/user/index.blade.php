@@ -287,6 +287,7 @@
                         case 'z-a': return result.sort((a, b) => b.username.localeCompare(a.username));
                         case 'latest': return result.sort((a, b) => b.id - a.id);
                         case 'oldest': return result.sort((a, b) => a.id - b.id);
+                        default: return result.sort((a, b) => b.id - a.id);
                     }
                     return result;
                 },

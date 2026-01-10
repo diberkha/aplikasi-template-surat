@@ -168,9 +168,27 @@
                             </div>
                         </div>
                         
-                        <div id="calculation_preview" class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg hidden">
-                            <p class="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-2">Simulasi Pengurangan Cuti:</p>
-                            <div class="space-y-1 text-xs text-blue-600 dark:text-blue-400" id="calc_details">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                            <div>
+                                <textarea name="form[catatan_n2_keterangan]" rows="2" 
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                    placeholder="Keterangan N-2..."></textarea>
+                            </div>
+                            <div>
+                                <textarea name="form[catatan_n1_keterangan]" rows="2" 
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                    placeholder="Keterangan N-1..."></textarea>
+                            </div>
+                            <div>
+                                <textarea name="form[catatan_n_keterangan]" rows="2" 
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                    placeholder="Keterangan N..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="calc_preview" class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg hidden">
+                            <p class="text-xs font-semibold text-red-700 dark:text-red-300 mb-2">Peringatan:</p>
+                            <div class="space-y-1 text-xs text-red-600 dark:text-red-400" id="calc_details">
                             </div>
                         </div>
                         <input type="hidden" name="form[sisa_cuti_tahunan]" id="sisa_cuti_tahunan_hidden">
@@ -465,14 +483,13 @@
 
         const lamaCutiValue = parseInt(lamaCutiInput ? lamaCutiInput.value : 0) || 0;
         
-        const calcPreview = document.getElementById('calculation_preview');
+        const calcPreview = document.getElementById('calc_preview');
         const calcDetails = document.getElementById('calc_details');
 
         if(selected === 'Cuti Tahunan'){
             sisaCutiContainer.classList.remove('hidden');
             
             if(lamaCutiValue > 0) {
-                calcPreview.classList.remove('hidden');
                 let rem = lamaCutiValue;
                 
                 let usedN2 = Math.min(rem, sisaN2);
@@ -499,12 +516,6 @@
                 if(document.getElementById('val_n1_display')) document.getElementById('val_n1_display').value = finalN1 + ' Hari';
                 if(document.getElementById('val_n_display')) document.getElementById('val_n_display').value = finalN + ' Hari';
 
-                
-                if(document.getElementById('val_n2_display')) document.getElementById('val_n2_display').value = finalN2 + ' Hari';
-                if(document.getElementById('val_n1_display')) document.getElementById('val_n1_display').value = finalN1 + ' Hari';
-                if(document.getElementById('val_n_display')) document.getElementById('val_n_display').value = finalN + ' Hari';
-
-                let calcDetails = document.getElementById('calc_details');
                 if(rem > 0) {
                     calcPreview.classList.remove('hidden');
                     calcPreview.className = "mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg";
@@ -593,6 +604,13 @@
             if(valN2Display) valN2Display.value = '0 Hari';
             if(valN1Display) valN1Display.value = '0 Hari';
             if(valNDisplay) valNDisplay.value = '0 Hari';
+            
+            const ketN2 = document.querySelector('textarea[name="form[catatan_n2_keterangan]"]');
+            const ketN1 = document.querySelector('textarea[name="form[catatan_n1_keterangan]"]');
+            const ketN = document.querySelector('textarea[name="form[catatan_n_keterangan]"]');
+            if(ketN2) ketN2.value = '';
+            if(ketN1) ketN1.value = '';
+            if(ketN) ketN.value = '';
 
             sisaCutiGlobal = 0;
             sisaN = 0;

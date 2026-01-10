@@ -101,13 +101,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('template-surat')->name('template-surat.')->group(function () {
-        Route::get('/sk-direktur', [SKDirekturController::class, 'index'])->name('sk-direktur.index');
-        Route::post('/sk-direktur/store', [SKDirekturController::class, 'store'])->name('sk-direktur.store');
-        Route::get('/sk-direktur/file/{id}', [SKDirekturController::class, 'file'])->name('sk-direktur.file');
-        Route::delete('/sk-direktur/{template_surat}', [SKDirekturController::class, 'destroy'])->whereNumber('template_surat')->name('sk-direktur.destroy');
-        Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
-        Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
-        Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])->whereNumber('template_surat')->name('sop.destroy');
+        Route::middleware('role:Admin,Tata Usaha')->group(function () {
+            Route::get('/sk-direktur', [SKDirekturController::class, 'index'])->name('sk-direktur.index');
+            Route::post('/sk-direktur/store', [SKDirekturController::class, 'store'])->name('sk-direktur.store');
+            Route::get('/sk-direktur/file/{id}', [SKDirekturController::class, 'file'])->name('sk-direktur.file');
+            Route::delete('/sk-direktur/{template_surat}', [SKDirekturController::class, 'destroy'])->whereNumber('template_surat')->name('sk-direktur.destroy');
+            Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
+            Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
+            Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])->whereNumber('template_surat')->name('sop.destroy');
+        });
         Route::get('/cuti', [IzinCutiController::class, 'index'])->name('cuti.index');
         Route::post('/cuti/store', [IzinCutiController::class, 'store'])->name('cuti.store');
         Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');

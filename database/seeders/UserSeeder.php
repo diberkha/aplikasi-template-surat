@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('farmasi123')
             ],
             [
-                'username' => 'it-rsud',
+                'username' => 'itrsud',
                 'id_ruangan' => 10,
                 'password' => Hash::make('itrsud123')
             ],
