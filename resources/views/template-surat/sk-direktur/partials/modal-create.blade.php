@@ -1,19 +1,22 @@
-<div id="modalCreateSK" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
+<div id="modalCreateSK" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+        <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity" onclick="closeModal('modalCreateSK')"></div>
 
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Surat Keputusan Direktur</h3>
-            <button onclick="closeModal('modalCreateSK')"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <i class="fas fa-times text-lg"></i>
-            </button>
-        </div>
+        <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-        <form action="{{ route('template-surat.sk-direktur.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)">
-            @csrf
-            <input type="hidden" name="template_id" id="template_surat_sk">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 z-10">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Surat Keputusan Direktur</h3>
+                <button onclick="closeModal('modalCreateSK')"
+                    class="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
 
-            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            <form action="{{ route('template-surat.sk-direktur.store') }}" method="POST" id="skDirekturForm" onsubmit="submitFormAJAX(event)" class="flex flex-col overflow-hidden flex-1">
+                @csrf
+                <input type="hidden" name="template_id" id="template_surat_sk">
+
+                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
 
                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div class="space-y-4">
@@ -140,16 +143,16 @@
 
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
-                <button type="button" onclick="resetFormSK()"
-                    class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                    Reset
-                </button>
-                <button type="submit"
-                    class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
-                    Simpan
-                </button>
-            </div>
+                <div class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    <button type="button" onclick="resetFormSK()"
+                        class="px-6 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium">
+                        Reset
+                    </button>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-600/20 transition-all transform hover:-translate-y-0.5 font-semibold">
+                        Simpan
+                    </button>
+                </div>
         </form>
     </div>
 </div>

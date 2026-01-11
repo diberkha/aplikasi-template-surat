@@ -105,6 +105,24 @@
         button, a, input, textarea, select {
             transition-property: background-color, color, border-color, box-shadow !important;
         }
+
+        .custom-scrollbar-x {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+        .custom-scrollbar-x::-webkit-scrollbar {
+            height: 4px;
+        }
+        .custom-scrollbar-x::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar-x::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        .dark .custom-scrollbar-x::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
     </style>
 </head>
 
@@ -167,7 +185,8 @@
     </nav>
 
     <div x-show="backdrop && sidebarOpen" x-transition class="sidebar-backdrop md:hidden"
-        @click="sidebarOpen = false; backdrop = false"></div>
+        @click="sidebarOpen = false; backdrop = false"
+        :class="sidebarOpen ? 'sidebar-open' : ''"></div>
 
     <div class="flex flex-1 pt-20 md:pt-0">
         <aside x-show="isDesktop || sidebarOpen" x-transition
@@ -520,6 +539,10 @@
                     setTimeout(() => document.body.classList.add('alpine-ready'), 50);
                     
                     window.addEventListener('resize', this.handleResize.bind(this));
+                    window.addEventListener('modal-state-changed', () => {
+                        this.updateScrollLock();
+                    });
+                    
                     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                         if (!localStorage.getItem('dark-theme')) {
                             this.dark = e.matches;
@@ -529,6 +552,10 @@
                     
                     this.$watch('sidebarCollapsed', value => {
                         localStorage.setItem('sidebar-collapsed', value);
+                    });
+
+                    this.$watch('sidebarOpen', value => {
+                        this.updateScrollLock();
                     });
                 },
 
@@ -543,6 +570,24 @@
                         this.sidebarOpen = false;
                         this.backdrop = false;
                         this.sidebarCollapsed = false;
+                    }
+                    this.updateScrollLock();
+                },
+
+                updateScrollLock() {
+                    const hasOpenModal = typeof isAnyModalOpen === 'function' && isAnyModalOpen();
+                    const isMobileSidebarOpen = !this.isDesktop && this.sidebarOpen;
+
+                    if (isMobileSidebarOpen || hasOpenModal) {
+                        document.body.classList.add('overflow-hidden');
+                    } else {
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                    
+                    if (isMobileSidebarOpen) {
+                        document.body.classList.add('sidebar-open');
+                    } else {
+                        document.body.classList.remove('sidebar-open');
                     }
                 },
 

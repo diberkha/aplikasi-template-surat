@@ -77,6 +77,57 @@ function handleValidationErrors(errors) {
 }
 
 /**
+ * Open modal by ID
+ * Note: Added extra arguments handling (shim) to prevent recursion from old cached views
+ */
+function openModal(modalId, templateName = null, templateId = null) {
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) {
+        console.error(`Modal with ID '${modalId}' not found.`);
+        return;
+    }
+    modalElement.classList.remove('hidden');
+
+    if (!window.location.href.includes('template-surat')) {
+        document.body.classList.add('overflow-hidden');
+    }
+
+    window.dispatchEvent(new CustomEvent('modal-opened', { detail: { modalId: modalId } }));
+    if (templateId) {
+        let inputId = '';
+        if (modalId === 'modalCreateSOP') inputId = 'template_surat_sop';
+        else if (modalId === 'modalCreateSK') inputId = 'template_surat_sk';
+
+        if (inputId) {
+            const input = document.getElementById(inputId);
+            if (input) input.value = templateId;
+        }
+    }
+
+    if (templateName) {
+        const titleElement = modal.querySelector('#modalTitle');
+        if (titleElement) {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = templateName;
+            titleElement.textContent = 'Buat ' + textarea.value;
+        }
+    }
+}
+
+/**
+ * Check if any modal is currently open
+ */
+function isAnyModalOpen() {
+    const potentialModals = document.querySelectorAll('div[fixed].inset-0, .fixed.inset-0');
+    for (let modal of potentialModals) {
+        if (modal.classList.contains('hidden')) continue;
+        if (modal.offsetParent !== null) return true;
+        if (modal.style.display !== 'none' && window.getComputedStyle(modal).display !== 'none') return true;
+    }
+    return false;
+}
+
+/**
  * Close modal by ID and reset its form
  */
 function closeModal(modalId) {
@@ -89,18 +140,19 @@ function closeModal(modalId) {
             bubbles: true,
             detail: { modalId }
         }));
-        
-        modal.classList.add('hidden');
-    }
-}
 
-/**
- * Open modal by ID
- */
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
+        modal.classList.add('hidden');
+
+        window.dispatchEvent(new CustomEvent('modal-state-changed'));
+
+        setTimeout(() => {
+            if (!isAnyModalOpen() && !document.body.classList.contains('sidebar-open')) {
+                document.body.classList.remove('overflow-hidden');
+            }
+            if (window.location.href.includes('template-surat')) {
+                document.body.classList.remove('overflow-hidden');
+            }
+        }, 100);
     }
 }
 

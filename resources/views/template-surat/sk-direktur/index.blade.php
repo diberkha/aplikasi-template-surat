@@ -33,7 +33,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
-                                <button @click="openModal('modalCreateSK', 'Surat Keputusan Direktur', item.id_template_surat)"
+                                <button @click="openSKModal('modalCreateSK', 'Surat Keputusan Direktur', item.id_template_surat)"
                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                                     title="Buat Surat">
                                     <i class="fas fa-plus text-sm"></i>
@@ -85,11 +85,12 @@
                     x-text="p"
                     :disabled="p === '...'"
                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
-                    :class="p === currentPage 
-                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
-                        : (p === '...' 
-                            ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
-                            : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')">
+                    :class="[
+                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                    ]">
                 </button>
             </template>
 
@@ -113,10 +114,10 @@
 @include('template-surat.sk-direktur.partials.modal-preview-pdf')
 
 <script>
-    function openModal(id, templateName = null, templateId = null) {
+    function openSKModal(id, templateName = null, templateId = null) {
         const modal = document.getElementById(id);
         if (modal) {
-            modal.classList.remove('hidden');
+            window.openModal(id);
             
             if (templateId) {
                 document.getElementById('template_surat_sk').value = templateId;
@@ -134,26 +135,6 @@
         }
     }
 
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-
-    function openDeleteModal(templateName) {
-        const modal = document.getElementById('modalDeleteTemplate');
-        const nameField = document.getElementById('delete-template-name');
-        if (nameField) {
-            nameField.textContent = templateName || '-';
-        }
-        if (modal) {
-            const alpineData = Alpine.$data(modal);
-            if (alpineData) {
-                alpineData.isOpen = true;
-            } else {
-                modal.classList.remove('hidden');
-            }
-        }
-    }
-
     function openDeleteModal(templateName, templateId) {
         const modal = document.getElementById('modalDeleteTemplate');
         const nameField = document.getElementById('delete-template-name');
@@ -163,11 +144,7 @@
             const deleteUrlTemplate = '{{ route('template-surat.sk-direktur.destroy', ['template_surat' => '__ID__']) }}';
             form.action = deleteUrlTemplate.replace('__ID__', templateId);
         }
-        if (modal) {
-            const alpineData = Alpine?.$data ? Alpine.$data(modal) : null;
-            if (alpineData) { alpineData.isOpen = true; }
-            else { modal.classList.remove('hidden'); }
-        }
+        window.openModal('modalDeleteTemplate');
     }
 
     document.addEventListener('DOMContentLoaded', function () {

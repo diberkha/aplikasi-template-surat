@@ -16,7 +16,7 @@
             <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Nama Jabatan:</span>
-                    <span id="delete-nama-jabatan" class="text-gray-800 dark:text-gray-200 font-semibold">-</span>
+                    <span id="delete-nama-jabatan" class="text-gray-800 dark:text-gray-200">-</span>
                 </p>
             </div>
         </div>

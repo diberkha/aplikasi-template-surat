@@ -27,6 +27,14 @@ class ArsipSuratController extends Controller
             });
         }
 
+        if ($request->has('start_date') && $request->start_date) {
+            $query->whereDate('tanggal_dibuat', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date') && $request->end_date) {
+            $query->whereDate('tanggal_dibuat', '<=', $request->end_date);
+        }
+
         $suratData = $query->get()->map(function ($item) {
             $idSurat = $item->id_surat;
             $namaSurat = $item->nama_surat;

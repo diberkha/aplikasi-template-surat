@@ -10,49 +10,53 @@
                 <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data regulasi</p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
-                <div x-data="{ toggleFilter: false }" class="relative">
-                    <button type="button" @click="toggleFilter = !toggleFilter"
-                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300" x-text="sortText"></span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
-                    </button>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-4 lg:mt-0">
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial">
+                        <button type="button" @click="toggleFilter = !toggleFilter"
+                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300" x-text="sortText"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        </button>
 
-                    <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
-                        class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                        <ul class="py-1">
-                            <li><button @click="sortOption='a-z'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
-                            </li>
-                            <li><button @click="sortOption='z-a'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
-                            </li>
-                            <li><button @click="sortOption='latest'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
-                            </li>
-                            <li><button @click="sortOption='oldest'; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
-                            </li>
-                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                <button @click="sortOption=null; toggleFilter=false; filterRegulasi()"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
-                            </li>
-                        </ul>
+                        <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
+                            class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <ul class="py-1">
+                                <li><button @click="sortOption='a-z'; toggleFilter=false; filterRegulasi()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
+                                </li>
+                                <li><button @click="sortOption='z-a'; toggleFilter=false; filterRegulasi()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
+                                </li>
+                                <li><button @click="sortOption='latest'; toggleFilter=false; filterRegulasi()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
+                                </li>
+                                <li><button @click="sortOption='oldest'; toggleFilter=false; filterRegulasi()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                                </li>
+                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button @click="sortOption=null; toggleFilter=false; filterRegulasi()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
 
-                <div class="relative flex-1 sm:flex-initial">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400 text-sm"></i>
+                    <div class="relative flex-1 sm:flex-initial">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                        </div>
+                        <input type="text" placeholder="Cari..." x-model="search"
+                            x-on:input.debounce.300ms="filterRegulasi()"
+                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-48 lg:w-64 text-sm">
                     </div>
-                    <input type="text" placeholder="Cari regulasi..." x-model="search"
-                        x-on:input.debounce.300ms="filterRegulasi()"
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
                 </div>
 
                 <button onclick="openModal('modalCreate')"
-                    class="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm whitespace-nowrap">
+                    class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap w-full sm:w-auto">
                     <i class="fas fa-plus"></i>
                     <span class="hidden sm:inline">Tambah Regulasi</span>
                     <span class="sm:hidden">Tambah</span>
@@ -62,13 +66,16 @@
 
 
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Regulasi</h3>
+                <div class="sm:hidden animate-pulse">
+                    <i class="fas fa-arrows-left-right text-gray-400 text-xs"></i>
+                </div>
             </div>
 
             @if($regulasis->count() > 0)
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto custom-scrollbar-x">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -141,11 +148,12 @@
                             <template x-for="(page, index) in pages()" :key="index">
                                 <button @click="page !== '...' && goToPage(page)"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
-                                    :class="page === currentPage
-                                        ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                                        : (page === '...' 
-                                            ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
-                                            : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')"
+                                    :class="[
+                                        parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
+                                        (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                        (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                    ]"
                                     :disabled="page === '...'">
                                     <span x-text="page"></span>
                                 </button>
@@ -219,33 +227,35 @@
                 
                 pages() {
                      const total = this.totalPages;
-                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-
                      const current = this.currentPage;
-                     const range = [1];
+                     const delta = 1;
+                     const range = [];
+                     const rangeWithDots = [];
 
-                     if (current > 3) range.push('...');
+                     range.push(1);
 
-                     let start = Math.max(2, current - 1);
-                     let end = Math.min(total - 1, current + 1);
-
-                     if (current <= 3) {
-                         end = 4;
+                     for (let i = current - delta; i <= current + delta; i++) {
+                         if (i < total && i > 1) {
+                             range.push(i);
+                         }
                      }
 
-                     if (current >= total - 2) {
-                         start = total - 3;
+                     if (total > 1) range.push(total);
+
+                     let l;
+                     for (let i of range) {
+                         if (l) {
+                             if (i - l === 2) {
+                                 rangeWithDots.push(l + 1);
+                             } else if (i - l !== 1) {
+                                 rangeWithDots.push('...');
+                             }
+                         }
+                         rangeWithDots.push(i);
+                         l = i;
                      }
 
-                     for (let i = start; i <= end; i++) {
-                         range.push(i);
-                     }
-
-                     if (current < total - 2) range.push('...');
-
-                     range.push(total);
-                     
-                     return range;
+                     return rangeWithDots;
                 },
                 
                 goToPage(page) {
@@ -345,21 +355,6 @@
             openEditModal(id);
         }
 
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-            }
-        }
 
         function getSuratByTemplate() {
             const templateId = document.getElementById('template_surat').value;

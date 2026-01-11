@@ -16,7 +16,7 @@
                 @method('PUT')
                 <input type="hidden" id="edit_id" name="id">
 
-                <div class="space-y-4">
+                <div class="space-y-6">
                     <div class="relative" x-data="{ 
                         open: false, 
                         search: '', 
@@ -35,9 +35,22 @@
                                     this.selectedName = '';
                                 }
                             });
+
+                            this.$nextTick(() => {
+                                const form = this.$el.closest('form');
+                                if (form) {
+                                    form.addEventListener('reset', () => {
+                                        setTimeout(() => {
+                                            this.selectedId = '';
+                                            this.selectedName = '';
+                                            this.search = '';
+                                        }, 50);
+                                    });
+                                }
+                            });
                         }
                     }" @click.outside="open = false">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Ruangan <span class="text-red-500">*</span></label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Ruangan <span class="text-red-500">*</span></label>
                         <input type="hidden" name="id_ruangan" :value="selectedId" required>
                         
                         <div class="relative">
@@ -80,14 +93,14 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Username <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Username <span
                                 class="text-red-500">*</span></label>
                         <input id="edit_username" name="username" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Password Baru (Opsional)</label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password Baru (Opsional)</label>
                         <input type="password" id="password_edit" name="password"
                             placeholder="Kosongkan jika tidak ingin mengubah"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
@@ -98,7 +111,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Konfirmasi Password Baru</label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Konfirmasi Password Baru</label>
                         <input type="password" id="password_confirmation_edit" name="password_confirmation"
                             placeholder="Kosongkan jika tidak ingin mengubah"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">

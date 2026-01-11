@@ -19,11 +19,12 @@
         <template x-for="(page, index) in pages()" :key="index">
             <button @click="page !== '...' && goToPage(page)"
                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
-                :class="page === currentPage
-                    ? 'bg-green-600 text-white border-green-600 shadow-sm'
-                    : (page === '...' 
-                        ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
-                        : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')"
+                :class="[
+                    parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
+                    (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                    (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                ]"
                 :disabled="page === '...'">
                 <span x-text="page"></span>
             </button>
@@ -52,33 +53,35 @@ function templatePagination() {
         },
         pages() {
              const total = this.totalPages;
-             if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-
              const current = this.currentPage;
-             const range = [1];
+             const delta = 1;
+             const range = [];
+             const rangeWithDots = [];
 
-             if (current > 3) range.push('...');
+             range.push(1);
 
-             let start = Math.max(2, current - 1);
-             let end = Math.min(total - 1, current + 1);
-
-             if (current <= 3) {
-                 end = 4;
+             for (let i = current - delta; i <= current + delta; i++) {
+                 if (i < total && i > 1) {
+                     range.push(i);
+                 }
              }
 
-             if (current >= total - 2) {
-                 start = total - 3;
+             if (total > 1) range.push(total);
+
+             let l;
+             for (let i of range) {
+                 if (l) {
+                     if (i - l === 2) {
+                         rangeWithDots.push(l + 1);
+                     } else if (i - l !== 1) {
+                         rangeWithDots.push('...');
+                     }
+                 }
+                 rangeWithDots.push(i);
+                 l = i;
              }
 
-             for (let i = start; i <= end; i++) {
-                 range.push(i);
-             }
-
-             if (current < total - 2) range.push('...');
-
-             range.push(total);
-             
-             return range;
+             return rangeWithDots;
         },
         goToPage(page) {
             this.currentPage = page;

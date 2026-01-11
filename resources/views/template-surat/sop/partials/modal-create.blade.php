@@ -1,183 +1,185 @@
-<div id="modalCreateSOP" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
+<div id="modalCreateSOP" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+        <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity" onclick="closeModal('modalCreateSOP')"></div>
 
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur (SOP)</h3>
-            <button onclick="closeModal('modalCreateSOP')"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <i class="fas fa-times text-lg"></i>
-            </button>
+        <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
+
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur (SOP)</h3>
+                <button onclick="closeModal('modalCreateSOP')"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('template-surat.sop.store') }}" method="POST" id="sopForm" onsubmit="submitSOPForm(event)" class="flex flex-col flex-1 overflow-hidden">
+                @csrf
+                <input type="hidden" name="template_id" id="template_surat_sop">
+
+                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                    
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Judul SOP <span class="text-red-500">*</span></label>
+                                <input type="text" name="judul_sop" required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Dokumen <span class="text-red-500">*</span></label>
+                                    <input type="text" name="nomor_dokumen" required 
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi <span class="text-red-500">*</span></label>
+                                    <input type="text" name="nomor_revisi" 
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Halaman</label>
+                                    <input type="text" name="halaman" 
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Terbit <span class="text-red-500">*</span></label>
+                                <input type="date" name="tanggal_terbit" required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                            <h4 class="font-bold text-gray-900 dark:text-white">PENGERTIAN</h4>
+                        </div>
+                        <div class="p-4">
+                            <textarea name="pengertian" rows="3" required
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                            <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN</h4>
+                        </div>
+                        <div class="p-4">
+                            <div id="tujuanContainer" class="space-y-3">
+                                <div class="tujuan-item flex gap-3">
+                                    <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
+                                    <div class="flex-1">
+                                        <textarea name="tujuan[]" rows="2" required
+                                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addTujuanField()"
+                                class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                Tambah Tujuan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                            <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN</h4>
+                        </div>
+                        <div class="p-4">
+                            <input type="hidden" name="kebijakan_check" id="kebijakan_check">
+
+                            <div class="mb-3">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="searchKebijakan" placeholder="Cari regulasi..."
+                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        onkeyup="filterKebijakan()">
+                                </div>
+                            </div>
+
+                            <div id="kebijakanList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    Memuat data
+                                </div>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Pilih satu atau lebih regulasi yang relevan
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                            <h4 class="font-bold text-gray-900 dark:text-white">PROSEDUR</h4>
+                        </div>
+                        <div class="p-4">
+                            <div id="prosedurContainer" class="space-y-3">
+                                <div class="prosedur-item flex gap-3">
+                                    <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
+                                    <div class="flex-1">
+                                        <textarea name="prosedur[]" rows="2" required
+                                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addProsedurField()"
+                                class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                Tambah Prosedur
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                            <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT</h4>
+                        </div>
+                        <div class="p-4">
+                            <input type="hidden" name="unit_terkait_check" id="unit_terkait_check">
+
+                            <div class="mb-3">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="searchUnit" placeholder="Cari unit..."
+                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        onkeyup="filterUnit()">
+                                </div>
+                            </div>
+
+                            <div id="unitList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    Memuat data
+                                </div>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Pilih satu atau lebih unit yang terkait
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    <button type="reset" class="px-6 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium">
+                        Reset
+                    </button>
+                    <button type="submit" class="px-8 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-600/20 transition-all transform hover:-translate-y-0.5 font-semibold">
+                        Simpan
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <form action="{{ route('template-surat.sop.store') }}" method="POST" id="sopForm" onsubmit="submitSOPForm(event)">
-            @csrf
-            <input type="hidden" name="template_id" id="template_surat_sop">
-
-            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-                
-                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Judul SOP <span class="text-red-500">*</span></label>
-                            <input type="text" name="judul_sop" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Dokumen <span class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_dokumen" required 
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi <span class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_revisi" 
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Halaman</label>
-                                <input type="text" name="halaman" 
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Terbit <span class="text-red-500">*</span></label>
-                            <input type="date" name="tanggal_terbit" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">PENGERTIAN</h4>
-                    </div>
-                    <div class="p-4">
-                        <textarea name="pengertian" rows="3" required
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                    </div>
-                </div>
-
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN</h4>
-                    </div>
-                    <div class="p-4">
-                        <div id="tujuanContainer" class="space-y-3">
-                            <div class="tujuan-item flex gap-3">
-                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
-                                <div class="flex-1">
-                                    <textarea name="tujuan[]" rows="2" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" onclick="addTujuanField()"
-                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>
-                            Tambah Tujuan
-                        </button>
-                    </div>
-                </div>
-
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN</h4>
-                    </div>
-                    <div class="p-4">
-                        <input type="hidden" name="kebijakan_check" id="kebijakan_check">
-
-                        <div class="mb-3">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-gray-400"></i>
-                                </div>
-                                <input type="text" id="searchKebijakan" placeholder="Cari regulasi..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    onkeyup="filterKebijakan()">
-                            </div>
-                        </div>
-
-                        <div id="kebijakanList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
-                            <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                                <i class="fas fa-spinner fa-spin mr-2"></i>
-                                Memuat data
-                            </div>
-                        </div>
-                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Pilih satu atau lebih regulasi yang relevan
-                        </p>
-                    </div>
-                </div>
-
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">PROSEDUR</h4>
-                    </div>
-                    <div class="p-4">
-                        <div id="prosedurContainer" class="space-y-3">
-                            <div class="prosedur-item flex gap-3">
-                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">1.</label>
-                                <div class="flex-1">
-                                    <textarea name="prosedur[]" rows="2" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" onclick="addProsedurField()"
-                            class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>
-                            Tambah Prosedur
-                        </button>
-                    </div>
-                </div>
-
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                    <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT</h4>
-                    </div>
-                    <div class="p-4">
-                        <input type="hidden" name="unit_terkait_check" id="unit_terkait_check">
-
-                        <div class="mb-3">
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-gray-400"></i>
-                                </div>
-                                <input type="text" id="searchUnit" placeholder="Cari unit..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    onkeyup="filterUnit()">
-                            </div>
-                        </div>
-
-                        <div id="unitList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
-                            <div class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                                <i class="fas fa-spinner fa-spin mr-2"></i>
-                                Memuat data
-                            </div>
-                        </div>
-                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Pilih satu atau lebih unit yang terkait
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3">
-                <button type="button" onclick="resetFormSOP()"
-                    class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                    Reset
-                </button>
-                <button type="submit"
-                    class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
-                    Simpan
-                </button>
-            </div>
-        </form>
     </div>
 </div>
 

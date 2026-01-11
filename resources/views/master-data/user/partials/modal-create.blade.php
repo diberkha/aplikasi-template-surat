@@ -13,15 +13,29 @@
         <div class="p-6">
             <form id="formCreateUser" action="{{ route('master-data.user.store') }}" method="POST">
                 @csrf
-                <div class="space-y-4">
+                <div class="space-y-6">
                     <div class="relative" x-data="{ 
                         open: false, 
                         search: '', 
                         selectedId: '', 
                         selectedName: '',
-                        options: ruanganOptions
+                        options: ruanganOptions,
+                        init() {
+                            this.$nextTick(() => {
+                                const form = this.$el.closest('form');
+                                if (form) {
+                                    form.addEventListener('reset', () => {
+                                        setTimeout(() => {
+                                            this.selectedId = '';
+                                            this.selectedName = '';
+                                            this.search = '';
+                                        }, 50);
+                                    });
+                                }
+                            });
+                        }
                     }" @click.outside="open = false">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Ruangan <span class="text-red-500">*</span></label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Ruangan <span class="text-red-500">*</span></label>
                         <input type="hidden" name="id_ruangan" :value="selectedId" required>
                         
                         <div class="relative">
@@ -64,14 +78,14 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Username <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Username <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="username" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Password <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password <span
                                 class="text-red-500">*</span></label>
                         <input type="password" name="password" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
@@ -82,7 +96,7 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Konfirmasi Password <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Konfirmasi Password <span
                                 class="text-red-500">*</span></label>
                         <input type="password" name="password_confirmation" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">

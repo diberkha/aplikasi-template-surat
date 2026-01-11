@@ -85,8 +85,7 @@
                     <div id="detail-file-exists" class="hidden">
                         <div class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
                             <iframe id="detail-pdf-preview" src="" 
-                                class="w-full border-0"
-                                style="min-height: 600px;">
+                                class="w-full border-0 min-h-[350px] md:min-h-[600px]">
                             </iframe>
                         </div>
 

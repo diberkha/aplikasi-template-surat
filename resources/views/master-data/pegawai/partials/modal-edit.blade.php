@@ -18,25 +18,76 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                     
                     <div class="lg:col-span-1">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Pegawai <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <select name="jenis_pegawai" id="edit_jenis_pegawai" required onchange="toggleNIPField(this.value, 'edit'); updateMasaKerjaLabel(this.value, 'edit'); toggleLeaveFields(this.value, 'edit')"
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
-                            <option value="PNS">PNS</option>
-                            <option value="NON ASN">NON ASN</option>
-                            <option value="PPPK">PPPK</option>
-                        </select>
+                        <div class="relative" x-data="{ 
+                            open: false, selected: '', options: ['PNS', 'NON ASN', 'PPPK'],
+                            init() {
+                                window.addEventListener('populate-edit-modal', (e) => {
+                                    if (e.detail.jenis_pegawai) {
+                                        this.selected = e.detail.jenis_pegawai;
+                                        this.triggerChange();
+                                    }
+                                });
+                                
+                                this.$nextTick(() => {
+                                    const form = this.$el.closest('form');
+                                    if (form) {
+                                        form.addEventListener('reset', () => {
+                                            setTimeout(() => {
+                                                this.selected = '';  
+                                                this.triggerChange();
+                                            }, 50);
+                                        });
+                                    }
+                                });
+                            },
+                            select(opt) {
+                                this.selected = opt;
+                                this.open = false;
+                                this.triggerChange();
+                            },
+                            triggerChange() {
+                                if (typeof toggleNIPField === 'function') toggleNIPField(this.selected, 'edit');
+                                if (typeof updateMasaKerjaLabel === 'function') updateMasaKerjaLabel(this.selected, 'edit');
+                                if (typeof toggleLeaveFields === 'function') toggleLeaveFields(this.selected, 'edit');
+                            }
+                        }" @click.outside="open = false">
+                            <input type="hidden" name="jenis_pegawai" id="edit_jenis_pegawai" :value="selected">
+                            
+                            <button type="button" @click="open = !open"
+                                class="w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
+                                <span x-text="selected || 'Pilih Jenis'" :class="!selected && 'text-gray-400 font-normal'" class="font-normal text-gray-700 dark:text-gray-300"></span>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="open && 'rotate-180'"></i>
+                            </button>
+
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:leave="transition ease-in duration-75" x-transition:leave-end="opacity-0 transform scale-95"
+                                class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
+                                style="display: none;">
+                                <ul class="py-1">
+                                    <template x-for="opt in options" :key="opt">
+                                        <li>
+                                            <button type="button" @click="select(opt)"
+                                                class="w-full text-left px-4 py-2 text-sm hover:bg-green-50 dark:hover:bg-green-900/30 text-gray-700 dark:text-gray-300 transition-colors"
+                                                :class="selected === opt && 'bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-medium'">
+                                                <span x-text="opt"></span>
+                                            </button>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="lg:col-span-1">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Nama Pegawai <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Nama Pegawai <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="nama" id="edit_nama_pegawai" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
                     <div class="lg:col-span-1" id="nip_field_edit">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">NIP <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">NIP <span
                                 class="text-red-500">*</span></label>
                         <input type="text" name="nip" id="edit_nip_pegawai" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
@@ -49,9 +100,21 @@
                                 window.addEventListener('populate-edit-modal', (e) => {
                                     this.selected = this.options.includes(e.detail.jabatan) ? e.detail.jabatan : '';
                                 });
+
+                                this.$nextTick(() => {
+                                    const form = this.$el.closest('form');
+                                    if (form) {
+                                        form.addEventListener('reset', () => {
+                                            setTimeout(() => {
+                                                this.selected = '';
+                                                this.search = '';
+                                            }, 50);
+                                        });
+                                    }
+                                });
                             }
                         }" @click.outside="open = false">
-                            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
+                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Jabatan <span class="text-red-500">*</span></label>
                             <input type="hidden" name="jabatan" :value="selected" required>
                             
                             <div class="relative">
@@ -90,32 +153,32 @@
                     </div>
 
                     <div class="lg:col-span-1">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" id="label_masa_kerja_edit">Masa Kerja (TMT) <span
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300" id="label_masa_kerja_edit">TMT CPNS <span
                             class="text-red-500">*</span></label>
                         <input type="date" name="masa_kerja" id="edit_masa_kerja_pegawai" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
                     <div class="lg:col-span-2 border-t pt-5 mt-2 dark:border-gray-700">
-                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-4 flex items-center">
                             Sisa Cuti Tahunan (Opsional)
                         </h4>
                         
-                        <div class="grid grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun N</label>
                                 <input type="number" name="sisa_cuti_n" id="edit_sisa_cuti_n" placeholder="12" min="0"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                             
                             <div id="cuti_n1_container_edit">
-                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N-1</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun N-1</label>
                                 <input type="number" name="sisa_cuti_n1" id="edit_sisa_cuti_n1" placeholder="0" min="0"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                             
                             <div id="cuti_n2_container_edit">
-                                <label class="block mb-1 text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400">Tahun N-2</label>
+                                <label class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun N-2</label>
                                 <input type="number" name="sisa_cuti_n2" id="edit_sisa_cuti_n2" placeholder="0" min="0"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>

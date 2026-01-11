@@ -12,101 +12,110 @@
                 </p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3 mt-4 lg:mt-0">
-                <div x-data="{ toggleSort: false }" class="relative">
-                    <button type="button" @click="toggleSort = !toggleSort"
-                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300" x-text="sortLabel"></span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
-                    </button>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-4 lg:mt-0">
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial">
+                        <button type="button" @click="toggleSort = !toggleSort"
+                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300" x-text="sortLabel"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        </button>
 
-                    <div x-show="toggleSort" @click.away="toggleSort = false" x-transition
-                        class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                        <ul class="py-1">
-                            <li><button type="button" @click="sortOption = 'a-z'; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
-                            </li>
-                            <li><button type="button" @click="sortOption = 'z-a'; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
-                            </li>
-                            <li><button type="button" @click="sortOption = 'latest'; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
-                            </li>
-                            <li><button type="button" @click="sortOption = 'oldest'; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
-                            </li>
-                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                <button type="button" @click="sortOption = ''; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
-                            </li>
-                        </ul>
+                        <div x-show="toggleSort" @click.away="toggleSort = false" x-transition
+                            class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <ul class="py-1">
+                                <li><button type="button" @click="sortOption = 'a-z'; toggleSort = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
+                                </li>
+                                <li><button type="button" @click="sortOption = 'z-a'; toggleSort = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
+                                </li>
+                                <li><button type="button" @click="sortOption = 'latest'; toggleSort = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
+                                </li>
+                                <li><button type="button" @click="sortOption = 'oldest'; toggleSort = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                                </li>
+                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button type="button" @click="sortOption = ''; toggleSort = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div x-data="{ toggleFilter: false }" class="relative">
-                    <button type="button" @click="toggleFilter = !toggleFilter"
-                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <i class="fas fa-copy text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300" x-text="selectedTemplateName"></span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
-                    </button>
+                    
+                    <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial">
+                        <button type="button" @click="toggleFilter = !toggleFilter"
+                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-copy text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none" x-text="selectedTemplateName"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                        </button>
 
-                    <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
-                        class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                        <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
-                            @foreach($templateOptions as $template)
-                                <li>
-                                    <button type="button" @click="templateFilter = '{{ $template->id_template_surat }}'; toggleFilter = false"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
-                                        {{ $template->nama_template_surat }}
+                        <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
+                            class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
+                                @foreach($templateOptions as $template)
+                                    <li>
+                                        <button type="button" @click="templateFilter = '{{ $template->id_template_surat }}'; toggleFilter = false"
+                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
+                                            {{ $template->nama_template_surat }}
+                                        </button>
+                                    </li>
+                                @endforeach
+                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button type="button" @click="templateFilter = ''; toggleFilter = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
+                                        Hapus Filter
                                     </button>
                                 </li>
-                            @endforeach
-                            <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                <button type="button" @click="templateFilter = ''; toggleFilter = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
-                                    Hapus Filter
-                                </button>
-                            </li>
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
-                </div>
 
-                <div x-data="{ open: false }" class="relative">
-                    <button type="button" @click="open = !open"
-                        class="flex items-center space-x-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                        <span class="text-gray-700 dark:text-gray-300" x-text="dateDisplay"></span>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
-                    </button>
+                    <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
+                        <button type="button" @click="open = !open"
+                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none" x-text="dateDisplay"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        </button>
 
-                    <div x-show="open" @click.away="open = false" x-transition
-                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
-                        <div class="space-y-2">
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                            <input type="date" x-model="startDate" x-ref="startDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                        <div x-show="open" @click.away="open = false" x-transition
+                            class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
+                            <div class="space-y-2">
+                                <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
+                                <input type="date" x-model="startDate" x-ref="startDatePicker"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                            <input type="date" x-model="endDate" x-ref="endDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                                <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
+                                <input type="date" x-model="endDate" x-ref="endDatePicker"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
 
-                            <div class="flex space-x-2 pt-2">
-                                <button type="button" @click="applyDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
-                                <button type="button" @click="clearDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
+                                <div class="flex space-x-2 pt-2">
+                                    <button type="button" @click="applyDateFilter(); open = false"
+                                        class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
+                                    <button type="button" @click="clearDateFilter(); open = false"
+                                        class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="relative flex-1 sm:flex-initial">
+                <div class="relative flex-1 sm:flex-initial w-full sm:w-auto mt-2 sm:mt-0">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400 text-sm"></i>
+                        <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
                     <input type="text" x-model.debounce.300ms="search" placeholder="Cari arsip..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
+                        class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-48 lg:w-64 text-sm">
                 </div>
             </div>
         </div>
@@ -144,13 +153,16 @@
 
 
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Surat</h3>
+                <div class="sm:hidden animate-pulse">
+                    <i class="fas fa-arrows-left-right text-gray-400 text-xs"></i>
+                </div>
             </div>
 
             @if($totalSurat > 0)
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto custom-scrollbar-x">
                     <table class="w-full">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -286,11 +298,12 @@
                                     x-text="p"
                                     :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
-                                    :class="p === currentPage 
-                                        ? 'bg-green-600 border-green-600 text-white shadow-sm' 
-                                        : (p === '...' 
-                                            ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' 
-                                            : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600')">
+                                    :class="[
+                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                    ]">
                                 </button>
                             </template>
 
@@ -381,8 +394,8 @@
                 search: '',
                 sortOption: '',
                 templateFilter: '',
-                startDate: '',
-                endDate: '',
+                startDate: '{{ request('start_date') }}',
+                endDate: '{{ request('end_date') }}',
                 itemsPerPage: 10,
                 currentPage: 1,
                 toggleSort: false,
@@ -436,33 +449,35 @@
 
                 pages() {
                      const total = this.totalPages;
-                     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-
                      const current = this.currentPage;
-                     const range = [1];
+                     const delta = 1;
+                     const range = [];
+                     const rangeWithDots = [];
 
-                     if (current > 3) range.push('...');
+                     range.push(1);
 
-                     let start = Math.max(2, current - 1);
-                     let end = Math.min(total - 1, current + 1);
-
-                     if (current <= 3) {
-                         end = 4;
+                     for (let i = current - delta; i <= current + delta; i++) {
+                         if (i < total && i > 1) {
+                             range.push(i);
+                         }
                      }
 
-                     if (current >= total - 2) {
-                         start = total - 3;
+                     if (total > 1) range.push(total);
+
+                     let l;
+                     for (let i of range) {
+                         if (l) {
+                             if (i - l === 2) {
+                                 rangeWithDots.push(l + 1);
+                             } else if (i - l !== 1) {
+                                 rangeWithDots.push('...');
+                             }
+                         }
+                         rangeWithDots.push(i);
+                         l = i;
                      }
 
-                     for (let i = start; i <= end; i++) {
-                         range.push(i);
-                     }
-
-                     if (current < total - 2) range.push('...');
-
-                     range.push(total);
-                     
-                     return range;
+                     return rangeWithDots;
                 },
 
                 get sortLabel() {
@@ -567,7 +582,7 @@
             const modal = document.getElementById('modalDetailSurat');
             modal.dataset.suratId = idSurat;
             modal.dataset.docxUrl = docxUrl;
-            modal.classList.remove('hidden');
+            openModal('modalDetailSurat');
         }
 
         function downloadAsWord() {
@@ -588,16 +603,13 @@
             document.body.removeChild(form);
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
 
         function openDeleteModal(id, namaSurat, nomorSurat, tipeSurat) {
             document.getElementById('delete-nama-surat').textContent = namaSurat;
             document.getElementById('delete-nomor-surat').textContent = nomorSurat;
             document.getElementById('delete-tipe-surat').textContent = tipeSurat;
             document.getElementById('formDeleteSurat').action = `/arsip-surat/${id}`;
-            document.getElementById('modalDeleteSurat').classList.remove('hidden');
+            openModal('modalDeleteSurat');
         }
 
         document.addEventListener('keydown', (e) => {

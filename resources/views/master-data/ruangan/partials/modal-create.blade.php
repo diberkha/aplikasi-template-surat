@@ -12,7 +12,7 @@
         <div class="p-6">
             <form id="formCreateRuangan" action="{{ route('master-data.ruangan.store') }}" method="POST">
                 @csrf
-                <div class="space-y-4">
+                <div class="space-y-6">
                     <div>
                         <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Ruangan <span
                                 class="text-red-500">*</span></label>
