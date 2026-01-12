@@ -21,6 +21,15 @@
             </div>
         @endif
 
+        @if (session('info'))
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-3"></i>
+                    <span class="text-blue-700 font-medium">{{ session('info') }}</span>
+                </div>
+            </div>
+        @endif
+
         <form action="{{ route('login') }}" method="POST" class="space-y-6">
             @csrf
 
