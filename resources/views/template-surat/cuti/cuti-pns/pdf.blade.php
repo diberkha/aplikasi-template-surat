@@ -1,53 +1,71 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <style>
-        @page { 
+        @page {
             margin-top: 0.35in;
             margin-bottom: 0.35in;
             margin-left: 0.5in;
             margin-right: 0.5in;
         }
-        body { 
-            font-family: 'Times New Roman', serif; 
-            font-size: 10pt; 
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 10pt;
             line-height: 1.1;
             margin: 0;
             padding: 0;
             font-weight: normal;
         }
+
         .container {
             width: 100%;
         }
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
             margin-bottom: 20px;
         }
-        td, th { 
-            border: 1px solid #000; 
+
+        td,
+        th {
+            border: 1px solid #000;
             padding: 1px 2px !important;
             vertical-align: top;
             font-size: 10pt;
         }
-        .no-border, .no-border td { 
-            border: none !important; 
+
+        .no-border,
+        .no-border td {
+            border: none !important;
         }
-        .section-header { 
+
+        .section-header {
             padding: 2px 4px !important;
         }
-        .center { text-align: center; }
-        .underline { text-decoration: underline; }
-        .section-header { 
+
+        .center {
+            text-align: center;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        .section-header {
             padding: 2px 4px !important;
         }
+
         .header-right {
             font-size: 10pt;
             line-height: 1.4;
             text-align: left;
-            margin-left: 20px; 
+            margin-left: 20px;
         }
+
         .form-title {
             font-weight: normal;
             text-align: center;
@@ -55,26 +73,30 @@
             font-size: 10pt;
             text-transform: uppercase;
         }
+
         .catatan-section td {
-             padding: 1px;
-             vertical-align: top;
-             font-size: 10pt; 
-             line-height: 1.2; 
+            padding: 1px;
+            vertical-align: top;
+            font-size: 10pt;
+            line-height: 1.2;
         }
     </style>
 </head>
+
 <body>
     <?php 
         $f = $data['form'] ?? [];
-        function formatTanggalIndonesia($tanggal) {
-            if (empty($tanggal)) return '';
-            $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
-            $timestamp = strtotime($tanggal);
-            $hari = date('d', $timestamp);
-            $bulanAngka = date('n', $timestamp);
-            $tahun = date('Y', $timestamp);
-            return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
-        }
+function formatTanggalIndonesia($tanggal)
+{
+    if (empty($tanggal))
+        return '';
+    $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
+    $timestamp = strtotime($tanggal);
+    $hari = date('d', $timestamp);
+    $bulanAngka = date('n', $timestamp);
+    $tahun = date('Y', $timestamp);
+    return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
+}
     ?>
     <div class="container">
         <!-- Header -->
@@ -86,7 +108,8 @@
                     PERATURAN BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA NOMOR 24 TAHUN 2017<br>
                     TENTANG<br>
                     TATA CARA PEMBERIAN CUTI PEGAWAI NEGERI SIPIL<br><br>
-                    <?= $f['tempat_surat'] ?? 'Sragen' ?>, <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
+                    <?= $f['tempat_surat'] ?? 'Sragen' ?>,
+                    <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
                     kepada :<br>
                     Yth. Direktur RSUD dr. Soeratno Gemolong<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kabupaten Sragen<br>
@@ -95,7 +118,7 @@
                 </td>
             </tr>
         </table>
-        
+
         <div class="form-title">
             FORMULIR PERMINTAAN DAN PEMBERIAN CUTI
         </div>
@@ -117,9 +140,9 @@
                 <td>Masa Kerja</td>
                 <td>
                     <?php
-                        $mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
-                        $mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
-                        echo $mkTh.' th '.$mkBl.' bln';
+$mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
+$mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
+echo $mkTh . ' th ' . $mkBl . ' bln';
                     ?>
                 </td>
             </tr>
@@ -217,21 +240,25 @@
                 <td><?= $f['catatan_n2'] ?? '' ?></td>
                 <td><?= $f['catatan_n2_keterangan'] ?? '' ?></td>
                 <td>4. CUTI MELAHIRKAN</td>
-                <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?></td>
+                <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Melahirkan') ? 'V' : '' ?>
+                </td>
             </tr>
             <tr>
                 <td>N-1</td>
                 <td><?= $f['catatan_n1'] ?? '' ?></td>
                 <td><?= $f['catatan_n1_keterangan'] ?? '' ?></td>
                 <td>5. CUTI KARENA ALASAN PENTING</td>
-                <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Karena Alasan Penting') ? 'V' : '' ?></td>
+                <td class="center">
+                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Karena Alasan Penting') ? 'V' : '' ?></td>
             </tr>
             <tr>
                 <td>N</td>
                 <td><?= $f['catatan_n'] ?? '' ?></td>
                 <td><?= $f['catatan_n_keterangan'] ?? '' ?></td>
                 <td>6. CUTI DI LUAR TANGGUNGAN NEGARA</td>
-                <td class="center"><?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti di Luar Tanggungan Negara') ? 'V' : '' ?></td>
+                <td class="center">
+                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti di Luar Tanggungan Negara') ? 'V' : '' ?>
+                </td>
             </tr>
         </table>
 
@@ -353,4 +380,5 @@
         </table>
     </div>
 </body>
+
 </html>

@@ -114,11 +114,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/cuti/store', [IzinCutiController::class, 'store'])->name('cuti.store');
         Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');
         Route::get('/cuti/pdf/{id}', [TemplateSuratController::class, 'file'])->name('cuti.file');
-        
+
         Route::get('/cuti/pns/docx/{id}', [IzinCutiPNSController::class, 'download'])->name('cuti.pns.docx');
         Route::get('/cuti/pppk/docx/{id}', [IzinCutiPPPKController::class, 'download'])->name('cuti.pppk.docx');
         Route::get('/cuti/nonasn/docx/{id}', [IzinCutiNonAsnController::class, 'download'])->name('cuti.nonasn.docx');
-        
+
         Route::get('/sk-direktur/docx/{id}', [SKDirekturDocxController::class, 'download'])->name('sk-direktur.docx');
         Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
     });

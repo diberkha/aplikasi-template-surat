@@ -18,7 +18,7 @@ class IzinCutiPNSController extends Controller
             $surat = Surat::findOrFail($id);
             $cuti = SuratIzinCuti::where('id_surat', $id)->firstOrFail();
             $data = $cuti->form_data['form'] ?? $cuti->form_data;
-            
+
             $phpWord = new PhpWord();
             $phpWord->setDefaultFontName('Times New Roman');
             $phpWord->setDefaultFontSize(10);
@@ -31,8 +31,9 @@ class IzinCutiPNSController extends Controller
                 'marginRight' => (int) Converter::inchToTwip(0.5),
             ]);
 
-            $formatTanggalIndonesia = function($tanggal) {
-                if (empty($tanggal)) return '';
+            $formatTanggalIndonesia = function ($tanggal) {
+                if (empty($tanggal))
+                    return '';
                 $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
                 $timestamp = strtotime($tanggal);
                 $hari = date('d', $timestamp);
@@ -88,7 +89,7 @@ class IzinCutiPNSController extends Controller
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('II. JENIS CUTI YANG DIAMBIL**');
-            
+
             $jenisCuti = $data['jenis_cuti'] ?? '';
             $types = ['1. Cuti Tahunan' => 'Cuti Tahunan', '2. Cuti Besar' => 'Cuti Besar', '3. Cuti Sakit' => 'Cuti Sakit', '4. Cuti Melahirkan' => 'Cuti Melahirkan', '5. Cuti Karena Alasan Penting' => 'Cuti Karena Alasan Penting', '6. Cuti di Luar Tanggungan Negara' => 'Cuti di Luar Tanggungan Negara'];
             $items = array_keys($types);
@@ -97,9 +98,9 @@ class IzinCutiPNSController extends Controller
                 $lbl1 = $items[$i];
                 $table->addCell((int) Converter::inchToTwip(2.74))->addText($lbl1);
                 $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == $types[$lbl1] ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-                
-                if (isset($items[$i+1])) {
-                    $lbl2 = $items[$i+1];
+
+                if (isset($items[$i + 1])) {
+                    $lbl2 = $items[$i + 1];
                     $table->addCell((int) Converter::inchToTwip(2.74))->addText($lbl2);
                     $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == $types[$lbl2] ? 'V' : '', null, ['alignment' => Jc::CENTER]);
                 }
@@ -134,7 +135,7 @@ class IzinCutiPNSController extends Controller
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
-            
+
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(2.35), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
             $table->addCell((int) Converter::inchToTwip(2.35))->addText('2. CUTI BESAR');
@@ -145,25 +146,25 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(1.35))->addText('Keterangan');
             $table->addCell((int) Converter::inchToTwip(2.35))->addText('3. CUTI SAKIT');
             $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Sakit' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            
+
             $table->addRow();
             $table->addCell()->addText('N-2');
             $table->addCell()->addText($data['catatan_n2'] ?? '');
             $table->addCell()->addText($data['catatan_n2_keterangan'] ?? '');
             $table->addCell()->addText('4. CUTI MELAHIRKAN');
             $table->addCell()->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            
+
             $table->addRow();
             $table->addCell()->addText('N-1');
             $table->addCell()->addText($data['catatan_n1'] ?? '');
             $table->addCell()->addText($data['catatan_n1_keterangan'] ?? '');
             $table->addCell()->addText('5. CUTI ALASAN PENTING');
             $table->addCell()->addText($jenisCuti == 'Cuti Karena Alasan Penting' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            
+
             $table->addRow();
             $table->addCell()->addText('N');
             $table->addCell()->addText($data['catatan_n'] ?? '');
-            
+
             $table->addCell()->addText($data['catatan_n_keterangan'] ?? '');
             $table->addCell()->addText('6. CUTI DI LUAR TANGGUNGAN NEGARA');
             $table->addCell()->addText($jenisCuti == 'Cuti di Luar Tanggungan Negara' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -178,7 +179,7 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(4.0))->addText($data['alamat'] ?? '');
             $table->addCell((int) Converter::inchToTwip(1.0))->addText('TELP');
             $table->addCell((int) Converter::inchToTwip(2.27))->addText($data['telp'] ?? '');
-            
+
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(4.0));
             $signCell = $table->addCell((int) Converter::inchToTwip(3.27), ['gridSpan' => 2]);
@@ -193,7 +194,7 @@ class IzinCutiPNSController extends Controller
             $defaultBorder = ['borderSize' => 6, 'borderColor' => '000000'];
             $noBottom = ['borderTopSize' => 6, 'borderLeftSize' => 6, 'borderRightSize' => 6, 'borderBottomSize' => 0, 'borderColor' => '000000'];
             $fullBorder = ['borderSize' => 6, 'borderColor' => '000000'];
-            
+
             // VII. PERTIMBANGAN ATASAN LANGSUNG
             $table = $section->addTable('ApprovalTable');
             $table->addRow();
@@ -203,7 +204,7 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
             $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
-            
+
             $table->addRow();
             $atasan = $data['atasan_setuju'] ?? '';
             $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -220,7 +221,7 @@ class IzinCutiPNSController extends Controller
                 'borderBottomSize' => 0,
                 'borderColor' => 'FFFFFF'
             ]);
-            
+
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,
                 'borderSize' => 6,
@@ -242,7 +243,7 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
             $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
-            
+
             $table->addRow();
             $pejabat = $data['pejabat_keputusan'] ?? '';
             $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -266,7 +267,7 @@ class IzinCutiPNSController extends Controller
             $catatanCell->addText('*** diisi oleh pejabat yang menangani bidang kepegawaian', $catatanText);
             $catatanCell->addText('     sebelum PNS mengajukan cuti', $catatanText);
             $catatanCell->addText('**** diberi tanda centang dan alasannya', $catatanText);
-            
+
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,
                 'borderSize' => 6,
@@ -281,7 +282,7 @@ class IzinCutiPNSController extends Controller
             $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-            $fileName = 'Surat Izin Cuti-PNS-' . ($data['nama'] ?? 'Unknown') . '.docx';
+            $fileName = "{$surat->nomor_surat}.docx";
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
             $objWriter->save($tempFile);
 

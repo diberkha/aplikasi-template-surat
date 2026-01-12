@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <style>
@@ -9,20 +10,54 @@
             margin-left: 1.18in;
             margin-right: 0.98in;
         }
-        body { font-family: 'Times New Roman', serif; font-size: 12pt; margin: 0; padding: 0; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #000; padding: 6px; vertical-align: top; }
-        .center { text-align: center; }
-        .bold { font-weight: bold; }
-        .left-align { text-align: left; }
-        .justify { text-align: justify; }
-        .v-middle { vertical-align: middle; }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        .justify {
+            text-align: justify;
+        }
+
+        .v-middle {
+            vertical-align: middle;
+        }
     </style>
 </head>
+
 <body>
     <table>
         <tr>
-            <td class="center bold v-middle" style="width:1.87in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px;" rowspan="2">
+            <td class="center bold v-middle"
+                style="width:1.87in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px;"
+                rowspan="2">
                 @php
                     $logoPath = public_path('img/logo-sragen.png');
                     $logoData = '';
@@ -35,7 +70,8 @@
                 @endif
                 <div>RSUD dr. SOERATNO<br>GEMOLONG</div>
             </td>
-            <td class="center bold v-middle" style="border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;" colspan="3">
+            <td class="center bold v-middle" style="border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;"
+                colspan="3">
                 {{ $data['judul_sop'] ?? '' }}
             </td>
         </tr>
@@ -46,7 +82,8 @@
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">No. Dokumen</td>
                     </tr>
                     <tr>
-                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">{{ $data['nomor_dokumen'] ?? '' }}</td>
+                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
+                            {{ $data['nomor_dokumen'] ?? '' }}</td>
                     </tr>
                 </table>
             </td>
@@ -56,7 +93,8 @@
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">No. Revisi</td>
                     </tr>
                     <tr>
-                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">{{ $data['nomor_revisi'] ?? '' }}</td>
+                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
+                            {{ $data['nomor_revisi'] ?? '' }}</td>
                     </tr>
                 </table>
             </td>
@@ -66,16 +104,19 @@
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">Halaman</td>
                     </tr>
                     <tr>
-                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">{{ $data['halaman'] ?? '1/1' }}</td>
+                        <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
+                            {{ $data['halaman'] ?? '1/1' }}</td>
                     </tr>
                 </table>
             </td>
         </tr>
         <tr>
-            <td class="center bold v-middle" style="width:1.87in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;">
+            <td class="center bold v-middle"
+                style="width:1.87in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;">
                 STANDAR<br>PROSEDUR<br>OPERASIONAL
             </td>
-            <td class="center v-middle" style="width:1.5in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;">
+            <td class="center v-middle"
+                style="width:1.5in; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 6px; font-size: 12pt;">
                 <div>Tanggal Terbit</div>
                 <div>
                     @php
@@ -100,11 +141,13 @@
                     {{ $tanggalFormatted }}
                 </div>
             </td>
-            <td class="center v-middle" colspan="2" style="border-bottom: 1px solid #000; padding: 12px 6px; font-size: 12pt;">
+            <td class="center v-middle" colspan="2"
+                style="border-bottom: 1px solid #000; padding: 12px 6px; font-size: 12pt;">
                 <div style="margin-bottom: 8px;">Ditetapkan,</div>
                 <div style="margin-bottom: 8px;">Direktur RSUD dr. Soeratno<br>Gemolong Kabupaten Sragen</div>
                 <div style="min-height: 60px; margin-bottom: 8px;"></div>
-                <div style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap;">Dr. dr. Kinik Darsono, M.Pd.Ked.</div>
+                <div style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap;">Dr. dr. Kinik Darsono,
+                    M.Pd.Ked.</div>
                 <div>NIP. 19710415 200903 1 001</div>
             </td>
         </tr>
@@ -154,8 +197,10 @@
         </tr>
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Unit Terkait</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">{{ $data['unit_terkait'] ?? '' }}</td>
+            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">{{ $data['unit_terkait'] ?? '' }}
+            </td>
         </tr>
     </table>
 </body>
+
 </html>

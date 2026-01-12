@@ -1,4 +1,5 @@
-<div id="modalDeletePegawai" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
+<div id="modalDeletePegawai"
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative">
         <button type="button" @click="document.getElementById('modalDeletePegawai').classList.add('hidden')"
             class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
@@ -13,7 +14,8 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus data pegawai ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div
+                class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Nama Pegawai:</span>
                     <span id="delete-nama-pegawai" class="text-gray-800 dark:text-gray-200">-</span>

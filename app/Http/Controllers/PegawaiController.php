@@ -38,7 +38,7 @@ class PegawaiController extends Controller
     public function update(Request $request, $id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        
+
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nip' => 'nullable|string|max:50|unique:pegawais,nip,' . $id,
@@ -70,12 +70,12 @@ class PegawaiController extends Controller
         $search = $request->get('term');
         $type = $request->get('type');
         $isAtasan = $request->get('is_atasan');
-        
+
         $query = Pegawai::query();
 
-        $query->where(function($q) use ($search) {
+        $query->where(function ($q) use ($search) {
             $q->where('nama', 'LIKE', "%$search%")
-              ->orWhere('nip', 'LIKE', "%$search%");
+                ->orWhere('nip', 'LIKE', "%$search%");
         });
 
         if ($type) {
@@ -83,13 +83,13 @@ class PegawaiController extends Controller
         }
 
         if ($isAtasan === 'true') {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('jabatan', 'LIKE', '%Direktur%')
-                  ->orWhere('jabatan', 'LIKE', '%Kepala%')
-                  ->orWhere('jabatan', 'LIKE', '%Kepala Seksi%')
-                  ->orWhere('jabatan', 'LIKE', '%Kepala Sub Bagian%')
-                  ->orWhere('jabatan', 'LIKE', '%Kepala Bidang%')
-                  ->orWhere('jabatan', 'LIKE', '%Kepala Bagian%');
+                    ->orWhere('jabatan', 'LIKE', '%Kepala%')
+                    ->orWhere('jabatan', 'LIKE', '%Kepala Seksi%')
+                    ->orWhere('jabatan', 'LIKE', '%Kepala Sub Bagian%')
+                    ->orWhere('jabatan', 'LIKE', '%Kepala Bidang%')
+                    ->orWhere('jabatan', 'LIKE', '%Kepala Bagian%');
             });
         }
 
@@ -101,10 +101,10 @@ class PegawaiController extends Controller
     public function getDetail($id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        
+
         $joinDate = Carbon::parse($pegawai->masa_kerja);
         $now = Carbon::now();
-        
+
         $years = $joinDate->diffInYears($now);
         $months = $joinDate->diffInMonths($now) % 12;
 

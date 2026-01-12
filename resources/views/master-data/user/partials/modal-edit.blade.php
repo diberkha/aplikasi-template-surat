@@ -50,22 +50,30 @@
                             });
                         }
                     }" @click.outside="open = false">
-                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Ruangan <span class="text-red-500">*</span></label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Ruangan <span
+                                class="text-red-500">*</span></label>
                         <input type="hidden" name="id_ruangan" :value="selectedId" required>
-                        
+
                         <div class="relative">
                             <button type="button" @click="open = !open"
                                 class="w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center bg-white transition-all focus:ring-2 focus:ring-green-500 outline-none">
-                                <span x-text="selectedName || 'Pilih Ruangan...'" :class="!selectedName && 'text-gray-400 font-normal'"></span>
-                                <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="open && 'rotate-180'"></i>
+                                <span x-text="selectedName || 'Pilih Ruangan...'"
+                                    :class="!selectedName && 'text-gray-400 font-normal'"></span>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200"
+                                    :class="open && 'rotate-180'"></i>
                             </button>
 
-                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:leave="transition ease-in duration-75" x-transition:leave-end="opacity-0 transform scale-95"
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 transform scale-95"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-end="opacity-0 transform scale-95"
                                 class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
                                 style="display: none;">
-                                <div class="p-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                                <div
+                                    class="p-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                                     <div class="relative text-gray-400 focus-within:text-green-500">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <i class="fas fa-search text-xs"></i>
                                         </div>
                                         <input type="text" x-model="search" placeholder="Cari ruangan..."
@@ -73,17 +81,22 @@
                                     </div>
                                 </div>
                                 <ul class="max-h-56 overflow-y-auto py-1 custom-scrollbar">
-                                    <template x-for="opt in options.filter(o => o.nama.toLowerCase().includes(search.toLowerCase()))" :key="opt.id">
+                                    <template
+                                        x-for="opt in options.filter(o => o.nama.toLowerCase().includes(search.toLowerCase()))"
+                                        :key="opt.id">
                                         <li>
-                                            <button type="button" @click="selectedId = opt.id; selectedName = opt.nama; open = false; search = ''"
+                                            <button type="button"
+                                                @click="selectedId = opt.id; selectedName = opt.nama; open = false; search = ''"
                                                 class="w-full text-left px-4 py-2.5 text-sm hover:bg-green-50 dark:hover:bg-green-900/30 text-gray-700 dark:text-gray-300 transition-colors"
                                                 :class="selectedId === opt.id && 'bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-medium'">
                                                 <span x-text="opt.nama"></span>
                                             </button>
                                         </li>
                                     </template>
-                                    <template x-if="options.filter(o => o.nama.toLowerCase().includes(search.toLowerCase())).length === 0">
-                                        <li class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center italic">
+                                    <template
+                                        x-if="options.filter(o => o.nama.toLowerCase().includes(search.toLowerCase())).length === 0">
+                                        <li
+                                            class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center italic">
                                             Data tidak ditemukan
                                         </li>
                                     </template>
@@ -100,7 +113,8 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password Baru (Opsional)</label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password Baru
+                            (Opsional)</label>
                         <input type="password" id="password_edit" name="password"
                             placeholder="Kosongkan jika tidak ingin mengubah"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
@@ -111,7 +125,8 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Konfirmasi Password Baru</label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Konfirmasi Password
+                            Baru</label>
                         <input type="password" id="password_confirmation_edit" name="password_confirmation"
                             placeholder="Kosongkan jika tidak ingin mengubah"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
@@ -120,10 +135,10 @@
 
                 <div class="mt-8 flex justify-end space-x-3">
                     <button type="button" @click="document.getElementById('modalEditUser').classList.add('hidden')"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white text-sm font-medium transition-colors">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                         Batal
                     </button>
-                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium shadow-sm transition-all transform active:scale-95">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Perbarui
                     </button>
                 </div>

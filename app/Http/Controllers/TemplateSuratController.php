@@ -16,15 +16,10 @@ class TemplateSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; 
-        
+        $filename = 'surat.pdf';
+
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            $jenis = 'PNS';
-            if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
-            if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
-            $parts = explode('-', $surat->nomor_surat);
-            $nama = $parts[2] ?? 'Dokumen';
-            $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
+            $filename = "{$surat->nomor_surat}.pdf";
         }
 
         return response()->file($path, [

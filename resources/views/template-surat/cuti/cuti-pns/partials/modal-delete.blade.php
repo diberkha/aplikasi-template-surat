@@ -12,7 +12,8 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus template ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div
+                class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm mb-2">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Nama Template:</span>
                     <span id="delete-cuti-pns-template-name" class="text-gray-800 dark:text-gray-200">-</span>
@@ -39,16 +40,16 @@
     function openDeleteModalPNS(id, name) {
         const modalEl = document.getElementById('modalDeleteCutiPNS');
         if (!modalEl) return;
-        
+
         const nameEl = modalEl.querySelector('#delete-cuti-pns-template-name');
         if (nameEl) nameEl.textContent = name;
-        
+
         const form = modalEl.querySelector('#formDeleteTemplateCutiPNS');
         if (form) {
             form.action = "{{ route('template-surat.cuti.destroy', '') }}/" + id;
         }
 
         const alpineData = Alpine.$data(modalEl);
-        if(alpineData) alpineData.isOpen = true;
+        if (alpineData) alpineData.isOpen = true;
     }
 </script>

@@ -50,13 +50,6 @@ class ArsipSuratController extends Controller
 
             if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && $item->cuti) {
                 $kategori = strtoupper($item->cuti->kategori ?? '');
-                $formData = $item->cuti->form_data ?? [];
-                $namaPegawai = is_array($formData) ? ($formData['nama'] ?? '') : '';
-                if ($namaPegawai) {
-                    $namaPegawai = strtoupper(str_replace(' ', ' ', $namaPegawai));
-                    $nomorSurat = 'CUTI-' . $kategori . '-' . $namaPegawai;
-                }
-
                 $kategoriLabel = trim($kategori);
                 if (!$kategoriLabel) {
                     $kategoriLabel = trim(str_ireplace('Surat Izin Cuti', '', $tipeSurat));
@@ -68,12 +61,15 @@ class ArsipSuratController extends Controller
                 $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
             }
 
-            $docxUrl = '#'; 
+            $docxUrl = '#';
             if ($tipeSuratDisplay === 'Surat Izin Cuti' && $kategoriLabel) {
                 $kat = strtoupper($kategoriLabel);
-                if ($kat === 'PNS') $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
-                elseif ($kat === 'PPPK') $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);
-                elseif ($kat === 'NON ASN') $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
+                if ($kat === 'PNS')
+                    $docxUrl = route('template-surat.cuti.pns.docx', $idSurat);
+                elseif ($kat === 'PPPK')
+                    $docxUrl = route('template-surat.cuti.pppk.docx', $idSurat);
+                elseif ($kat === 'NON ASN')
+                    $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
             } elseif ($tipeSuratDisplay === 'Surat Keputusan Direktur') {
                 $docxUrl = route('template-surat.sk-direktur.docx', $idSurat);
             } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)') {
@@ -124,11 +120,11 @@ class ArsipSuratController extends Controller
     public function show($id)
     {
         $surat = Surat::with('template', 'sop')->findOrFail($id);
-        
+
         if (!auth()->user()->hasRole('Admin')) {
-             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
-                 abort(403, 'Unauthorized');
-             }
+            if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
+                abort(403, 'Unauthorized');
+            }
         }
 
         $path = storage_path('app/' . $surat->file_path);
@@ -138,14 +134,9 @@ class ArsipSuratController extends Controller
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
         $filename = 'surat.pdf';
-        
+
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            $jenis = 'PNS';
-            if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
-            if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
-            $parts = explode('-', $surat->nomor_surat);
-            $nama = $parts[2] ?? 'Dokumen';
-            $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
+            $filename = "{$surat->nomor_surat}.pdf";
         } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
             $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
@@ -167,11 +158,11 @@ class ArsipSuratController extends Controller
     public function download($id)
     {
         $surat = Surat::with('template', 'sop')->findOrFail($id);
-        
+
         if (!auth()->user()->hasRole('Admin')) {
-             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
-                 abort(403, 'Unauthorized');
-             }
+            if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
+                abort(403, 'Unauthorized');
+            }
         }
 
         $path = storage_path('app/' . $surat->file_path);
@@ -180,15 +171,9 @@ class ArsipSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; 
+        $filename = 'surat.pdf';
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            $jenis = 'PNS';
-            if (str_contains($templateName, 'PPPK')) $jenis = 'PPPK';
-            if (str_contains($templateName, 'Non ASN')) $jenis = 'Non ASN';
-            
-            $parts = explode('-', $surat->nomor_surat);
-            $nama = $parts[2] ?? 'Dokumen';
-            $filename = "Surat Izin Cuti-{$jenis}-{$nama}.pdf";
+            $filename = "{$surat->nomor_surat}.pdf";
         } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
             $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {

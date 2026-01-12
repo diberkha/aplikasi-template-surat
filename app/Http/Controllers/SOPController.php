@@ -81,7 +81,7 @@ class SOPController extends Controller
                 }
             }
             if (empty($kebijakanTexts)) {
-                 $kebijakanTexts = $request->kebijakan;
+                $kebijakanTexts = $request->kebijakan;
             }
 
             $unitIds = $request->unit_terkait;
@@ -165,7 +165,7 @@ class SOPController extends Controller
     {
         try {
             $templateName = $template_surat->nama_template_surat;
-            
+
             if (stripos($template_surat->nama_template_surat, 'SOP') === false) {
                 if (request()->expectsJson()) {
                     return response()->json([

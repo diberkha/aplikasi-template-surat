@@ -47,11 +47,11 @@
                         </div>
 
                         @if(Auth::user()->hasRole('Admin'))
-                        <div>
-                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Dibuat
-                                Oleh</label>
-                            <p id="detail-dibuat-oleh" class="text-gray-900 dark:text-white"></p>
-                        </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Dibuat
+                                    Oleh</label>
+                                <p id="detail-dibuat-oleh" class="text-gray-900 dark:text-white"></p>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -83,8 +83,9 @@
                     </div>
 
                     <div id="detail-file-exists" class="hidden">
-                        <div class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
-                            <iframe id="detail-pdf-preview" src="" 
+                        <div
+                            class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+                            <iframe id="detail-pdf-preview" src=""
                                 class="w-full border-0 min-h-[350px] md:min-h-[600px]">
                             </iframe>
                         </div>

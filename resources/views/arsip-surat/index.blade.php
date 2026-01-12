@@ -41,18 +41,20 @@
                                 </li>
                                 <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
                                     <button type="button" @click="sortOption = ''; toggleSort = false"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus Filter</button>
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus
+                                        Filter</button>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial">
                         <button type="button" @click="toggleFilter = !toggleFilter"
                             class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-copy text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none" x-text="selectedTemplateName"></span>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                                    x-text="selectedTemplateName"></span>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
                         </button>
@@ -62,7 +64,8 @@
                             <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
                                 @foreach($templateOptions as $template)
                                     <li>
-                                        <button type="button" @click="templateFilter = '{{ $template->id_template_surat }}'; toggleFilter = false"
+                                        <button type="button"
+                                            @click="templateFilter = '{{ $template->id_template_surat }}'; toggleFilter = false"
                                             class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
                                             {{ $template->nama_template_surat }}
                                         </button>
@@ -83,7 +86,8 @@
                             class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none" x-text="dateDisplay"></span>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                                    x-text="dateDisplay"></span>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                         </button>
@@ -154,7 +158,8 @@
 
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
+            <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Surat</h3>
                 <div class="sm:hidden animate-pulse">
                     <i class="fas fa-arrows-left-right text-gray-400 text-xs"></i>
@@ -190,53 +195,62 @@
                             <template x-for="(item, index) in paginatedData" :key="item.id_surat">
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-sm text-gray-900 dark:text-white" x-text="(currentPage - 1) * itemsPerPage + index + 1"></span>
+                                        <span class="text-sm text-gray-900 dark:text-white"
+                                            x-text="(currentPage - 1) * itemsPerPage + index + 1"></span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                             :class="item.badge_color" x-text="item.tipe_surat_display">
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white" x-text="item.nama_surat_display"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" x-text="item.nomor_surat"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" x-text="formatDate(item.tanggal_dibuat)"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"
+                                        x-text="item.nama_surat_display"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+                                        x-text="item.nomor_surat"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
+                                        x-text="formatDate(item.tanggal_dibuat)"></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-2">
-                                            <button type="button" @click="showDetailSurat(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display, item.tanggal_dibuat, item.username, item.file_path, item.docx_url)"
+                                            <button type="button"
+                                                @click="showDetailSurat(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display, item.tanggal_dibuat, item.username, item.file_path, item.docx_url)"
                                                 class="inline-flex items-center p-1.5 text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
                                                 <i class="fas fa-eye text-sm"></i>
                                             </button>
 
                                             <template x-if="item.file_path">
                                                 <div x-data="{ 
-                                                    openDownload: false,
-                                                    toggle() {
-                                                        this.openDownload = !this.openDownload;
-                                                        if (this.openDownload) {
-                                                            this.$nextTick(() => {
-                                                                const button = this.$refs.button;
-                                                                const dropdown = this.$refs.dropdown;
-                                                                const rect = button.getBoundingClientRect();
-                                                                dropdown.style.position = 'fixed';
-                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                            });
-                                                        }
-                                                    }
-                                                }" @scroll.window="openDownload = false" class="relative">
+                                                            openDownload: false,
+                                                            toggle() {
+                                                                this.openDownload = !this.openDownload;
+                                                                if (this.openDownload) {
+                                                                    this.$nextTick(() => {
+                                                                        const button = this.$refs.button;
+                                                                        const dropdown = this.$refs.dropdown;
+                                                                        const rect = button.getBoundingClientRect();
+                                                                        dropdown.style.position = 'fixed';
+                                                                        dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                                        dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                                    });
+                                                                }
+                                                            }
+                                                        }" @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                         <i class="fas fa-download text-sm"></i>
                                                     </button>
                                                     <template x-teleport="body">
-                                                        <div x-show="openDownload" x-ref="dropdown" @click.outside="openDownload = false" x-transition
+                                                        <div x-show="openDownload" x-ref="dropdown"
+                                                            @click.outside="openDownload = false" x-transition
                                                             class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
-                                                            <a :href="item.download_url" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <a :href="item.download_url"
+                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                                 <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
                                                             </a>
                                                             <template x-if="item.docx_url !== '#'">
-                                                                <a :href="item.docx_url" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i> DOCX
+                                                                <a :href="item.docx_url"
+                                                                    class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
+                                                                    DOCX
                                                                 </a>
                                                             </template>
                                                         </div>
@@ -244,17 +258,19 @@
                                                 </div>
                                             </template>
                                             <template x-if="!item.file_path">
-                                                <button type="button" @click="notify('error', 'Gagal', 'File surat tidak tersedia untuk diunduh', false)"
+                                                <button type="button"
+                                                    @click="notify('error', 'Gagal', 'File surat tidak tersedia untuk diunduh', false)"
                                                     class="inline-flex items-center p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
                                                 </button>
                                             </template>
 
                                             @if(auth()->user()->hasRole('Admin'))
-                                            <button type="button" @click="openDeleteModal(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display)"
-                                                class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
-                                                <i class="fas fa-trash text-sm"></i>
-                                            </button>
+                                                <button type="button"
+                                                    @click="openDeleteModal(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display)"
+                                                    class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
                                             @endif
                                         </div>
                                     </td>
@@ -265,7 +281,8 @@
                                     <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
                                             <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data surat</h6>
+                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data
+                                                surat</h6>
                                         </div>
                                     </td>
                                 </tr>
@@ -277,7 +294,8 @@
                 <div class="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per page:</span>
+                            <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">Items per
+                                page:</span>
                             <select x-model="itemsPerPage" @change="currentPage = 1"
                                 class="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white text-xs sm:text-sm">
                                 <option value="5">5</option>
@@ -294,16 +312,14 @@
                             </button>
 
                             <template x-for="(p, index) in pages()" :key="index">
-                                <button @click="p !== '...' && setPage(p)"
-                                    x-text="p"
-                                    :disabled="p === '...'"
+                                <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                    ]">
+                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                            ]">
                                 </button>
                             </template>
 
@@ -313,9 +329,10 @@
                             </button>
                         </div>
 
-                        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
-                            <span x-text="filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1"></span> - 
-                            <span x-text="Math.min(currentPage * itemsPerPage, filteredData.length)"></span> dari 
+                        <div
+                            class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 w-full sm:w-auto text-center sm:text-left">
+                            <span x-text="filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1"></span> -
+                            <span x-text="Math.min(currentPage * itemsPerPage, filteredData.length)"></span> dari
                             <span x-text="filteredData.length"></span>
                         </div>
                     </div>
@@ -350,7 +367,8 @@
 
             <div class="p-6">
                 <p class="text-gray-600 dark:text-gray-400 mb-4">Apakah Anda yakin ingin menghapus surat ini?</p>
-                <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <div
+                    class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                     <p class="text-sm mb-2">
                         <span class="font-medium text-gray-700 dark:text-gray-300">Nama Surat:</span>
                         <span id="delete-nama-surat" class="text-gray-800 dark:text-gray-200">-</span>
@@ -400,13 +418,13 @@
                 currentPage: 1,
                 toggleSort: false,
                 toggleFilter: false,
-                
+
                 get filteredData() {
                     let data = [...this.allData];
 
                     if (this.search) {
                         const s = this.search.toLowerCase();
-                        data = data.filter(item => 
+                        data = data.filter(item =>
                             item.nama_surat_display.toLowerCase().includes(s) ||
                             item.nomor_surat.toLowerCase().includes(s) ||
                             item.username.toLowerCase().includes(s) ||
@@ -448,36 +466,36 @@
                 },
 
                 pages() {
-                     const total = this.totalPages;
-                     const current = this.currentPage;
-                     const delta = 1;
-                     const range = [];
-                     const rangeWithDots = [];
+                    const total = this.totalPages;
+                    const current = this.currentPage;
+                    const delta = 1;
+                    const range = [];
+                    const rangeWithDots = [];
 
-                     range.push(1);
+                    range.push(1);
 
-                     for (let i = current - delta; i <= current + delta; i++) {
-                         if (i < total && i > 1) {
-                             range.push(i);
-                         }
-                     }
+                    for (let i = current - delta; i <= current + delta; i++) {
+                        if (i < total && i > 1) {
+                            range.push(i);
+                        }
+                    }
 
-                     if (total > 1) range.push(total);
+                    if (total > 1) range.push(total);
 
-                     let l;
-                     for (let i of range) {
-                         if (l) {
-                             if (i - l === 2) {
-                                 rangeWithDots.push(l + 1);
-                             } else if (i - l !== 1) {
-                                 rangeWithDots.push('...');
-                             }
-                         }
-                         rangeWithDots.push(i);
-                         l = i;
-                     }
+                    let l;
+                    for (let i of range) {
+                        if (l) {
+                            if (i - l === 2) {
+                                rangeWithDots.push(l + 1);
+                            } else if (i - l !== 1) {
+                                rangeWithDots.push('...');
+                            }
+                        }
+                        rangeWithDots.push(i);
+                        l = i;
+                    }
 
-                     return rangeWithDots;
+                    return rangeWithDots;
                 },
 
                 get sortLabel() {
@@ -520,8 +538,8 @@
                 },
 
                 applyDateFilter() {
-                   this.open = false;
-                   this.currentPage = 1;
+                    this.open = false;
+                    this.currentPage = 1;
                 },
 
                 clearDateFilter() {
@@ -561,8 +579,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                ${tipe}
-            </span>`;
+                    ${tipe}
+                </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
@@ -588,12 +606,12 @@
         function downloadAsWord() {
             const modal = document.getElementById('modalDetailSurat');
             const docxUrl = modal.dataset.docxUrl;
-            
+
             if (!docxUrl || docxUrl === '#') {
                 notify('error', 'Gagal', 'File Word tidak tersedia untuk tipe surat ini.', false);
                 return;
             }
-            
+
             const form = document.createElement('form');
             form.method = 'GET';
             form.action = docxUrl;

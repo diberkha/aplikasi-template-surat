@@ -37,17 +37,17 @@
 
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
+            <div
+                class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <div class="text-sm text-gray-500"></div>
 
                 <div class="flex space-x-3">
                     <button type="button" onclick="document.getElementById('regulasiForm').reset();"
-                        class="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                         Reset
                     </button>
 
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Simpan
                     </button>
                 </div>
@@ -72,10 +72,10 @@
             updateCounter(isiRegulasiField, isiRegulasiCounter);
             isiRegulasiField.addEventListener('input', () => updateCounter(isiRegulasiField, isiRegulasiCounter));
         }
-        
+
         const modal = document.getElementById('modalCreate');
         if (modal) {
-            modal.addEventListener('modal-closed', function() {
+            modal.addEventListener('modal-closed', function () {
                 if (isiRegulasiCounter) {
                     isiRegulasiCounter.textContent = '0 karakter';
                 }

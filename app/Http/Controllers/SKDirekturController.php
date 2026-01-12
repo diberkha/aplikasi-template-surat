@@ -42,7 +42,7 @@ class SKDirekturController extends Controller
     {
         try {
             Log::info('store request received', ['data' => $request->all()]);
-            
+
             $request->validate([
                 'nomor_surat' => 'required|unique:surat,nomor_surat',
                 'tentang' => 'required',
@@ -79,7 +79,7 @@ class SKDirekturController extends Controller
             foreach ($memutuskanArray as $index => $item) {
                 $item = trim((string) $item);
                 if ($index > 1 && $item === '') {
-                    continue; 
+                    continue;
                 }
                 $label = $labels[$index] ?? 'Ke-' . ($index + 1);
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
@@ -134,7 +134,7 @@ class SKDirekturController extends Controller
                 'errors' => $e->errors(),
                 'input' => $request->all(),
             ]);
-            
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -142,7 +142,7 @@ class SKDirekturController extends Controller
                     'errors' => $e->errors(),
                 ], 422);
             }
-            
+
             return redirect()->back()->withInput()->withErrors($e->errors());
         } catch (Exception $e) {
             if (method_exists($e, 'errors')) {
@@ -157,7 +157,7 @@ class SKDirekturController extends Controller
                     'input' => $request->all(),
                 ]);
             }
-            
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -180,8 +180,8 @@ class SKDirekturController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf'; 
-        
+        $filename = 'surat.pdf';
+
         if (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
             $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
@@ -200,8 +200,8 @@ class SKDirekturController extends Controller
     {
         try {
             $templateName = $template_surat->nama_template_surat;
-            
-            if ($template_surat->nama_template_surat !== 'Surat Keputusan Direktur') {
+
+            if (stripos($template_surat->nama_template_surat, 'Direktur') === false) {
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false,
@@ -285,7 +285,7 @@ class SKDirekturController extends Controller
 
         } catch (Exception $e) {
             Log::error('Error generating PDF: ' . $e->getMessage(), [
-                'exception' => (string)$e,
+                'exception' => (string) $e,
                 'surat_id' => $surat->id_surat,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

@@ -18,7 +18,7 @@ class IzinCutiPPPKController extends Controller
             $surat = Surat::findOrFail($id);
             $cuti = SuratIzinCuti::where('id_surat', $id)->firstOrFail();
             $data = $cuti->form_data['form'] ?? $cuti->form_data;
-            
+
             $phpWord = new PhpWord();
             $phpWord->setDefaultFontName('Times New Roman');
             $phpWord->setDefaultFontSize(10);
@@ -31,8 +31,9 @@ class IzinCutiPPPKController extends Controller
                 'marginRight' => (int) Converter::inchToTwip(0.5),
             ]);
 
-            $formatTanggalIndonesia = function($tanggal) {
-                if (empty($tanggal)) return '';
+            $formatTanggalIndonesia = function ($tanggal) {
+                if (empty($tanggal))
+                    return '';
                 $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
                 $timestamp = strtotime($tanggal);
                 $hari = date('d', $timestamp);
@@ -51,7 +52,7 @@ class IzinCutiPPPKController extends Controller
             $rightCell->addText('PERATURAN BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA NOMOR 7 TAHUN 2022');
             $rightCell->addText('TENTANG');
             $rightCell->addText('TATA CARA PEMBERIAN CUTI PEGAWAI PEMERINTAH DENGAN PERJANJIAN KERJA');
-            
+
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(0.1)]);
             $section->addText('Formulir Permintaan dan Pemberian Cuti Pegawai Pemerintah Dengan Perjanjian Kerja', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(0.1)]);
@@ -98,7 +99,7 @@ class IzinCutiPPPKController extends Controller
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('II. JENIS CUTI YANG DIAMBIL**');
-            
+
             $jenisCuti = $data['jenis_cuti'] ?? '';
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(4.00))->addText('1. Cuti Tahunan');
@@ -139,7 +140,7 @@ class IzinCutiPPPKController extends Controller
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('V. CATATAN CUTI***');
-            
+
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(4.00))->addText('1. CUTI TAHUNAN');
             $table->addCell((int) Converter::inchToTwip(3.27))->addText($jenisCuti == 'Cuti Tahunan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -160,7 +161,7 @@ class IzinCutiPPPKController extends Controller
             $table->addCell((int) Converter::inchToTwip(4.0))->addText($data['alamat'] ?? '');
             $table->addCell((int) Converter::inchToTwip(1.0))->addText('TELP');
             $table->addCell((int) Converter::inchToTwip(2.27))->addText($data['telp'] ?? '');
-            
+
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(4.0));
             $signCell = $table->addCell((int) Converter::inchToTwip(3.27), ['gridSpan' => 2]);
@@ -185,7 +186,7 @@ class IzinCutiPPPKController extends Controller
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
             $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
-            
+
             $table->addRow();
             $atasan = $data['atasan_setuju'] ?? '';
             $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -202,7 +203,7 @@ class IzinCutiPPPKController extends Controller
                 'borderBottomSize' => 0,
                 'borderColor' => 'FFFFFF'
             ]);
-            
+
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,
                 'borderSize' => 6,
@@ -224,7 +225,7 @@ class IzinCutiPPPKController extends Controller
             $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText('PERUBAHAN****');
             $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText('DITANGGUHKAN****');
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText('TIDAK DISETUJUI****');
-            
+
             $table->addRow();
             $pejabat = $data['pejabat_keputusan'] ?? '';
             $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
@@ -248,7 +249,7 @@ class IzinCutiPPPKController extends Controller
             $catatanCell->addText('*** diisi oleh pejabat yang menangani bidang kepegawaian', $catatanText);
             $catatanCell->addText('     sebelum PPPK mengajukan cuti', $catatanText);
             $catatanCell->addText('**** diberi tanda centang dan alasannya', $catatanText);
-            
+
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,
                 'borderSize' => 6,
@@ -263,7 +264,7 @@ class IzinCutiPPPKController extends Controller
             $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-            $fileName = 'Surat Izin Cuti-PPPK-' . ($data['nama'] ?? 'Unknown') . '.docx';
+            $fileName = "{$surat->nomor_surat}.docx";
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
             $objWriter->save($tempFile);
 

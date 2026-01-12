@@ -105,7 +105,7 @@ class RegulasiController extends Controller
     {
         $regulasis = Regulasi::all();
 
-        return response()->json($regulasis->map(function($regulasi) {
+        return response()->json($regulasis->map(function ($regulasi) {
             return [
                 'id_regulasi' => $regulasi->id_regulasi,
                 'isi_regulasi' => $regulasi->isi_regulasi,

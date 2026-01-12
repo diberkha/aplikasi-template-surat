@@ -1,4 +1,5 @@
-<div id="modalDeleteRegulasi" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
+<div id="modalDeleteRegulasi"
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative">
 
         <button type="button" onclick="closeModal('modalDeleteRegulasi')"
@@ -14,7 +15,8 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus regulasi ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div
+                class="mt-4 bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Regulasi:</p>
                 <p id="delete-preview" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                     -
@@ -27,7 +29,8 @@
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                 Batal
             </button>
-            <form id="formDeleteRegulasi" method="POST" onsubmit="this.querySelector('button[type=submit]').disabled = true; this.querySelector('button[type=submit]').innerHTML = '<i class=\'fas fa-spinner fa-spin mr-2\'></i>Menghapus...';">
+            <form id="formDeleteRegulasi" method="POST"
+                onsubmit="this.querySelector('button[type=submit]').disabled = true; this.querySelector('button[type=submit]').innerHTML = '<i class=\'fas fa-spinner fa-spin mr-2\'></i>Menghapus...';">
                 @csrf
                 @method('DELETE')
                 <button type="submit"

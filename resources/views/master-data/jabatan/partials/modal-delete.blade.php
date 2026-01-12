@@ -1,4 +1,5 @@
-<div id="modalDeleteJabatan" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
+<div id="modalDeleteJabatan"
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative overflow-hidden">
         <button type="button" @click="document.getElementById('modalDeleteJabatan').classList.add('hidden')"
             class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 z-10">
@@ -13,7 +14,8 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus jabatan ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div
+                class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Nama Jabatan:</span>
                     <span id="delete-nama-jabatan" class="text-gray-800 dark:text-gray-200">-</span>
@@ -21,7 +23,8 @@
             </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 bg-gray-50 dark:bg-gray-700/50">
+        <div
+            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 bg-gray-50 dark:bg-gray-700/50">
             <button type="button" @click="document.getElementById('modalDeleteJabatan').classList.add('hidden')"
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                 Batal
@@ -29,7 +32,7 @@
             <form id="formDeleteJabatan" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-sm">
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     Hapus Jabatan
                 </button>
             </form>

@@ -20,7 +20,7 @@ class SKDirekturDocxController extends Controller
             $surat = Surat::findOrFail($id);
             $sk = SKDirektur::where('id_surat', $id)->firstOrFail();
             $data = $sk->toArray();
-            
+
             $phpWord = new PhpWord();
             $phpWord->setDefaultFontName('Times New Roman');
             $phpWord->setDefaultFontSize(12);
@@ -43,7 +43,7 @@ class SKDirekturDocxController extends Controller
             ]);
             $table = $section->addTable('HeaderTable');
             $table->addRow();
-            
+
             $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
             if (file_exists($logoLeftPath)) {
                 $table->addCell((int) Converter::inchToTwip(0.8))->addImage($logoLeftPath, [
@@ -92,7 +92,7 @@ class SKDirekturDocxController extends Controller
             $section->addTextBreak(1);
             $section->addText('TENTANG', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
-            
+
             // Tentang
             $tentang = strtoupper($data['tentang'] ?? '-');
             $section->addText($tentang, null, ['alignment' => Jc::CENTER, 'indentation' => ['left' => 1700, 'right' => 1700], 'lineHeight' => 1.35]);
@@ -112,22 +112,22 @@ class SKDirekturDocxController extends Controller
                 'borderInsideHSize' => 0,
                 'borderInsideVSize' => 0
             ]);
-            
+
             $mt = $section->addTable('LayoutTable');
             $mt->addRow();
             $mt->addCell((int) Converter::inchToTwip(1.2))->addText('Menimbang');
             $mt->addCell((int) Converter::inchToTwip(0.2))->addText(':');
             $contentCell = $mt->addCell((int) Converter::inchToTwip(6.0));
-            
-            $menimbangLines = is_array($data['menimbang'] ?? '') 
-                ? $data['menimbang'] 
+
+            $menimbangLines = is_array($data['menimbang'] ?? '')
+                ? $data['menimbang']
                 : preg_split('/\r\n|\r|\n/', trim($data['menimbang'] ?? ''));
-            
-            $menimbangLines = array_map(function($line) {
+
+            $menimbangLines = array_map(function ($line) {
                 return preg_replace('/^[a-z]\.\s*/', '', trim($line));
             }, $menimbangLines);
             $menimbangLines = array_values(array_filter($menimbangLines));
-            
+
             if (count($menimbangLines) > 1) {
                 $phpWord->addNumberingStyle(
                     'menimbangList',
@@ -145,7 +145,7 @@ class SKDirekturDocxController extends Controller
                         ]
                     ]
                 );
-                
+
                 foreach ($menimbangLines as $line) {
                     $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
                 }
@@ -161,46 +161,48 @@ class SKDirekturDocxController extends Controller
             $mg->addCell((int) Converter::inchToTwip(1.2))->addText('Mengingat');
             $mg->addCell((int) Converter::inchToTwip(0.2))->addText(':');
             $contentCell = $mg->addCell((int) Converter::inchToTwip(6.0));
-            
+
             $rawMengingat = trim($data['mengingat'] ?? '');
             $mengingatLines = [];
-            
+
             $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-            $lines = array_filter($lines, function($line) { return trim($line) !== ''; });
-            
+            $lines = array_filter($lines, function ($line) {
+                return trim($line) !== '';
+            });
+
             $allAreIds = true;
             $ids = [];
-            
-            foreach($lines as $line) {
+
+            foreach ($lines as $line) {
                 $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                
-                if(preg_match('/^\d+$/', $cleaned)) {
-                    $ids[] = (int)$cleaned;
+
+                if (preg_match('/^\d+$/', $cleaned)) {
+                    $ids[] = (int) $cleaned;
                 } else {
                     $allAreIds = false;
                     break;
                 }
             }
-            
-            if($allAreIds && count($ids) > 0) {
+
+            if ($allAreIds && count($ids) > 0) {
                 $regulasis = Regulasi::whereIn('id_regulasi', $ids)
                     ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
                     ->get();
-                
-                if($regulasis->count() > 0) {
+
+                if ($regulasis->count() > 0) {
                     $mengingatLines = $regulasis->pluck('isi_regulasi')->toArray();
                 } else {
                     $mengingatLines = ['Data regulasi tidak ditemukan'];
                 }
             } else {
-                foreach($lines as $line) {
+                foreach ($lines as $line) {
                     $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                    if($cleaned !== '') {
+                    if ($cleaned !== '') {
                         $mengingatLines[] = $cleaned;
                     }
                 }
             }
-            
+
             $phpWord->addNumberingStyle(
                 'mengingatList',
                 [
@@ -217,14 +219,15 @@ class SKDirekturDocxController extends Controller
                     ]
                 ]
             );
-            
+
             foreach ($mengingatLines as $line) {
-                if (trim($line) === '') continue;
+                if (trim($line) === '')
+                    continue;
                 $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
             }
 
             $section->addTextBreak(1);
-            
+
             // Memutuskan
             $section->addText('MEMUTUSKAN', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
@@ -243,13 +246,21 @@ class SKDirekturDocxController extends Controller
             $items = [];
             foreach ($lines as $line) {
                 $line = trim($line);
-                if (empty($line)) continue;
+                if (empty($line))
+                    continue;
                 if (preg_match('/^(KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
-                    if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
-                    $currentLabel = $line; $currentText = '';
-                } else { $currentText .= ' ' . $line; }
+                    if ($currentLabel) {
+                        $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
+                    }
+                    $currentLabel = $line;
+                    $currentText = '';
+                } else {
+                    $currentText .= ' ' . $line;
+                }
             }
-            if ($currentLabel) { $items[] = ['label' => $currentLabel, 'text' => trim($currentText)]; }
+            if ($currentLabel) {
+                $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
+            }
 
             foreach ($items as $item) {
                 $m = $section->addTable('LayoutTable');
@@ -265,7 +276,7 @@ class SKDirekturDocxController extends Controller
             $footerTable->addRow();
             $footerTable->addCell((int) Converter::inchToTwip(3.5));
             $signCell = $footerTable->addCell((int) Converter::inchToTwip(4.0));
-            
+
             $signCell->addText('Ditetapkan di Gemolong', null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
             $tanggal = isset($data['tanggal_dibuat']) ? \Carbon\Carbon::parse($data['tanggal_dibuat'])->locale('id')->translatedFormat('j F Y') : '.......................';
             $signCell->addText('pada tanggal ' . $tanggal, null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
@@ -273,7 +284,7 @@ class SKDirekturDocxController extends Controller
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-            
+
             $pejabatNama = trim($data['pejabat_nama'] ?? '') ?: 'KINIK DARSONO';
             $signCell->addText($pejabatNama, null, ['alignment' => Jc::CENTER]);
 

@@ -18,7 +18,7 @@ class SOPDocxController extends Controller
             $surat = Surat::findOrFail($id);
             $sop = SOP::where('id_surat', $id)->firstOrFail();
             $data = $sop->toArray();
-            
+
             $phpWord = new PhpWord();
             $phpWord->setDefaultFontName('Times New Roman');
             $phpWord->setDefaultFontSize(12);
@@ -50,8 +50,8 @@ class SOPDocxController extends Controller
 
             // Info
             $table->addRow();
-            $table->addCell(null, ['vMerge' => 'continue']); 
-            
+            $table->addCell(null, ['vMerge' => 'continue']);
+
             $docNoCell = $table->addCell((int) Converter::inchToTwip(2.1), ['valign' => 'center']);
             $docNoCell->addText('No. Dokumen', null, ['alignment' => Jc::CENTER]);
             $docNoCell->addText($data['nomor_dokumen'] ?? '', null, ['alignment' => Jc::CENTER]);
@@ -101,7 +101,7 @@ class SOPDocxController extends Controller
                 if (in_array($label, ['Tujuan', 'Kebijakan', 'Prosedur'])) {
                     $items = is_array($content) ? $content : preg_split('/\r?\n|\r|\•|\d+\./', $content, -1, PREG_SPLIT_NO_EMPTY);
                     $items = array_values(array_filter(array_map('trim', $items)));
-                    
+
                     if (count($items) > 1 || in_array($label, ['Kebijakan', 'Prosedur'])) {
                         $listStyle = $label . 'Numbering';
                         $phpWord->addNumberingStyle($listStyle, [

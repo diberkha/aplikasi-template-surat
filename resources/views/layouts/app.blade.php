@@ -18,11 +18,12 @@
     </script>
 
     <style>
-        [x-cloak] { 
-            display: none !important; 
+        [x-cloak] {
+            display: none !important;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
         }
 
@@ -91,9 +92,11 @@
             background: #4b5563;
         }
 
-        nav, aside, main {
+        nav,
+        aside,
+        main {
             transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                        width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+                width 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
         * {
@@ -102,7 +105,11 @@
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        button, a, input, textarea, select {
+        button,
+        a,
+        input,
+        textarea,
+        select {
             transition-property: background-color, color, border-color, box-shadow !important;
         }
 
@@ -110,26 +117,31 @@
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
+
         .custom-scrollbar-x::-webkit-scrollbar {
             height: 4px;
         }
+
         .custom-scrollbar-x::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .custom-scrollbar-x::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 2px;
         }
+
         .dark .custom-scrollbar-x::-webkit-scrollbar-thumb {
             background: #4b5563;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col" style="scrollbar-gutter: stable;" x-cloak>
+<body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col"
+    style="scrollbar-gutter: stable;" x-cloak>
 
-    <nav
-        class="h-20 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between pl-4 pr-4 md:pl-6 md:pr-6 sticky top-0 z-50 flex-shrink-0"
+    <nav class="h-20 bg-white dark:bg-gray-800 shadow-lg flex items-center justify-between pl-4 pr-4 md:pl-6 md:pr-6 sticky top-0 z-50 flex-shrink-0"
         x-bind:style="isDesktop ? 'margin-left:' + (sidebarCollapsed ? '80px' : '256px') + '; width: calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ');' : ''">
         <div class="flex items-center">
             <button @click="sidebarOpen = true; backdrop = true"
@@ -185,16 +197,13 @@
     </nav>
 
     <div x-show="backdrop && sidebarOpen" x-transition class="sidebar-backdrop md:hidden"
-        @click="sidebarOpen = false; backdrop = false"
-        :class="sidebarOpen ? 'sidebar-open' : ''"></div>
+        @click="sidebarOpen = false; backdrop = false" :class="sidebarOpen ? 'sidebar-open' : ''"></div>
 
     <div class="flex flex-1 pt-20 md:pt-0">
-        <aside x-show="isDesktop || sidebarOpen" x-transition
-            :class="[
+        <aside x-show="isDesktop || sidebarOpen" x-transition :class="[
                 sidebarCollapsed && isDesktop ? 'w-16 md:w-20 overflow-visible' : 'w-64 md:w-64 overflow-y-auto',
                 'bg-white dark:bg-gray-800 shadow-xl md:shadow border-r border-gray-200 dark:border-gray-700 fixed left-0 z-40'
-            ]"
-            x-bind:style="isDesktop
+            ]" x-bind:style="isDesktop
                 ? { top: '0px', height: '100vh' }
                 : { top: '80px', height: 'calc(100vh - 80px)' }">
 
@@ -213,28 +222,31 @@
                     <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Dashboard</span>
                 </a>
 
-                <div x-data="{ open: {{ request()->routeIs('template-surat.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
+                <div x-data="{ open: {{ request()->routeIs('template-surat.*') ? 'true' : 'false' }}, flyout: false }"
+                    class="space-y-1 relative">
                     <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
                         class="flex items-center justify-between w-full py-3 rounded-xl transition-all
                         {{ request()->routeIs('template-surat.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
                         :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
-                        <div class="flex items-center" :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
+                        <div class="flex items-center"
+                            :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
                             <i class="fas fa-envelope w-5 text-center"></i>
                             <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Template Surat</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop" :class="open ? 'rotate-180':''"></i>
+                        <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop"
+                            :class="open ? 'rotate-180':''"></i>
                     </button>
 
                     <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
                         class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
 
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                        <a href="{{ route('template-surat.sop.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-clipboard-list w-4 text-center"></i>
-                            <span>Standar Operasional Prosedur (SOP)</span>
-                        </a>
+                            <a href="{{ route('template-surat.sop.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-clipboard-list w-4 text-center"></i>
+                                <span>Standar Operasional Prosedur (SOP)</span>
+                            </a>
                         @endif
 
                         <a href="{{ route('template-surat.cuti.index') }}"
@@ -245,12 +257,12 @@
                         </a>
 
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                        <a href="{{ route('template-surat.sk-direktur.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-scroll w-4 text-center"></i>
-                            <span>Surat Keputusan Direktur</span>
-                        </a>
+                            <a href="{{ route('template-surat.sk-direktur.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-scroll w-4 text-center"></i>
+                                <span>Surat Keputusan Direktur</span>
+                            </a>
                         @endif
                     </div>
 
@@ -258,12 +270,12 @@
                         @click.outside="flyout = false"
                         class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                        <a href="{{ route('template-surat.sop.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-clipboard-list w-4 text-center"></i>
-                            <span> Standar Operasional Prosedur (SOP)</span>
-                        </a>
+                            <a href="{{ route('template-surat.sop.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('template-surat.sop.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-clipboard-list w-4 text-center"></i>
+                                <span> Standar Operasional Prosedur (SOP)</span>
+                            </a>
                         @endif
 
                         <a href="{{ route('template-surat.cuti.index') }}"
@@ -274,12 +286,12 @@
                         </a>
 
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                        <a href="{{ route('template-surat.sk-direktur.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-scroll w-4 text-center"></i>
-                            <span>Surat Keputusan Direktur</span>
-                        </a>
+                            <a href="{{ route('template-surat.sk-direktur.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-scroll w-4 text-center"></i>
+                                <span>Surat Keputusan Direktur</span>
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -293,119 +305,122 @@
                 </a>
 
                 @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }}, flyout: false }" class="space-y-1 relative">
-                    <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
-                        class="flex items-center justify-between w-full py-3 rounded-xl transition-all
-                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
-                        :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
-                        <div class="flex items-center" :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
-                            <i class="fas fa-database w-5 text-center"></i>
-                            <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Master Data</span>
+                    <div x-data="{ open: {{ request()->routeIs('master-data.*') ? 'true' : 'false' }}, flyout: false }"
+                        class="space-y-1 relative">
+                        <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
+                            class="flex items-center justify-between w-full py-3 rounded-xl transition-all
+                            {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                            :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
+                            <div class="flex items-center"
+                                :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
+                                <i class="fas fa-database w-5 text-center"></i>
+                                <span x-show="!sidebarCollapsed || !isDesktop" x-transition>Master Data</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop"
+                                :class="open ? 'rotate-180':''"></i>
+                        </button>
+
+                        <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
+                            class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
+
+                            @if(Auth::user()->hasRole('Admin'))
+                                <a href="{{ route('master-data.jabatan.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-briefcase w-4 text-center"></i>
+                                    <span>Jabatan</span>
+                                </a>
+                            @endif
+
+                            <a href="{{ route('master-data.pegawai.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-id-card w-4 text-center"></i>
+                                <span>Pegawai</span>
+                            </a>
+
+                            <a href="{{ route('master-data.regulasi.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-file w-4 text-center"></i>
+                                <span>Regulasi</span>
+                            </a>
+
+                            @if(Auth::user()->hasRole('Admin'))
+                                <a href="{{ route('master-data.ruangan.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-door-open w-4 text-center"></i>
+                                    <span>Ruangan</span>
+                                </a>
+
+                                <a href="{{ route('master-data.unit.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-layer-group w-4 text-center"></i>
+                                    <span>Unit</span>
+                                </a>
+
+                                <a href="{{ route('master-data.user.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-users w-4 text-center"></i>
+                                    <span>User</span>
+                                </a>
+                            @endif
                         </div>
-                        <i class="fas fa-chevron-down text-xs" x-show="!sidebarCollapsed || !isDesktop" :class="open ? 'rotate-180':''"></i>
-                    </button>
 
-                    <div x-show="open && (!sidebarCollapsed || !isDesktop)" x-transition
-                        class="ml-6 space-y-1 border-l border-gray-200 dark:border-gray-700 pl-2">
+                        <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
+                            @click.outside="flyout = false"
+                            class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
 
-                        @if(Auth::user()->hasRole('Admin'))
-                        <a href="{{ route('master-data.jabatan.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-briefcase w-4 text-center"></i>
-                            <span>Jabatan</span>
-                        </a>
-                        @endif
+                            @if(Auth::user()->hasRole('Admin'))
+                                <a href="{{ route('master-data.jabatan.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-briefcase w-4 text-center"></i>
+                                    <span>Jabatan</span>
+                                </a>
+                            @endif
 
-                        <a href="{{ route('master-data.pegawai.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-id-card w-4 text-center"></i>
-                            <span>Pegawai</span>
-                        </a>
+                            <a href="{{ route('master-data.pegawai.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-id-card w-4 text-center"></i>
+                                <span>Pegawai</span>
+                            </a>
 
-                        <a href="{{ route('master-data.regulasi.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-file w-4 text-center"></i>
-                            <span>Regulasi</span>
-                        </a>
+                            <a href="{{ route('master-data.regulasi.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-file w-4 text-center"></i>
+                                <span>Regulasi</span>
+                            </a>
 
-                        @if(Auth::user()->hasRole('Admin'))
-                        <a href="{{ route('master-data.ruangan.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-door-open w-4 text-center"></i>
-                            <span>Ruangan</span>
-                        </a>
+                            @if(Auth::user()->hasRole('Admin'))
+                                <a href="{{ route('master-data.ruangan.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-door-open w-4 text-center"></i>
+                                    <span>Ruangan</span>
+                                </a>
 
-                        <a href="{{ route('master-data.unit.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-layer-group w-4 text-center"></i>
-                            <span>Unit</span>
-                        </a>
+                                <a href="{{ route('master-data.unit.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-layer-group w-4 text-center"></i>
+                                    <span>Unit</span>
+                                </a>
 
-                        <a href="{{ route('master-data.user.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-users w-4 text-center"></i>
-                            <span>User</span>
-                        </a>
-                        @endif
+                                <a href="{{ route('master-data.user.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                    {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-users w-4 text-center"></i>
+                                    <span>User</span>
+                                </a>
+                            @endif
+                        </div>
                     </div>
-
-                    <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
-                        @click.outside="flyout = false"
-                        class="absolute left-full top-0 ml-3 w-64 bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 rounded-xl p-3 space-y-1 z-50">
-                        
-                        @if(Auth::user()->hasRole('Admin'))
-                        <a href="{{ route('master-data.jabatan.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-briefcase w-4 text-center"></i>
-                            <span>Jabatan</span>
-                        </a>
-                        @endif
-
-                        <a href="{{ route('master-data.pegawai.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-id-card w-4 text-center"></i>
-                            <span>Pegawai</span>
-                        </a>
-
-                        <a href="{{ route('master-data.regulasi.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-file w-4 text-center"></i>
-                            <span>Regulasi</span>
-                        </a>
-
-                        @if(Auth::user()->hasRole('Admin'))
-                        <a href="{{ route('master-data.ruangan.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-door-open w-4 text-center"></i>
-                            <span>Ruangan</span>
-                        </a>
-
-                        <a href="{{ route('master-data.unit.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-layer-group w-4 text-center"></i>
-                            <span>Unit</span>
-                        </a>
-
-                        <a href="{{ route('master-data.user.index') }}"
-                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                            <i class="fas fa-users w-4 text-center"></i>
-                            <span>User</span>
-                        </a>
-                        @endif
-                    </div>
-                </div>
                 @endif
             </nav>
         </aside>
@@ -417,23 +432,26 @@
             <div class="flex-1">
                 @yield('content')
             </div>
-            
+
             <footer class="flex-shrink-0 pt-16 pb-6">
                 <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    &copy; 2025 <span class="text-green-600 dark:text-green-400 font-semibold">RSUD dr. Soeratno Gemolong</span>. All rights reserved.
+                    &copy; 2025 <span class="text-green-600 dark:text-green-400 font-semibold">RSUD dr. Soeratno
+                        Gemolong</span>. All rights reserved.
                 </p>
             </footer>
         </main>
     </div>
 
     <div id="globalNotification" class="hidden fixed top-4 right-4 z-[9999] max-w-md">
-        <div id="notificationContent" class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300">
+        <div id="notificationContent"
+            class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300">
             <div id="notificationIcon" class="flex-shrink-0 mt-0.5"></div>
             <div class="flex-1">
                 <p id="notificationTitle" class="font-semibold text-sm"></p>
                 <p id="notificationMessage" class="text-sm mt-1"></p>
             </div>
-            <button onclick="closeNotification()" class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <button onclick="closeNotification()"
+                class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -493,7 +511,7 @@
             }, 300);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             @if(session('success'))
                 showNotification('success', 'Berhasil!', '{{ session('success') }}');
             @endif
@@ -530,26 +548,26 @@
                     this.checkDarkModePreference();
                     this.isDesktop = window.innerWidth >= 768;
                     this.sidebarOpen = this.isDesktop;
-                    
+
                     const savedCollapsed = localStorage.getItem('sidebar-collapsed');
                     if (savedCollapsed !== null) {
                         this.sidebarCollapsed = savedCollapsed === 'true';
                     }
-                    
+
                     setTimeout(() => document.body.classList.add('alpine-ready'), 50);
-                    
+
                     window.addEventListener('resize', this.handleResize.bind(this));
                     window.addEventListener('modal-state-changed', () => {
                         this.updateScrollLock();
                     });
-                    
+
                     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                         if (!localStorage.getItem('dark-theme')) {
                             this.dark = e.matches;
                             this.updateDarkMode();
                         }
                     });
-                    
+
                     this.$watch('sidebarCollapsed', value => {
                         localStorage.setItem('sidebar-collapsed', value);
                     });
@@ -562,7 +580,7 @@
                 handleResize() {
                     const wasDesktop = this.isDesktop;
                     this.isDesktop = window.innerWidth >= 768;
-                    
+
                     if (!wasDesktop && this.isDesktop) {
                         this.sidebarOpen = true;
                         this.backdrop = false;
@@ -583,7 +601,7 @@
                     } else {
                         document.body.classList.remove('overflow-hidden');
                     }
-                    
+
                     if (isMobileSidebarOpen) {
                         document.body.classList.add('sidebar-open');
                     } else {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <style>
@@ -9,39 +10,55 @@
             margin-left: 0.5in;
             margin-right: 0.5in;
         }
-        body { 
-            font-family: 'Times New Roman', serif; 
-            font-size: 10pt; 
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 10pt;
             line-height: 1.1;
             margin: 0;
             padding: 0;
             font-weight: normal;
         }
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
             margin-bottom: 20px;
         }
-        td, th { 
-            border: 1px solid #000; 
+
+        td,
+        th {
+            border: 1px solid #000;
             padding: 3px 5px !important;
             vertical-align: top;
             font-size: 10pt;
         }
-        .no-border, .no-border td, .no-border th { 
-            border: none !important; 
+
+        .no-border,
+        .no-border td,
+        .no-border th {
+            border: none !important;
         }
-        .center { text-align: center; }
-        .underline { text-decoration: underline; }
-        .section-header { 
+
+        .center {
+            text-align: center;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        .section-header {
             padding: 2px 4px !important;
         }
+
         .header-right {
             font-size: 10pt;
             line-height: 1.4;
             text-align: left;
-            margin-left: 120px; 
+            margin-left: 120px;
         }
+
         .form-title {
             font-weight: normal;
             text-align: center;
@@ -49,26 +66,30 @@
             font-size: 10pt;
             text-transform: uppercase;
         }
+
         .catatan-section td {
-             padding: 1px;
-             vertical-align: top;
-             font-size: 10pt; 
-             line-height: 1.2; 
+            padding: 1px;
+            vertical-align: top;
+            font-size: 10pt;
+            line-height: 1.2;
         }
     </style>
 </head>
+
 <body>
     <?php 
         $f = $data['form'] ?? [];
-        function formatTanggalIndonesia($tanggal) {
-            if (empty($tanggal)) return '';
-            $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
-            $timestamp = strtotime($tanggal);
-            $hari = date('d', $timestamp);
-            $bulanAngka = date('n', $timestamp);
-            $tahun = date('Y', $timestamp);
-            return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
-        }
+function formatTanggalIndonesia($tanggal)
+{
+    if (empty($tanggal))
+        return '';
+    $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
+    $timestamp = strtotime($tanggal);
+    $hari = date('d', $timestamp);
+    $bulanAngka = date('n', $timestamp);
+    $tahun = date('Y', $timestamp);
+    return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
+}
     ?>
     <div class="container">
         <!-- Header -->
@@ -77,7 +98,8 @@
                 <td style="width: 40%"></td>
                 <td style="width: 60%">
                     <div class="header-right">
-                        <?= $f['tempat_surat'] ?? 'Sragen' ?>, <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
+                        <?= $f['tempat_surat'] ?? 'Sragen' ?>,
+                        <?= isset($f['tanggal_surat']) ? formatTanggalIndonesia($f['tanggal_surat']) : '.......................' ?><br>
                         kepada :<br>
                         Yth. Direktur RSUD dr. Soeratno Gemolong<br>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kabupaten Sragen<br>
@@ -87,7 +109,7 @@
                 </td>
             </tr>
         </table>
-        
+
         <div class="form-title">
             FORMULIR PERMINTAAN DAN PEMBERIAN CUTI
         </div>
@@ -103,9 +125,9 @@
                 <td style="width: 15%">Masa Kerja</td>
                 <td style="width: 25%">
                     <?php
-                        $mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
-                        $mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
-                        echo $mkTh.' th '.$mkBl.' bln';
+$mkTh = isset($f['masa_kerja_tahun']) && $f['masa_kerja_tahun'] !== '' ? $f['masa_kerja_tahun'] : 0;
+$mkBl = isset($f['masa_kerja_bulan']) && $f['masa_kerja_bulan'] !== '' ? $f['masa_kerja_bulan'] : 0;
+echo $mkTh . ' th ' . $mkBl . ' bln';
                     ?>
                 </td>
             </tr>
@@ -177,7 +199,7 @@
             <tr>
                 <td colspan="5" class="section-header">V. CATATAN CUTI***</td>
             </tr>
-             <tr>
+            <tr>
                 <td colspan="3" style="width: 2.35in">1. CUTI TAHUNAN</td>
                 <td style="width: 2.35in">2. CUTI BESAR</td>
                 <td style="width: 0.89in" class="center">
@@ -247,9 +269,9 @@
                     <?= (isset($f['atasan_setuju']) && $f['atasan_setuju'] == 'TIDAK DISETUJUI') ? 'V' : '' ?>
                 </td>
             </tr>
-             <tr>
+            <tr>
                 <td colspan="3" style="border: none; width: 100%;"></td>
-                 <td class="center" style="vertical-align: middle; padding: 8px;">
+                <td class="center" style="vertical-align: middle; padding: 8px;">
                     <?= strtoupper($f['jabatan_atasan'] ?? 'Atasan') ?><br><br><br><br>
                     <u><?= strtoupper($f['nama_atasan'] ?? '') ?></u><br>
                     NIP. <?= $f['nip_atasan'] ?? '' ?>
@@ -298,7 +320,8 @@
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">***</td>
-                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum Non ASN mengajukan cuti</td>
+                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum Non ASN mengajukan cuti
+                            </td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">****</td>
@@ -318,4 +341,5 @@
         </table>
     </div>
 </body>
+
 </html>

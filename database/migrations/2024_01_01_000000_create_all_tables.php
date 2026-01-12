@@ -22,7 +22,7 @@ return new class extends Migration {
         });
 
         Schema::create('ruangan', function (Blueprint $table) {
-        $table->id('id_ruangan');
+            $table->id('id_ruangan');
             $table->string('nama_ruangan');
             $table->timestamps();
         });
@@ -79,13 +79,13 @@ return new class extends Migration {
             $table->text('isi_regulasi');
             $table->timestamps();
         });
-        
+
         Schema::create('pegawais', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('nip')->nullable()->unique();
             $table->string('jabatan')->nullable();
-            $table->string('jenis_pegawai')->default('PNS'); 
+            $table->string('jenis_pegawai')->default('PNS');
             $table->date('masa_kerja');
             $table->integer('sisa_cuti_tahunan')->default(12);
             $table->integer('sisa_cuti_n')->default(12);
