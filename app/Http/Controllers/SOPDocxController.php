@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use App\Models\SOP;
+use App\Models\Pegawai;
 use Exception;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
@@ -76,21 +77,82 @@ class SOPDocxController extends Controller
             $tanggal = isset($data['tanggal_terbit']) ? \Carbon\Carbon::parse($data['tanggal_terbit'])->locale('id')->translatedFormat('j F Y') : '.......................';
             $dateCell->addText($tanggal, null, ['alignment' => Jc::CENTER]);
 
-            $signCell = $table->addCell((int) Converter::inchToTwip(2.5), ['gridSpan' => 2, 'valign' => 'center']);
+            $signCell = $table->addCell((int) Converter::inchToTwip(3.0), ['gridSpan' => 2, 'valign' => 'center']);
             $signCell->addText('Ditetapkan,', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(2);
-            $signCell->addText('Dr. dr. Kinik Darsono, M.Pd.Ked.', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
-            $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
+            
+            $direktur = Pegawai::getDirektur();
+            $direkturNama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
+            $direkturNip = $direktur ? $direktur->nip : '19710415 200903 1 001';
+            
+            $namaLength = mb_strlen($direkturNama);
+            $fontSize = 12;
+            if ($namaLength > 50) {
+                $fontSize = 7;
+            } elseif ($namaLength > 42) {
+                $fontSize = 8;
+            } elseif ($namaLength > 36) {
+                $fontSize = 9;
+            } elseif ($namaLength > 31) {
+                $fontSize = 10;
+            } elseif ($namaLength > 27) {
+                $fontSize = 11;
+            }
+            
+            $signCell->addText($direkturNama, ['underline' => 'single', 'size' => $fontSize], ['alignment' => Jc::CENTER]);
+            $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
 
-            // Content
+            // Content 
+            $rawKebijakan = trim($data['kebijakan'] ?? '');
+            $resolvedKebijakan = [];
+            $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
+            $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+            
+            $allAreIds = true;
+            $ids = [];
+            foreach ($lines as $line) {
+                $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                if (preg_match('/^\d+$/', $cleaned)) { $ids[] = (int) $cleaned; }
+                else { $allAreIds = false; break; }
+            }
+            
+            if ($allAreIds && count($ids) > 0) {
+                $regs = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
+                    ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
+                    ->get();
+                $resolvedKebijakan = $regs->pluck('isi_regulasi')->toArray();
+            } else {
+                $resolvedKebijakan = array_values(array_filter(array_map('trim', $lines)));
+            }
+
+            $rawUnit = trim($data['unit_terkait'] ?? '');
+            $resolvedUnit = $rawUnit;
+            $unitLines = preg_split('/\r\n|\r|\n/', $rawUnit);
+            $unitLines = array_filter($unitLines, function ($line) { return trim($line) !== ''; });
+            
+            $allUnitIds = true;
+            $uIds = [];
+            foreach ($unitLines as $line) {
+                $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                if (preg_match('/^\d+$/', $cleaned)) { $uIds[] = (int) $cleaned; }
+                else { $allUnitIds = false; break; }
+            }
+            
+            if ($allUnitIds && count($uIds) > 0) {
+                $units = \App\Models\Unit::whereIn('id_unit', $uIds)
+                    ->orderByRaw('FIELD(id_unit, ' . implode(',', $uIds) . ')')
+                    ->get();
+                $resolvedUnit = implode(', ', $units->pluck('nama_unit')->toArray());
+            }
+
             $contentRows = [
                 'Pengertian' => $data['pengertian'] ?? '',
                 'Tujuan' => $data['tujuan'] ?? '',
-                'Kebijakan' => $data['kebijakan'] ?? [],
+                'Kebijakan' => $resolvedKebijakan,
                 'Prosedur' => $data['prosedur'] ?? [],
-                'Unit Terkait' => $data['unit_terkait'] ?? '',
+                'Unit Terkait' => $resolvedUnit,
             ];
 
             foreach ($contentRows as $label => $content) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\SKDirektur;
 use App\Models\Regulasi;
+use App\Models\Pegawai;
 use Exception;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
@@ -284,9 +285,15 @@ class SKDirekturDocxController extends Controller
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-
-            $pejabatNama = trim($data['pejabat_nama'] ?? '') ?: 'KINIK DARSONO';
-            $signCell->addText($pejabatNama, null, ['alignment' => Jc::CENTER]);
+            
+            $direktur = Pegawai::getDirektur();
+            $direkturNama = $direktur ? $direktur->nama : 'KINIK DARSONO';
+            $direkturNip = $direktur ? $direktur->nip : null;
+            
+            $signCell->addText($direkturNama, ['underline' => 'single'], ['alignment' => Jc::CENTER]);
+            if ($direkturNip) {
+                $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
+            }
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');

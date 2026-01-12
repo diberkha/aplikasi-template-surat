@@ -334,8 +334,12 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
                     BERWENANG MEMBERIKAN CUTI<br>
                     DIREKTUR RSUD dr. SOERATNO GEMOLONG<br>
                     KABUPATEN SRAGEN<br><br><br><br>
-                    <u>Dr. dr. KINIK DARSONO, M.Pd.Ked.</u><br>
-                    NIP. 19710415 200903 1 001
+                    @php
+                        $direkturNama = $data['direktur_nama'] ?? 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
+                        $direkturNip = $data['direktur_nip'] ?? '19710415 200903 1 001';
+                    @endphp
+                    <u>{{ $direkturNama }}</u><br>
+                    NIP. {{ $direkturNip }}
                 </td>
             </tr>
         </table>

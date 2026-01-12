@@ -204,7 +204,7 @@
         </div>
 
         <script>
-            const ruanganOptions = @json($ruangan->map(fn($r) => ['id' => $r->id_ruangan, 'nama' => $r->nama_ruangan]));
+            const ruanganOptions = @json($ruangan->map(function($r) { return ['id' => $r->id_ruangan, 'nama' => $r->nama_ruangan]; }));
 
             function userTable() {
                 return {

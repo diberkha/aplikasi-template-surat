@@ -6,6 +6,7 @@ use App\Models\SOP;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\Regulasi;
+use App\Models\Pegawai;
 use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -68,41 +69,16 @@ class SOPController extends Controller
             ]);
 
             $kebijakanIds = $request->kebijakan;
-            $regulasiModels = Regulasi::whereIn('id_regulasi', $kebijakanIds)->get();
-            $kebijakanTexts = [];
-            foreach ($kebijakanIds as $id) {
-                $reg = $regulasiModels->firstWhere('id_regulasi', $id);
-                if ($reg) {
-                    $kebijakanTexts[] = $reg->isi_regulasi;
-                } else {
-                    if (!is_numeric($id)) {
-                        $kebijakanTexts[] = $id;
-                    }
-                }
-            }
-            if (empty($kebijakanTexts)) {
-                $kebijakanTexts = $request->kebijakan;
+            $kebijakanText = '';
+            foreach ($kebijakanIds as $index => $id) {
+                $kebijakanText .= ($index + 1) . ". " . trim($id) . "\n";
             }
 
             $unitIds = $request->unit_terkait;
-            $unitModels = \App\Models\Unit::whereIn('id_unit', $unitIds)->get();
-            $unitNames = [];
-            foreach ($unitIds as $id) {
-                $unit = $unitModels->firstWhere('id_unit', $id);
-                if ($unit) {
-                    $unitNames[] = $unit->nama_unit;
-                } else {
-                    if (!is_numeric($id)) {
-                        $unitNames[] = $id;
-                    }
-                }
+            $unitText = '';
+            foreach ($unitIds as $index => $id) {
+                $unitText .= ($index + 1) . ". " . trim($id) . "\n";
             }
-            if (empty($unitNames)) {
-                $unitNames = $request->unit_terkait;
-            }
-            $unitTextForDB = implode(", ", $unitNames);
-
-            $kebijakanTextForDB = implode("\n", $kebijakanTexts);
             $tujuanText = implode("\n", array_filter($request->tujuan));
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
@@ -115,16 +91,20 @@ class SOPController extends Controller
                 'tanggal_terbit' => $request->tanggal_terbit,
                 'pengertian' => $request->pengertian,
                 'tujuan' => $tujuanText,
-                'kebijakan' => $kebijakanTextForDB,
+                'kebijakan' => trim($kebijakanText),
                 'prosedur' => $prosedurText,
-                'unit_terkait' => $unitTextForDB,
+                'unit_terkait' => trim($unitText),
             ]);
 
             $pdfData = $request->all();
             $pdfData['halaman'] = $request->filled('halaman') ? $request->halaman : '1/1';
             $pdfData['tujuan'] = array_filter($request->tujuan);
-            $pdfData['kebijakan'] = $kebijakanTexts;
-            $pdfData['unit_terkait'] = $unitTextForDB;
+            $pdfData['kebijakan'] = trim($kebijakanText);
+            $pdfData['unit_terkait'] = trim($unitText);
+
+            $direktur = Pegawai::getDirektur();
+            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
+            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : '19710415 200903 1 001';
 
             $this->generateAndSavePDF($surat, $pdfData);
 

@@ -528,10 +528,14 @@
                                 @endif
                             </div>
                             @php
-                                $pejabatNama = trim($data['pejabat_nama'] ?? '') ?: 'KINIK DARSONO';
+                                $direkturNama = $data['direktur_nama'] ?? 'KINIK DARSONO';
+                                $direkturNip = $data['direktur_nip'] ?? null;
                             @endphp
 
-                            <p class="signature-name" style="text-align: center;">{{ $pejabatNama }}</p>
+                            <p class="signature-name" style="text-align: center; text-decoration: underline;">{{ $direkturNama }}</p>
+                            @if($direkturNip)
+                                <p style="text-align: center; margin-top: 2px;">NIP. {{ $direkturNip }}</p>
+                            @endif
                         </div>
                     </td>
                 </tr>

@@ -146,9 +146,25 @@
                 <div style="margin-bottom: 8px;">Ditetapkan,</div>
                 <div style="margin-bottom: 8px;">Direktur RSUD dr. Soeratno<br>Gemolong Kabupaten Sragen</div>
                 <div style="min-height: 60px; margin-bottom: 8px;"></div>
-                <div style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap;">Dr. dr. Kinik Darsono,
-                    M.Pd.Ked.</div>
-                <div>NIP. 19710415 200903 1 001</div>
+                @php
+                    $direkturNama = $data['direktur_nama'] ?? 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
+                    $direkturNip = $data['direktur_nip'] ?? '19710415 200903 1 001';
+                    $namaLength = mb_strlen($direkturNama);
+                    $fontSize = '12pt';
+                    if ($namaLength > 45) {
+                        $fontSize = '7pt';
+                    } elseif ($namaLength > 38) {
+                        $fontSize = '8pt';
+                    } elseif ($namaLength > 33) {
+                        $fontSize = '9pt';
+                    } elseif ($namaLength > 28) {
+                        $fontSize = '10pt';
+                    } elseif ($namaLength > 25) {
+                        $fontSize = '11pt';
+                    }
+                @endphp
+                <div style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap; font-size: {{ $fontSize }}; overflow: hidden; text-overflow: clip;">{{ $direkturNama }}</div>
+                <div>NIP. {{ $direkturNip }}</div>
             </td>
         </tr>
         <tr>
@@ -178,8 +194,41 @@
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Kebijakan</td>
             <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
+                @php
+                    $rawKebijakan = trim($data['kebijakan'] ?? '');
+                    $kebijakanItems = [];
+                    
+                    $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
+                    $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+                    
+                    $allAreIds = true;
+                    $ids = [];
+                    foreach ($lines as $line) {
+                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                        if (preg_match('/^\d+$/', $cleaned)) {
+                            $ids[] = (int) $cleaned;
+                        } else {
+                            $allAreIds = false;
+                            break;
+                        }
+                    }
+                    
+                    if ($allAreIds && count($ids) > 0) {
+                        $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
+                            ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
+                            ->get();
+                        $kebijakanItems = $regulasis->count() > 0
+                            ? $regulasis->pluck('isi_regulasi')->toArray()
+                            : ['Data regulasi tidak ditemukan'];
+                    } else {
+                        foreach ($lines as $line) {
+                            $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                            if ($cleaned !== '') { $kebijakanItems[] = $cleaned; }
+                        }
+                    }
+                @endphp
                 <ol style="margin:0; padding-left:18px;">
-                    @foreach(($data['kebijakan'] ?? []) as $item)
+                    @foreach($kebijakanItems as $item)
                         <li>{{ $item }}</li>
                     @endforeach
                 </ol>
@@ -197,7 +246,35 @@
         </tr>
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Unit Terkait</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">{{ $data['unit_terkait'] ?? '' }}
+            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
+                @php
+                    $rawUnit = trim($data['unit_terkait'] ?? '');
+                    $unitText = $rawUnit;
+                    
+                    $lines = preg_split('/\r\n|\r|\n/', $rawUnit);
+                    $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+                    
+                    $allAreIds = true;
+                    $ids = [];
+                    foreach ($lines as $line) {
+                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                        if (preg_match('/^\d+$/', $cleaned)) {
+                            $ids[] = (int) $cleaned;
+                        } else {
+                            $allAreIds = false;
+                            break;
+                        }
+                    }
+                    
+                    if ($allAreIds && count($ids) > 0) {
+                        $units = \App\Models\Unit::whereIn('id_unit', $ids)
+                            ->orderByRaw('FIELD(id_unit, ' . implode(',', $ids) . ')')
+                            ->get();
+                        $names = $units->pluck('nama_unit')->toArray();
+                        $unitText = implode(', ', $names);
+                    }
+                @endphp
+                {{ $unitText }}
             </td>
         </tr>
     </table>

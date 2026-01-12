@@ -20,4 +20,9 @@ class Pegawai extends Model
         'sisa_cuti_n1',
         'sisa_cuti_n2',
     ];
+
+    public static function getDirektur()
+    {
+        return self::whereRaw('LOWER(jabatan) = ?', ['direktur'])->first();
+    }
 }

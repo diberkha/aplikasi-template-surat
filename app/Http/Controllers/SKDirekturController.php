@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\SKDirektur;
+use App\Models\Pegawai;
 use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -51,9 +52,8 @@ class SKDirekturController extends Controller
                 'mengingat' => 'required|array|min:1',
                 'mengingat.*' => 'required|string',
                 'menetapkan' => 'nullable|string',
-                'memutuskan' => 'required|array|min:2',
+                'memutuskan' => 'required|array|min:1',
                 'memutuskan.0' => 'required|string',
-                'memutuskan.1' => 'required|string',
                 'memutuskan.*' => 'nullable|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
@@ -114,6 +114,10 @@ class SKDirekturController extends Controller
             $pdfData['mengingat'] = trim($mengingatText);
             $pdfData['menimbang'] = array_map('trim', $menimbangArray);
             $pdfData['tempat_surat'] = $request->tempat_dibuat;
+
+            $direktur = Pegawai::getDirektur();
+            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'KINIK DARSONO';
+            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : null;
 
             $this->generateAndSavePDF($surat, $pdfData);
 

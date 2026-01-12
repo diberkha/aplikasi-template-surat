@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use App\Models\SuratIzinCuti;
+use App\Models\Pegawai;
 use Exception;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
@@ -278,8 +279,13 @@ class IzinCutiPNSController extends Controller
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-            $signCell->addText('Dr. dr. KINIK DARSONO, M.Pd.Ked.', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
-            $signCell->addText('NIP. 19710415 200903 1 001', null, ['alignment' => Jc::CENTER]);
+            
+            $direktur = Pegawai::getDirektur();
+            $direkturNama = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
+            $direkturNip = $direktur ? $direktur->nip : '19710415 200903 1 001';
+            
+            $signCell->addText($direkturNama, ['underline' => 'single'], ['alignment' => Jc::CENTER]);
+            $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
             $fileName = "{$surat->nomor_surat}.docx";

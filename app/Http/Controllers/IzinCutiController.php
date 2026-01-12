@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\SuratIzinCuti;
+use App\Models\Pegawai;
 use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -174,6 +175,10 @@ class IzinCutiController extends Controller
                 'form' => $request->form,
                 'nomor_surat' => null,
             ];
+
+            $direktur = Pegawai::getDirektur();
+            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
+            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : '19710415 200903 1 001';
 
             $this->generateAndSavePDF($surat, $pdfData);
 
