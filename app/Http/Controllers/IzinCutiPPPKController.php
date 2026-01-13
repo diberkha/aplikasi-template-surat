@@ -190,9 +190,9 @@ class IzinCutiPPPKController extends Controller
 
             $table->addRow();
             $atasan = $data['atasan_setuju'] ?? '';
-            $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($atasan == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.5), $noBottom)->addText($atasan == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.1), $fullBorder)->addText($atasan == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText($atasan == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText($atasan == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText($atasan == 'TIDAK DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
@@ -229,9 +229,9 @@ class IzinCutiPPPKController extends Controller
 
             $table->addRow();
             $pejabat = $data['pejabat_keputusan'] ?? '';
-            $table->addCell((int) Converter::inchToTwip(1.1), $noBottom)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.3), $noBottom)->addText($pejabat == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
-            $table->addCell((int) Converter::inchToTwip(1.5), $noBottom)->addText($pejabat == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.1), $fullBorder)->addText($pejabat == 'DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.3), $fullBorder)->addText($pejabat == 'PERUBAHAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(1.5), $fullBorder)->addText($pejabat == 'DITANGGUHKAN' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addCell((int) Converter::inchToTwip(3.37), $fullBorder)->addText($pejabat == 'TIDAK DISETUJUI' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
@@ -261,11 +261,11 @@ class IzinCutiPPPKController extends Controller
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-            
+
             $direktur = Pegawai::getDirektur();
             $direkturNama = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
             $direkturNip = $direktur ? $direktur->nip : '19710415 200903 1 001';
-            
+
             $signCell->addText($direkturNama, ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
 
