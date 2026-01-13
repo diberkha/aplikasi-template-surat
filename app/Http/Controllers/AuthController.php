@@ -13,10 +13,10 @@ class AuthController extends Controller
             Auth::logout();
             request()->session()->invalidate();
             request()->session()->regenerateToken();
-            
-            return redirect()->route('login')->with('info', 'Sesi sebelumnya telah berakhir. Silakan login kembali.');
+
+            return redirect()->route('login')->with('info', 'Sesi sebelumnya telah berakhir. Silakan login kembali');
         }
-        
+
         return view('auth.login');
     }
 
@@ -27,7 +27,7 @@ class AuthController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
-        
+
         $credentials = $request->validate([
             'username' => ['required', 'string'],
             'password' => ['required']

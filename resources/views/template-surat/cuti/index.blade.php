@@ -70,7 +70,7 @@
                         <td colspan="3" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                             <div class="flex flex-col items-center">
                                 <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data
+                                <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data
                                     template surat</h6>
                             </div>
                         </td>

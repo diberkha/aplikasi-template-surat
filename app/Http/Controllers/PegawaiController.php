@@ -22,13 +22,27 @@ class PegawaiController extends Controller
             'nip' => 'nullable|string|max:50|unique:pegawais,nip',
             'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
             'masa_kerja' => 'required|date',
-            'sisa_cuti_n' => 'nullable|integer',
-            'sisa_cuti_n1' => 'nullable|integer',
-            'sisa_cuti_n2' => 'nullable|integer',
+            'sisa_cuti_n' => 'nullable|integer|min:0',
+            'sisa_cuti_n1' => 'nullable|integer|min:0',
+            'sisa_cuti_n2' => 'nullable|integer|min:0',
             'jabatan' => 'nullable|string|max:255',
         ]);
 
-        $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
+        $sisaN = $validated['sisa_cuti_n'] ?? 0;
+        $sisaN1 = $validated['sisa_cuti_n1'] ?? 0;
+        $sisaN2 = $validated['sisa_cuti_n2'] ?? 0;
+        $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
+
+        if ($validated['jenis_pegawai'] === 'PNS') {
+            if ($totalAkumulasi > 18) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 18 hari.']);
+            }
+            $validated['sisa_cuti_tahunan'] = min(18, $totalAkumulasi);
+        } else {
+            $validated['sisa_cuti_tahunan'] = $sisaN;
+        }
 
         Pegawai::create($validated);
 
@@ -44,13 +58,27 @@ class PegawaiController extends Controller
             'nip' => 'nullable|string|max:50|unique:pegawais,nip,' . $id,
             'jenis_pegawai' => 'required|in:PNS,NON ASN,PPPK',
             'masa_kerja' => 'required|date',
-            'sisa_cuti_n' => 'nullable|integer',
-            'sisa_cuti_n1' => 'nullable|integer',
-            'sisa_cuti_n2' => 'nullable|integer',
+            'sisa_cuti_n' => 'nullable|integer|min:0',
+            'sisa_cuti_n1' => 'nullable|integer|min:0',
+            'sisa_cuti_n2' => 'nullable|integer|min:0',
             'jabatan' => 'nullable|string|max:255',
         ]);
 
-        $validated['sisa_cuti_tahunan'] = ($validated['sisa_cuti_n'] ?? 0) + ($validated['sisa_cuti_n1'] ?? 0) + ($validated['sisa_cuti_n2'] ?? 0);
+        $sisaN = $validated['sisa_cuti_n'] ?? 0;
+        $sisaN1 = $validated['sisa_cuti_n1'] ?? 0;
+        $sisaN2 = $validated['sisa_cuti_n2'] ?? 0;
+        $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
+
+        if ($validated['jenis_pegawai'] === 'PNS') {
+            if ($totalAkumulasi > 18) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 18 hari.']);
+            }
+            $validated['sisa_cuti_tahunan'] = min(18, $totalAkumulasi);
+        } else {
+            $validated['sisa_cuti_tahunan'] = $sisaN;
+        }
 
         $pegawai->update($validated);
 

@@ -480,7 +480,7 @@
                 if (lamaCutiValue > sisaCutiGlobal) {
                     const excess = lamaCutiValue - sisaCutiGlobal;
                     calcPreview.classList.remove('hidden');
-                    calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari.</div>`;
+                    calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari</div>`;
                 } else {
                     calcPreview.classList.add('hidden');
                     calcDetails.innerHTML = '';

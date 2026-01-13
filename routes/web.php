@@ -19,6 +19,7 @@ use App\Http\Controllers\IzinCutiNonAsnController;
 use App\Http\Controllers\SKDirekturDocxController;
 use App\Http\Controllers\SOPDocxController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\CutiBersamaController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -81,6 +82,16 @@ Route::middleware('auth')->group(function () {
             Route::post('/', 'store')->name('store');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
+        });
+
+        Route::prefix('cuti-bersama')->name('cuti-bersama.')->middleware('role:Admin,Tata Usaha')->group(function () {
+            Route::get('/', [CutiBersamaController::class, 'index'])->name('index');
+            Route::get('/create', [CutiBersamaController::class, 'create'])->name('create');
+            Route::post('/', [CutiBersamaController::class, 'store'])->name('store');
+            Route::get('/{cutiBersama}/edit', [CutiBersamaController::class, 'edit'])->name('edit');
+            Route::get('/{id}/detail', [CutiBersamaController::class, 'getDetail'])->name('detail');
+            Route::put('/{cutiBersama}', [CutiBersamaController::class, 'update'])->name('update');
+            Route::delete('/{cutiBersama}', [CutiBersamaController::class, 'destroy'])->name('destroy');
         });
     });
 

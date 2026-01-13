@@ -339,6 +339,13 @@
                                 <span>Pegawai</span>
                             </a>
 
+                            <a href="{{ route('cuti-bersama.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-calendar-days w-4 text-center"></i>
+                                <span>Cuti Bersama</span>
+                            </a>
+
                             <a href="{{ route('master-data.regulasi.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
                                 {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
@@ -388,6 +395,13 @@
                                 {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-id-card w-4 text-center"></i>
                                 <span>Pegawai</span>
+                            </a>
+
+                            <a href="{{ route('cuti-bersama.index') }}"
+                                class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                <i class="fas fa-calendar-days w-4 text-center"></i>
+                                <span>Cuti Bersama</span>
                             </a>
 
                             <a href="{{ route('master-data.regulasi.index') }}"

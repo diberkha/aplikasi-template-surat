@@ -113,8 +113,8 @@
                     </div>
 
                     <div>
-                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password Baru
-                            (Opsional)</label>
+                        <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password Baru <span
+                                class="text-gray-500 text-xs">(Opsional)</span></label>
                         <input type="password" id="password_edit" name="password"
                             placeholder="Kosongkan jika tidak ingin mengubah"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">

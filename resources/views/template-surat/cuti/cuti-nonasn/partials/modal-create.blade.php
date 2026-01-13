@@ -194,10 +194,10 @@
                             </div>
                         </div>
                         <div class="mt-4">
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Keterangan (Opsional)</label>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Keterangan <span
+                                    class="text-gray-500 text-xs">(Opsional)</span></label>
                             <textarea name="form[catatan_n_keterangan]" rows="2"
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"
-                                placeholder="Tambahkan keterangan untuk catatan cuti jika diperlukan..."></textarea>
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                         </div>
                     </div>
                 </div>
@@ -502,7 +502,7 @@
                 if (lamaCutiValue > sisaCutiGlobal) {
                     const excess = lamaCutiValue - sisaCutiGlobal;
                     calcPreview.classList.remove('hidden');
-                    calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari.</div>`;
+                    calcDetails.innerHTML = `<div class="text-xs text-red-600 dark:text-red-400 font-bold flex items-center p-2"><i class="fas fa-exclamation-triangle mr-2"></i> Jumlah cuti yang diajukan melebihi sisa cuti yang tersedia sebesar ${excess} hari</div>`;
                 } else {
                     calcPreview.classList.add('hidden');
                     calcDetails.innerHTML = '';

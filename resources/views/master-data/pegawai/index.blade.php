@@ -168,7 +168,7 @@
                                         class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
                                             <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data
+                                            <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data
                                                 pegawai</h6>
                                         </div>
                                     </td>
@@ -203,11 +203,11 @@
                             <button @click="page !== '...' && goToPage(page)"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                        parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
-                                        (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                        (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                    ]" :disabled="page === '...'">
+                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
+                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                            ]" :disabled="page === '...'">
                                 <span x-text="page"></span>
                             </button>
                         </template>
@@ -229,7 +229,7 @@
             @else
                 <div class="text-center py-12">
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data pegawai</h6>
+                    <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data pegawai</h6>
                 </div>
             @endif
 
@@ -383,6 +383,9 @@
                         if (typeof updateMasaKerjaLabel === 'function') {
                             updateMasaKerjaLabel('PNS', 'create');
                         }
+                        if (typeof setupCutiValidation === 'function') {
+                            setupCutiValidation('create');
+                        }
                     },
 
                     openEditModal(id) {
@@ -422,6 +425,9 @@
                                 if (typeof toggleLeaveFields === 'function') {
                                     toggleLeaveFields(data.jenis_pegawai, 'edit');
                                 }
+                                if (typeof setupCutiValidation === 'function') {
+                                    setupCutiValidation('edit');
+                                }
                             });
                     },
 
@@ -452,6 +458,9 @@
                         }
                         if (typeof toggleLeaveFields === 'function') {
                             toggleLeaveFields(data.jenis_pegawai, 'edit');
+                        }
+                        if (typeof setupCutiValidation === 'function') {
+                            setupCutiValidation('edit');
                         }
                     },
 
@@ -504,6 +513,98 @@
                     n2?.classList.add('hidden');
                 }
             }
+
+            function setupCutiValidation(context) {
+                const fields = {
+                    n: document.getElementById(context === 'create' ? 'sisa_cuti_n' : 'edit_sisa_cuti_n'),
+                    n1: document.getElementById(context === 'create' ? 'sisa_cuti_n1' : 'edit_sisa_cuti_n1'),
+                    n2: document.getElementById(context === 'create' ? 'sisa_cuti_n2' : 'edit_sisa_cuti_n2'),
+                };
+
+                const msg = document.getElementById(context === 'create' ? 'cuti_total_msg_create' : 'cuti_total_msg_edit');
+                const form = document.getElementById(context === 'create' ? 'formCreatePegawai' : 'formEditPegawai');
+                const jenisPegawaiSelect = document.getElementById(context === 'create' ? 'jenis_pegawai' : 'edit_jenis_pegawai');
+
+                const refresh = () => {
+                    const jenisPegawai = jenisPegawaiSelect?.value || 'PNS';
+
+                    if (jenisPegawai !== 'PNS') {
+                        if (msg) msg.textContent = '';
+                        [fields.n, fields.n1, fields.n2].forEach((f) => {
+                            if (f) f.setCustomValidity('');
+                        });
+                        return;
+                    }
+
+                    const total = (parseInt(fields.n?.value || 0) || 0)
+                        + (parseInt(fields.n1?.value || 0) || 0)
+                        + (parseInt(fields.n2?.value || 0) || 0);
+                    const max = 18;
+
+                    const warn = total > max;
+                    if (msg) {
+                        msg.textContent = warn ? `Total: ${total} hari (melebihi batas)` : '';
+                        msg.classList.toggle('text-red-600', warn);
+                        msg.classList.toggle('dark:text-red-400', warn);
+                        msg.classList.toggle('text-gray-500', !warn);
+                        msg.classList.toggle('dark:text-gray-400', !warn);
+                    }
+
+                    [fields.n, fields.n1, fields.n2].forEach((f) => {
+                        if (f) {
+                            f.setCustomValidity(warn ? 'Total akumulasi cuti PNS maksimal 18 hari.' : '');
+                        }
+                    });
+                };
+
+                [fields.n, fields.n1, fields.n2].forEach((f) => {
+                    if (f && !f.dataset.hasCutiListener) {
+                        f.addEventListener('input', refresh);
+                        f.dataset.hasCutiListener = 'true';
+                    }
+                });
+
+                if (jenisPegawaiSelect && !jenisPegawaiSelect.dataset.hasCutiJenisListener) {
+                    jenisPegawaiSelect.addEventListener('change', refresh);
+                    jenisPegawaiSelect.dataset.hasCutiJenisListener = 'true';
+                }
+
+                if (form && !form.dataset.hasCutiSubmitCheck) {
+                    form.addEventListener('submit', (e) => {
+                        refresh();
+                        const invalid = [fields.n, fields.n1, fields.n2].some((f) => f && !f.checkValidity());
+                        if (invalid) {
+                            e.preventDefault();
+                        }
+                    });
+                    form.dataset.hasCutiSubmitCheck = 'true';
+                }
+
+                refresh();
+            }
+                        });
+                    };
+
+            [fields.n, fields.n1, fields.n2].forEach((f) => {
+                if (f && !f.dataset.hasCutiListener) {
+                    f.addEventListener('input', refresh);
+                    f.dataset.hasCutiListener = 'true';
+                }
+            });
+
+            if (form && !form.dataset.hasCutiSubmitCheck) {
+                form.addEventListener('submit', (e) => {
+                    refresh();
+                    const invalid = [fields.n, fields.n1, fields.n2].some((f) => f && !f.checkValidity());
+                    if (invalid) {
+                        e.preventDefault();
+                    }
+                });
+                form.dataset.hasCutiSubmitCheck = 'true';
+            }
+
+            refresh();
+                }
         </script>
 
 @endsection

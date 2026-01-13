@@ -129,7 +129,7 @@ class ArsipSuratController extends Controller
 
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
-            abort(404, 'File surat tidak ditemukan.');
+            abort(404, 'File surat tidak ditemukan');
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
@@ -167,7 +167,7 @@ class ArsipSuratController extends Controller
 
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
-            return back()->with('error', 'File surat tidak ditemukan.');
+            return back()->with('error', 'File surat tidak ditemukan');
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';

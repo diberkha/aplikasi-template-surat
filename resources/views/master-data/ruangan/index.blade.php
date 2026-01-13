@@ -117,7 +117,7 @@
                                     <td colspan="3" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
                                             <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data
+                                            <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data
                                                 ruangan</h6>
                                         </div>
                                     </td>
@@ -152,11 +152,11 @@
                             <button @click="page !== '...' && goToPage(page)"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                        parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
-                                        (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                        (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                    ]" :disabled="page === '...'">
+                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600 shadow-sm' : 
+                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                            ]" :disabled="page === '...'">
                                 <span x-text="page"></span>
                             </button>
                         </template>
@@ -178,7 +178,7 @@
             @else
                 <div class="text-center py-12">
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data ruangan</h6>
+                    <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data ruangan</h6>
                 </div>
             @endif
 

@@ -24,7 +24,7 @@
                         class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
                         <i class="fas fa-spinner fa-spin text-2xl text-gray-500 dark:text-gray-400"></i>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Memuat data regulasi...</p>
+                    <p class="text-gray-600 dark:text-gray-400">Memuat data regulasi</p>
                 </div>
             </div>
         </div>

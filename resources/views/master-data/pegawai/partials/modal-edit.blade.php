@@ -179,8 +179,10 @@
 
                     <div class="lg:col-span-2">
                         <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-4 flex items-center">
-                            Sisa Cuti Tahunan (Opsional)
+                            Sisa Cuti Tahunan <span class="ml-1 text-gray-500 text-xs">(Opsional)</span>
                         </h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3" id="cuti_total_msg_edit">
+                        </p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>

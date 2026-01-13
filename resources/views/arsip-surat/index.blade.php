@@ -118,7 +118,7 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
-                    <input type="text" x-model.debounce.300ms="search" placeholder="Cari arsip..."
+                    <input type="text" x-model.debounce.300ms="search" placeholder="Cari..."
                         class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-48 lg:w-64 text-sm">
                 </div>
             </div>
@@ -281,7 +281,7 @@
                                     <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
                                             <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                            <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data
+                                            <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data
                                                 surat</h6>
                                         </div>
                                     </td>
@@ -340,7 +340,7 @@
             @else
                 <div class="text-center py-12">
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                    <h6 class="text-base font-medium text-gray-600 dark:text-gray-400">Belum ada data surat</h6>
+                    <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data surat</h6>
 
 
                     @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))

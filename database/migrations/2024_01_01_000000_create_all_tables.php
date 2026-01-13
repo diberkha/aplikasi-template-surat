@@ -156,6 +156,16 @@ return new class extends Migration {
             $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
         });
 
+        Schema::create('cuti_bersama', function (Blueprint $table) {
+            $table->id();
+            $table->string('jenis_cuti_bersama');
+            $table->year('tahun');
+            $table->integer('jumlah_hari');
+            $table->boolean('is_perhitungan_cuti_tahunan')->default(true);
+            $table->text('catatan')->nullable();
+            $table->timestamps();
+        });
+
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kasi', 'Kepala Seksi')");
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kabid', 'Kepala Bidang')");
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kasubag', 'Kepala Sub Bagian')");
@@ -172,6 +182,7 @@ return new class extends Migration {
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Sub Bagian', 'Kasubag')");
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Bagian', 'Kabag')");
 
+        Schema::dropIfExists('cuti_bersama');
         Schema::dropIfExists('surat_izin_cuti');
         Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');

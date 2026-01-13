@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\ResetCutiTahunan::class,
     ];
 
     /**
@@ -24,7 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('cuti:reset-tahunan')
+            ->yearlyOn(1, 1, '00:01')
+            ->timezone('Asia/Jakarta');
     }
 
     /**

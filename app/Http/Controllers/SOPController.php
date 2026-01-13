@@ -137,7 +137,7 @@ class SOPController extends Controller
                     'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
                 ], 500);
             }
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat membuat Standar Operasional Prosedur (SOP).');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat membuat Standar Operasional Prosedur (SOP)');
         }
     }
 
@@ -175,7 +175,7 @@ class SOPController extends Controller
                 ], 500);
             }
 
-            return redirect()->back()->with('error', 'Gagal menghapus template.');
+            return redirect()->back()->with('error', 'Gagal menghapus template');
         }
     }
 

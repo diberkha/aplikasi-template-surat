@@ -171,7 +171,7 @@ class SKDirekturController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan saat membuat surat keputusan direktur. Silakan coba lagi.');
+                ->with('error', 'Terjadi kesalahan saat membuat surat keputusan direktur. Silakan coba lagi');
         }
     }
 
@@ -234,7 +234,7 @@ class SKDirekturController extends Controller
                 ], 500);
             }
 
-            return redirect()->back()->with('error', 'Gagal menghapus template.');
+            return redirect()->back()->with('error', 'Gagal menghapus template');
         }
     }
 

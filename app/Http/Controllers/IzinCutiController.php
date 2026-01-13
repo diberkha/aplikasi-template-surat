@@ -145,7 +145,8 @@ class IzinCutiController extends Controller
                             $n_used = $deduct;
                         }
 
-                        $pegawai->sisa_cuti_tahunan = $pegawai->sisa_cuti_n + $pegawai->sisa_cuti_n1 + $pegawai->sisa_cuti_n2;
+                        $total_akumulasi = $pegawai->sisa_cuti_n + $pegawai->sisa_cuti_n1 + $pegawai->sisa_cuti_n2;
+                        $pegawai->sisa_cuti_tahunan = min(18, $total_akumulasi);
 
                         $form = $request->form;
                         $form['catatan_n2'] = $pegawai->sisa_cuti_n2 > 0 ? $pegawai->sisa_cuti_n2 : '';
@@ -209,7 +210,7 @@ class IzinCutiController extends Controller
                     'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
                 ], 500);
             }
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat membuat surat izin cuti.');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat membuat surat izin cuti');
         }
     }
 
@@ -274,7 +275,7 @@ class IzinCutiController extends Controller
                 ], 500);
             }
 
-            return redirect()->back()->with('error', 'Gagal menghapus template.');
+            return redirect()->back()->with('error', 'Gagal menghapus template');
         }
     }
 }
