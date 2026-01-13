@@ -28,6 +28,15 @@ class PegawaiController extends Controller
             'jabatan' => 'nullable|string|max:255',
         ]);
 
+        if (strcasecmp($validated['jabatan'] ?? '', 'Direktur') === 0) {
+            $existingDirektur = Pegawai::whereRaw('LOWER(jabatan) = ?', ['direktur'])->first();
+            if ($existingDirektur) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['jabatan' => 'Jabatan Direktur sudah terisi. Silakan ubah jabatan Direktur yang lama terlebih dahulu']);
+            }
+        }
+
         $sisaN = $validated['sisa_cuti_n'] ?? 0;
         $sisaN1 = $validated['sisa_cuti_n1'] ?? 0;
         $sisaN2 = $validated['sisa_cuti_n2'] ?? 0;
@@ -63,6 +72,17 @@ class PegawaiController extends Controller
             'sisa_cuti_n2' => 'nullable|integer|min:0',
             'jabatan' => 'nullable|string|max:255',
         ]);
+
+        if (strcasecmp($validated['jabatan'] ?? '', 'Direktur') === 0) {
+            $existingDirektur = Pegawai::whereRaw('LOWER(jabatan) = ?', ['direktur'])
+                ->where('id', '!=', $id)
+                ->first();
+            if ($existingDirektur) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['jabatan' => 'Jabatan Direktur sudah terisi. Silakan ubah jabatan Direktur yang lama terlebih dahulu']);
+            }
+        }
 
         $sisaN = $validated['sisa_cuti_n'] ?? 0;
         $sisaN1 = $validated['sisa_cuti_n1'] ?? 0;
