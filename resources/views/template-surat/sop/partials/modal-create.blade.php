@@ -7,8 +7,7 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur (SOP)
-                </h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur</h3>
                 <button onclick="closeModal('modalCreateSOP')"
                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                     <i class="fas fa-times text-lg"></i>
@@ -236,7 +235,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'kebijakan-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="kebijakan[]" value="${item.id_regulasi}" 
+                    <input type="checkbox" name="kebijakan[]" value="${item.isi_regulasi}" 
                         id="kebijakan_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateKebijakanCheck()">
                     <label for="kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
@@ -273,7 +272,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'unit-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="unit_terkait[]" value="${item.id_unit}" 
+                    <input type="checkbox" name="unit_terkait[]" value="${item.nama_unit}" 
                         id="unit_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateUnitCheck()">
                     <label for="unit_${index}" class="ml-3 flex-1 cursor-pointer">

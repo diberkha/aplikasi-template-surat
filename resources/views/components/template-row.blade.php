@@ -22,7 +22,7 @@
     
     $description = $templatesData['deskripsi'] ?? null;
     if (!$description) {
-        if (stripos($templateName, 'Standar Operasional Prosedur (SOP)') !== false) {
+        if (stripos($templateName, 'Standar Operasional Prosedur') !== false) {
             $description = 'Template Standar Operasional Prosedur';
         } elseif (stripos($templateName, 'Keputusan Direktur') !== false) {
             $description = 'Template Surat Keputusan Direktur';

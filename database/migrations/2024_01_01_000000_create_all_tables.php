@@ -61,6 +61,7 @@ return new class extends Migration {
             $table->string('file_path')->nullable();
             $table->unsignedBigInteger('id_template_surat')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
+            $table->boolean('is_draft')->default(true);
             $table->timestamps();
 
             $table->foreign('id_template_surat')
@@ -91,6 +92,8 @@ return new class extends Migration {
             $table->integer('sisa_cuti_n')->default(12);
             $table->integer('sisa_cuti_n1')->default(0);
             $table->integer('sisa_cuti_n2')->default(0);
+            $table->boolean('is_n_postponed')->default(false);
+            $table->boolean('is_n1_postponed')->default(false);
             $table->timestamps();
         });
 

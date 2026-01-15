@@ -318,8 +318,12 @@
                         if (data.length > 0) {
                             data.forEach(p => {
                                 const div = document.createElement('div');
-                                div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-700 dark:text-gray-200';
-                                div.textContent = p.nip ? `${p.nama} - ${p.nip}` : p.nama;
+                                div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                                const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                                div.innerHTML = `
+                                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                                `;
                                 div.onclick = () => selectPegawai(p.id);
                                 resultsContainer.appendChild(div);
                             });
@@ -412,8 +416,12 @@
                             if (data.length > 0) {
                                 data.forEach(p => {
                                     const div = document.createElement('div');
-                                    div.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-700 dark:text-gray-200';
-                                    div.textContent = `${p.nama} - ${p.nip}`;
+                                    div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                                    const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                                    div.innerHTML = `
+                                        <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                                    `;
                                     div.onclick = () => selectAtasan(p.id);
                                     atasanResultsContainer.appendChild(div);
                                 });

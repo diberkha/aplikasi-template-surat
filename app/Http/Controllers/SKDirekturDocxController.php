@@ -59,7 +59,7 @@ class SKDirekturDocxController extends Controller
             $centerCell->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 12], ['alignment' => Jc::CENTER]);
             $centerCell->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'bold' => true, 'size' => 16], ['alignment' => Jc::CENTER]);
             $centerCell->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 10], ['alignment' => Jc::CENTER]);
-            $centerCell->addText('Telp. (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 10], ['alignment' => Jc::CENTER]);
+            $centerCell->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 10], ['alignment' => Jc::CENTER]);
 
             $logoRightPath = public_path('img/logo-rs-kop.png');
             if (file_exists($logoRightPath)) {
@@ -285,11 +285,11 @@ class SKDirekturDocxController extends Controller
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-            
+
             $direktur = Pegawai::getDirektur();
             $direkturNama = $direktur ? $direktur->nama : 'KINIK DARSONO';
             $direkturNip = $direktur ? $direktur->nip : null;
-            
+
             $signCell->addText($direkturNama, ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             if ($direkturNip) {
                 $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);

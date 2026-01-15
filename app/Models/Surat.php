@@ -17,10 +17,12 @@ class Surat extends Model
         'id_template_surat',
         'id_regulasi',
         'created_by',
+        'is_draft',
     ];
 
     protected $casts = [
         'tanggal_dibuat' => 'date',
+        'is_draft' => 'boolean',
     ];
 
     public function template()

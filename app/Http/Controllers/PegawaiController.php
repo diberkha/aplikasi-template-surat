@@ -43,12 +43,12 @@ class PegawaiController extends Controller
         $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
 
         if ($validated['jenis_pegawai'] === 'PNS') {
-            if ($totalAkumulasi > 18) {
+            if ($totalAkumulasi > 24) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 18 hari.']);
+                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 24 hari.']);
             }
-            $validated['sisa_cuti_tahunan'] = min(18, $totalAkumulasi);
+            $validated['sisa_cuti_tahunan'] = min(24, $totalAkumulasi);
         } else {
             $validated['sisa_cuti_tahunan'] = $sisaN;
         }
@@ -90,12 +90,12 @@ class PegawaiController extends Controller
         $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
 
         if ($validated['jenis_pegawai'] === 'PNS') {
-            if ($totalAkumulasi > 18) {
+            if ($totalAkumulasi > 24) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 18 hari.']);
+                    ->withErrors(['sisa_cuti_n' => 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 24 hari.']);
             }
-            $validated['sisa_cuti_tahunan'] = min(18, $totalAkumulasi);
+            $validated['sisa_cuti_tahunan'] = min(24, $totalAkumulasi);
         } else {
             $validated['sisa_cuti_tahunan'] = $sisaN;
         }

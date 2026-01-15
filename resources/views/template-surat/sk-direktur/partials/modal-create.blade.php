@@ -214,7 +214,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'mengingat-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}" 
+                    <input type="checkbox" name="mengingat[]" value="${item.isi_regulasi}" 
                         id="mengingat_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateMengingatCheck()">
                     <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">

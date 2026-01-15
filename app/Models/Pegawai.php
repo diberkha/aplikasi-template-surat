@@ -19,6 +19,8 @@ class Pegawai extends Model
         'sisa_cuti_n',
         'sisa_cuti_n1',
         'sisa_cuti_n2',
+        'is_n_postponed',
+        'is_n1_postponed',
     ];
 
     public static function getDirektur()
@@ -29,7 +31,7 @@ class Pegawai extends Model
     public function getAvailableCuti()
     {
         $total = $this->sisa_cuti_n + $this->sisa_cuti_n1 + $this->sisa_cuti_n2;
-        return min(18, $total);
+        return min(24, $total);
     }
 
     public function adjustLeaveBalance(int $days)
@@ -56,7 +58,7 @@ class Pegawai extends Model
             }
 
             $total_akumulasi = $this->sisa_cuti_n + $this->sisa_cuti_n1 + $this->sisa_cuti_n2;
-            $this->sisa_cuti_tahunan = min(18, $total_akumulasi);
+            $this->sisa_cuti_tahunan = min(24, $total_akumulasi);
         } else {
             $this->sisa_cuti_n = max(0, $this->sisa_cuti_n + $days);
             $this->sisa_cuti_tahunan = $this->sisa_cuti_n;

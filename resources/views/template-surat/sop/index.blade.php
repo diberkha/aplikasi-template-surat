@@ -1,6 +1,6 @@
 <x-template-header title="Template Standar Operasional Prosedur (SOP)"
-    subtitle="Pilih dan gunakan template Standar Operasional Prosedur (SOP) yang tersedia"
-    tableTitle="Daftar Template Standar Operasional Prosedur (SOP)" searchPlaceholder="Cari template..."
+    subtitle="Pilih dan gunakan template Standar Operasional Prosedur yang tersedia"
+    tableTitle="Daftar Template Standar Operasional Prosedur" searchPlaceholder="Cari template..."
     :count="$templates->count()" x-init="items = {{ json_encode($templates) }}">
 
 
@@ -44,7 +44,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
                                 <button
-                                    @click="openSopModal('modalCreateSOP', 'Standar Operasional Prosedur (SOP)', item.id_template_surat)"
+                                    @click="openSopModal('modalCreateSOP', 'Standar Operasional Prosedur', item.id_template_surat)"
                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                                     title="Buat Surat">
                                     <i class="fas fa-plus text-sm"></i>

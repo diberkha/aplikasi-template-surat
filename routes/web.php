@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DraftSuratController;
 use App\Http\Controllers\ArsipSuratController;
 use App\Http\Controllers\SKDirekturController;
 use App\Http\Controllers\UserController;
@@ -35,8 +36,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ArsipSuratController::class, 'index'])->name('index');
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
+        Route::post('/import', [ArsipSuratController::class, 'storeImport'])->name('import');
         Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
     });
+
+    Route::prefix('draft-surat')->name('draft-surat.')->group(function () {
+        Route::get('/sop', [DraftSuratController::class, 'sopIndex'])->name('sop.index');
+        Route::get('/sk-direktur', [DraftSuratController::class, 'skDirekturIndex'])->name('sk-direktur.index');
+        Route::get('/cuti', [DraftSuratController::class, 'cutiIndex'])->name('cuti.index');
+    });
+
+    Route::post('/sop/{id}/archive', [SOPController::class, 'archive'])->name('sop.archive');
+    Route::get('/sop/{id}/edit', [SOPController::class, 'edit'])->name('sop.edit');
+    Route::put('/sop/{id}', [SOPController::class, 'update'])->name('sop.update');
+
+    Route::post('/sk-direktur/{id}/archive', [SKDirekturController::class, 'archive'])->name('sk-direktur.archive');
+    Route::get('/sk-direktur/{id}/edit', [SKDirekturController::class, 'edit'])->name('sk-direktur.edit');
+    Route::put('/sk-direktur/{id}', [SKDirekturController::class, 'update'])->name('sk-direktur.update');
+
+    Route::post('/cuti/{id}/archive', [IzinCutiController::class, 'archive'])->name('cuti.archive');
+    Route::get('/cuti/{id}/edit', [IzinCutiController::class, 'edit'])->name('cuti.edit');
+    Route::put('/cuti/{id}', [IzinCutiController::class, 'update'])->name('cuti.update');
 
     Route::prefix('master-data')->group(function () {
         Route::prefix('ruangan')->group(function () {
@@ -115,10 +135,15 @@ Route::middleware('auth')->group(function () {
             Route::post('/sk-direktur/store', [SKDirekturController::class, 'store'])->name('sk-direktur.store');
             Route::get('/sk-direktur/file/{id}', [SKDirekturController::class, 'file'])->name('sk-direktur.file');
             Route::delete('/sk-direktur/{template_surat}', [SKDirekturController::class, 'destroy'])->whereNumber('template_surat')->name('sk-direktur.destroy');
-            Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
-            Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
-            Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])->whereNumber('template_surat')->name('sop.destroy');
         });
+
+        Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
+        Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
+        Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])
+            ->middleware('role:Admin')
+            ->whereNumber('template_surat')
+            ->name('sop.destroy');
+
         Route::get('/cuti', [IzinCutiController::class, 'index'])->name('cuti.index');
         Route::post('/cuti/store', [IzinCutiController::class, 'store'])->name('cuti.store');
         Route::delete('/cuti/{template_surat}', [IzinCutiController::class, 'destroy'])->whereNumber('template_surat')->name('cuti.destroy');

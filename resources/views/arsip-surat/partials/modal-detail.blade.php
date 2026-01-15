@@ -48,9 +48,9 @@
 
                         @if(Auth::user()->hasRole('Admin'))
                             <div>
-                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Dibuat
-                                    Oleh</label>
-                                <p id="detail-dibuat-oleh" class="text-gray-900 dark:text-white"></p>
+                                <label
+                                    class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Unit/Ruangan</label>
+                                <p id="detail-dibuat-oleh" class="text-gray-900 dark:text-white font-medium"></p>
                             </div>
                         @endif
                     </div>

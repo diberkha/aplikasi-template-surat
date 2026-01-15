@@ -299,7 +299,7 @@
                         <div class="header-line2">RSUD dr. SOERATNO GEMOLONG</div>
                         <div class="header-line3">
                             Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274<br>
-                            <span class="header-contact">Telp. (0271) 6811839, Laman rsudgemolong.sragenkab.go.id,
+                            <span class="header-contact">Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id,
                                 Pos-el <a href="mailto:rsudgemolong@gmail.com"
                                     style="color: #000; text-decoration: underline;">rsudgemolong@gmail.com</a></span>
                         </div>
@@ -362,7 +362,8 @@
                                     $menimbang = array_filter(explode("\n", $menimbang));
                                 }
                                 $menimbang = array_map(function ($line) {
-                                    return preg_replace('/^[a-z]\.\s*/', '', trim($line)); }, $menimbang);
+                                    return preg_replace('/^[a-z]\.\s*/', '', trim($line));
+                                }, $menimbang);
                                 $menimbang = array_values(array_filter($menimbang));
                             @endphp
                             @if(count($menimbang) <= 1)
@@ -391,7 +392,8 @@
 
                                 $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
                                 $lines = array_filter($lines, function ($line) {
-                                    return trim($line) !== ''; });
+                                    return trim($line) !== '';
+                                });
 
                                 $allAreIds = true;
                                 $ids = [];
@@ -532,7 +534,8 @@
                                 $direkturNip = $data['direktur_nip'] ?? null;
                             @endphp
 
-                            <p class="signature-name" style="text-align: center; text-decoration: underline;">{{ $direkturNama }}</p>
+                            <p class="signature-name" style="text-align: center; text-decoration: underline;">
+                                {{ $direkturNama }}</p>
                             @if($direkturNip)
                                 <p style="text-align: center; margin-top: 2px;">NIP. {{ $direkturNip }}</p>
                             @endif

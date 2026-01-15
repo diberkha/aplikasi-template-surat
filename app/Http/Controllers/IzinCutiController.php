@@ -146,7 +146,7 @@ class IzinCutiController extends Controller
                         }
 
                         $total_akumulasi = $pegawai->sisa_cuti_n + $pegawai->sisa_cuti_n1 + $pegawai->sisa_cuti_n2;
-                        $pegawai->sisa_cuti_tahunan = min(18, $total_akumulasi);
+                        $pegawai->sisa_cuti_tahunan = min(24, $total_akumulasi);
 
                         $form = $request->form;
                         $form['catatan_n2'] = $pegawai->sisa_cuti_n2 > 0 ? $pegawai->sisa_cuti_n2 : '';
@@ -193,7 +193,7 @@ class IzinCutiController extends Controller
                 ]);
             }
 
-            return redirect()->route('arsip-surat.index')->with('success', 'Surat Izin Cuti berhasil dibuat');
+            return redirect()->route('draft-surat.cuti.index')->with('success', 'Draft Surat Izin Cuti berhasil dibuat');
         } catch (ValidationException $e) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -276,6 +276,158 @@ class IzinCutiController extends Controller
             }
 
             return redirect()->back()->with('error', 'Gagal menghapus template');
+        }
+    }
+
+    public function archive($id)
+    {
+        try {
+            $surat = Surat::findOrFail($id);
+            $surat->update(['is_draft' => false]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Surat berhasil diarsipkan'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mempublikasikan surat: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function edit($id)
+    {
+        $surat = Surat::with('cuti')->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => $surat
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'kategori' => 'required|in:PNS,PPPK,NON ASN',
+                'form' => 'required|array',
+                'form.tanggal_surat' => 'required|date',
+            ]);
+
+            $surat = Surat::findOrFail($id);
+            $cuti = SuratIzinCuti::where('id_surat', $id)->firstOrFail();
+            $oldForm = $cuti->form_data;
+
+            $pegId = $request->input('form.pegawai_id') ?? $oldForm['pegawai_id'] ?? $oldForm['pegawai_id_pns'] ?? $oldForm['pegawai_id_pppk'] ?? $oldForm['pegawai_id_nonasn'];
+            $pegawai = Pegawai::find($pegId);
+
+            if ($pegawai) {
+                if (($oldForm['jenis_cuti'] ?? '') === 'Cuti Tahunan') {
+                    if ($cuti->kategori === 'PNS') {
+                        $pegawai->sisa_cuti_n2 += (int) ($oldForm['n2_used'] ?? 0);
+                        $pegawai->sisa_cuti_n1 += (int) ($oldForm['n1_used'] ?? 0);
+                        $pegawai->sisa_cuti_n += (int) ($oldForm['n_used'] ?? 0);
+                    } else {
+                        $pegawai->sisa_cuti_tahunan += (int) ($oldForm['lama_cuti'] ?? 0);
+                    }
+                }
+
+                $newJenis = $request->input('form.jenis_cuti');
+                $lamaCuti = (int) $request->input('form.lama_cuti', 0);
+
+                if ($newJenis === 'Cuti Tahunan') {
+                    if ($request->kategori === 'PNS') {
+                        $remainingToSubtract = $lamaCuti;
+                        $n2_used = 0;
+                        $n1_used = 0;
+                        $n_used = 0;
+
+                        if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n2 > 0) {
+                            $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n2);
+                            $pegawai->sisa_cuti_n2 -= $deduct;
+                            $remainingToSubtract -= $deduct;
+                            $n2_used = $deduct;
+                        }
+                        if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n1 > 0) {
+                            $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n1);
+                            $pegawai->sisa_cuti_n1 -= $deduct;
+                            $remainingToSubtract -= $deduct;
+                            $n1_used = $deduct;
+                        }
+                        if ($remainingToSubtract > 0 && $pegawai->sisa_cuti_n > 0) {
+                            $deduct = min($remainingToSubtract, $pegawai->sisa_cuti_n);
+                            $pegawai->sisa_cuti_n -= $deduct;
+                            $remainingToSubtract -= $deduct;
+                            $n_used = $deduct;
+                        }
+
+                        $total_akumulasi = $pegawai->sisa_cuti_n + $pegawai->sisa_cuti_n1 + $pegawai->sisa_cuti_n2;
+                        $pegawai->sisa_cuti_tahunan = min(24, $total_akumulasi);
+
+                        $form = $request->form;
+                        $form['catatan_n2'] = $pegawai->sisa_cuti_n2 > 0 ? $pegawai->sisa_cuti_n2 : '';
+                        $form['catatan_n1'] = $pegawai->sisa_cuti_n1 > 0 ? $pegawai->sisa_cuti_n1 : '';
+                        $form['catatan_n'] = $pegawai->sisa_cuti_n > 0 ? $pegawai->sisa_cuti_n : '';
+                        $form['n2_used'] = $n2_used;
+                        $form['n1_used'] = $n1_used;
+                        $form['n_used'] = $n_used;
+                        $request->merge(['form' => $form]);
+                    } else {
+                        $pegawai->sisa_cuti_tahunan = max(0, $pegawai->sisa_cuti_tahunan - $lamaCuti);
+                        $form = $request->form;
+                        $form['catatan_n'] = $pegawai->sisa_cuti_tahunan > 0 ? $pegawai->sisa_cuti_tahunan : '';
+                        $request->merge(['form' => $form]);
+                    }
+                }
+                $pegawai->save();
+            }
+
+            $surat->update([
+                'tanggal_dibuat' => $request->input('form.tanggal_surat'),
+            ]);
+
+            $cuti->update([
+                'kategori' => $request->kategori,
+                'form_data' => $request->form,
+            ]);
+
+            $pdfData = [
+                'kategori' => $request->kategori,
+                'form' => $request->form,
+                'nomor_surat' => $surat->nomor_surat,
+            ];
+
+            $direktur = Pegawai::getDirektur();
+            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
+            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : '19710415 200903 1 001';
+
+            if ($surat->file_path && Storage::exists($surat->file_path)) {
+                Storage::delete($surat->file_path);
+            }
+
+            $this->generateAndSavePDF($surat, $pdfData);
+
+            $surat->refresh();
+            $surat->load('createdBy.ruangan');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Draft Surat Izin Cuti berhasil diperbarui',
+                'data' => [
+                    'id_surat' => $surat->id_surat,
+                    'nama_surat' => $surat->nama_surat,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'created_at' => $surat->created_at->toISOString(),
+                    'ruangan' => $surat->createdBy->ruangan->nama_ruangan ?? '-',
+                    'tipe_surat' => 'Surat Izin Cuti'
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui draft: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

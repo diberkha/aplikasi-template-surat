@@ -5,8 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\SOP;
+use App\Models\SKDirektur;
+use App\Models\SuratIzinCuti;
+use App\Models\Pegawai;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use App\Models\Ruangan;
 
 class ArsipSuratController extends Controller
 {
@@ -16,11 +23,27 @@ class ArsipSuratController extends Controller
             ->orderBy('nama_template_surat')
             ->get();
 
+        $ruanganOptions = [];
+        if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha')) {
+            $ruanganOptions = Ruangan::where('nama_ruangan', '!=', 'Admin')
+                ->orderBy('nama_ruangan')
+                ->get();
+        }
+
         $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop', 'cuti'])
+            ->where('is_draft', false)
             ->orderBy('created_at', 'desc');
 
         $user = auth()->user();
-        if (!$user->hasRole('Admin')) {
+
+        if ($user->hasRole('Admin') || $user->hasRole('Tata Usaha')) {
+            if ($request->has('ruangan_id') && $request->ruangan_id) {
+                $roomId = $request->ruangan_id;
+                $query->whereHas('createdBy', function ($q) use ($roomId) {
+                    $q->where('id_ruangan', $roomId);
+                });
+            }
+        } else {
             $roomId = $user->id_ruangan;
             $query->whereHas('createdBy', function ($q) use ($roomId) {
                 $q->where('id_ruangan', $roomId);
@@ -44,8 +67,9 @@ class ArsipSuratController extends Controller
             $namaSuratDisplay = $namaSurat;
             $kategoriLabel = '';
 
-            if ($tipeSurat === 'Standar Operasional Prosedur (SOP)' && $item->sop) {
+            if (($tipeSurat === 'Standar Operasional Prosedur' || $tipeSurat === 'Standar Operasional Prosedur (SOP)') && $item->sop) {
                 $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
+                $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
             }
 
             if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && $item->cuti) {
@@ -72,8 +96,9 @@ class ArsipSuratController extends Controller
                     $docxUrl = route('template-surat.cuti.nonasn.docx', $idSurat);
             } elseif ($tipeSuratDisplay === 'Surat Keputusan Direktur') {
                 $docxUrl = route('template-surat.sk-direktur.docx', $idSurat);
-            } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)') {
+            } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)' || $tipeSuratDisplay === 'Standar Operasional Prosedur') {
                 $docxUrl = route('template-surat.sop.docx', $idSurat);
+                $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
             }
 
             $badgeColor = [
@@ -113,8 +138,48 @@ class ArsipSuratController extends Controller
             'surat' => $suratData,
             'totalSurat' => $totalSurat,
             'templateOptions' => $templateOptions,
+            'ruanganOptions' => $ruanganOptions,
             'debugRecent' => $debugRecent
         ]);
+    }
+
+    public function storeImport(Request $request)
+    {
+        $request->validate([
+            'nama_surat' => 'required|string|max:255',
+            'tipe_surat' => 'required|string|in:Surat Keputusan Direktur,Standar Operasional Prosedur (SOP),Standar Operasional Prosedur',
+            'nomor_surat' => 'required|string|max:255',
+            'tanggal_dibuat' => 'required|date',
+            'file_surat' => 'required|file|mimes:pdf,docx|max:10240',
+        ]);
+
+        try {
+            $file = $request->file('file_surat');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('arsip/import', $filename);
+
+            $tipeSurat = $request->tipe_surat;
+            $template = TemplateSurat::where('nama_template_surat', $tipeSurat)
+                ->orWhere('nama_template_surat', 'Standar Operasional Prosedur')
+                ->orWhere('nama_template_surat', 'Standar Operasional Prosedur (SOP)')
+                ->first();
+            $idTemplate = $template ? $template->id_template_surat : null;
+
+            Surat::create([
+                'nama_surat' => $request->nama_surat,
+                'nomor_surat' => $request->nomor_surat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+                'file_path' => $path,
+                'is_draft' => false,
+                'created_by' => auth()->id(),
+                'id_template_surat' => $idTemplate,
+            ]);
+
+            return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil diimport');
+        } catch (\Exception $e) {
+            Log::error('Import failed: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengimport surat: ' . $e->getMessage());
+        }
     }
 
     public function show($id)
@@ -129,7 +194,80 @@ class ArsipSuratController extends Controller
 
         $path = storage_path('app/' . $surat->file_path);
         if (!$surat->file_path || !file_exists($path)) {
-            abort(404, 'File surat tidak ditemukan');
+            if ($surat->is_draft) {
+                try {
+                    $direktur = Pegawai::getDirektur();
+                    $direktur_nama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
+                    $direktur_nip = $direktur ? $direktur->nip : '19710415 200903 1 001';
+
+                    if ($surat->sop) {
+                        $data = [
+                            'judul_sop' => $surat->sop->judul_sop,
+                            'nomor_dokumen' => $surat->sop->nomor_dokumen,
+                            'nomor_revisi' => $surat->sop->nomor_revisi,
+                            'halaman' => $surat->sop->halaman,
+                            'tanggal_terbit' => $surat->sop->tanggal_terbit,
+                            'pengertian' => $surat->sop->pengertian,
+                            'tujuan' => explode("\n", $surat->sop->tujuan),
+                            'kebijakan' => $surat->sop->kebijakan,
+                            'prosedur' => explode("\n", $surat->sop->prosedur),
+                            'unit_terkait' => $surat->sop->unit_terkait,
+                            'direktur_nama' => $direktur_nama,
+                            'direktur_nip' => $direktur_nip,
+                        ];
+                        $pdf = Pdf::loadView('template-surat.sop.pdf', ['data' => $data]);
+                        $newPath = 'surat/' . $surat->nomor_surat . '.pdf';
+                        Storage::put($newPath, $pdf->output());
+                        $surat->update(['file_path' => $newPath]);
+                        $path = storage_path('app/' . $newPath);
+                    } elseif ($surat->skDirektur) {
+                        $data = [
+                            'nomor_surat' => $surat->nomor_surat,
+                            'tentang' => $surat->skDirektur->tentang,
+                            'menimbang' => explode("\n", $surat->skDirektur->menimbang),
+                            'mengingat' => $surat->skDirektur->mengingat,
+                            'memutuskan' => $surat->skDirektur->memutuskan,
+                            'menetapkan' => $surat->skDirektur->menetapkan,
+                            'tempat_surat' => $surat->skDirektur->tempat_dibuat,
+                            'tanggal_dibuat' => $surat->skDirektur->tanggal_dibuat,
+                            'direktur_nama' => $direktur_nama,
+                            'direktur_nip' => $direktur_nip,
+                        ];
+                        $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
+                        $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
+                        $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+                        Storage::put($newPath, $pdf->output());
+                        $surat->update(['file_path' => $newPath]);
+                        $path = storage_path('app/' . $newPath);
+                    } elseif ($surat->cuti) {
+                        $data = [
+                            'kategori' => $surat->cuti->kategori,
+                            'form' => $surat->cuti->form_data,
+                            'nomor_surat' => $surat->nomor_surat,
+                            'direktur_nama' => $direktur_nama,
+                            'direktur_nip' => $direktur_nip,
+                        ];
+                        $view = 'template-surat.cuti.cuti-pns.pdf';
+                        if ($data['kategori'] === 'PPPK')
+                            $view = 'template-surat.cuti.cuti-pppk.pdf';
+                        if ($data['kategori'] === 'NON ASN')
+                            $view = 'template-surat.cuti.cuti-nonasn.pdf';
+
+                        $html = view($view, ['data' => $data, 'surat' => $surat])->render();
+                        $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
+                        $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
+                        Storage::put($newPath, $pdf->output());
+                        $surat->update(['file_path' => $newPath]);
+                        $path = storage_path('app/' . $newPath);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Regeneration failed: ' . $e->getMessage());
+                }
+            }
+
+            if (!file_exists($path)) {
+                abort(404, 'File surat tidak ditemukan di server.');
+            }
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
@@ -197,16 +335,29 @@ class ArsipSuratController extends Controller
             $surat = Surat::findOrFail($id);
             $path = storage_path('app/' . $surat->file_path);
 
-            if ($surat->file_path && file_exists($path)) {
+            if ($surat->file_path && $surat->file_path != '#' && file_exists($path)) {
                 unlink($path);
             }
 
             $surat->delete();
 
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Draft/Surat berhasil dihapus'
+                ]);
+            }
+
             return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil dihapus');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Surat tidak ditemukan'], 404);
+            }
             return redirect()->route('arsip-surat.index')->with('error', 'Surat tidak ditemukan');
         } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus: ' . $e->getMessage()], 500);
+            }
             return redirect()->route('arsip-surat.index')->with('error', 'Terjadi kesalahan saat menghapus surat');
         }
     }

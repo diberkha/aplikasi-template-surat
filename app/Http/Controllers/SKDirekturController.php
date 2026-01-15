@@ -132,7 +132,7 @@ class SKDirekturController extends Controller
                 ]);
             }
 
-            return redirect()->route('arsip-surat.index')->with('success', 'Surat Keputusan Direktur berhasil dibuat');
+            return redirect()->route('draft-surat.sk-direktur.index')->with('success', 'Draft Surat Keputusan Direktur berhasil dibuat');
         } catch (ValidationException $e) {
             Log::warning('Validation failed for store', [
                 'errors' => $e->errors(),
@@ -289,13 +289,151 @@ class SKDirekturController extends Controller
 
         } catch (Exception $e) {
             Log::error('Error generating PDF: ' . $e->getMessage(), [
-                'exception' => (string) $e,
-                'surat_id' => $surat->id_surat,
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
+        }
+    }
+
+    public function archive($id)
+    {
+        try {
+            $surat = Surat::findOrFail($id);
+            $surat->update(['is_draft' => false]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Surat berhasil diarsipkan'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mempublikasikan surat: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function edit($id)
+    {
+        try {
+            $surat = Surat::with('skDirektur')->findOrFail($id);
+
+            if ($surat->skDirektur) {
+                $surat->skDirektur->menimbang_array = explode("\n", $surat->skDirektur->menimbang);
+
+                $surat->skDirektur->mengingat_array = array_map(function ($line) {
+                    return preg_replace('/^\d+\.\s*/', '', trim($line));
+                }, explode("\n", trim($surat->skDirektur->mengingat)));
+
+                $memutuskanLines = explode("\n\n", $surat->skDirektur->memutuskan);
+                $surat->skDirektur->memutuskan_array = array_map(function ($block) {
+                    $lines = explode("\n", $block);
+                    return isset($lines[1]) ? trim($lines[1]) : '';
+                }, $memutuskanLines);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $surat
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data draft: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'nomor_surat' => 'required|unique:surat,nomor_surat,' . $id . ',id_surat',
+                'tentang' => 'required',
+                'menimbang' => 'required|array|min:1',
+                'menimbang.*' => 'required|string',
+                'mengingat' => 'required|array|min:1',
+                'mengingat.*' => 'required|string',
+                'menetapkan' => 'nullable|string',
+                'memutuskan' => 'required|array|min:1',
+                'memutuskan.0' => 'required|string',
+                'memutuskan.*' => 'nullable|string',
+                'tempat_dibuat' => 'required',
+                'tanggal_dibuat' => 'required|date',
+            ]);
+
+            $surat = Surat::findOrFail($id);
+            $surat->update([
+                'nomor_surat' => $request->nomor_surat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+            ]);
+
+            $memutuskanArray = $request->memutuskan;
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM'];
+            $memutuskanText = '';
+            foreach ($memutuskanArray as $index => $item) {
+                $item = trim((string) $item);
+                if ($index > 1 && $item === '')
+                    continue;
+                $label = $labels[$index] ?? 'Ke-' . ($index + 1);
+                $memutuskanText .= $label . "\n" . $item . "\n\n";
+            }
+
+            $mengingatText = '';
+            foreach ($request->mengingat as $index => $item) {
+                $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
+            }
+
+            $menimbangText = implode("\n", array_map('trim', $request->menimbang));
+
+            $skDirektur = SKDirektur::where('id_surat', $id)->firstOrFail();
+            $skDirektur->update([
+                'nomor_surat' => $request->nomor_surat,
+                'tentang' => $request->tentang,
+                'menimbang' => trim($menimbangText),
+                'mengingat' => trim($mengingatText),
+                'memutuskan' => trim($memutuskanText),
+                'menetapkan' => $request->menetapkan,
+                'tempat_dibuat' => $request->tempat_dibuat,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+            ]);
+
+            $pdfData = $request->all();
+            $pdfData['memutuskan'] = trim($memutuskanText);
+            $pdfData['mengingat'] = trim($mengingatText);
+            $pdfData['menimbang'] = array_map('trim', $request->menimbang);
+            $pdfData['tempat_surat'] = $request->tempat_dibuat;
+
+            $direktur = Pegawai::getDirektur();
+            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'KINIK DARSONO';
+            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : null;
+
+            if ($surat->file_path && Storage::exists($surat->file_path)) {
+                Storage::delete($surat->file_path);
+            }
+
+            $this->generateAndSavePDF($surat, $pdfData);
+
+            $surat->refresh();
+            $surat->load('createdBy.ruangan');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Draft Surat Keputusan Direktur berhasil diperbarui',
+                'data' => [
+                    'id_surat' => $surat->id_surat,
+                    'nama_surat' => $surat->nama_surat,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'created_at' => $surat->created_at->toISOString(),
+                    'ruangan' => $surat->createdBy->ruangan->nama_ruangan ?? '-',
+                    'tipe_surat' => 'Surat Keputusan Direktur'
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui draft: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

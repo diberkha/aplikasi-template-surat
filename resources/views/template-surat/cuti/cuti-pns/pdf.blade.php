@@ -249,7 +249,8 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
                 <td><?= $f['catatan_n1_keterangan'] ?? '' ?></td>
                 <td>5. CUTI KARENA ALASAN PENTING</td>
                 <td class="center">
-                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Karena Alasan Penting') ? 'V' : '' ?></td>
+                    <?= (isset($f['jenis_cuti']) && $f['jenis_cuti'] == 'Cuti Karena Alasan Penting') ? 'V' : '' ?>
+                </td>
             </tr>
             <tr>
                 <td>N</td>
