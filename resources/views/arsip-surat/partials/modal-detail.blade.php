@@ -25,7 +25,7 @@
                                 <p id="detail-nama-surat" class="text-gray-900 dark:text-white font-medium"></p>
                             </div>
 
-                            <div>
+                            <div id="detail-nomor-surat-container">
                                 <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nomor
                                     Surat</label>
                                 <p id="detail-nomor-surat" class="text-gray-900 dark:text-white font-medium"></p>
@@ -88,14 +88,27 @@
                             <iframe id="detail-pdf-preview" src=""
                                 class="w-full border-0 min-h-[350px] md:min-h-[600px]">
                             </iframe>
+                            <div id="detail-docx-notice"
+                                class="hidden p-12 text-center bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <i class="fas fa-file-word text-6xl text-green-500 mb-4"></i>
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Preview Tidak
+                                    Tersedia</h4>
+                                <p class="text-gray-600 dark:text-gray-400">File Word (DOCX) tidak dapat ditampilkan
+                                    langsung di browser. Silakan unduh file untuk melihat konten lengkap.</p>
+                                <button type="button" onclick="downloadAsWord()"
+                                    class="mt-4 inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                    <i class="fas fa-download mr-2"></i> Unduh DOCX
+                                </button>
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
                             <div class="flex items-center space-x-3">
-                                <i class="fas fa-file-pdf text-2xl text-red-500"></i>
+                                <i id="detail-file-icon" class="fas fa-file-pdf text-2xl text-red-500"></i>
                                 <div>
                                     <p id="detail-file-nama" class="text-gray-900 dark:text-white font-medium"></p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">File PDF</p>
+                                    <p id="detail-file-type-label" class="text-xs text-gray-500 dark:text-gray-400">File
+                                        PDF</p>
                                 </div>
                             </div>
                         </div>

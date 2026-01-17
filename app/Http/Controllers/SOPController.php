@@ -114,7 +114,7 @@ class SOPController extends Controller
                     'nomor_surat' => $request->nomor_dokumen,
                     'tanggal_dibuat' => \Carbon\Carbon::parse($surat->tanggal_dibuat)->format('Y-m-d'),
                     'judul_sop' => $request->judul_sop,
-                    'file_url' => route('template-surat.sk-direktur.file', $surat->id_surat),
+                    'file_url' => route('template-surat.sop.file', $surat->id_surat),
                 ]);
             }
 
@@ -271,6 +271,25 @@ class SOPController extends Controller
         $surat->update(['file_path' => $path]);
 
         return $path;
+    }
+    public function file($id)
+    {
+        $surat = Surat::with('sop')->findOrFail($id);
+        $path = storage_path('app/' . $surat->file_path);
+
+        if (!file_exists($path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        $sop = $surat->sop;
+        $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
+        $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $nomor);
+        $filename = 'SOP-' . $safeNomor . '.pdf';
+
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 }
 

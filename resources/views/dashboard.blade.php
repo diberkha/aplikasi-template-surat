@@ -5,8 +5,22 @@
 @section('content')
     <div class="space-y-6">
         <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
-            <h1 class="text-3xl font-bold mb-2">Selamat Datang,
-                {{ optional(Auth::user()->ruangan)->nama_ruangan ?? Auth::user()->username }}! 👋</h1>
+            @php
+                $hour = \Carbon\Carbon::now()->hour;
+                $greeting = 'Selamat Datang';
+                if ($hour >= 5 && $hour < 11) {
+                    $greeting = 'Selamat Pagi';
+                } elseif ($hour >= 11 && $hour < 15) {
+                    $greeting = 'Selamat Siang';
+                } elseif ($hour >= 15 && $hour < 18) {
+                    $greeting = 'Selamat Sore';
+                } else {
+                    $greeting = 'Selamat Malam';
+                }
+            @endphp
+            <h1 class="text-3xl font-bold mb-2">{{ $greeting }},
+                {{ optional(Auth::user()->ruangan)->nama_ruangan ?? Auth::user()->username }}! 👋
+            </h1>
             <p class="text-blue-100">Sistem E-Office - Kelola surat menyurat dengan mudah dan efisien</p>
         </div>
 

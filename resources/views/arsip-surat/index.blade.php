@@ -99,38 +99,6 @@
                     </div>
                 </div>
 
-                <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
-                    <button type="button" @click="open = !open"
-                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
-                        <div class="flex items-center space-x-2">
-                            <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
-                                x-text="dateDisplay"></span>
-                        </div>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
-                    </button>
-
-                    <div x-show="open" @click.away="open = false" x-transition
-                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
-                        <div class="space-y-2">
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                            <input type="date" x-model="startDate" x-ref="startDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
-
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                            <input type="date" x-model="endDate" x-ref="endDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
-
-                            <div class="flex space-x-2 pt-2">
-                                <button type="button" @click="applyDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
-                                <button type="button" @click="clearDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                     <div x-data="{ toggleRuangan: false }" class="relative flex-1 sm:flex-initial">
                         <button type="button" @click="toggleRuangan = !toggleRuangan"
@@ -165,6 +133,38 @@
                         </div>
                     </div>
                 @endif
+
+                <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
+                    <button type="button" @click="open = !open"
+                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
+                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                                x-text="dateDisplay"></span>
+                        </div>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                    </button>
+
+                    <div x-show="open" @click.away="open = false" x-transition
+                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
+                        <div class="space-y-2">
+                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
+                            <input type="date" x-model="startDate" x-ref="startDatePicker"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+
+                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
+                            <input type="date" x-model="endDate" x-ref="endDatePicker"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+
+                            <div class="flex space-x-2 pt-2">
+                                <button type="button" @click="applyDateFilter(); open = false"
+                                    class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
+                                <button type="button" @click="clearDateFilter(); open = false"
+                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -254,8 +254,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
                                         x-text="item.nama_surat_display"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                                        x-text="item.nomor_surat"></td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white max-w-[200px] truncate"
+                                        :title="item.tipe_surat_display === 'Surat Izin Cuti' ? '-' : item.nomor_surat"
+                                        x-text="item.tipe_surat_display === 'Surat Izin Cuti' ? '-' : item.nomor_surat"></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
                                         x-text="formatDate(item.tanggal_dibuat)"></td>
                                     @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
@@ -272,21 +273,21 @@
 
                                             <template x-if="item.file_path">
                                                 <div x-data="{ 
-                                                                                                                                                                            openDownload: false,
-                                                                                                                                                                            toggle() {
-                                                                                                                                                                                this.openDownload = !this.openDownload;
-                                                                                                                                                                                if (this.openDownload) {
-                                                                                                                                                                                    this.$nextTick(() => {
-                                                                                                                                                                                        const button = this.$refs.button;
-                                                                                                                                                                                        const dropdown = this.$refs.dropdown;
-                                                                                                                                                                                        const rect = button.getBoundingClientRect();
-                                                                                                                                                                                        dropdown.style.position = 'fixed';
-                                                                                                                                                                                        dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                                                                                                                                                        dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                                                                                                                                                    });
-                                                                                                                                                                                }
-                                                                                                                                                                            }
-                                                                                                                                                                        }"
+                                                                                                                                                                                                                    openDownload: false,
+                                                                                                                                                                                                                    toggle() {
+                                                                                                                                                                                                                        this.openDownload = !this.openDownload;
+                                                                                                                                                                                                                        if (this.openDownload) {
+                                                                                                                                                                                                                            this.$nextTick(() => {
+                                                                                                                                                                                                                                const button = this.$refs.button;
+                                                                                                                                                                                                                                const dropdown = this.$refs.dropdown;
+                                                                                                                                                                                                                                const rect = button.getBoundingClientRect();
+                                                                                                                                                                                                                                dropdown.style.position = 'fixed';
+                                                                                                                                                                                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                                                                                                                                                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                }"
                                                     @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -370,11 +371,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                            ]">
+                                                                                                                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                                                                                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                                                    ]">
                                 </button>
                             </template>
 
@@ -410,169 +411,9 @@
         </div>
     </div>
 
-    <div id="modalDeleteSurat"
-        class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-green-600 dark:text-green-400">Konfirmasi Hapus Surat</h3>
-                <button onclick="closeModal('modalDeleteSurat')" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+    @include('arsip-surat.partials.modal-delete')
 
-            <div class="p-6">
-                <p class="text-gray-600 dark:text-gray-400 mb-4">Apakah Anda yakin ingin menghapus surat ini?</p>
-                <div
-                    class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                    <p class="text-sm mb-2">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">Nama Surat:</span>
-                        <span id="delete-nama-surat" class="text-gray-800 dark:text-gray-200">-</span>
-                    </p>
-                    <p class="text-sm mb-2">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">Nomor Surat:</span>
-                        <span id="delete-nomor-surat" class="text-gray-800 dark:text-gray-200">-</span>
-                    </p>
-                    <p class="text-sm">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">Tipe Surat:</span>
-                        <span id="delete-tipe-surat" class="text-gray-800 dark:text-gray-200">-</span>
-                    </p>
-                </div>
-            </div>
-
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
-                <button type="button" onclick="closeModal('modalDeleteSurat')"
-                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Batal
-                </button>
-                <form id="formDeleteSurat" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Hapus Surat
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Import Surat -->
-    <div id="modalImportSurat" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true">
-        <div class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-            <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity"
-                onclick="closeModal('modalImportSurat')"></div>
-
-            <div
-                class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-lg w-full overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
-
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Import Surat</h3>
-                    <button onclick="closeModal('modalImportSurat')"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                </div>
-
-                <form action="{{ route('arsip-surat.import') }}" method="POST" enctype="multipart/form-data"
-                    class="flex flex-col flex-1 overflow-hidden" x-data="{ 
-                                                            openTipe: false, 
-                                                            tipeSuratLabel: '',
-                                                            options: [
-                                                                { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
-                                                                { value: 'Standar Operasional Prosedur (SOP)', label: 'Standar Operasional Prosedur (SOP)' },
-                                                            ],
-                                                            select(opt) {
-                                                                this.tipeSurat = opt.value;
-                                                                this.tipeSuratLabel = opt.label;
-                                                                this.openTipe = false;
-                                                            }
-                                                        }">
-                    @csrf
-                    <div class="p-6 space-y-4">
-                        <div>
-                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Tipe Surat <span
-                                    class="text-red-500">*</span></label>
-
-                            <div class="relative" @click.outside="openTipe = false">
-                                <input type="hidden" name="tipe_surat" :value="tipeSurat" required>
-
-                                <button type="button" @click="openTipe = !openTipe"
-                                    class="w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
-                                    <span x-text="tipeSuratLabel || 'Pilih Tipe Surat'"
-                                        :class="!tipeSuratLabel && 'text-gray-400 font-normal'"
-                                        class="text-gray-700 dark:text-gray-300"></span>
-                                    <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200"
-                                        :class="openTipe && 'rotate-180'"></i>
-                                </button>
-
-                                <div x-show="openTipe" x-transition:enter="transition ease-out duration-100"
-                                    x-transition:enter-start="opacity-0 transform scale-95"
-                                    x-transition:leave="transition ease-in duration-75"
-                                    x-transition:leave-end="opacity-0 transform scale-95"
-                                    class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
-                                    style="display: none;">
-                                    <ul class="py-1">
-                                        <template x-for="opt in options" :key="opt.value">
-                                            <li>
-                                                <button type="button" @click="select(opt)"
-                                                    class="w-full px-4 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center justify-between group">
-                                                    <span x-text="opt.label"></span>
-                                                    <i class="fas fa-check text-green-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                        x-show="tipeSurat === opt.value"></i>
-                                                </button>
-                                            </li>
-                                        </template>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Nama Surat <span
-                                    class="text-red-500">*</span></label>
-                            <input type="text" name="nama_surat" required
-                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-green-500 focus:border-green-500"
-                                placeholder="Masukkan nama surat">
-                        </div>
-
-                        <div>
-                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Nomor Surat
-                                <span class="text-red-500">*</span></label>
-                            <input type="text" name="nomor_surat" required
-                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-green-500 focus:border-green-500"
-                                placeholder="Masukkan nomor surat">
-                        </div>
-
-                        <div>
-                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Tanggal Surat <span
-                                    class="text-red-500">*</span></label>
-                            <input type="date" name="tanggal_dibuat" required
-                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-green-500 focus:border-green-500">
-                        </div>
-
-                        <div>
-                            <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">File Surat
-                                (PDF/DOCX) <span class="text-red-500">*</span></label>
-                            <input type="file" name="file_surat" accept=".pdf,.docx" required
-                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 dark:file:bg-green-900 dark:file:text-green-300 border border-gray-300 dark:border-gray-600 rounded-lg p-1">
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Max 10MB</p>
-                        </div>
-                    </div>
-
-                    <div
-                        class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
-                        <button type="button" onclick="closeModal('modalImportSurat')"
-                            class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
-                            Import
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    @include('arsip-surat.partials.modal-import')
 
     @include('arsip-surat.partials.modal-detail')
 
@@ -679,9 +520,9 @@
         }
 
         return rangeWithDots;
-                                                            },
+                                                                                },
 
-                                                            get sortLabel() {
+                                                                                get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -691,13 +532,13 @@
             }
         },
 
-                                                            get selectedTemplateName() {
+                                                                                get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                            get selectedRuanganName() {
+                                                                                get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -705,7 +546,7 @@
             @else
                 return 'Ruangan';
             @endif
-                                                            },
+                                                                                },
 
         applyFilters() {
             let url = new URL(window.location.href);
@@ -718,7 +559,7 @@
             window.location.href = url.toString();
         },
 
-                                                            get dateDisplay() {
+                                                                                get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate)} - ${this.formatDate(this.appliedEndDate)}`;
             } else if (this.appliedStartDate) {
@@ -756,9 +597,9 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                                        }));
+                                                                            }));
 
-                                                    });
+                                                                        });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -772,7 +613,15 @@
             };
 
             document.getElementById('detail-nama-surat').textContent = nama;
-            document.getElementById('detail-nomor-surat').textContent = nomor;
+
+            const nomorContainer = document.getElementById('detail-nomor-surat-container');
+            if (tipe === 'Surat Izin Cuti') {
+                nomorContainer.classList.add('hidden');
+            } else {
+                nomorContainer.classList.remove('hidden');
+                document.getElementById('detail-nomor-surat').textContent = nomor;
+            }
+
             document.getElementById('detail-tanggal-dibuat').textContent = formatLongDate(tanggal);
             const dibuatOlehEl = document.getElementById('detail-dibuat-oleh');
             if (dibuatOlehEl) {
@@ -787,8 +636,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                                            ${tipe}
-                                                                        </span>`;
+                                                                                                ${tipe}
+                                                                                            </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
@@ -796,9 +645,29 @@
                 document.getElementById('detail-download-dropdown').classList.remove('hidden');
 
                 const fileName = filePath.split('/').pop();
+                const extension = fileName.split('.').pop().toLowerCase();
+
                 document.getElementById('detail-file-nama').textContent = fileName;
                 document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
-                document.getElementById('detail-pdf-preview').src = `/arsip-surat/${idSurat}`;
+
+                const previewIframe = document.getElementById('detail-pdf-preview');
+                const docxNotice = document.getElementById('detail-docx-notice');
+                const fileIcon = document.getElementById('detail-file-icon');
+                const fileTypeLabel = document.getElementById('detail-file-type-label');
+
+                if (extension === 'pdf') {
+                    previewIframe.classList.remove('hidden');
+                    if (docxNotice) docxNotice.classList.add('hidden');
+                    previewIframe.src = `/arsip-surat/${idSurat}`;
+                    fileIcon.className = 'fas fa-file-pdf text-2xl text-red-500';
+                    fileTypeLabel.textContent = 'File PDF';
+                } else {
+                    previewIframe.classList.add('hidden');
+                    previewIframe.src = '';
+                    if (docxNotice) docxNotice.classList.remove('hidden');
+                    fileIcon.className = 'fas fa-file-word text-2xl text-green-500';
+                    fileTypeLabel.textContent = 'File Word (DOCX)';
+                }
             } else {
                 document.getElementById('detail-file-exists').classList.add('hidden');
                 document.getElementById('detail-no-file').classList.remove('hidden');

@@ -139,6 +139,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
         Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
+        Route::get('/sop/file/{id}', [SOPController::class, 'file'])->name('sop.file');
         Route::delete('/sop/{template_surat}', [SOPController::class, 'destroy'])
             ->middleware('role:Admin')
             ->whereNumber('template_surat')

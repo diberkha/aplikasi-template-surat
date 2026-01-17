@@ -59,10 +59,10 @@
                 <i class="fas fa-check-circle text-green-600 mr-2"></i>
                 Surat berhasil dibuat dan disimpan
             </div>
-            <a href="{{ route('arsip-surat.index') }}"
+            <a href="{{ route('draft-surat.sk-direktur.index') }}"
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
                 <i class="fas fa-arrow-right mr-2"></i>
-                Lihat di Arsip
+                Lihat Draft
             </a>
         </div>
     </div>
@@ -105,7 +105,7 @@
                     showNotification('success', 'Berhasil!', 'Surat berhasil dibuat dan disimpan');
                 }
                 setTimeout(() => {
-                    window.location.href = "{{ route('arsip-surat.index') }}";
+                    window.location.href = "{{ route('draft-surat.sk-direktur.index') }}";
                 }, 1000);
             },
 

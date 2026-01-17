@@ -29,8 +29,24 @@
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_surat" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <div class="flex items-center gap-2 w-full">
+                                    <input type="text" id="nomor_surat_part1"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="nomor_surat_part2"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="nomor_surat_part3"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="nomor_surat_part4"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                </div>
+                                <input type="hidden" name="nomor_surat" id="nomor_surat_combined">
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-info-circle mr-1"></i>
                                     Nomor surat tidak boleh sama dengan surat yang sudah ada
@@ -362,9 +378,21 @@
         });
     }
 
+    function combineNomorSurat() {
+        const part1 = document.getElementById('nomor_surat_part1').value.trim();
+        const part2 = document.getElementById('nomor_surat_part2').value.trim();
+        const part3 = document.getElementById('nomor_surat_part3').value.trim();
+        const part4 = document.getElementById('nomor_surat_part4').value.trim();
+
+        const combined = `${part1}/${part2}/${part3}/${part4}`;
+        document.getElementById('nomor_surat_combined').value = combined;
+    }
+
     function submitFormAJAX(event) {
         event.preventDefault();
         const form = document.getElementById('skDirekturForm');
+
+        combineNomorSurat();
 
         const memutuskanAreas = document.querySelectorAll('#memutuskanContainer textarea[name="memutuskan[]"]');
         if (memutuskanAreas.length < 1 || !memutuskanAreas[0].value.trim()) {

@@ -27,8 +27,28 @@
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" name="nomor_surat" id="edit_sk_nomor_surat" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <div class="flex items-center gap-2 w-full">
+                                    <input type="text" id="edit_nomor_surat_part1"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="edit_nomor_surat_part2"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="edit_nomor_surat_part3"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                    <input type="text" id="edit_nomor_surat_part4"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                        required>
+                                </div>
+                                <input type="hidden" name="nomor_surat" id="edit_nomor_surat_combined">
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Nomor surat tidak boleh sama dengan surat yang sudah ada
+                                </p>
                             </div>
 
                             <div>
@@ -160,7 +180,13 @@
             const sk = data.sk_direktur;
 
             document.getElementById('edit_sk_id_surat').value = data.id_surat;
-            document.getElementById('edit_sk_nomor_surat').value = data.nomor_surat;
+
+            const nomorSuratParts = (sk.nomor_surat || '///').split('/');
+            document.getElementById('edit_nomor_surat_part1').value = nomorSuratParts[0] || '';
+            document.getElementById('edit_nomor_surat_part2').value = nomorSuratParts[1] || '';
+            document.getElementById('edit_nomor_surat_part3').value = nomorSuratParts[2] || '';
+            document.getElementById('edit_nomor_surat_part4').value = nomorSuratParts[3] || '';
+
             document.getElementById('edit_sk_tentang').value = sk.tentang;
             document.getElementById('edit_sk_menetapkan').value = sk.menetapkan;
             document.getElementById('edit_sk_tempat_dibuat').value = sk.tempat_dibuat;
@@ -300,9 +326,21 @@
         }
     }
 
+    function combineEditNomorSurat() {
+        const part1 = document.getElementById('edit_nomor_surat_part1').value.trim();
+        const part2 = document.getElementById('edit_nomor_surat_part2').value.trim();
+        const part3 = document.getElementById('edit_nomor_surat_part3').value.trim();
+        const part4 = document.getElementById('edit_nomor_surat_part4').value.trim();
+
+        const combined = `${part1}/${part2}/${part3}/${part4}`;
+        document.getElementById('edit_nomor_surat_combined').value = combined;
+    }
+
     function submitEditSKForm(event) {
         event.preventDefault();
         const form = document.getElementById('editSkForm');
+
+        combineEditNomorSurat();
         const id = document.getElementById('edit_sk_id_surat').value;
         const formData = new FormData(form);
 
@@ -323,11 +361,7 @@
                 if (result.success) {
                     closeModal('modalEditSK');
                     notify('success', 'Berhasil', result.message);
-                    if (window.openDraftPreview) {
-                        window.openDraftPreview(result.data);
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } else {
                     notify('error', 'Gagal', result.message);
                 }

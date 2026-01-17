@@ -8,15 +8,14 @@
         </button>
 
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-green-600 dark:text-green-400">Konfirmasi Hapus Regulasi</h3>
+            <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus</h3>
         </div>
 
         <div class="p-6">
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus regulasi ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div
-                class="mt-4 bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div class="mt-4 bg-red-50 dark:bg-green-900/10 p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Regulasi:</p>
                 <p id="delete-preview" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                     -
@@ -34,7 +33,7 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                     Hapus Regulasi
                 </button>
             </form>

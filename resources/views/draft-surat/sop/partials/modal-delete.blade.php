@@ -1,7 +1,7 @@
 <div id="modalDeleteSop" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus Draft</h3>
+            <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus</h3>
             <button onclick="closeModal('modalDeleteSop')" class="text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times"></i>
             </button>
@@ -25,7 +25,7 @@
             </button>
             <button type="button" id="btnConfirmDeleteSop"
                 class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                Ya, Hapus
+                Hapus Surat
             </button>
         </div>
     </div>

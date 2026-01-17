@@ -544,11 +544,7 @@
                 if (res.success) {
                     closeModal('modalEditCuti');
                     notify('success', 'Berhasil', res.message);
-                    if (window.openDraftPreview) {
-                        window.openDraftPreview(res.data);
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } else notify('error', 'Gagal', res.message);
             })
             .finally(() => {

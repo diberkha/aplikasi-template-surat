@@ -6,14 +6,13 @@
             <i class="fas fa-times"></i>
         </button>
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-green-600 dark:text-green-400">Konfirmasi Hapus</h3>
+            <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus</h3>
         </div>
         <div class="p-6">
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus template ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div
-                class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div class="mt-4 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <p class="text-sm mb-2">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Nama Template:</span>
                     <span id="delete-cuti-nonasn-template-name" class="text-gray-800 dark:text-gray-200">-</span>
@@ -28,7 +27,7 @@
             <form id="formDeleteTemplateCutiNonASN" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                     Hapus Template
                 </button>
             </form>

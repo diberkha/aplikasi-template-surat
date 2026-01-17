@@ -45,9 +45,9 @@
                 <i class="fas fa-check-circle text-green-600 mr-2"></i>
                 Surat berhasil dibuat dan disimpan
             </div>
-            <a href="{{ route('arsip-surat.index') }}"
+            <a href="{{ route('draft-surat.cuti.index') }}"
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                <i class="fas fa-arrow-right mr-2"></i> Lihat di Arsip
+                <i class="fas fa-arrow-right mr-2"></i> Lihat Draft
             </a>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 this.isOpen = true;
                 this.$nextTick(() => { this.$refs.pdfFrame.src = fileUrl; this.$refs.suratNomor.textContent = nomorSurat; });
             },
-            close() { this.isOpen = false; setTimeout(() => window.location.href = "{{ route('arsip-surat.index') }}", 500); },
+            close() { this.isOpen = false; setTimeout(() => window.location.href = "{{ route('draft-surat.cuti.index') }}", 500); },
             print() { if (this.$refs.pdfFrame.contentWindow) this.$refs.pdfFrame.contentWindow.print(); }
         }
     }

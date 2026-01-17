@@ -33,15 +33,33 @@
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
+                                <div class="md:col-span-3">
                                     <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Dokumen <span
                                             class="text-red-500">*</span></label>
-                                    <input type="text" name="nomor_dokumen" id="edit_sop_nomor_dokumen" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                    <div class="flex items-center gap-2 w-full">
+                                        <input type="text" id="edit_nomor_dok_part1"
+                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            required>
+                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <input type="text" id="edit_nomor_dok_part2"
+                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            required>
+                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <input type="text" id="edit_nomor_dok_part3"
+                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            required>
+                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <input type="text" id="edit_nomor_dok_part4"
+                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            required>
+                                    </div>
+                                    <input type="hidden" name="nomor_dokumen" id="edit_nomor_dokumen_combined">
                                 </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi <span
-                                            class="text-red-500">*</span></label>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi</label>
                                     <input type="text" name="nomor_revisi" id="edit_sop_nomor_revisi"
                                         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                                 </div>
@@ -185,7 +203,13 @@
 
             document.getElementById('edit_sop_id_surat').value = data.id_surat;
             document.getElementById('edit_sop_judul').value = sop.judul_sop;
-            document.getElementById('edit_sop_nomor_dokumen').value = sop.nomor_dokumen;
+
+            const nomorDokParts = (sop.nomor_dokumen || '///').split('/');
+            document.getElementById('edit_nomor_dok_part1').value = nomorDokParts[0] || '';
+            document.getElementById('edit_nomor_dok_part2').value = nomorDokParts[1] || '';
+            document.getElementById('edit_nomor_dok_part3').value = nomorDokParts[2] || '';
+            document.getElementById('edit_nomor_dok_part4').value = nomorDokParts[3] || '';
+
             document.getElementById('edit_sop_nomor_revisi').value = sop.nomor_revisi;
             document.getElementById('edit_sop_halaman').value = sop.halaman;
             document.getElementById('edit_sop_tanggal_terbit').value = sop.tanggal_terbit ? sop.tanggal_terbit.substring(0, 10) : '';
@@ -367,14 +391,25 @@
                 noResultMsg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada unit yang cocok';
                 document.getElementById('editUnitList').appendChild(noResultMsg);
             }
-        } else if (noResultMsg) {
             noResultMsg.remove();
         }
     }
 
+    function combineEditNomorDokumen() {
+        const part1 = document.getElementById('edit_nomor_dok_part1').value.trim();
+        const part2 = document.getElementById('edit_nomor_dok_part2').value.trim();
+        const part3 = document.getElementById('edit_nomor_dok_part3').value.trim();
+        const part4 = document.getElementById('edit_nomor_dok_part4').value.trim();
+
+        const combined = `${part1}/${part2}/${part3}/${part4}`;
+        document.getElementById('edit_nomor_dokumen_combined').value = combined;
+    }
+
     function submitEditSOPForm(event) {
         event.preventDefault();
-        const form = document.getElementById('editSopForm');
+        const form = document.getElementById('editSOPForm');
+
+        combineEditNomorDokumen();
         const id = document.getElementById('edit_sop_id_surat').value;
         const formData = new FormData(form);
 
@@ -395,11 +430,7 @@
                 if (result.success) {
                     closeModal('modalEditSOP');
                     notify('success', 'Berhasil', result.message);
-                    if (window.openDraftPreview) {
-                        window.openDraftPreview(result.data);
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } else {
                     notify('error', 'Gagal', result.message);
                 }

@@ -82,7 +82,13 @@ class ArsipSuratController extends Controller
                     $kategoriLabel = 'Non ASN';
                 }
                 $tipeSuratDisplay = 'Surat Izin Cuti';
-                $namaSuratDisplay = trim('Surat Izin Cuti ' . $kategoriLabel);
+
+                $formData = $item->cuti->form_data;
+                if (isset($formData['nama'])) {
+                    $namaSuratDisplay = $formData['nama'];
+                } else {
+                    $namaSuratDisplay = $namaSurat;
+                }
             }
 
             $docxUrl = '#';
@@ -146,34 +152,79 @@ class ArsipSuratController extends Controller
     public function storeImport(Request $request)
     {
         $request->validate([
-            'nama_surat' => 'required|string|max:255',
-            'tipe_surat' => 'required|string|in:Surat Keputusan Direktur,Standar Operasional Prosedur (SOP),Standar Operasional Prosedur',
-            'nomor_surat' => 'required|string|max:255',
+            'tipe_surat' => 'required|string',
             'tanggal_dibuat' => 'required|date',
-            'file_surat' => 'required|file|mimes:pdf,docx|max:10240',
+            'file_surat' => 'required|file|mimes:pdf|max:10240',
+            'nama_surat' => 'required_unless:tipe_surat,Surat Izin Cuti|nullable|string|max:255',
+            'nomor_surat' => 'required_unless:tipe_surat,Surat Izin Cuti|nullable|string|max:255',
+            'kategori_pegawai' => 'required_if:tipe_surat,Surat Izin Cuti|nullable|string|in:PNS,PPPK,NON ASN',
+            'pegawai_nama' => 'required_if:tipe_surat,Surat Izin Cuti|nullable|string|max:255',
         ]);
 
         try {
             $file = $request->file('file_surat');
+            $tipe = $request->tipe_surat;
+            $namaSurat = $request->nama_surat;
+            $nomorSurat = $request->nomor_surat;
+
+            if ($tipe === 'Surat Izin Cuti') {
+                $namaSurat = $request->pegawai_nama;
+                $nomorSurat = 'CUTI-IMPORT-' . time();
+            }
+
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('arsip/import', $filename);
 
-            $tipeSurat = $request->tipe_surat;
-            $template = TemplateSurat::where('nama_template_surat', $tipeSurat)
-                ->orWhere('nama_template_surat', 'Standar Operasional Prosedur')
-                ->orWhere('nama_template_surat', 'Standar Operasional Prosedur (SOP)')
+            $template = TemplateSurat::where('nama_template_surat', $tipe)
+                ->orWhere('nama_template_surat', 'like', '%' . $tipe . '%')
                 ->first();
             $idTemplate = $template ? $template->id_template_surat : null;
 
-            Surat::create([
-                'nama_surat' => $request->nama_surat,
-                'nomor_surat' => $request->nomor_surat,
+            $surat = Surat::create([
+                'nama_surat' => $namaSurat,
+                'nomor_surat' => $nomorSurat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
                 'file_path' => $path,
                 'is_draft' => false,
                 'created_by' => auth()->id(),
                 'id_template_surat' => $idTemplate,
             ]);
+
+            if ($tipe === 'Standar Operasional Prosedur (SOP)' || $tipe === 'Standar Operasional Prosedur') {
+                SOP::create([
+                    'id_surat' => $surat->id_surat,
+                    'nomor_dokumen' => $nomorSurat,
+                    'judul_sop' => $namaSurat,
+                    'tanggal_terbit' => $request->tanggal_dibuat,
+                    'nomor_revisi' => '0',
+                    'halaman' => '1/1',
+                    'pengertian' => 'Imported',
+                    'tujuan' => 'Imported',
+                    'kebijakan' => 'Imported',
+                    'prosedur' => 'Imported',
+                    'unit_terkait' => 'Imported',
+                ]);
+            } elseif ($tipe === 'Surat Keputusan Direktur') {
+                SKDirektur::create([
+                    'id_surat' => $surat->id_surat,
+                    'nomor_surat' => $nomorSurat,
+                    'tentang' => $namaSurat,
+                    'tanggal_dibuat' => $request->tanggal_dibuat,
+                    'menimbang' => 'Imported',
+                    'mengingat' => 'Imported',
+                    'menetapkan' => 'Imported',
+                    'memutuskan' => 'Imported',
+                ]);
+            } elseif ($tipe === 'Surat Izin Cuti') {
+                SuratIzinCuti::create([
+                    'id_surat' => $surat->id_surat,
+                    'kategori' => $request->kategori_pegawai,
+                    'form_data' => [
+                        'nama' => $request->pegawai_nama,
+                        'is_import' => true
+                    ]
+                ]);
+            }
 
             return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil diimport');
         } catch (\Exception $e) {
@@ -287,8 +338,16 @@ class ArsipSuratController extends Controller
             $filename = "{$cleanJudul}-{$cleanNomor}.pdf";
         }
 
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $mimeType = 'application/pdf';
+        if ($extension === 'docx') {
+            $mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        } elseif ($extension === 'doc') {
+            $mimeType = 'application/msword';
+        }
+
         return response()->file($path, [
-            'Content-Type' => 'application/pdf',
+            'Content-Type' => $mimeType,
             'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
     }

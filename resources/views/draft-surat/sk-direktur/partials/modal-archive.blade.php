@@ -13,7 +13,7 @@
             <div
                 class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm mb-2">
-                    <span class="font-medium text-gray-700 dark:text-gray-300">Tentang/Nama Surat:</span>
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Tentang:</span>
                     <span id="arsipkan-nama-sk" class="text-gray-800 dark:text-gray-200">-</span>
                 </p>
             </div>
@@ -26,7 +26,7 @@
             </button>
             <button type="button" id="btnConfirmArsipkanSk"
                 class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                Ya, Arsipkan
+                Arsipkan Surat
             </button>
         </div>
     </div>
