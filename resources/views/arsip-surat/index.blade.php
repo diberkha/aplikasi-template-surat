@@ -279,21 +279,21 @@
 
                                             <template x-if="item.file_path">
                                                 <div x-data="{ 
-                                                                                                                                                                                                                                                            openDownload: false,
-                                                                                                                                                                                                                                                            toggle() {
-                                                                                                                                                                                                                                                                this.openDownload = !this.openDownload;
-                                                                                                                                                                                                                                                                if (this.openDownload) {
-                                                                                                                                                                                                                                                                    this.$nextTick(() => {
-                                                                                                                                                                                                                                                                        const button = this.$refs.button;
-                                                                                                                                                                                                                                                                        const dropdown = this.$refs.dropdown;
-                                                                                                                                                                                                                                                                        const rect = button.getBoundingClientRect();
-                                                                                                                                                                                                                                                                        dropdown.style.position = 'fixed';
-                                                                                                                                                                                                                                                                        dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                                                                                                                                                                                                                                        dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                        }"
+                                                                                                                                                                                                                                                                                                    openDownload: false,
+                                                                                                                                                                                                                                                                                                    toggle() {
+                                                                                                                                                                                                                                                                                                        this.openDownload = !this.openDownload;
+                                                                                                                                                                                                                                                                                                        if (this.openDownload) {
+                                                                                                                                                                                                                                                                                                            this.$nextTick(() => {
+                                                                                                                                                                                                                                                                                                                const button = this.$refs.button;
+                                                                                                                                                                                                                                                                                                                const dropdown = this.$refs.dropdown;
+                                                                                                                                                                                                                                                                                                                const rect = button.getBoundingClientRect();
+                                                                                                                                                                                                                                                                                                                dropdown.style.position = 'fixed';
+                                                                                                                                                                                                                                                                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                                                                                                                                                                                                                                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                }"
                                                     @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -378,11 +378,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                                                                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                                                                                                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                                                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                                                                                                            ]">
+                                                                                                                                                                                                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                                                                                                                                                                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                                                                                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                                                                                                                                    ]">
                                 </button>
                             </template>
 
@@ -435,16 +435,13 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                    ruanganOptions: @json($ruanganOptions ?? []),
+                                                                            ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
                 sortOption: '',
                 templateFilter: '',
                 ruanganFilter: '{{ request('ruangan_id') }}',
-                search: '',
-                sortOption: '',
-                templateFilter: '',
                 startDate: '{{ request('start_date') }}',
                 endDate: '{{ request('end_date') }}',
                 appliedStartDate: '{{ request('start_date') }}',
@@ -471,11 +468,15 @@
                 data = data.filter(item => item.id_template_surat == this.templateFilter);
             }
 
-            if (this.appliedStartDate) {
-                data = data.filter(item => item.tanggal_dibuat.substring(0, 10) >= this.appliedStartDate);
-            }
-            if (this.appliedEndDate) {
-                data = data.filter(item => item.tanggal_dibuat.substring(0, 10) <= this.appliedEndDate);
+            if (this.appliedStartDate && this.appliedEndDate) {
+                data = data.filter(item => {
+                    const date = item.tanggal_dibuat.substring(0, 10);
+                    return date >= this.appliedStartDate && date <= this.appliedEndDate;
+                });
+            } else if (this.appliedStartDate) {
+                data = data.filter(item => item.tanggal_dibuat.substring(0, 10) === this.appliedStartDate);
+            } else if (this.appliedEndDate) {
+                data = data.filter(item => item.tanggal_dibuat.substring(0, 10) === this.appliedEndDate);
             }
 
             if (this.sortOption === 'a-z') {
@@ -531,9 +532,9 @@
         }
 
         return rangeWithDots;
-                                                                                                    },
+                                                                                                                        },
 
-                                                                                                    get sortLabel() {
+                                                                                                                        get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -543,13 +544,13 @@
             }
         },
 
-                                                                                                    get selectedTemplateName() {
+                                                                                                                        get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                                                                    get selectedRuanganName() {
+                                                                                                                        get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -557,9 +558,9 @@
             @else
                 return 'Ruangan';
             @endif
-                                                                                                    },
+                                                                                                                        },
 
-                get filteredRuanganOptions() {
+                                    get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -567,7 +568,7 @@
             @else
                 return [];
             @endif
-                },
+                                    },
 
         applyFilters() {
             let url = new URL(window.location.href);
@@ -580,21 +581,29 @@
             window.location.href = url.toString();
         },
 
-                                                                                                    get dateDisplay() {
+                                                                                                                        get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
-                return `${this.formatDate(this.appliedStartDate)} - ${this.formatDate(this.appliedEndDate)}`;
+                return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
-                return this.formatDate(this.appliedStartDate);
+                return this.formatDate(this.appliedStartDate, 'long');
             } else if (this.appliedEndDate) {
-                return this.formatDate(this.appliedEndDate);
+                return this.formatDate(this.appliedEndDate, 'long');
             }
             return 'Tanggal';
         },
 
-        formatDate(dateStr) {
+        formatDate(dateStr, monthStyle = 'long') {
             if (!dateStr) return '';
             const d = new Date(dateStr);
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            if (monthStyle === 'short') {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+                return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            }
+            return d.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
         },
 
         setPage(page) {
@@ -618,9 +627,9 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                                                                                }));
+                                                                                                                    }));
 
-                                                                                            });
+                                                                                                                });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -657,8 +666,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                                                                                    ${tipe}
-                                                                                                                </span>`;
+                                                                                                                                        ${tipe}
+                                                                                                                                    </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');

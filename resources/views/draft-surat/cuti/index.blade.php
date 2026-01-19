@@ -158,13 +158,14 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full" :class="{
-                                                                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
-                                                                                item.cuti.kategori === 'PNS',
-                                                                            'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
-                                                                                item.cuti.kategori === 'PPPK',
-                                                                            'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
-                                                                                (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
-                                                                        }" x-text="item.cuti ? item.cuti.kategori : '-'">
+                                                                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
+                                                                                            item.cuti.kategori === 'PNS',
+                                                                                        'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
+                                                                                            item.cuti.kategori === 'PPPK',
+                                                                                        'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
+                                                                                            (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
+                                                                                    }"
+                                        x-text="item.cuti ? item.cuti.kategori : '-'">
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
@@ -236,11 +237,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                            parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                            (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                            (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                        ]">
+                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                    ]">
                             </button>
                         </template>
 
@@ -300,11 +301,15 @@
                         });
                     }
 
-                    if (this.appliedStartDate) {
-                        data = data.filter(item => item.created_at.substring(0, 10) >= this.appliedStartDate);
-                    }
-                    if (this.appliedEndDate) {
-                        data = data.filter(item => item.created_at.substring(0, 10) <= this.appliedEndDate);
+                    if (this.appliedStartDate && this.appliedEndDate) {
+                        data = data.filter(item => {
+                            const date = item.created_at.substring(0, 10);
+                            return date >= this.appliedStartDate && date <= this.appliedEndDate;
+                        });
+                    } else if (this.appliedStartDate) {
+                        data = data.filter(item => item.created_at.substring(0, 10) === this.appliedStartDate);
+                    } else if (this.appliedEndDate) {
+                        data = data.filter(item => item.created_at.substring(0, 10) === this.appliedEndDate);
                     }
 
                     if (this.sortOption === 'a-z') {
@@ -395,13 +400,27 @@
 
                 get dateDisplay() {
                     if (this.appliedStartDate && this.appliedEndDate) {
-                        return `${this.formatDate(this.appliedStartDate)} - ${this.formatDate(this.appliedEndDate)}`;
+                        return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
                     } else if (this.appliedStartDate) {
-                        return this.formatDate(this.appliedStartDate);
+                        return this.formatDate(this.appliedStartDate, 'long');
                     } else if (this.appliedEndDate) {
-                        return this.formatDate(this.appliedEndDate);
+                        return this.formatDate(this.appliedEndDate, 'long');
                     }
                     return 'Tanggal';
+                },
+
+                formatDate(dateStr, monthStyle = 'long') {
+                    if (!dateStr) return '-';
+                    const d = new Date(dateStr);
+                    if (monthStyle === 'short') {
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+                        return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+                    }
+                    return d.toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    });
                 },
 
                 applyDateFilter() {

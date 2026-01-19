@@ -50,12 +50,13 @@ class ArsipSuratController extends Controller
             });
         }
 
-        if ($request->has('start_date') && $request->start_date) {
-            $query->whereDate('tanggal_dibuat', '>=', $request->start_date);
-        }
-
-        if ($request->has('end_date') && $request->end_date) {
-            $query->whereDate('tanggal_dibuat', '<=', $request->end_date);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('tanggal_dibuat', '>=', $request->start_date)
+                ->whereDate('tanggal_dibuat', '<=', $request->end_date);
+        } elseif ($request->filled('start_date')) {
+            $query->whereDate('tanggal_dibuat', $request->start_date);
+        } elseif ($request->filled('end_date')) {
+            $query->whereDate('tanggal_dibuat', $request->end_date);
         }
 
         $suratData = $query->get()->map(function ($item) {
@@ -120,7 +121,7 @@ class ArsipSuratController extends Controller
                 'tipe_surat' => $tipeSurat,
                 'tipe_surat_display' => $tipeSuratDisplay,
                 'nama_surat_display' => $namaSuratDisplay,
-                'tanggal_dibuat' => $item->tanggal_dibuat,
+                'tanggal_dibuat' => $item->tanggal_dibuat ? $item->tanggal_dibuat->toDateString() : null,
                 'created_at' => $item->created_at->toDateTimeString(),
                 'username' => $item->createdBy->username ?? 'Unknown',
                 'ruangan' => $item->createdBy->ruangan->nama_ruangan ?? '-',
