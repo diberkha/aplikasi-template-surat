@@ -92,7 +92,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                                 <div>
                                     <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Masa
-                                        Kerja</label>
+                                        Kerja <span class="text-red-500">*</span></label>
                                     <div class="flex items-center space-x-2">
                                         <input type="number" name="form[masa_kerja_tahun]"
                                             id="edit_cuti_masa_kerja_tahun" readonly

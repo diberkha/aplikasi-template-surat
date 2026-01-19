@@ -83,7 +83,8 @@
                                     class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                             </div>
                             <div class="col-span-2 md:col-span-1">
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Masa Kerja</label>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Masa Kerja <span
+                                        class="text-red-500">*</span></label>
                                 <div class="flex items-center space-x-2">
                                     <input type="number" name="form[masa_kerja_tahun]" id="masa_kerja_tahun_nonasn"
                                         readonly
@@ -127,7 +128,8 @@
 
                 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                        <h4 class="font-bold text-gray-900 dark:text-white">III. ALASAN CUTI</h4>
+                        <h4 class="font-bold text-gray-900 dark:text-white">III. ALASAN CUTI <span
+                                class="text-red-500">*</span></h4>
                     </div>
                     <div class="p-4">
                         <div>

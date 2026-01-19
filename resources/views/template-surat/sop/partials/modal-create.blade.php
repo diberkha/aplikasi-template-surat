@@ -81,7 +81,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">PENGERTIAN</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">PENGERTIAN <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <textarea name="pengertian" rows="3" required
@@ -92,7 +93,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <div id="tujuanContainer" class="space-y-3">
@@ -116,7 +118,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <input type="hidden" name="kebijakan_check" id="kebijakan_check">
@@ -149,7 +152,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">PROSEDUR</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">PROSEDUR <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <div id="prosedurContainer" class="space-y-3">
@@ -173,7 +177,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <input type="hidden" name="unit_terkait_check" id="unit_terkait_check">

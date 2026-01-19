@@ -14,7 +14,7 @@
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Template Surat</th>
                     <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Actions</th>
                 </tr>
             </thead>
@@ -41,7 +41,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center justify-center w-full space-x-2">
                                 <button @click="
                                     let modalId = 'modalCreateCuti';
                                     if (item.nama_template_surat.includes('PPPK')) modalId = 'modalCreateCutiPPPK';
@@ -51,16 +51,6 @@
                                     title="Buat Surat">
                                     <i class="fas fa-plus text-sm"></i>
                                 </button>
-                                @if(auth()->user()->hasRole('Admin'))
-                                    <button @click="
-                                        if (item.nama_template_surat.includes('PNS')) openDeleteModalPNS(item.id_template_surat, item.nama_template_surat);
-                                        else if (item.nama_template_surat.includes('PPPK')) openDeleteModalPPPK(item.id_template_surat, item.nama_template_surat);
-                                        else openDeleteModalNonASN(item.id_template_surat, item.nama_template_surat);
-                                    " class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                                        title="Hapus Template">
-                                        <i class="fas fa-trash text-sm"></i>
-                                    </button>
-                                @endif
                             </div>
                         </td>
                     </tr>

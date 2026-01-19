@@ -47,7 +47,7 @@ class SOPController extends Controller
             $request->validate([
                 'judul_sop' => 'required|string',
                 'nomor_dokumen' => 'required|string',
-                'nomor_revisi' => 'required|string',
+                'nomor_revisi' => 'nullable|string',
                 'halaman' => 'nullable|string',
                 'tanggal_terbit' => 'required|date',
                 'pengertian' => 'required|string',
@@ -181,7 +181,7 @@ class SOPController extends Controller
             $request->validate([
                 'judul_sop' => 'required|string',
                 'nomor_dokumen' => 'required|string',
-                'nomor_revisi' => 'required|string',
+                'nomor_revisi' => 'nullable|string',
                 'halaman' => 'nullable|string',
                 'tanggal_terbit' => 'required|date',
                 'pengertian' => 'required|string',

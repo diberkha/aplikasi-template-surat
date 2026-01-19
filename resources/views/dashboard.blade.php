@@ -27,7 +27,7 @@
                 <h1 class="text-3xl font-bold mb-3 tracking-tight">{{ $greeting }},
                     {{ optional(Auth::user()->ruangan)->nama_ruangan ?? Auth::user()->username }}! 👋
                 </h1>
-                <p class="text-green-50/90 text-lg font-medium">Sistem E-Office - Kelola surat menyurat dengan mudah, cepat
+                <p class="text-green-50/90 text-lg font-medium">Sistem E-Office | Kelola surat menyurat dengan mudah, cepat
                     dan efisien</p>
             </div>
         </div>

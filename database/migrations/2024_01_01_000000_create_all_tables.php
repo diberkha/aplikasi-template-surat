@@ -136,7 +136,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_surat')->nullable();
             $table->string('judul_sop');
             $table->string('nomor_dokumen');
-            $table->string('nomor_revisi');
+            $table->string('nomor_revisi')->nullable();
             $table->string('halaman')->nullable();
             $table->date('tanggal_terbit');
             $table->text('pengertian');

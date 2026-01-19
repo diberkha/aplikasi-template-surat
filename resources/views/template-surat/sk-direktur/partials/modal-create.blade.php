@@ -65,7 +65,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">MENIMBANG</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">MENIMBANG <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <div id="menimbangContainer" class="space-y-3">
@@ -89,7 +90,8 @@
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">MENGINGAT</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white">MENGINGAT <span
+                                    class="text-red-500">*</span></h4>
                         </div>
                         <div class="p-4">
                             <input type="hidden" name="mengingat_check" id="mengingat_check">
