@@ -73,7 +73,7 @@
                                     <i class="fas fa-file-pdf text-red-500 mr-3"></i>
                                     PDF
                                 </a>
-                                <button type="button" onclick="downloadAsWord()"
+                                <button type="button" onclick="downloadAsWord()" id="detail-download-word"
                                     class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
                                     <i class="fas fa-file-word text-green-500 mr-3"></i>
                                     DOCX
@@ -88,18 +88,6 @@
                             <iframe id="detail-pdf-preview" src=""
                                 class="w-full border-0 min-h-[350px] md:min-h-[600px]">
                             </iframe>
-                            <div id="detail-docx-notice"
-                                class="hidden p-12 text-center bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <i class="fas fa-file-word text-6xl text-green-500 mb-4"></i>
-                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Preview Tidak
-                                    Tersedia</h4>
-                                <p class="text-gray-600 dark:text-gray-400">File Word (DOCX) tidak dapat ditampilkan
-                                    langsung di browser. Silakan unduh file untuk melihat konten lengkap.</p>
-                                <button type="button" onclick="downloadAsWord()"
-                                    class="mt-4 inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                                    <i class="fas fa-download mr-2"></i> Unduh DOCX
-                                </button>
-                            </div>
                         </div>
 
                         <div class="flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">

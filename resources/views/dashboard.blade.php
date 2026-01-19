@@ -77,7 +77,7 @@
                         <span class="truncate">Template tersedia</span>
                     </div>
                     @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
-                        <a href="{{ route('template-surat.sk-direktur.index') }}"
+                        <a href="{{ route('template-surat.cuti.index') }}"
                             class="flex-shrink-0 text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium transition-colors flex items-center gap-1">
                             Kelola <i class="fas fa-chevron-right text-xs"></i>
                         </a>

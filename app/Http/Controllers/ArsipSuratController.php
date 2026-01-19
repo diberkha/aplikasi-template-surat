@@ -208,12 +208,14 @@ class ArsipSuratController extends Controller
                 SKDirektur::create([
                     'id_surat' => $surat->id_surat,
                     'nomor_surat' => $nomorSurat,
+                    'judul_surat' => $namaSurat,
                     'tentang' => $namaSurat,
                     'tanggal_dibuat' => $request->tanggal_dibuat,
                     'menimbang' => 'Imported',
                     'mengingat' => 'Imported',
                     'menetapkan' => 'Imported',
                     'memutuskan' => 'Imported',
+                    'tempat_dibuat' => 'Gemolong',
                 ]);
             } elseif ($tipe === 'Surat Izin Cuti') {
                 SuratIzinCuti::create([
@@ -368,9 +370,12 @@ class ArsipSuratController extends Controller
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
-        $filename = 'surat.pdf';
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            $filename = "{$surat->nomor_surat}.pdf";
+            if ($surat->nama_surat !== 'Surat Izin Cuti') {
+                $filename = "Surat Izin Cuti-{$surat->nama_surat}.pdf";
+            } else {
+                $filename = "{$surat->nomor_surat}.pdf";
+            }
         } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
             $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {

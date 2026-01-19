@@ -165,7 +165,7 @@
                                 <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                        <p>Belum ada draft Surat Keputusan Direktur</p>
+                                        <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada draft surat keputusan direktur</h6>
                                     </div>
                                 </td>
                             </tr>

@@ -48,6 +48,38 @@
                         </div>
                     </div>
 
+                    <div x-data="{ toggleCategory: false }" class="relative flex-1 sm:flex-initial">
+                        <button type="button" @click="toggleCategory = !toggleCategory"
+                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-users text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300" x-text="categoryLabel"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        </button>
+
+                        <div x-show="toggleCategory" @click.away="toggleCategory = false" x-transition
+                            class="absolute mt-2 left-0 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <ul class="py-1">
+                                <li><button type="button" @click="kategoriFilter = 'PNS'; toggleCategory = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">PNS</button>
+                                </li>
+                                <li><button type="button" @click="kategoriFilter = 'PPPK'; toggleCategory = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">PPPK</button>
+                                </li>
+                                <li><button type="button" @click="kategoriFilter = 'NON ASN'; toggleCategory = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Non
+                                        ASN</button>
+                                </li>
+                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button type="button" @click="kategoriFilter = ''; toggleCategory = false"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus
+                                        Filter</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
                         <button type="button" @click="open = !open"
                             class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
@@ -126,13 +158,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full" :class="{
-                                                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
-                                                                        item.cuti.kategori === 'PNS',
-                                                                    'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
-                                                                        item.cuti.kategori === 'PPPK',
-                                                                    'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
-                                                                        (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
-                                                                }" x-text="item.cuti ? item.cuti.kategori : '-'">
+                                                                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
+                                                                                item.cuti.kategori === 'PNS',
+                                                                            'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
+                                                                                item.cuti.kategori === 'PPPK',
+                                                                            'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
+                                                                                (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
+                                                                        }" x-text="item.cuti ? item.cuti.kategori : '-'">
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
@@ -170,7 +202,8 @@
                                 <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                        <p>Belum ada draft Surat Izin Cuti</p>
+                                        <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada draft surat izin
+                                            cuti</h6>
                                     </div>
                                 </td>
                             </tr>
@@ -203,11 +236,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                ]">
+                                                                            parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                                            (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                            (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                        ]">
                             </button>
                         </template>
 
@@ -246,7 +279,9 @@
                 appliedStartDate: '',
                 appliedEndDate: '',
                 toggleSort: false,
+                toggleCategory: false,
                 open: false,
+                kategoriFilter: '',
 
                 get filteredData() {
                     let data = [...this.allData];
@@ -256,6 +291,12 @@
                         data = data.filter(item => {
                             const nama = item.cuti && item.cuti.form_data ? item.cuti.form_data.nama : item.nama_surat;
                             return nama.toLowerCase().includes(s);
+                        });
+                    }
+
+                    if (this.kategoriFilter) {
+                        data = data.filter(item => {
+                            return item.cuti && item.cuti.kategori && item.cuti.kategori.toUpperCase() === this.kategoriFilter;
                         });
                     }
 
@@ -343,6 +384,13 @@
                         case 'oldest': return 'Terlama';
                         default: return 'Filter';
                     }
+                },
+
+                get categoryLabel() {
+                    if (this.kategoriFilter === 'PNS') return 'PNS';
+                    if (this.kategoriFilter === 'PPPK') return 'PPPK';
+                    if (this.kategoriFilter === 'NON ASN') return 'Non ASN';
+                    return 'Jenis';
                 },
 
                 get dateDisplay() {

@@ -7,7 +7,7 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-lg w-full overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Import Surat</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Import File Surat</h3>
                 <button onclick="closeModal('modalImportSurat')"
                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                     <i class="fas fa-times text-lg"></i>
@@ -20,8 +20,8 @@
                                                             tipeSurat: '',
                                                             tipeSuratLabel: '',
                                                             options: [
-                                                                { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
                                                                 { value: 'Standar Operasional Prosedur (SOP)', label: 'Standar Operasional Prosedur (SOP)' },
+                                                                { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
                                                                 { value: 'Surat Izin Cuti', label: 'Surat Izin Cuti' },
                                                             ],
                                                             openJenis: false,
@@ -166,23 +166,23 @@
                             <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Nama Pegawai <span
                                     class="text-red-500">*</span></label>
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <div
+                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                     <i class="fas fa-search text-xs"></i>
                                 </div>
                                 <input type="text" name="pegawai_nama" x-model="pegawaiSearchTerm"
-                                    @input="searchPegawai()"
-                                    :readonly="isPegawaiSelected"
+                                    @input="searchPegawai()" :readonly="isPegawaiSelected"
                                     :required="tipeSurat === 'Surat Izin Cuti'"
                                     :class="isPegawaiSelected ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : 'bg-white dark:bg-gray-700'"
                                     class="w-full pl-9 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg dark:text-white focus:ring-green-500 focus:border-green-500 text-sm transition-all"
                                     placeholder="Cari nama pegawai...">
-                                
+
                                 <button type="button" x-show="isPegawaiSelected" @click="resetPegawai()"
                                     class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500 transition-colors">
                                     <i class="fas fa-times-circle"></i>
                                 </button>
 
-                                <div x-show="pegawaiResults.length > 0" 
+                                <div x-show="pegawaiResults.length > 0"
                                     class="absolute z-[100] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden max-h-48 overflow-y-auto"
                                     style="display: none;">
                                     <ul class="py-1">
@@ -190,14 +190,17 @@
                                             <li>
                                                 <button type="button" @click="selectPegawai(p)"
                                                     class="w-full px-4 py-2.5 text-left hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-0">
-                                                    <div class="font-medium text-sm text-gray-900 dark:text-white" x-text="p.nama"></div>
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="p.nip ? p.nip + ' | ' + (p.jabatan || '-') : (p.jabatan || '-')"></div>
+                                                    <div class="font-medium text-sm text-gray-900 dark:text-white"
+                                                        x-text="p.nama"></div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5"
+                                                        x-text="p.nip ? p.nip + ' | ' + (p.jabatan || '-') : (p.jabatan || '-')">
+                                                    </div>
                                                 </button>
                                             </li>
                                         </template>
                                     </ul>
                                 </div>
-                                
+
                                 <div x-show="isSearching" class="absolute right-3 top-3">
                                     <i class="fas fa-spinner fa-spin text-gray-400 text-xs"></i>
                                 </div>
@@ -236,9 +239,20 @@
                     <div>
                         <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">File Surat
                             <span class="text-red-500">*</span></label>
-                        <input type="file" name="file_surat" accept=".pdf" required
+                        <input type="file" name="file_surat" accept=".pdf" required @change="handleFileSelect($event)"
                             class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 dark:file:bg-green-900 dark:file:text-green-300 border border-gray-300 dark:border-gray-600 rounded-lg p-1">
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Format: PDF. Max 10MB.</p>
+                    </div>
+
+                    <div x-show="selectedFile && fileType === 'application/pdf'" x-transition
+                        class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+                        <div
+                            class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+                            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                <i class="fas fa-eye mr-2"></i>Preview File
+                            </h4>
+                        </div>
+                        <iframe :src="fileUrl" class="w-full h-96 border-0"></iframe>
                     </div>
                 </div>
 

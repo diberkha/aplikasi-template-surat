@@ -5,7 +5,6 @@
 @section('content')
     <div class="space-y-8 pb-8" x-data="arsipSurat()">
         <div class="flex flex-col space-y-4 mb-6">
-            {{-- Top Row: Title (Left) and Actions (Right) --}}
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Arsip Surat</h1>
@@ -30,7 +29,6 @@
                 </div>
             </div>
 
-            {{-- Bottom Row: Filters (Start Left) --}}
             <div class="flex flex-wrap items-center justify-start gap-2 sm:gap-3 w-full">
                 <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial">
                     <button type="button" @click="toggleSort = !toggleSort"
@@ -79,7 +77,7 @@
 
                     <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
                         class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                        <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
+                        <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar list-none">
                             @foreach($templateOptions as $template)
                                 <li>
                                     <button type="button"
@@ -113,16 +111,24 @@
 
                         <div x-show="toggleRuangan" @click.away="toggleRuangan = false" x-transition
                             class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                            <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar">
-                                @foreach($ruanganOptions as $ruangan)
+                            <div class="px-3 py-2">
+                                <input type="text" x-model="searchRuangan" placeholder="Cari ruangan..."
+                                    class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-300 focus:ring-green-500 focus:border-green-500">
+                            </div>
+                            <ul class="max-h-64 overflow-y-auto sidebar-scrollbar list-none">
+                                <template x-for="ruangan in filteredRuanganOptions" :key="ruangan.id_ruangan">
                                     <li>
                                         <button type="button"
-                                            @click="ruanganFilter = '{{ $ruangan->id_ruangan }}'; toggleRuangan = false; applyFilters()"
-                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">
-                                            {{ $ruangan->nama_ruangan }}
+                                            @click="ruanganFilter = ruangan.id_ruangan; toggleRuangan = false; applyFilters()"
+                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm"
+                                            x-text="ruangan.nama_ruangan">
                                         </button>
                                     </li>
-                                @endforeach
+                                </template>
+                                <li x-show="filteredRuanganOptions.length === 0"
+                                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                    Tidak ada data
+                                </li>
                                 <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
                                     <button type="button" @click="ruanganFilter = ''; toggleRuangan = false; applyFilters()"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
@@ -273,21 +279,21 @@
 
                                             <template x-if="item.file_path">
                                                 <div x-data="{ 
-                                                                                                                                                                                                                    openDownload: false,
-                                                                                                                                                                                                                    toggle() {
-                                                                                                                                                                                                                        this.openDownload = !this.openDownload;
-                                                                                                                                                                                                                        if (this.openDownload) {
-                                                                                                                                                                                                                            this.$nextTick(() => {
-                                                                                                                                                                                                                                const button = this.$refs.button;
-                                                                                                                                                                                                                                const dropdown = this.$refs.dropdown;
-                                                                                                                                                                                                                                const rect = button.getBoundingClientRect();
-                                                                                                                                                                                                                                dropdown.style.position = 'fixed';
-                                                                                                                                                                                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                                                                                                                                                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                }"
+                                                                                                                                                                                                                                                            openDownload: false,
+                                                                                                                                                                                                                                                            toggle() {
+                                                                                                                                                                                                                                                                this.openDownload = !this.openDownload;
+                                                                                                                                                                                                                                                                if (this.openDownload) {
+                                                                                                                                                                                                                                                                    this.$nextTick(() => {
+                                                                                                                                                                                                                                                                        const button = this.$refs.button;
+                                                                                                                                                                                                                                                                        const dropdown = this.$refs.dropdown;
+                                                                                                                                                                                                                                                                        const rect = button.getBoundingClientRect();
+                                                                                                                                                                                                                                                                        dropdown.style.position = 'fixed';
+                                                                                                                                                                                                                                                                        dropdown.style.top = (rect.bottom + 5) + 'px';
+                                                                                                                                                                                                                                                                        dropdown.style.left = (rect.right - 160) + 'px'; 
+                                                                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                        }"
                                                     @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -301,7 +307,8 @@
                                                                 class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                                 <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
                                                             </a>
-                                                            <template x-if="item.docx_url !== '#'">
+                                                            <template
+                                                                x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
                                                                 <a :href="item.docx_url"
                                                                     class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                                     <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
@@ -371,11 +378,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                                                                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                                                                    ]">
+                                                                                                                                                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
+                                                                                                                                                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
+                                                                                                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                                                                                            ]">
                                 </button>
                             </template>
 
@@ -423,9 +430,13 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('arsipSurat', () => ({
                 allData: @json($surat),
-                templateOptions: @json($templateOptions),
+                templateOptions: @json($templateOptions).filter(t => {
+                    const name = t.nama_template_surat.toLowerCase();
+                    return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
+                }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                    ruanganOptions: @json($ruanganOptions ?? []),
+                                    ruanganOptions: @json($ruanganOptions ?? []),
+                    searchRuangan: '',
                 @endif
                 search: '',
                 sortOption: '',
@@ -520,9 +531,9 @@
         }
 
         return rangeWithDots;
-                                                                                },
+                                                                                                    },
 
-                                                                                get sortLabel() {
+                                                                                                    get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -532,13 +543,13 @@
             }
         },
 
-                                                                                get selectedTemplateName() {
+                                                                                                    get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                                                get selectedRuanganName() {
+                                                                                                    get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -546,7 +557,17 @@
             @else
                 return 'Ruangan';
             @endif
-                                                                                },
+                                                                                                    },
+
+                get filteredRuanganOptions() {
+            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
+                if (!this.searchRuangan) return this.ruanganOptions;
+                const s = this.searchRuangan.toLowerCase();
+                return this.ruanganOptions.filter(r => r.nama_ruangan.toLowerCase().includes(s));
+            @else
+                return [];
+            @endif
+                },
 
         applyFilters() {
             let url = new URL(window.location.href);
@@ -559,7 +580,7 @@
             window.location.href = url.toString();
         },
 
-                                                                                get dateDisplay() {
+                                                                                                    get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate)} - ${this.formatDate(this.appliedEndDate)}`;
             } else if (this.appliedStartDate) {
@@ -597,9 +618,9 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                                                            }));
+                                                                                                }));
 
-                                                                        });
+                                                                                            });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -636,8 +657,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                                                                ${tipe}
-                                                                                            </span>`;
+                                                                                                                    ${tipe}
+                                                                                                                </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
@@ -650,23 +671,27 @@
                 document.getElementById('detail-file-nama').textContent = fileName;
                 document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
 
+                const docxBtn = document.getElementById('detail-download-word');
+                if (filePath.includes('arsip/import') || filePath.includes('arsip\\import')) {
+                    docxBtn.classList.add('hidden');
+                } else {
+                    docxBtn.classList.remove('hidden');
+                }
+
                 const previewIframe = document.getElementById('detail-pdf-preview');
-                const docxNotice = document.getElementById('detail-docx-notice');
                 const fileIcon = document.getElementById('detail-file-icon');
                 const fileTypeLabel = document.getElementById('detail-file-type-label');
 
                 if (extension === 'pdf') {
                     previewIframe.classList.remove('hidden');
-                    if (docxNotice) docxNotice.classList.add('hidden');
                     previewIframe.src = `/arsip-surat/${idSurat}`;
                     fileIcon.className = 'fas fa-file-pdf text-2xl text-red-500';
                     fileTypeLabel.textContent = 'File PDF';
                 } else {
                     previewIframe.classList.add('hidden');
                     previewIframe.src = '';
-                    if (docxNotice) docxNotice.classList.remove('hidden');
-                    fileIcon.className = 'fas fa-file-word text-2xl text-green-500';
-                    fileTypeLabel.textContent = 'File Word (DOCX)';
+                    fileIcon.className = 'fas fa-file text-2xl text-gray-500';
+                    fileTypeLabel.textContent = 'File Dokumen';
                 }
             } else {
                 document.getElementById('detail-file-exists').classList.add('hidden');
