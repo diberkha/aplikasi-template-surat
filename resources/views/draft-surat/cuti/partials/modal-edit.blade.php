@@ -54,8 +54,7 @@
                         </div>
                     </div>
 
-                    <!-- I. DATA PEGAWAI -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">I. DATA PEGAWAI</h4>
@@ -108,8 +107,7 @@
                         </div>
                     </div>
 
-                    <!-- II. JENIS CUTI YANG DIAMBIL -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">II. JENIS CUTI YANG DIAMBIL</h4>
@@ -131,8 +129,7 @@
                         </div>
                     </div>
 
-                    <!-- III. ALASAN CUTI -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">III. ALASAN CUTI</h4>
@@ -143,8 +140,7 @@
                         </div>
                     </div>
 
-                    <!-- IV. LAMANYA CUTI -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">IV. LAMANYA CUTI</h4>
@@ -173,8 +169,7 @@
                         </div>
                     </div>
 
-                    <!-- V. CATATAN CUTI (Conditional) -->
-                    <div id="edit_sisa_cuti_container"
+<div id="edit_sisa_cuti_container"
                         class="hidden border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
@@ -212,7 +207,7 @@
                                     placeholder="Keterangan N"
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
                             </div>
-                            <!-- Calculation Preview -->
+
                             <div id="edit_calc_preview"
                                 class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg hidden transition-all duration-300">
                                 <p class="text-xs font-semibold text-red-700 dark:text-red-300 mb-2">Peringatan:</p>
@@ -222,8 +217,7 @@
                         </div>
                     </div>
 
-                    <!-- VI. ALAMAT SELAMA MENJALANKAN CUTI -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">VI. ALAMAT SELAMA MENJALANKAN CUTI</h4>
@@ -244,8 +238,7 @@
                         </div>
                     </div>
 
-                    <!-- VII. PERTIMBANGAN ATASAN LANGSUNG -->
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">VII. PERTIMBANGAN ATASAN LANGSUNG</h4>

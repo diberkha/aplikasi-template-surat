@@ -86,7 +86,7 @@ class IzinCutiPNSController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL 
+            // II. JENIS CUTI YANG DIAMBIL
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('II. JENIS CUTI YANG DIAMBIL**');
@@ -132,7 +132,7 @@ class IzinCutiPNSController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI 
+            // V. CATATAN CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');

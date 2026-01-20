@@ -82,11 +82,11 @@ class SOPDocxController extends Controller
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(2);
-            
+
             $direktur = Pegawai::getDirektur();
             $direkturNama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
             $direkturNip = $direktur ? $direktur->nip : '19710415 200903 1 001';
-            
+
             $namaLength = mb_strlen($direkturNama);
             $fontSize = 12;
             if ($namaLength > 50) {
@@ -100,16 +100,16 @@ class SOPDocxController extends Controller
             } elseif ($namaLength > 27) {
                 $fontSize = 11;
             }
-            
+
             $signCell->addText($direkturNama, ['underline' => 'single', 'size' => $fontSize], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
 
-            // Content 
+            // Content
             $rawKebijakan = trim($data['kebijakan'] ?? '');
             $resolvedKebijakan = [];
             $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
             $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
-            
+
             $allAreIds = true;
             $ids = [];
             foreach ($lines as $line) {
@@ -117,7 +117,7 @@ class SOPDocxController extends Controller
                 if (preg_match('/^\d+$/', $cleaned)) { $ids[] = (int) $cleaned; }
                 else { $allAreIds = false; break; }
             }
-            
+
             if ($allAreIds && count($ids) > 0) {
                 $regs = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
                     ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
@@ -131,7 +131,7 @@ class SOPDocxController extends Controller
             $resolvedUnit = $rawUnit;
             $unitLines = preg_split('/\r\n|\r|\n/', $rawUnit);
             $unitLines = array_filter($unitLines, function ($line) { return trim($line) !== ''; });
-            
+
             $allUnitIds = true;
             $uIds = [];
             foreach ($unitLines as $line) {
@@ -139,7 +139,7 @@ class SOPDocxController extends Controller
                 if (preg_match('/^\d+$/', $cleaned)) { $uIds[] = (int) $cleaned; }
                 else { $allUnitIds = false; break; }
             }
-            
+
             if ($allUnitIds && count($uIds) > 0) {
                 $units = \App\Models\Unit::whereIn('id_unit', $uIds)
                     ->orderByRaw('FIELD(id_unit, ' . implode(',', $uIds) . ')')

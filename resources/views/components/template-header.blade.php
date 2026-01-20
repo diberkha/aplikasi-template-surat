@@ -22,7 +22,7 @@
     itemsPerPage: 10,
 
     get filteredData() {
-        let result = this.items.filter(i => 
+        let result = this.items.filter(i =>
             i.nama_template_surat.toLowerCase().includes(this.search.toLowerCase())
         );
 
@@ -103,7 +103,7 @@
 
     get sortText() {
         switch (this.sortOption) {
-            case '': 
+            case '':
             case null: return 'Filter';
             case 'a-z': return 'A-Z';
             case 'z-a': return 'Z-A';
@@ -136,7 +136,7 @@
                             <span class="text-gray-700 dark:text-gray-300" x-text="sortText"></span>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
                         </button>
-                        <div x-show="open" @click.away="open=false" x-cloak 
+                        <div x-show="open" @click.away="open=false" x-cloak
                             class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <div class="py-1">
                                 <button @click.prevent="setSort('a-z'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>

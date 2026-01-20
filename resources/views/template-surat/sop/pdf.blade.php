@@ -197,10 +197,10 @@
                 @php
                     $rawKebijakan = trim($data['kebijakan'] ?? '');
                     $kebijakanItems = [];
-                    
+
                     $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
                     $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
-                    
+
                     $allAreIds = true;
                     $ids = [];
                     foreach ($lines as $line) {
@@ -212,7 +212,7 @@
                             break;
                         }
                     }
-                    
+
                     if ($allAreIds && count($ids) > 0) {
                         $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
                             ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
@@ -250,10 +250,10 @@
                 @php
                     $rawUnit = trim($data['unit_terkait'] ?? '');
                     $unitText = $rawUnit;
-                    
+
                     $lines = preg_split('/\r\n|\r|\n/', $rawUnit);
                     $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
-                    
+
                     $allAreIds = true;
                     $ids = [];
                     foreach ($lines as $line) {
@@ -265,7 +265,7 @@
                             break;
                         }
                     }
-                    
+
                     if ($allAreIds && count($ids) > 0) {
                         $units = \App\Models\Unit::whereIn('id_unit', $ids)
                             ->orderByRaw('FIELD(id_unit, ' . implode(',', $ids) . ')')

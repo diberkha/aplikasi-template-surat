@@ -80,7 +80,7 @@
 </head>
 
 <body>
-    <?php 
+    <?php
         $f = $data['form'] ?? [];
 function formatTanggalIndonesia($tanggal)
 {
@@ -95,13 +95,13 @@ function formatTanggalIndonesia($tanggal)
 }
     ?>
     <div class="container">
-        <!-- Header -->
+
         <table class="no-border" style="margin-bottom: 0;">
             <tr class="no-border">
                 <td style="width: 45%"></td>
                 <td style="width: 55%">
                     <div class="header-right">
-                        <!-- LAMPIRAN II<br> -->
+
                         PERATURAN BADAN KEPEGAWAIAN NEGARA REPUBLIK INDONESIA NOMOR 7 TAHUN 2022<br>
                         TENTANG<br>
                         TATA CARA PEMBERIAN CUTI PEGAWAI PEMERINTAH DENGAN PERJANJIAN KERJA<br><br>
@@ -135,8 +135,7 @@ function formatTanggalIndonesia($tanggal)
             FORMULIR PERMINTAAN DAN PEMBERIAN CUTI
         </div>
 
-        <!-- I. DATA PEGAWAI -->
-        <table>
+<table>
             <tr>
                 <td colspan="4" class="section-header">I. DATA PEGAWAI</td>
             </tr>
@@ -164,8 +163,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- II. JENIS CUTI YANG DIAMBIL -->
-        <table>
+<table>
             <tr>
                 <td colspan="2" class="section-header">II. JENIS CUTI YANG DIAMBIL**</td>
             </tr>
@@ -189,8 +187,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- III. ALASAN CUTI -->
-        <table>
+<table>
             <tr>
                 <td class="section-header">III. ALASAN CUTI</td>
             </tr>
@@ -201,8 +198,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- IV. LAMANYA CUTI -->
-        <table>
+<table>
             <tr>
                 <td colspan="6" class="section-header">IV. LAMANYA CUTI</td>
             </tr>
@@ -216,8 +212,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- V. CATATAN CUTI -->
-        <table>
+<table>
             <tr>
                 <td colspan="2" class="section-header">V. CATATAN CUTI***</td>
             </tr>
@@ -237,8 +232,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- VI. ALAMAT SELAMA MENJALANKAN CUTI -->
-        <table>
+<table>
             <tr>
                 <td colspan="3" class="section-header">VI. ALAMAT SELAMA MENJALANKAN CUTI</td>
             </tr>
@@ -259,8 +253,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- VII. PERTIMBANGAN ATASAN LANGSUNG -->
-        <table>
+<table>
             <tr>
                 <td colspan="4" class="section-header">VII. PERTIMBANGAN ATASAN LANGSUNG**</td>
             </tr>
@@ -294,8 +287,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-        <!-- VIII. KEPUTUSAN PEJABAT YANG BERWENANG -->
-        <table>
+<table>
             <tr>
                 <td colspan="4" class="section-header">VIII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI**</td>
             </tr>

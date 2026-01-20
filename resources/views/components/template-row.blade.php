@@ -19,7 +19,7 @@
     }
 
     $templateName = $templatesData['nama_template_surat'] ?? 'Template';
-    
+
     $description = $templatesData['deskripsi'] ?? null;
     if (!$description) {
         if (stripos($templateName, 'Standar Operasional Prosedur') !== false) {
@@ -101,7 +101,7 @@
         <div class="flex items-center space-x-2">
 
             @if (in_array('create', $actionButtons))
-                <button 
+                <button
                     @if($createAction) onclick="{{ $createAction }}" @endif
                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                     title="Buat Surat">
@@ -110,7 +110,7 @@
             @endif
 
             @if (in_array('delete', $actionButtons) && auth()->user()->hasRole('Admin'))
-                <button 
+                <button
                     @if($deleteAction) onclick="{{ $deleteAction }}" @endif
                     class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                     title="Hapus Template">

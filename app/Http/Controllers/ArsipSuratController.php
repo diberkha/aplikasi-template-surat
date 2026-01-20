@@ -392,8 +392,6 @@ class ArsipSuratController extends Controller
         return response()->download($path, $filename);
     }
 
-
-
     public function destroy($id)
     {
         try {

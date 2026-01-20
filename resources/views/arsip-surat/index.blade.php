@@ -174,39 +174,7 @@
             </div>
         </div>
 
-
-        @if(isset($debugRecent) && $debugRecent)
-            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mt-4">
-                <div class="mb-2 font-medium text-yellow-800">Debug: Recent Surat (for diagnosis)</div>
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-left text-xs text-gray-600">
-                            <th class="pb-2">ID</th>
-                            <th class="pb-2">Nama Surat</th>
-                            <th class="pb-2">Nomor</th>
-                            <th class="pb-2">Tanggal</th>
-                            <th class="pb-2">Have SKDirektur</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($debugRecent as $d)
-                            <tr class="border-t">
-                                <td class="py-2">{{ $d->id_surat }}</td>
-                                <td class="py-2">{{ $d->nama_surat }}</td>
-                                <td class="py-2">{{ $d->nomor_surat }}</td>
-                                <td class="py-2">{{ optional($d->tanggal_dibuat)->format('Y-m-d') }}</td>
-                                <td class="py-2">{{ $d->skDirektur ? 'yes' : 'no' }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
-
-
-
-
-        <div
+<div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
             <div
                 class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
@@ -278,22 +246,7 @@
                                             </button>
 
                                             <template x-if="item.file_path">
-                                                <div x-data="{ 
-                                                                                                                                                                                                                                                                                                    openDownload: false,
-                                                                                                                                                                                                                                                                                                    toggle() {
-                                                                                                                                                                                                                                                                                                        this.openDownload = !this.openDownload;
-                                                                                                                                                                                                                                                                                                        if (this.openDownload) {
-                                                                                                                                                                                                                                                                                                            this.$nextTick(() => {
-                                                                                                                                                                                                                                                                                                                const button = this.$refs.button;
-                                                                                                                                                                                                                                                                                                                const dropdown = this.$refs.dropdown;
-                                                                                                                                                                                                                                                                                                                const rect = button.getBoundingClientRect();
-                                                                                                                                                                                                                                                                                                                dropdown.style.position = 'fixed';
-                                                                                                                                                                                                                                                                                                                dropdown.style.top = (rect.bottom + 5) + 'px';
-                                                                                                                                                                                                                                                                                                                dropdown.style.left = (rect.right - 160) + 'px'; 
-                                                                                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                }"
+                                                <div x-data="{                                                                                                                                                                                                                                                                                                         }"
                                                     @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -304,16 +257,16 @@
                                                             @click.outside="openDownload = false" x-transition
                                                             class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
                                                             <a :href="item.download_url"
-                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
+            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
                                                             </a>
                                                             <template
-                                                                x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
-                                                                <a :href="item.docx_url"
-                                                                    class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
-                                                                    DOCX
-                                                                </a>
+            x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
+            <a :href="item.docx_url"
+            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
+            DOCX
+            </a>
                                                             </template>
                                                         </div>
                                                     </template>
@@ -378,11 +331,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                                                                                                                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' : 
-                                                                                                                                                                                                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' : 
-                                                                                                                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                                                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                                                                                                                                                    ]">
+            parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+            (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+            (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+            ]">
                                 </button>
                             </template>
 
@@ -405,8 +358,7 @@
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
                     <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data surat</h6>
 
-
-                    @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
+@if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
                         <a href="{{ route('arsip-surat.index') }}"
                             class="inline-flex items-center px-4 py-2 mt-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                             Tampilkan Semua Surat
@@ -435,7 +387,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                                                            ruanganOptions: @json($ruanganOptions ?? []),
+            ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -532,9 +484,9 @@
         }
 
         return rangeWithDots;
-                                                                                                                        },
+            },
 
-                                                                                                                        get sortLabel() {
+            get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -544,13 +496,13 @@
             }
         },
 
-                                                                                                                        get selectedTemplateName() {
+            get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                                                                                        get selectedRuanganName() {
+            get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -558,9 +510,9 @@
             @else
                 return 'Ruangan';
             @endif
-                                                                                                                        },
+            },
 
-                                    get filteredRuanganOptions() {
+                                        get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -568,7 +520,7 @@
             @else
                 return [];
             @endif
-                                    },
+                                        },
 
         applyFilters() {
             let url = new URL(window.location.href);
@@ -581,7 +533,7 @@
             window.location.href = url.toString();
         },
 
-                                                                                                                        get dateDisplay() {
+            get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -627,9 +579,9 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                                                                                                    }));
+            }));
 
-                                                                                                                });
+            });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -666,8 +618,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                                                                                                        ${tipe}
-                                                                                                                                    </span>`;
+            ${tipe}
+            </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
@@ -732,8 +684,7 @@
             document.body.removeChild(form);
         }
 
-
-        function openDeleteModal(id, namaSurat, nomorSurat, tipeSurat) {
+function openDeleteModal(id, namaSurat, nomorSurat, tipeSurat) {
             document.getElementById('delete-nama-surat').textContent = namaSurat;
             document.getElementById('delete-nomor-surat').textContent = nomorSurat;
             document.getElementById('delete-tipe-surat').textContent = tipeSurat;

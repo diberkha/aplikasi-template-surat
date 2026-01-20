@@ -9,26 +9,12 @@ use Carbon\Carbon;
 
 class ResetCutiTahunan extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'cuti:reset-tahunan';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Reset cuti tahunan semua pegawai setiap awal tahun';
+protected $description = 'Reset cuti tahunan semua pegawai setiap awal tahun';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+public function handle()
     {
         $this->info('Memulai proses reset cuti tahunan...');
         $this->newLine();

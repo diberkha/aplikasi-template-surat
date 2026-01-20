@@ -17,10 +17,10 @@
                 <input type="hidden" id="edit_id" name="id">
 
                 <div class="space-y-6">
-                    <div class="relative" x-data="{ 
-                        open: false, 
-                        search: '', 
-                        selectedId: '', 
+                    <div class="relative" x-data="{
+                        open: false,
+                        search: '',
+                        selectedId: '',
                         selectedName: '',
                         options: ruanganOptions,
                         init() {

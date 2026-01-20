@@ -118,8 +118,7 @@ class SOPController extends Controller
                 ]);
             }
 
-
-            return redirect()->route('draft-surat.sop.index')->with('success', 'Draft Standar Operasional Prosedur berhasil dibuat');
+return redirect()->route('draft-surat.sop.index')->with('success', 'Draft Standar Operasional Prosedur berhasil dibuat');
         } catch (ValidationException $e) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -292,5 +291,3 @@ class SOPController extends Controller
         ]);
     }
 }
-
-

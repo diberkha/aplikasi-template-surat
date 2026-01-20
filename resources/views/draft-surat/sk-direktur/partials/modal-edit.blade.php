@@ -229,8 +229,8 @@
             const checkboxItem = document.createElement('div');
             checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
             checkboxItem.innerHTML = `
-                <input type="checkbox" name="mengingat[]" value="${item.isi_regulasi}" 
-                    id="edit_mengingat_${index}" ${isChecked ? 'checked' : ''} 
+                <input type="checkbox" name="mengingat[]" value="${item.isi_regulasi}"
+                    id="edit_mengingat_${index}" ${isChecked ? 'checked' : ''}
                     class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
                 <label for="edit_mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>

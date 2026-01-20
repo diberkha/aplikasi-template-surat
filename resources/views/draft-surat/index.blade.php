@@ -12,7 +12,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Card Cuti -->
+
             <a href="{{ route('draft-surat.cuti.index') }}"
                 class="block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-4">
@@ -26,8 +26,7 @@
                 </div>
             </a>
 
-            <!-- Card SK Direktur -->
-            <a href="{{ route('draft-surat.sk-direktur.index') }}"
+<a href="{{ route('draft-surat.sk-direktur.index') }}"
                 class="block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-4">
                     <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
@@ -40,8 +39,7 @@
                 </div>
             </a>
 
-            <!-- Card SOP -->
-            <a href="{{ route('draft-surat.sop.index') }}"
+<a href="{{ route('draft-surat.sop.index') }}"
                 class="block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-4">
                     <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400">

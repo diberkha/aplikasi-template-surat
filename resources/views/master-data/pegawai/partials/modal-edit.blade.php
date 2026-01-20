@@ -22,7 +22,7 @@
                     <div class="lg:col-span-1">
                         <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Jenis Pegawai <span
                                 class="text-red-500">*</span></label>
-                        <div class="relative" x-data="{ 
+                        <div class="relative" x-data="{
                             open: false, selected: '', options: ['PNS', 'NON ASN', 'PPPK'],
                             init() {
                                 window.addEventListener('populate-edit-modal', (e) => {
@@ -31,13 +31,13 @@
                                         this.triggerChange();
                                     }
                                 });
-                                
+
                                 this.$nextTick(() => {
                                     const form = this.$el.closest('form');
                                     if (form) {
                                         form.addEventListener('reset', () => {
                                             setTimeout(() => {
-                                                this.selected = '';  
+                                                this.selected = '';
                                                 this.triggerChange();
                                             }, 50);
                                         });
@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="lg:col-span-1">
-                        <div class="relative" x-data="{ 
+                        <div class="relative" x-data="{
                             open: false, search: '', selected: '', options: jabatanOptions,
                             init() {
                                 window.addEventListener('populate-edit-modal', (e) => {

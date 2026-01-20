@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    /**
-     * Run the migrations - Create all application tables.
-     */
+
     public function up(): void
     {
         Schema::create('failed_jobs', function (Blueprint $table) {
@@ -175,10 +173,7 @@ return new class extends Migration {
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kabag', 'Kepala Bagian')");
     }
 
-    /**
-     * Reverse the migrations - Drop all application tables.
-     */
-    public function down(): void
+public function down(): void
     {
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Seksi', 'Kasi')");
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Bidang', 'Kabid')");

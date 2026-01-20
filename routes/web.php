@@ -158,8 +158,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
     });
 
-
-    Route::post('/logout', function () {
+Route::post('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();

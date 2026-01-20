@@ -14,10 +14,10 @@
             <form id="formCreateUser" action="{{ route('master-data.user.store') }}" method="POST">
                 @csrf
                 <div class="space-y-6">
-                    <div class="relative" x-data="{ 
-                        open: false, 
-                        search: '', 
-                        selectedId: '', 
+                    <div class="relative" x-data="{
+                        open: false,
+                        search: '',
+                        selectedId: '',
                         selectedName: '',
                         options: ruanganOptions,
                         init() {

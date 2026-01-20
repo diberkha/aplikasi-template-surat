@@ -258,7 +258,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'kebijakan-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="kebijakan[]" value="${item.isi_regulasi}" 
+                    <input type="checkbox" name="kebijakan[]" value="${item.isi_regulasi}"
                         id="kebijakan_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateKebijakanCheck()">
                     <label for="kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
@@ -295,7 +295,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'unit-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="unit_terkait[]" value="${item.nama_unit}" 
+                    <input type="checkbox" name="unit_terkait[]" value="${item.nama_unit}"
                         id="unit_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateUnitCheck()">
                     <label for="unit_${index}" class="ml-3 flex-1 cursor-pointer">

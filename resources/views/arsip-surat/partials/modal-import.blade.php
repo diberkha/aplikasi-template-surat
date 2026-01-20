@@ -15,33 +15,33 @@
             </div>
 
             <form action="{{ route('arsip-surat.import') }}" method="POST" enctype="multipart/form-data"
-                class="flex flex-col flex-1 overflow-hidden" x-data="{ 
-                                                            openTipe: false, 
+                class="flex flex-col flex-1 overflow-hidden" x-data="{
+                                                            openTipe: false,
                                                             tipeSurat: '',
                                                             tipeSuratLabel: '',
                                                             options: [
-                                                                { value: 'Standar Operasional Prosedur (SOP)', label: 'Standar Operasional Prosedur (SOP)' },
-                                                                { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
-                                                                { value: 'Surat Izin Cuti', label: 'Surat Izin Cuti' },
+            { value: 'Standar Operasional Prosedur (SOP)', label: 'Standar Operasional Prosedur (SOP)' },
+            { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
+            { value: 'Surat Izin Cuti', label: 'Surat Izin Cuti' },
                                                             ],
                                                             openJenis: false,
                                                             jenisPegawai: '',
                                                             jenisPegawaiLabel: '',
                                                             jenisOptions: [
-                                                                { value: 'PNS', label: 'PNS' },
-                                                                { value: 'PPPK', label: 'PPPK' },
-                                                                { value: 'NON ASN', label: 'NON ASN' },
+            { value: 'PNS', label: 'PNS' },
+            { value: 'PPPK', label: 'PPPK' },
+            { value: 'NON ASN', label: 'NON ASN' },
                                                             ],
                                                             selectTipe(opt) {
-                                                                this.tipeSurat = opt.value;
-                                                                this.tipeSuratLabel = opt.label;
-                                                                this.openTipe = false;
+            this.tipeSurat = opt.value;
+            this.tipeSuratLabel = opt.label;
+            this.openTipe = false;
                                                             },
                                                             selectJenis(opt) {
-                                                                this.jenisPegawai = opt.value;
-                                                                this.jenisPegawaiLabel = opt.label;
-                                                                this.openJenis = false;
-                                                                this.resetPegawai();
+            this.jenisPegawai = opt.value;
+            this.jenisPegawaiLabel = opt.label;
+            this.openJenis = false;
+            this.resetPegawai();
                                                             },
                                                             pegawaiSearchTerm: '',
                                                             pegawaiResults: [],
@@ -49,37 +49,37 @@
                                                             isPegawaiSelected: false,
                                                             debounceTimer: null,
                                                             searchPegawai() {
-                                                                if (this.pegawaiSearchTerm.length < 2) {
-                                                                    this.pegawaiResults = [];
-                                                                    return;
-                                                                }
-                                                                clearTimeout(this.debounceTimer);
-                                                                this.isSearching = true;
-                                                                this.debounceTimer = setTimeout(() => {
-                                                                    fetch(`/api/pegawai/search?term=${this.pegawaiSearchTerm}&type=${this.jenisPegawai}`)
-                                                                        .then(r => r.json())
-                                                                        .then(data => {
-                                                                            this.pegawaiResults = data;
-                                                                            this.isSearching = false;
-                                                                        });
-                                                                }, 300);
+            if (this.pegawaiSearchTerm.length < 2) {
+            this.pegawaiResults = [];
+            return;
+            }
+            clearTimeout(this.debounceTimer);
+            this.isSearching = true;
+            this.debounceTimer = setTimeout(() => {
+            fetch(`/api/pegawai/search?term=${this.pegawaiSearchTerm}&type=${this.jenisPegawai}`)
+            .then(r => r.json())
+            .then(data => {
+            this.pegawaiResults = data;
+            this.isSearching = false;
+            });
+            }, 300);
                                                             },
                                                             selectPegawai(p) {
-                                                                this.pegawaiSearchTerm = p.nama;
-                                                                this.isPegawaiSelected = true;
-                                                                this.pegawaiResults = [];
+            this.pegawaiSearchTerm = p.nama;
+            this.isPegawaiSelected = true;
+            this.pegawaiResults = [];
                                                             },
                                                             resetPegawai() {
-                                                                this.pegawaiSearchTerm = '';
-                                                                this.isPegawaiSelected = false;
-                                                                this.pegawaiResults = [];
+            this.pegawaiSearchTerm = '';
+            this.isPegawaiSelected = false;
+            this.pegawaiResults = [];
                                                             },
                                                             resetForm() {
-                                                                this.tipeSurat = '';
-                                                                this.tipeSuratLabel = '';
-                                                                this.jenisPegawai = '';
-                                                                this.jenisPegawaiLabel = '';
-                                                                this.resetPegawai();
+            this.tipeSurat = '';
+            this.tipeSuratLabel = '';
+            this.jenisPegawai = '';
+            this.jenisPegawaiLabel = '';
+            this.resetPegawai();
                                                             }
                                                         }" @reset="resetForm()">
                 @csrf
