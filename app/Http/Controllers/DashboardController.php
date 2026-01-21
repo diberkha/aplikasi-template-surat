@@ -12,8 +12,11 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         $templateQuery = TemplateSurat::query();
-        if (!$user->hasRole(['Admin', 'Direktur', 'Tata Usaha'])) {
-            $templateQuery->where('nama_template_surat', 'LIKE', '%Cuti%');
+        if (!$user->hasRole(['Admin', 'Tata Usaha'])) {
+            $templateQuery->where(function ($q) {
+                $q->where('nama_template_surat', 'LIKE', '%Cuti%')
+                    ->orWhere('nama_template_surat', 'LIKE', '%SOP%');
+            });
         }
         $totalTemplate = $templateQuery->count();
 
