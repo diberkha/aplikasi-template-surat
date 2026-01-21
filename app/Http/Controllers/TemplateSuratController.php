@@ -7,10 +7,12 @@ use Exception;
 
 class TemplateSuratController extends Controller
 {
+    use \App\Traits\LazyPdfTrait;
     public function file($id)
     {
-        $surat = Surat::with('template')->findOrFail($id);
-        $path = storage_path('app/' . $surat->file_path);
+        $surat = Surat::with(['template', 'sop', 'skDirektur', 'cuti'])->findOrFail($id);
+        $path = $this->ensurePdfExists($surat);
+
         if (!file_exists($path)) {
             abort(404, 'File tidak ditemukan');
         }

@@ -412,7 +412,7 @@
 
     function submitEditSOPForm(event) {
         event.preventDefault();
-        const form = document.getElementById('editSOPForm');
+        const form = document.getElementById('editSopForm');
 
         combineEditNomorDokumen();
         const id = document.getElementById('edit_sop_id_surat').value;

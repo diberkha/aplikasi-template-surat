@@ -232,13 +232,14 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="relative">
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Atasan Langsung</label>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nama Atasan Langsung <span
+                                        class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <div
                                         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                         <i class="fas fa-search"></i>
                                     </div>
-                                    <input type="text" id="atasan_search_pppk" autocomplete="off"
+                                    <input type="text" id="atasan_search_pppk" autocomplete="off" required
                                         class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all"
                                         placeholder="Cari nama...">
                                     <button type="button" id="atasan_reset_pppk"
@@ -256,13 +257,15 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP Atasan</label>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">NIP Atasan <span
+                                        class="text-red-500">*</span></label>
                                 <input type="text" name="form[nip_atasan]" id="nip_atasan_pppk" readonly
                                     class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                             </div>
                         </div>
                         <div>
-                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Atasan</label>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Jabatan Atasan <span
+                                    class="text-red-500">*</span></label>
                             <input type="text" name="form[jabatan_atasan]" id="jabatan_atasan_pppk" readonly
                                 class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                         </div>

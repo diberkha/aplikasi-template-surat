@@ -129,26 +129,25 @@
                                     class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
                                     Tidak ada data
                                 </li>
-                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                    <button type="button" @click="ruanganFilter = ''; toggleRuangan = false; applyFilters()"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
-                                        Hapus Filter
-                                    </button>
-                                </li>
                             </ul>
+                            <div class="border-t border-gray-100 dark:border-gray-700 p-2">
+                                <button type="button" @click="ruanganFilter = ''; toggleRuangan = false; applyFilters()"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
+                                    Hapus Filter
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endif
 
                 <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
                     <button type="button" @click="open = !open"
-                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
-                                x-text="dateDisplay"></span>
+                            <span class="truncate max-w-[80px] sm:max-w-none" x-text="dateDisplay"></span>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
                     </button>
 
                     <div x-show="open" @click.away="open = false" x-transition
@@ -174,7 +173,7 @@
             </div>
         </div>
 
-<div
+        <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
             <div
                 class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
@@ -246,7 +245,19 @@
                                             </button>
 
                                             <template x-if="item.file_path">
-                                                <div x-data="{                                                                                                                                                                                                                                                                                                         }"
+                                                <div x-data="{ 
+                                                                                                                        openDownload: false, 
+                                                                                                                        dropdownStyle: '',
+                                                                                                                        toggle() { 
+                                                                                                                            this.openDownload = !this.openDownload;
+                                                                                                                            if (this.openDownload) {
+                                                                                                                                this.$nextTick(() => {
+                                                                                                                                    const rect = this.$refs.button.getBoundingClientRect();
+                                                                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        } 
+                                                                                                                    }"
                                                     @scroll.window="openDownload = false" class="relative">
                                                     <button type="button" x-ref="button" @click="toggle()"
                                                         class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -255,18 +266,19 @@
                                                     <template x-teleport="body">
                                                         <div x-show="openDownload" x-ref="dropdown"
                                                             @click.outside="openDownload = false" x-transition
+                                                            :style="dropdownStyle"
                                                             class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
                                                             <a :href="item.download_url"
-            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
+                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
                                                             </a>
                                                             <template
-            x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
-            <a :href="item.docx_url"
-            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-            <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
-            DOCX
-            </a>
+                                                                x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
+                                                                <a :href="item.docx_url"
+                                                                    class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
+                                                                    DOCX
+                                                                </a>
                                                             </template>
                                                         </div>
                                                     </template>
@@ -331,11 +343,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-            parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-            (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-            (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-            ]">
+                                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+                                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                    ]">
                                 </button>
                             </template>
 
@@ -358,7 +370,7 @@
                     <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
                     <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data surat</h6>
 
-@if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
+                    @if(request()->hasAny(['search', 'template', 'start_date', 'end_date']))
                         <a href="{{ route('arsip-surat.index') }}"
                             class="inline-flex items-center px-4 py-2 mt-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                             Tampilkan Semua Surat
@@ -387,7 +399,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-            ruanganOptions: @json($ruanganOptions ?? []),
+                                                                                    ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -418,6 +430,10 @@
 
             if (this.templateFilter) {
                 data = data.filter(item => item.id_template_surat == this.templateFilter);
+            }
+
+            if (this.ruanganFilter) {
+                data = data.filter(item => item.id_ruangan == this.ruanganFilter);
             }
 
             if (this.appliedStartDate && this.appliedEndDate) {
@@ -484,25 +500,25 @@
         }
 
         return rangeWithDots;
-            },
+                                                },
 
-            get sortLabel() {
+                                                get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
                 case 'latest': return 'Terbaru';
                 case 'oldest': return 'Terlama';
-                default: return 'Filter';
+                default: return 'Urutkan';
             }
         },
 
-            get selectedTemplateName() {
+                                                get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-            get selectedRuanganName() {
+                                                get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -510,9 +526,9 @@
             @else
                 return 'Ruangan';
             @endif
-            },
+                                                },
 
-                                        get filteredRuanganOptions() {
+                                                                            get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -520,20 +536,13 @@
             @else
                 return [];
             @endif
-                                        },
+                                                                            },
 
         applyFilters() {
-            let url = new URL(window.location.href);
-
-            if (this.ruanganFilter) {
-                url.searchParams.set('ruangan_id', this.ruanganFilter);
-            } else {
-                url.searchParams.delete('ruangan_id');
-            }
-            window.location.href = url.toString();
+            this.currentPage = 1;
         },
 
-            get dateDisplay() {
+                                                get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -579,9 +588,9 @@
             this.currentPage = 1;
             this.open = false;
         }
-            }));
+                                                }));
 
-            });
+                                                });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -618,8 +627,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-            ${tipe}
-            </span>`;
+                                                ${tipe}
+                                                </span>`;
 
             if (filePath && filePath !== '') {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
@@ -684,7 +693,7 @@
             document.body.removeChild(form);
         }
 
-function openDeleteModal(id, namaSurat, nomorSurat, tipeSurat) {
+        function openDeleteModal(id, namaSurat, nomorSurat, tipeSurat) {
             document.getElementById('delete-nama-surat').textContent = namaSurat;
             document.getElementById('delete-nomor-surat').textContent = nomorSurat;
             document.getElementById('delete-tipe-surat').textContent = tipeSurat;

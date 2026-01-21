@@ -77,7 +77,18 @@
             open(item) {
                 this.suratId = item.id_surat || item.id;
                 this.fileUrl = `/arsip-surat/${this.suratId}`;
-                this.nomorSurat = item.nomor_surat || '-';
+
+                // Set subtitle (nomorSurat) based on type
+                if (item.sop) {
+                    this.nomorSurat = item.sop.nomor_dokumen || item.nomor_surat || '-';
+                } else if (item.sk_direktur) {
+                    this.nomorSurat = item.sk_direktur.nomor_surat || item.nomor_surat || '-';
+                } else if (item.cuti) {
+                    const nama = (item.cuti.form_data && item.cuti.form_data.nama) ? item.cuti.form_data.nama : 'Pegawai';
+                    this.nomorSurat = nama;
+                } else {
+                    this.nomorSurat = item.nomor_surat || '-';
+                }
 
                 let judul = item.nama_surat;
                 if (!judul && item.sop) judul = item.sop.judul_sop;

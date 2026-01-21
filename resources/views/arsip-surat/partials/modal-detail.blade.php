@@ -46,10 +46,10 @@
                             </div>
                         </div>
 
-                        @if(Auth::user()->hasRole('Admin'))
+                        @if(auth()->user()->hasRole(['Admin', 'Tata Usaha']))
                             <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Unit/Ruangan</label>
+                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Dibuat
+                                    Oleh</label>
                                 <p id="detail-dibuat-oleh" class="text-gray-900 dark:text-white font-medium"></p>
                             </div>
                         @endif

@@ -11,6 +11,7 @@ class DraftSuratController extends Controller
     {
         $drafts = Surat::with(['sop', 'createdBy.ruangan', 'template'])
             ->where('is_draft', true)
+            ->where('created_by', auth()->id())
             ->whereHas('template', function ($query) {
                 $query->where('nama_template_surat', 'like', '%SOP%')
                     ->orWhere('nama_template_surat', 'like', '%Standar Operasional Prosedur%');
@@ -37,6 +38,7 @@ class DraftSuratController extends Controller
     {
         $drafts = Surat::with(['skDirektur', 'createdBy.ruangan', 'template'])
             ->where('is_draft', true)
+            ->where('created_by', auth()->id())
             ->whereHas('template', function ($query) {
                 $query->where('nama_template_surat', 'like', '%SK Direktur%')
                     ->orWhere('nama_template_surat', 'like', '%Surat Keputusan Direktur%');
@@ -63,6 +65,7 @@ class DraftSuratController extends Controller
     {
         $drafts = Surat::with(['cuti', 'createdBy.ruangan', 'template'])
             ->where('is_draft', true)
+            ->where('created_by', auth()->id())
             ->whereHas('template', function ($query) {
                 $query->where('nama_template_surat', 'like', '%Cuti%')
                     ->orWhere('nama_template_surat', 'like', '%Izin Cuti%');

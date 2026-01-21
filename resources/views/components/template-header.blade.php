@@ -104,12 +104,12 @@
     get sortText() {
         switch (this.sortOption) {
             case '':
-            case null: return 'Filter';
+            case null: return 'Urutkan';
             case 'a-z': return 'A-Z';
             case 'z-a': return 'Z-A';
             case 'latest': return 'Terbaru';
             case 'oldest': return 'Terlama';
-            default: return 'Filter';
+            default: return 'Urutkan';
         }
     },
     setSort(opt) {

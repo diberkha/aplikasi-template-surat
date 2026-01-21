@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 
 class SKDirekturController extends Controller
 {
+    use \App\Traits\LazyPdfTrait;
     public function index(Request $request)
     {
         $templates = TemplateSurat::where('nama_template_surat', 'Surat Keputusan Direktur')
@@ -109,18 +110,6 @@ class SKDirekturController extends Controller
                 'id_surat' => $surat->id_surat,
             ]);
 
-            $pdfData = $request->all();
-            $pdfData['memutuskan'] = trim($memutuskanText);
-            $pdfData['mengingat'] = trim($mengingatText);
-            $pdfData['menimbang'] = array_map('trim', $menimbangArray);
-            $pdfData['tempat_surat'] = $request->tempat_dibuat;
-
-            $direktur = Pegawai::getDirektur();
-            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'KINIK DARSONO';
-            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : null;
-
-            $this->generateAndSavePDF($surat, $pdfData);
-
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
@@ -177,8 +166,9 @@ class SKDirekturController extends Controller
 
     public function file($id)
     {
-        $surat = Surat::with('template', 'sop')->findOrFail($id);
-        $path = storage_path('app/' . $surat->file_path);
+        $surat = Surat::with('template', 'sop', 'skDirektur')->findOrFail($id);
+        $path = $this->ensurePdfExists($surat);
+
         if (!file_exists($path)) {
             abort(404, 'File tidak ditemukan');
         }
@@ -238,62 +228,6 @@ class SKDirekturController extends Controller
         }
     }
 
-    private function generateAndSavePDF($surat, $data)
-    {
-        $fileName = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
-        $filePath = 'arsip/' . $fileName;
-
-        try {
-            Log::info('PDF Generation Step 1: Starting PDF generation', [
-                'surat_id' => $surat->id_surat,
-                'nomor_surat' => $surat->nomor_surat,
-                'fileName' => $fileName
-            ]);
-
-            Log::info('PDF Generation Step 2: Rendering view', [
-                'data_keys' => array_keys($data)
-            ]);
-            $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
-            Log::info('PDF Generation Step 3: View rendered successfully', [
-                'html_length' => strlen($html)
-            ]);
-
-            Log::info('PDF Generation Step 4: Loading HTML to PDF library');
-            $pdf = Pdf::loadHTML($html)
-                ->setPaper([0, 0, 612, 936], 'portrait')
-                ->setOptions([
-                    'isHtml5ParserEnabled' => true,
-                    'isRemoteEnabled' => true,
-                    'defaultFont' => 'Times New Roman',
-                ]);
-            Log::info('PDF Generation Step 5: PDF loaded successfully');
-
-            Log::info('PDF Generation Step 6: Checking arsip directory');
-            if (!Storage::exists('arsip')) {
-                Storage::makeDirectory('arsip');
-                Log::info('PDF Generation Step 7: Created arsip directory');
-            }
-
-            Log::info('PDF Generation Step 8: Writing PDF to storage', [
-                'filePath' => $filePath,
-                'disk' => 'local'
-            ]);
-            Storage::put($filePath, $pdf->output());
-            Log::info('PDF Generation Step 9: PDF written successfully');
-
-            Log::info('PDF Generation Step 10: Updating surat record with file_path', [
-                'file_path' => $filePath
-            ]);
-            $surat->update(['file_path' => $filePath]);
-            Log::info('PDF Generation Step 11: Surat record updated successfully');
-
-        } catch (Exception $e) {
-            Log::error('Error generating PDF: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
-        }
-    }
 
     public function archive($id)
     {
@@ -366,6 +300,7 @@ class SKDirekturController extends Controller
             $surat->update([
                 'nomor_surat' => $request->nomor_surat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
+                'file_path' => null, // Force PDF regeneration
             ]);
 
             $memutuskanArray = $request->memutuskan;
@@ -397,22 +332,6 @@ class SKDirekturController extends Controller
                 'tempat_dibuat' => $request->tempat_dibuat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
             ]);
-
-            $pdfData = $request->all();
-            $pdfData['memutuskan'] = trim($memutuskanText);
-            $pdfData['mengingat'] = trim($mengingatText);
-            $pdfData['menimbang'] = array_map('trim', $request->menimbang);
-            $pdfData['tempat_surat'] = $request->tempat_dibuat;
-
-            $direktur = Pegawai::getDirektur();
-            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'KINIK DARSONO';
-            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : null;
-
-            if ($surat->file_path && Storage::exists($surat->file_path)) {
-                Storage::delete($surat->file_path);
-            }
-
-            $this->generateAndSavePDF($surat, $pdfData);
 
             $surat->refresh();
             $surat->load('createdBy.ruangan');

@@ -55,6 +55,7 @@ class IzinCutiController extends Controller
                 'template_id' => 'required|exists:template_surat,id_template_surat',
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
+                'form.nama_atasan' => 'required|string',
             ]);
 
             $kategori = strtoupper($request->kategori);
@@ -171,18 +172,6 @@ class IzinCutiController extends Controller
                 }
             }
 
-            $pdfData = [
-                'kategori' => $request->kategori,
-                'form' => $request->form,
-                'nomor_surat' => null,
-            ];
-
-            $direktur = Pegawai::getDirektur();
-            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
-            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : '19710415 200903 1 001';
-
-            $this->generateAndSavePDF($surat, $pdfData);
-
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
@@ -214,31 +203,7 @@ class IzinCutiController extends Controller
         }
     }
 
-    private function generateAndSavePDF($surat, $data)
-    {
-        $fileName = "{$surat->nomor_surat}.pdf";
-        $filePath = 'arsip/' . $fileName;
 
-        $view = 'template-surat.cuti.cuti-pns.pdf';
-        if ($data['kategori'] === 'PPPK')
-            $view = 'template-surat.cuti.cuti-pppk.pdf';
-        if ($data['kategori'] === 'NON ASN')
-            $view = 'template-surat.cuti.cuti-nonasn.pdf';
-
-        $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-        $pdf = Pdf::loadHTML($html)
-            ->setPaper([0, 0, 612, 936], 'portrait')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'Times New Roman',
-            ]);
-
-        if (!Storage::exists('arsip'))
-            Storage::makeDirectory('arsip');
-        Storage::put($filePath, $pdf->output());
-        $surat->update(['file_path' => $filePath]);
-    }
 
     public function destroy(TemplateSurat $template_surat)
     {
@@ -313,6 +278,7 @@ class IzinCutiController extends Controller
                 'kategori' => 'required|in:PNS,PPPK,NON ASN',
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
+                'form.nama_atasan' => 'required|string',
             ]);
 
             $surat = Surat::findOrFail($id);
@@ -385,28 +351,13 @@ class IzinCutiController extends Controller
 
             $surat->update([
                 'tanggal_dibuat' => $request->input('form.tanggal_surat'),
+                'file_path' => null, // Force PDF regeneration
             ]);
 
             $cuti->update([
                 'kategori' => $request->kategori,
                 'form_data' => $request->form,
             ]);
-
-            $pdfData = [
-                'kategori' => $request->kategori,
-                'form' => $request->form,
-                'nomor_surat' => $surat->nomor_surat,
-            ];
-
-            $direktur = Pegawai::getDirektur();
-            $pdfData['direktur_nama'] = $direktur ? $direktur->nama : 'Dr. dr. KINIK DARSONO, M.Pd.Ked.';
-            $pdfData['direktur_nip'] = $direktur ? $direktur->nip : '19710415 200903 1 001';
-
-            if ($surat->file_path && Storage::exists($surat->file_path)) {
-                Storage::delete($surat->file_path);
-            }
-
-            $this->generateAndSavePDF($surat, $pdfData);
 
             $surat->refresh();
             $surat->load('createdBy.ruangan');

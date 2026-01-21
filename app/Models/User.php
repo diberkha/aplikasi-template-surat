@@ -45,6 +45,6 @@ class User extends Authenticatable
             return false;
         }
 
-        return in_array($this->ruangan->nama_ruangan, $roles);
+        return in_array(trim($this->ruangan->nama_ruangan), array_map('trim', $roles));
     }
 }

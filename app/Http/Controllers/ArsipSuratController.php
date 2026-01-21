@@ -17,6 +17,7 @@ use App\Models\Ruangan;
 
 class ArsipSuratController extends Controller
 {
+    use \App\Traits\LazyPdfTrait;
     public function index(Request $request)
     {
         $templateOptions = TemplateSurat::select('id_template_surat', 'nama_template_surat')
@@ -44,10 +45,7 @@ class ArsipSuratController extends Controller
                 });
             }
         } else {
-            $roomId = $user->id_ruangan;
-            $query->whereHas('createdBy', function ($q) use ($roomId) {
-                $q->where('id_ruangan', $roomId);
-            });
+            $query->where('created_by', $user->id);
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -73,6 +71,10 @@ class ArsipSuratController extends Controller
                 $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
             }
 
+            if (($tipeSurat === 'Surat Keputusan Direktur' || $tipeSurat === 'SK Direktur' || $item->nama_surat === 'Surat Keputusan Direktur')) {
+                $tipeSuratDisplay = 'Surat Keputusan Direktur';
+            }
+
             if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && $item->cuti) {
                 $kategori = strtoupper($item->cuti->kategori ?? '');
                 $kategoriLabel = trim($kategori);
@@ -85,6 +87,9 @@ class ArsipSuratController extends Controller
                 $tipeSuratDisplay = 'Surat Izin Cuti';
 
                 $formData = $item->cuti->form_data;
+                $nama = isset($formData['nama']) ? $formData['nama'] : 'Pegawai';
+                $nomorSurat = $nama;
+
                 if (isset($formData['nama'])) {
                     $namaSuratDisplay = $formData['nama'];
                 } else {
@@ -125,6 +130,7 @@ class ArsipSuratController extends Controller
                 'created_at' => $item->created_at->toDateTimeString(),
                 'username' => $item->createdBy->username ?? 'Unknown',
                 'ruangan' => $item->createdBy->ruangan->nama_ruangan ?? '-',
+                'id_ruangan' => $item->createdBy->id_ruangan ?? null,
                 'docx_url' => $docxUrl,
                 'show_url' => route('arsip-surat.show', $idSurat),
                 'download_url' => route('arsip-surat.download', $idSurat),
@@ -170,7 +176,9 @@ class ArsipSuratController extends Controller
 
             if ($tipe === 'Surat Izin Cuti') {
                 $namaSurat = $request->pegawai_nama;
-                $nomorSurat = 'CUTI-IMPORT-' . time();
+                $kategori = strtoupper($request->kategori_pegawai ?? 'IMPORT');
+                $namaClean = strtoupper(trim($request->pegawai_nama));
+                $nomorSurat = "CUTI-{$kategori}-{$namaClean}";
             }
 
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -238,106 +246,34 @@ class ArsipSuratController extends Controller
 
     public function show($id)
     {
-        $surat = Surat::with('template', 'sop')->findOrFail($id);
+        $surat = Surat::with(['template', 'sop', 'skDirektur', 'cuti', 'createdBy'])->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasRole(['Admin', 'Tata Usaha'])) {
             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
                 abort(403, 'Unauthorized');
             }
         }
 
-        $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
-            if ($surat->is_draft) {
-                try {
-                    $direktur = Pegawai::getDirektur();
-                    $direktur_nama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
-                    $direktur_nip = $direktur ? $direktur->nip : '19710415 200903 1 001';
+        $path = $this->ensurePdfExists($surat);
 
-                    if ($surat->sop) {
-                        $data = [
-                            'judul_sop' => $surat->sop->judul_sop,
-                            'nomor_dokumen' => $surat->sop->nomor_dokumen,
-                            'nomor_revisi' => $surat->sop->nomor_revisi,
-                            'halaman' => $surat->sop->halaman,
-                            'tanggal_terbit' => $surat->sop->tanggal_terbit,
-                            'pengertian' => $surat->sop->pengertian,
-                            'tujuan' => explode("\n", $surat->sop->tujuan),
-                            'kebijakan' => $surat->sop->kebijakan,
-                            'prosedur' => explode("\n", $surat->sop->prosedur),
-                            'unit_terkait' => $surat->sop->unit_terkait,
-                            'direktur_nama' => $direktur_nama,
-                            'direktur_nip' => $direktur_nip,
-                        ];
-                        $pdf = Pdf::loadView('template-surat.sop.pdf', ['data' => $data]);
-                        $newPath = 'surat/' . $surat->nomor_surat . '.pdf';
-                        Storage::put($newPath, $pdf->output());
-                        $surat->update(['file_path' => $newPath]);
-                        $path = storage_path('app/' . $newPath);
-                    } elseif ($surat->skDirektur) {
-                        $data = [
-                            'nomor_surat' => $surat->nomor_surat,
-                            'tentang' => $surat->skDirektur->tentang,
-                            'menimbang' => explode("\n", $surat->skDirektur->menimbang),
-                            'mengingat' => $surat->skDirektur->mengingat,
-                            'memutuskan' => $surat->skDirektur->memutuskan,
-                            'menetapkan' => $surat->skDirektur->menetapkan,
-                            'tempat_surat' => $surat->skDirektur->tempat_dibuat,
-                            'tanggal_dibuat' => $surat->skDirektur->tanggal_dibuat,
-                            'direktur_nama' => $direktur_nama,
-                            'direktur_nip' => $direktur_nip,
-                        ];
-                        $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
-                        $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
-                        $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
-                        Storage::put($newPath, $pdf->output());
-                        $surat->update(['file_path' => $newPath]);
-                        $path = storage_path('app/' . $newPath);
-                    } elseif ($surat->cuti) {
-                        $data = [
-                            'kategori' => $surat->cuti->kategori,
-                            'form' => $surat->cuti->form_data,
-                            'nomor_surat' => $surat->nomor_surat,
-                            'direktur_nama' => $direktur_nama,
-                            'direktur_nip' => $direktur_nip,
-                        ];
-                        $view = 'template-surat.cuti.cuti-pns.pdf';
-                        if ($data['kategori'] === 'PPPK')
-                            $view = 'template-surat.cuti.cuti-pppk.pdf';
-                        if ($data['kategori'] === 'NON ASN')
-                            $view = 'template-surat.cuti.cuti-nonasn.pdf';
-
-                        $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-                        $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
-                        $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
-                        Storage::put($newPath, $pdf->output());
-                        $surat->update(['file_path' => $newPath]);
-                        $path = storage_path('app/' . $newPath);
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Regeneration failed: ' . $e->getMessage());
-                }
-            }
-
-            if (!file_exists($path)) {
-                abort(404, 'File surat tidak ditemukan di server.');
-            }
+        if (!file_exists($path)) {
+            abort(404, 'File surat tidak ditemukan di server.');
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
         $filename = 'surat.pdf';
 
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            $filename = "{$surat->nomor_surat}.pdf";
+            $filename = str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
-            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+            $filename = 'SK Direktur-' . str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
             $sop = $surat->sop;
             $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
-            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+            $filename = 'SOP-' . str_replace(['/', '\\'], '-', $nomor) . '.pdf';
         } else {
             $cleanJudul = str_replace(' ', '-', trim($surat->nama_surat ?? $templateName));
-            $cleanNomor = str_replace('/', '-', trim($surat->nomor_surat));
+            $cleanNomor = str_replace(['/', '\\'], '-', $surat->nomor_surat);
             $filename = "{$cleanJudul}-{$cleanNomor}.pdf";
         }
 
@@ -357,40 +293,39 @@ class ArsipSuratController extends Controller
 
     public function download($id)
     {
-        $surat = Surat::with('template', 'sop')->findOrFail($id);
+        $surat = Surat::with(['template', 'sop', 'skDirektur', 'cuti', 'createdBy'])->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasRole(['Admin', 'Tata Usaha'])) {
             if ($surat->created_by && $surat->createdBy->id_ruangan != auth()->user()->id_ruangan) {
                 abort(403, 'Unauthorized');
             }
         }
 
-        $path = storage_path('app/' . $surat->file_path);
-        if (!$surat->file_path || !file_exists($path)) {
+        $path = $this->ensurePdfExists($surat);
+
+        if (!file_exists($path)) {
             return back()->with('error', 'File surat tidak ditemukan');
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
         if (str_contains($templateName, 'Surat Izin Cuti')) {
-            if ($surat->nama_surat !== 'Surat Izin Cuti') {
-                $filename = "Surat Izin Cuti-{$surat->nama_surat}.pdf";
-            } else {
-                $filename = "{$surat->nomor_surat}.pdf";
-            }
+            $filename = str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
-            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+            $filename = 'SK Direktur-' . str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
             $sop = $surat->sop;
             $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
-            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+            $filename = 'SOP-' . str_replace(['/', '\\'], '-', $nomor) . '.pdf';
         } else {
             $cleanJudul = str_replace(' ', '-', trim($surat->nama_surat ?? $templateName));
-            $cleanNomor = str_replace('/', '-', trim($surat->nomor_surat));
+            $cleanNomor = str_replace(['/', '\\'], '-', $surat->nomor_surat);
             $filename = "{$cleanJudul}-{$cleanNomor}.pdf";
         }
 
         return response()->download($path, $filename);
     }
+
+
 
     public function destroy($id)
     {
