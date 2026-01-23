@@ -8,8 +8,7 @@
         </div>
 
         <div class="p-6">
-            <p class="text-gray-600 dark:text-gray-400 mb-4">Apakah Anda yakin ingin menghapus draft ini secara
-                permanen?</p>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Apakah Anda yakin ingin menghapus draft surat ini? Data yang dihapus tidak dapat dikembalikan.</p>
             <div class="mt-4 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <p class="text-sm mb-2">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Judul SOP:</span>

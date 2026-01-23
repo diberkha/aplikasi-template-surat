@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class SOPController extends Controller
 {
@@ -47,7 +48,13 @@ class SOPController extends Controller
         try {
             $request->validate([
                 'judul_sop' => 'required|string',
-                'nomor_dokumen' => 'required|string',
+                'nomor_dokumen' => [
+                    'required',
+                    'string',
+                    Rule::unique('surat', 'nomor_surat')->where(function ($query) {
+                        return $query->where('nama_surat', 'Standar Operasional Prosedur');
+                    })
+                ],
                 'nomor_revisi' => 'nullable|string',
                 'halaman' => 'nullable|string',
                 'tanggal_terbit' => 'required|date',
@@ -152,9 +159,9 @@ class SOPController extends Controller
                 return preg_replace('/^\d+\.\s*/', '', trim($line));
             }, explode("\n", trim($surat->sop->kebijakan)));
 
-            $surat->sop->unit_terkait_array = array_map(function ($line) {
-                return preg_replace('/^\d+\.\s*/', '', trim($line));
-            }, explode("\n", trim($surat->sop->unit_terkait)));
+            $surat->sop->unit_terkait_array = array_map('trim', explode(',', $surat->sop->unit_terkait));
+
+            $surat->sop->tanggal_terbit_formatted = optional($surat->sop->tanggal_terbit)->format('Y-m-d');
         }
 
         return response()->json([
@@ -168,7 +175,15 @@ class SOPController extends Controller
         try {
             $request->validate([
                 'judul_sop' => 'required|string',
-                'nomor_dokumen' => 'required|string',
+                'nomor_dokumen' => [
+                    'required',
+                    'string',
+                    Rule::unique('surat', 'nomor_surat')
+                        ->where(function ($query) {
+                            return $query->where('nama_surat', 'Standar Operasional Prosedur');
+                        })
+                        ->ignore($id, 'id_surat')
+                ],
                 'nomor_revisi' => 'nullable|string',
                 'halaman' => 'nullable|string',
                 'tanggal_terbit' => 'required|date',
@@ -215,20 +230,18 @@ class SOPController extends Controller
             ]);
 
             $surat->refresh();
-            $surat->load('createdBy.ruangan');
+            $surat->load('createdBy.ruangan', 'sop');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Draft SOP berhasil diperbarui',
-                'data' => [
-                    'id_surat' => $surat->id_surat,
-                    'nama_surat' => $surat->nama_surat,
-                    'nomor_surat' => $surat->nomor_surat,
-                    'created_at' => $surat->created_at->toISOString(),
-                    'ruangan' => $surat->createdBy->ruangan->nama_ruangan ?? '-',
-                    'tipe_surat' => 'Standar Operasional Prosedur (SOP)'
-                ]
+                'data' => $surat
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui draft: ' . implode(', ', $e->validator->errors()->all())
+            ], 422);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
@@ -236,7 +249,7 @@ class SOPController extends Controller
             ], 500);
         }
     }
-    public function file($id)
+    public function file(Request $request, $id)
     {
         $surat = Surat::with('sop')->findOrFail($id);
         $path = $this->ensurePdfExists($surat);
@@ -249,6 +262,10 @@ class SOPController extends Controller
         $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
         $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $nomor);
         $filename = 'SOP-' . $safeNomor . '.pdf';
+
+        if ($request->query('download') == '1') {
+            return response()->download($path, $filename);
+        }
 
         return response()->file($path, [
             'Content-Type' => 'application/pdf',

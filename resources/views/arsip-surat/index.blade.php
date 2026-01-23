@@ -244,73 +244,50 @@
                                                 <i class="fas fa-eye text-sm"></i>
                                             </button>
 
-                                            <template x-if="item.file_path">
-                                                <div x-data="{ 
-                                                                                                                        openDownload: false, 
-                                                                                                                        dropdownStyle: '',
-                                                                                                                        toggle() { 
-                                                                                                                            this.openDownload = !this.openDownload;
-                                                                                                                            if (this.openDownload) {
-                                                                                                                                this.$nextTick(() => {
-                                                                                                                                    const rect = this.$refs.button.getBoundingClientRect();
-                                                                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                                                                                });
-                                                                                                                            }
-                                                                                                                        } 
-                                                                                                                    }"
-                                                    @scroll.window="openDownload = false" class="relative">
-                                                    <button type="button" x-ref="button" @click="toggle()"
-                                                        class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                                                        <i class="fas fa-download text-sm"></i>
-                                                    </button>
-                                                    <template x-teleport="body">
-                                                        <div x-show="openDownload" x-ref="dropdown"
-                                                            @click.outside="openDownload = false" x-transition
-                                                            :style="dropdownStyle"
-                                                            class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
-                                                            <a :href="item.download_url"
-                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
-                                                            </a>
-                                                            <template
-                                                                x-if="item.docx_url !== '#' && !item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')">
-                                                                <a :href="item.docx_url"
-                                                                    class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                    <i class="fas fa-file-word text-green-600 mr-2 w-4"></i>
-                                                                    DOCX
-                                                                </a>
-                                                            </template>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                            <template x-if="!item.file_path">
-                                                <button type="button"
-                                                    @click="notify('error', 'Gagal', 'File surat tidak tersedia untuk diunduh', false)"
-                                                    class="inline-flex items-center p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
+                                            <div x-data="{ 
+                                                        openDownload: false, 
+                                                        dropdownStyle: '',
+                                                        toggle() { 
+                                                            this.openDownload = !this.openDownload;
+                                                            if (this.openDownload) {
+                                                                this.$nextTick(() => {
+                                                                    const rect = this.$refs.button.getBoundingClientRect();
+                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                });
+                                                            }
+                                                        } 
+                                                    }" @scroll.window="openDownload = false" class="relative">
+                                                <button type="button" x-ref="button" @click="toggle()"
+                                                    class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
                                                 </button>
-                                            </template>
+                                                <template x-teleport="body">
+                                                    <div x-show="openDownload" x-ref="dropdown"
+                                                        @click.outside="openDownload = false" x-transition
+                                                        :style="dropdownStyle"
+                                                        class="fixed w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[9999]">
+                                                        <template
+                                                            x-if="item.docx_url !== '#' && (!item.file_path || (!item.file_path.includes('arsip/import') && !item.file_path.includes('arsip\\import')))">
+                                                            <a :href="item.docx_url"
+                                                                class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-word text-green-600 mr-2 w-4"></i> DOCX
+                                                            </a>
+                                                        </template>
+                                                        <a :href="item.download_url"
+                                                            class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <i class="fas fa-file-pdf text-red-600 mr-2 w-4"></i> PDF
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </div>
 
-                                            @if(auth()->user()->hasRole('Admin'))
+                                            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                                                 <button type="button"
                                                     @click="openDeleteModal(item.id_surat, item.nama_surat_display, item.nomor_surat, item.tipe_surat_display)"
                                                     class="inline-flex items-center p-1.5 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                                                     <i class="fas fa-trash text-sm"></i>
                                                 </button>
                                             @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            </template>
-                            <template x-if="paginatedData.length === 0">
-                                <tr>
-                                    <td :colspan="('{{ auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha') }}' ? 7 : 6)"
-                                        class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                                        <div class="flex flex-col items-center">
-                                            <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                                            <h6 class="block mb-2 text-gray-400 dark:text-gray-500">Belum ada data
-                                                surat</h6>
                                         </div>
                                     </td>
                                 </tr>
@@ -343,11 +320,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                    ]">
+                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                            ]">
                                 </button>
                             </template>
 
@@ -378,7 +355,6 @@
                     @endif
                 </div>
             @endif
-
         </div>
     </div>
 
@@ -399,7 +375,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                                                                    ruanganOptions: @json($ruanganOptions ?? []),
+                            ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -500,9 +476,9 @@
         }
 
         return rangeWithDots;
-                                                },
+                    },
 
-                                                get sortLabel() {
+                    get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -512,13 +488,13 @@
             }
         },
 
-                                                get selectedTemplateName() {
+                    get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                get selectedRuanganName() {
+                    get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -526,9 +502,9 @@
             @else
                 return 'Ruangan';
             @endif
-                                                },
+                    },
 
-                                                                            get filteredRuanganOptions() {
+                    get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -536,13 +512,13 @@
             @else
                 return [];
             @endif
-                                                                            },
+                    },
 
         applyFilters() {
             this.currentPage = 1;
         },
 
-                                                get dateDisplay() {
+                    get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -588,9 +564,8 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                                }));
-
-                                                });
+                }));
+            });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -627,22 +602,24 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                ${tipe}
-                                                </span>`;
+                        ${tipe}
+                    </span>`;
 
-            if (filePath && filePath !== '') {
+            const isSystemDoc = ['Surat Keputusan Direktur', 'Standar Operasional Prosedur (SOP)', 'Surat Izin Cuti'].includes(tipe);
+
+            if (filePath || isSystemDoc) {
                 document.getElementById('detail-file-exists').classList.remove('hidden');
                 document.getElementById('detail-no-file').classList.add('hidden');
                 document.getElementById('detail-download-dropdown').classList.remove('hidden');
 
-                const fileName = filePath.split('/').pop();
+                const fileName = filePath ? filePath.split('/').pop() : `${tipe}-${nomor}.pdf`;
                 const extension = fileName.split('.').pop().toLowerCase();
 
                 document.getElementById('detail-file-nama').textContent = fileName;
                 document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
 
                 const docxBtn = document.getElementById('detail-download-word');
-                if (filePath.includes('arsip/import') || filePath.includes('arsip\\import')) {
+                if (filePath && (filePath.includes('arsip/import') || filePath.includes('arsip\\import'))) {
                     docxBtn.classList.add('hidden');
                 } else {
                     docxBtn.classList.remove('hidden');
@@ -652,17 +629,10 @@
                 const fileIcon = document.getElementById('detail-file-icon');
                 const fileTypeLabel = document.getElementById('detail-file-type-label');
 
-                if (extension === 'pdf') {
-                    previewIframe.classList.remove('hidden');
-                    previewIframe.src = `/arsip-surat/${idSurat}`;
-                    fileIcon.className = 'fas fa-file-pdf text-2xl text-red-500';
-                    fileTypeLabel.textContent = 'File PDF';
-                } else {
-                    previewIframe.classList.add('hidden');
-                    previewIframe.src = '';
-                    fileIcon.className = 'fas fa-file text-2xl text-gray-500';
-                    fileTypeLabel.textContent = 'File Dokumen';
-                }
+                previewIframe.classList.remove('hidden');
+                previewIframe.src = `/arsip-surat/${idSurat}`;
+                fileIcon.className = 'fas fa-file-pdf text-2xl text-red-500';
+                fileTypeLabel.textContent = 'File PDF';
             } else {
                 document.getElementById('detail-file-exists').classList.add('hidden');
                 document.getElementById('detail-no-file').classList.remove('hidden');

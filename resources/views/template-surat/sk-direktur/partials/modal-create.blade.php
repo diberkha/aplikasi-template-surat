@@ -277,10 +277,10 @@
     }
 
     function addMemutuskanField() {
-        const maxAllowed = 6;
-        if (memutuskanCounter >= maxAllowed) { notify('warning', 'Peringatan', 'Maksimal sampai keenam.', false); return; }
+        const maxAllowed = 10;
+        if (memutuskanCounter >= maxAllowed) { notify('warning', 'Peringatan', 'Maksimal sampai kesepuluh.', false); return; }
         const container = document.getElementById('memutuskanContainer');
-        const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam'];
+        const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
         const label = labels[memutuskanCounter] || `Ke-${memutuskanCounter + 1}`;
         const newField = document.createElement('div');
         newField.className = 'memutuskan-item flex gap-3';
@@ -348,6 +348,7 @@
     function addMenimbangField() {
         const container = document.getElementById('menimbangContainer');
         const items = container.querySelectorAll('.menimbang-item').length;
+        if (items >= 10) { notify('warning', 'Peringatan', 'Maksimal 10 poin Menimbang.', false); return; }
         const labelChar = String.fromCharCode('a'.charCodeAt(0) + items) + '.';
         const wrapper = document.createElement('div');
         wrapper.className = 'menimbang-item flex gap-3';

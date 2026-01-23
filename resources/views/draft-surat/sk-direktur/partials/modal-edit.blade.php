@@ -151,13 +151,13 @@
 
                 <div
                     class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
-                    <button type="button" onclick="closeModal('modalEditSK')"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                        Batal
+                    <button type="button" onclick="resetEditSkForm()"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        Reset
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
-                        Simpan
+                    <button type="submit" id="submitEditSkBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Perbarui
                     </button>
                 </div>
             </form>
@@ -167,6 +167,7 @@
 
 <script>
     let editMemutuskanCounter = 0;
+    let currentSkDraftData = null;
 
     async function openEditSkModal(id) {
         try {
@@ -178,41 +179,54 @@
                 return;
             }
 
-            const data = result.data;
-            const sk = data.sk_direktur;
-
-            document.getElementById('edit_sk_id_surat').value = data.id_surat;
-
-            const nomorSuratParts = (sk.nomor_surat || '///').split('/');
-            document.getElementById('edit_nomor_surat_part1').value = nomorSuratParts[0] || '';
-            document.getElementById('edit_nomor_surat_part2').value = nomorSuratParts[1] || '';
-            document.getElementById('edit_nomor_surat_part3').value = nomorSuratParts[2] || '';
-            document.getElementById('edit_nomor_surat_part4').value = nomorSuratParts[3] || '';
-
-            document.getElementById('edit_sk_tentang').value = sk.tentang;
-            document.getElementById('edit_sk_menetapkan').value = sk.menetapkan;
-            document.getElementById('edit_sk_tempat_dibuat').value = sk.tempat_dibuat;
-            document.getElementById('edit_sk_tanggal_dibuat').value = sk.tanggal_dibuat ? sk.tanggal_dibuat.substring(0, 10) : '';
-
-            const menimbangContainer = document.getElementById('editMenimbangContainer');
-            menimbangContainer.innerHTML = '';
-            sk.menimbang_array.forEach((text, idx) => {
-                addEditMenimbangField(text);
-            });
-
-            const kesatuContainer = document.getElementById('editKesatuContainer');
-            kesatuContainer.innerHTML = '';
-            editMemutuskanCounter = 0;
-            sk.memutuskan_array.forEach((text, idx) => {
-                addEditMemutuskanField(text);
-            });
-
-            await loadEditMengingatOptions(sk.mengingat_array);
-
+            currentSkDraftData = result.data;
+            populateEditSkForm(currentSkDraftData);
             openModal('modalEditSK');
         } catch (error) {
             console.error('Error fetching draft data:', error);
             notify('error', 'Gagal', 'Terjadi kesalahan saat mengambil data');
+        }
+    }
+
+    function populateEditSkForm(data) {
+        const sk = data.sk_direktur;
+        document.getElementById('edit_sk_id_surat').value = data.id_surat;
+
+        const nomorSuratParts = (sk.nomor_surat || '///').split('/');
+        document.getElementById('edit_nomor_surat_part1').value = nomorSuratParts[0] || '';
+        document.getElementById('edit_nomor_surat_part2').value = nomorSuratParts[1] || '';
+        document.getElementById('edit_nomor_surat_part3').value = nomorSuratParts[2] || '';
+        document.getElementById('edit_nomor_surat_part4').value = nomorSuratParts[3] || '';
+
+        document.getElementById('edit_sk_tentang').value = sk.tentang;
+        document.getElementById('edit_sk_menetapkan').value = sk.menetapkan;
+        document.getElementById('edit_sk_tempat_dibuat').value = sk.tempat_dibuat;
+        const tanggalSurat = sk.tanggal_dibuat_formatted || (sk.tanggal_dibuat ? sk.tanggal_dibuat.substring(0, 10) : '');
+        document.getElementById('edit_sk_tanggal_dibuat').value = tanggalSurat;
+
+        const menimbangContainer = document.getElementById('editMenimbangContainer');
+        menimbangContainer.innerHTML = '';
+        sk.menimbang_array.forEach((text, idx) => {
+            addEditMenimbangField(text);
+        });
+
+        const kesatuContainer = document.getElementById('editKesatuContainer');
+        kesatuContainer.innerHTML = '';
+        editMemutuskanCounter = 0;
+        sk.memutuskan_array.forEach((text, idx) => {
+            addEditMemutuskanField(text);
+        });
+
+        loadEditMengingatOptions(sk.mengingat_array);
+
+        if (typeof FormDirtyMonitor !== 'undefined') {
+            new FormDirtyMonitor('editSkForm', 'submitEditSkBtn');
+        }
+    }
+
+    function resetEditSkForm() {
+        if (currentSkDraftData) {
+            populateEditSkForm(currentSkDraftData);
         }
     }
 
@@ -243,6 +257,7 @@
     function addEditMenimbangField(text = '') {
         const container = document.getElementById('editMenimbangContainer');
         const items = container.querySelectorAll('.menimbang-item').length;
+        if (items >= 10) { notify('warning', 'Peringatan', 'Maksimal 10 poin Menimbang.', false); return; }
         const labelChar = String.fromCharCode('a'.charCodeAt(0) + items) + '.';
         const wrapper = document.createElement('div');
         wrapper.className = 'menimbang-item flex gap-3';
@@ -260,7 +275,8 @@
 
     function addEditMemutuskanField(text = '') {
         const container = document.getElementById('editKesatuContainer');
-        const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam'];
+        if (editMemutuskanCounter >= 10) { notify('warning', 'Peringatan', 'Maksimal 10 poin Memutuskan.', false); return; }
+        const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
         const label = labels[editMemutuskanCounter] || `Ke-${editMemutuskanCounter + 1}`;
         const wrapper = document.createElement('div');
         wrapper.className = 'memutuskan-item flex gap-3';
@@ -289,7 +305,7 @@
                 el.querySelector('label').textContent = String.fromCharCode('a'.charCodeAt(0) + idx) + '.';
             });
         } else {
-            const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam'];
+            const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
             items.forEach((el, idx) => {
                 el.querySelector('label').textContent = (labels[idx] || `Ke-${idx + 1}`) + ' :';
             });
@@ -346,9 +362,9 @@
         const id = document.getElementById('edit_sk_id_surat').value;
         const formData = new FormData(form);
 
-        const submitBtn = form.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitEditSkBtn');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
         fetch(`/sk-direktur/${id}`, {
             method: 'POST',
@@ -363,7 +379,12 @@
                 if (result.success) {
                     closeModal('modalEditSK');
                     notify('success', 'Berhasil', result.message);
-                    window.location.reload();
+
+                    window.dispatchEvent(new CustomEvent('update-sk-draft', { detail: result.data }));
+
+                    setTimeout(() => {
+                        window.openDraftPreview(result.data);
+                    }, 500);
                 } else {
                     notify('error', 'Gagal', result.message);
                 }
@@ -374,7 +395,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Simpan';
+                submitBtn.innerHTML = 'Perbarui';
             });
     }
 </script>

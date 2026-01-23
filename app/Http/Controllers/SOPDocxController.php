@@ -38,7 +38,7 @@ class SOPDocxController extends Controller
 
             // Logo & Title
             $table->addRow((int) Converter::inchToTwip(1.0));
-            $logoCell = $table->addCell((int) Converter::inchToTwip(1.87), ['vMerge' => 'restart', 'valign' => 'center']);
+            $logoCell = $table->addCell((int) Converter::inchToTwip(1.2), ['vMerge' => 'restart', 'valign' => 'center']);
             $logoPath = public_path('img/logo-sragen.png');
             if (file_exists($logoPath)) {
                 $logoCell->addImage($logoPath, ['width' => (int) Converter::inchToPoint(0.8), 'alignment' => Jc::CENTER]);
@@ -46,38 +46,42 @@ class SOPDocxController extends Controller
             $logoCell->addText('RSUD dr. SOERATNO', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
             $logoCell->addText('GEMOLONG', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
 
-            $titleCell = $table->addCell((int) Converter::inchToTwip(4.0), ['gridSpan' => 3, 'valign' => 'center']);
+            $titleCell = $table->addCell((int) Converter::inchToTwip(6.27), ['gridSpan' => 3, 'valign' => 'center']);
             $titleCell->addText($data['judul_sop'] ?? '', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER]);
 
             // Info
             $table->addRow();
             $table->addCell(null, ['vMerge' => 'continue']);
 
-            $docNoCell = $table->addCell((int) Converter::inchToTwip(2.1), ['valign' => 'center']);
+            $docNoCell = $table->addCell((int) Converter::inchToTwip(2.6), ['valign' => 'center']);
             $docNoCell->addText('No. Dokumen', null, ['alignment' => Jc::CENTER]);
             $docNoCell->addText($data['nomor_dokumen'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.1), ['valign' => 'center']);
+            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.67), ['valign' => 'center']);
             $revNoCell->addText('No. Revisi', null, ['alignment' => Jc::CENTER]);
             $revNoCell->addText($data['nomor_revisi'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $pageCell = $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center']);
+            $pageCell = $table->addCell((int) Converter::inchToTwip(2.0), ['valign' => 'center']);
             $pageCell->addText('Halaman', null, ['alignment' => Jc::CENTER]);
             $pageCell->addText($data['halaman'] ?? '1/1', null, ['alignment' => Jc::CENTER]);
 
             // Header
             $table->addRow((int) Converter::inchToTwip(0.8));
-            $spoCell = $table->addCell((int) Converter::inchToTwip(1.87), ['valign' => 'center']);
+            $spoCell = $table->addCell((int) Converter::inchToTwip(1.2), ['valign' => 'center']);
             $spoCell->addText('STANDAR', ['bold' => true], ['alignment' => Jc::CENTER]);
             $spoCell->addText('PROSEDUR', ['bold' => true], ['alignment' => Jc::CENTER]);
             $spoCell->addText('OPERASIONAL', ['bold' => true], ['alignment' => Jc::CENTER]);
 
-            $dateCell = $table->addCell((int) Converter::inchToTwip(1.5), ['valign' => 'center']);
+            $dateCell = $table->addCell((int) Converter::inchToTwip(2.6), ['valign' => 'center']);
             $dateCell->addText('Tanggal Terbit', null, ['alignment' => Jc::CENTER]);
-            $tanggal = isset($data['tanggal_terbit']) ? \Carbon\Carbon::parse($data['tanggal_terbit'])->locale('id')->translatedFormat('j F Y') : '.......................';
-            $dateCell->addText($tanggal, null, ['alignment' => Jc::CENTER]);
+            $tanggalFormatted = '.......................';
+            if (!empty($sop->tanggal_terbit)) {
+                $tanggal = \Carbon\Carbon::parse($sop->tanggal_terbit, config('app.timezone'));
+                $tanggalFormatted = $tanggal->locale('id')->translatedFormat('j F Y');
+            }
+            $dateCell->addText($tanggalFormatted, null, ['alignment' => Jc::CENTER]);
 
-            $signCell = $table->addCell((int) Converter::inchToTwip(3.0), ['gridSpan' => 2, 'valign' => 'center']);
+            $signCell = $table->addCell((int) Converter::inchToTwip(3.67), ['gridSpan' => 2, 'valign' => 'center']);
             $signCell->addText('Ditetapkan,', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
@@ -108,14 +112,20 @@ class SOPDocxController extends Controller
             $rawKebijakan = trim($data['kebijakan'] ?? '');
             $resolvedKebijakan = [];
             $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
-            $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+            $lines = array_filter($lines, function ($line) {
+                return trim($line) !== '';
+            });
 
             $allAreIds = true;
             $ids = [];
             foreach ($lines as $line) {
                 $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                if (preg_match('/^\d+$/', $cleaned)) { $ids[] = (int) $cleaned; }
-                else { $allAreIds = false; break; }
+                if (preg_match('/^\d+$/', $cleaned)) {
+                    $ids[] = (int) $cleaned;
+                } else {
+                    $allAreIds = false;
+                    break;
+                }
             }
 
             if ($allAreIds && count($ids) > 0) {
@@ -124,20 +134,28 @@ class SOPDocxController extends Controller
                     ->get();
                 $resolvedKebijakan = $regs->pluck('isi_regulasi')->toArray();
             } else {
-                $resolvedKebijakan = array_values(array_filter(array_map('trim', $lines)));
+                $resolvedKebijakan = array_map(function ($line) {
+                    return preg_replace('/^\d+\.\s*/', '', trim($line));
+                }, array_values(array_filter(array_map('trim', $lines))));
             }
 
             $rawUnit = trim($data['unit_terkait'] ?? '');
             $resolvedUnit = $rawUnit;
             $unitLines = preg_split('/\r\n|\r|\n/', $rawUnit);
-            $unitLines = array_filter($unitLines, function ($line) { return trim($line) !== ''; });
+            $unitLines = array_filter($unitLines, function ($line) {
+                return trim($line) !== '';
+            });
 
             $allUnitIds = true;
             $uIds = [];
             foreach ($unitLines as $line) {
                 $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                if (preg_match('/^\d+$/', $cleaned)) { $uIds[] = (int) $cleaned; }
-                else { $allUnitIds = false; break; }
+                if (preg_match('/^\d+$/', $cleaned)) {
+                    $uIds[] = (int) $cleaned;
+                } else {
+                    $allUnitIds = false;
+                    break;
+                }
             }
 
             if ($allUnitIds && count($uIds) > 0) {
@@ -169,13 +187,14 @@ class SOPDocxController extends Controller
                         $phpWord->addNumberingStyle($listStyle, [
                             'type' => 'singleLevel',
                             'levels' => [
-                                ['format' => 'decimal', 'text' => '%1.', 'left' => 360, 'hanging' => 360, 'tabPos' => 360]
+                                ['format' => 'decimal', 'text' => '%1.', 'left' => 450, 'hanging' => 450, 'tabPos' => 450]
                             ]
                         ]);
                         foreach ($items as $item) {
                             $text = trim(strip_tags($item));
+                            $text = preg_replace('/^\d+\.\s*/', '', $text);
                             if ($text !== '') {
-                                $cell->addListItem($text, 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER, 'numStyle' => $listStyle]);
+                                $cell->addListItem($text, 0, null, ['listType' => \PhpOffice\PhpWord\Style\ListItem::TYPE_NUMBER, 'numStyle' => $listStyle], ['alignment' => Jc::BOTH]);
                             }
                         }
                     } else {

@@ -16,16 +16,35 @@ class RegulasiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'isi_regulasi' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'isi_regulasi' => 'required|string',
+            ]);
 
-        Regulasi::create([
-            'isi_regulasi' => $request->isi_regulasi,
-        ]);
+            Regulasi::create([
+                'isi_regulasi' => $request->isi_regulasi,
+            ]);
 
-        return redirect()->route('master-data.regulasi.index')
-            ->with('success', 'Regulasi berhasil ditambahkan');
+            return redirect()->route('master-data.regulasi.index')
+                ->with('success', 'Regulasi berhasil ditambahkan');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan regulasi: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan regulasi: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan regulasi: ' . $e->getMessage());
+        }
     }
 
     public function getRegulasiDetail($id)
@@ -62,18 +81,37 @@ class RegulasiController extends Controller
 
     public function update(Request $request, $id_regulasi)
     {
-        $request->validate([
-            'isi_regulasi' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'isi_regulasi' => 'required|string',
+            ]);
 
-        $regulasi = Regulasi::findOrFail($id_regulasi);
+            $regulasi = Regulasi::findOrFail($id_regulasi);
 
-        $regulasi->update([
-            'isi_regulasi' => $request->isi_regulasi,
-        ]);
+            $regulasi->update([
+                'isi_regulasi' => $request->isi_regulasi,
+            ]);
 
-        return redirect()->route('master-data.regulasi.index')
-            ->with('success', 'Regulasi berhasil diperbarui');
+            return redirect()->route('master-data.regulasi.index')
+                ->with('success', 'Regulasi berhasil diperbarui');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui regulasi: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui regulasi: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui regulasi: ' . $e->getMessage());
+        }
     }
 
     public function destroy($id_regulasi)

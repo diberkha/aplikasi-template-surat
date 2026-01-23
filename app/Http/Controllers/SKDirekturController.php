@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class SKDirekturController extends Controller
 {
@@ -46,7 +47,12 @@ class SKDirekturController extends Controller
             Log::info('store request received', ['data' => $request->all()]);
 
             $request->validate([
-                'nomor_surat' => 'required|unique:surat,nomor_surat',
+                'nomor_surat' => [
+                    'required',
+                    Rule::unique('surat', 'nomor_surat')->where(function ($query) {
+                        return $query->where('nama_surat', 'Surat Keputusan Direktur');
+                    })
+                ],
                 'tentang' => 'required',
                 'menimbang' => 'required|array|min:1',
                 'menimbang.*' => 'required|string',
@@ -75,7 +81,7 @@ class SKDirekturController extends Controller
             Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
 
             $memutuskanArray = $request->memutuskan;
-            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM'];
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
             $memutuskanText = '';
             foreach ($memutuskanArray as $index => $item) {
                 $item = trim((string) $item);
@@ -164,7 +170,7 @@ class SKDirekturController extends Controller
         }
     }
 
-    public function file($id)
+    public function file(Request $request, $id)
     {
         $surat = Surat::with('template', 'sop', 'skDirektur')->findOrFail($id);
         $path = $this->ensurePdfExists($surat);
@@ -177,11 +183,15 @@ class SKDirekturController extends Controller
         $filename = 'surat.pdf';
 
         if (str_contains($templateName, 'SK Direktur') || $surat->nama_surat === 'Surat Keputusan Direktur') {
-            $filename = 'SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+            $filename = 'SK Direktur-' . str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
         } elseif (str_contains($templateName, 'SOP') || $surat->nama_surat === 'Standar Operasional Prosedur (SOP)') {
             $sop = $surat->sop;
             $nomor = ($sop && $sop->nomor_dokumen) ? $sop->nomor_dokumen : $surat->nomor_surat;
-            $filename = 'SOP-' . str_replace('/', '-', $nomor) . '.pdf';
+            $filename = 'SOP-' . str_replace(['/', '\\'], '-', $nomor) . '.pdf';
+        }
+
+        if ($request->query('download') == '1') {
+            return response()->download($path, $filename);
         }
 
         return response()->file($path, [
@@ -264,6 +274,8 @@ class SKDirekturController extends Controller
                     $lines = explode("\n", $block);
                     return isset($lines[1]) ? trim($lines[1]) : '';
                 }, $memutuskanLines);
+
+                $surat->skDirektur->tanggal_dibuat_formatted = optional($surat->skDirektur->tanggal_dibuat)->format('Y-m-d');
             }
 
             return response()->json([
@@ -282,7 +294,10 @@ class SKDirekturController extends Controller
     {
         try {
             $request->validate([
-                'nomor_surat' => 'required|unique:surat,nomor_surat,' . $id . ',id_surat',
+                'nomor_surat' => [
+                    'required',
+                    Rule::unique('surat', 'nomor_surat')->ignore($id, 'id_surat')
+                ],
                 'tentang' => 'required',
                 'menimbang' => 'required|array|min:1',
                 'menimbang.*' => 'required|string',
@@ -297,14 +312,19 @@ class SKDirekturController extends Controller
             ]);
 
             $surat = Surat::findOrFail($id);
+
+            if ($surat->file_path && file_exists(storage_path('app/' . $surat->file_path))) {
+                unlink(storage_path('app/' . $surat->file_path));
+            }
+
             $surat->update([
                 'nomor_surat' => $request->nomor_surat,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
-                'file_path' => null, // Force PDF regeneration
+                'file_path' => null,
             ]);
 
             $memutuskanArray = $request->memutuskan;
-            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM'];
+            $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
             $memutuskanText = '';
             foreach ($memutuskanArray as $index => $item) {
                 $item = trim((string) $item);
@@ -334,20 +354,19 @@ class SKDirekturController extends Controller
             ]);
 
             $surat->refresh();
-            $surat->load('createdBy.ruangan');
+            $surat->load('createdBy.ruangan', 'skDirektur');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Draft Surat Keputusan Direktur berhasil diperbarui',
-                'data' => [
-                    'id_surat' => $surat->id_surat,
-                    'nama_surat' => $surat->nama_surat,
-                    'nomor_surat' => $surat->nomor_surat,
-                    'created_at' => $surat->created_at->toISOString(),
-                    'ruangan' => $surat->createdBy->ruangan->nama_ruangan ?? '-',
-                    'tipe_surat' => 'Surat Keputusan Direktur'
-                ]
+                'data' => $surat
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui draft: ' . implode(', ', $e->validator->errors()->all()),
+                'errors' => $e->errors(),
+            ], 422);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

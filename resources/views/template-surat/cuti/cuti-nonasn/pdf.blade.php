@@ -67,6 +67,29 @@
             text-transform: uppercase;
         }
 
+
+        table,
+        tr,
+        td,
+        th,
+        tbody,
+        thead,
+        tfoot {
+            page-break-inside: auto !important;
+        }
+
+
+        table,
+        tr,
+        td,
+        th,
+        tbody,
+        thead,
+        tfoot,
+        div {
+            page-break-inside: auto !important;
+        }
+
         .catatan-section td {
             padding: 1px;
             vertical-align: top;
@@ -78,7 +101,7 @@
 
 <body>
     <?php
-        $f = $data['form'] ?? [];
+$f = $data['form'] ?? [];
 function formatTanggalIndonesia($tanggal)
 {
     if (empty($tanggal))
@@ -114,7 +137,7 @@ function formatTanggalIndonesia($tanggal)
             FORMULIR PERMINTAAN DAN PEMBERIAN CUTI
         </div>
 
-<table>
+        <table>
             <tr>
                 <td colspan="4" class="section-header">I. DATA PEGAWAI</td>
             </tr>
@@ -141,7 +164,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="2" class="section-header">II. JENIS CUTI YANG DIAMBIL**</td>
             </tr>
@@ -165,7 +188,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td class="section-header">III. ALASAN CUTI</td>
             </tr>
@@ -176,7 +199,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="6" class="section-header">IV. LAMANYA CUTI</td>
             </tr>
@@ -190,7 +213,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="5" class="section-header">V. CATATAN CUTI***</td>
             </tr>
@@ -218,7 +241,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="3" class="section-header">VI. ALAMAT SELAMA MENJALANKAN CUTI</td>
             </tr>
@@ -238,7 +261,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="4" class="section-header">VII. PERTIMBANGAN ATASAN LANGSUNG</td>
             </tr>
@@ -272,7 +295,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             </tr>
         </table>
 
-<table>
+        <table>
             <tr>
                 <td colspan="4" class="section-header">VIII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI**</td>
             </tr>

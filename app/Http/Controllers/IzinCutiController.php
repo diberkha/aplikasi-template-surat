@@ -187,7 +187,7 @@ class IzinCutiController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Validasi gagal',
+                    'message' => 'Gagal menyimpan draft: ' . implode(', ', $e->validator->errors()->all()),
                     'errors' => $e->errors(),
                 ], 422);
             }
@@ -196,7 +196,7 @@ class IzinCutiController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                    'message' => 'Gagal menyimpan draft: ' . $e->getMessage(),
                 ], 500);
             }
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat membuat surat izin cuti');
@@ -351,7 +351,7 @@ class IzinCutiController extends Controller
 
             $surat->update([
                 'tanggal_dibuat' => $request->input('form.tanggal_surat'),
-                'file_path' => null, // Force PDF regeneration
+                'file_path' => null, 
             ]);
 
             $cuti->update([
@@ -360,20 +360,19 @@ class IzinCutiController extends Controller
             ]);
 
             $surat->refresh();
-            $surat->load('createdBy.ruangan');
+            $surat->load('createdBy.ruangan', 'cuti');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Draft Surat Izin Cuti berhasil diperbarui',
-                'data' => [
-                    'id_surat' => $surat->id_surat,
-                    'nama_surat' => $surat->nama_surat,
-                    'nomor_surat' => $surat->nomor_surat,
-                    'created_at' => $surat->created_at->toISOString(),
-                    'ruangan' => $surat->createdBy->ruangan->nama_ruangan ?? '-',
-                    'tipe_surat' => 'Surat Izin Cuti'
-                ]
+                'data' => $surat
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui draft: ' . implode(', ', $e->validator->errors()->all()),
+                'errors' => $e->errors(),
+            ], 422);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

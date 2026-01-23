@@ -54,7 +54,7 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">I. DATA PEGAWAI</h4>
@@ -107,7 +107,7 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">II. JENIS CUTI YANG DIAMBIL</h4>
@@ -129,7 +129,7 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">III. ALASAN CUTI</h4>
@@ -140,7 +140,7 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">IV. LAMANYA CUTI</h4>
@@ -169,43 +169,71 @@
                         </div>
                     </div>
 
-<div id="edit_sisa_cuti_container"
+                    <div id="edit_sisa_cuti_container"
                         class="hidden border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">V. CATATAN CUTI</h4>
                         </div>
                         <div class="p-4 bg-gray-50 dark:bg-gray-800/50">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                        N-2</label>
-                                    <input type="text" id="edit_val_n2_display" readonly
-                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                            <input type="hidden" name="form[catatan_n2]" id="edit_catatan_n2_hidden">
+                            <input type="hidden" name="form[catatan_n1]" id="edit_catatan_n1_hidden">
+                            <input type="hidden" name="form[catatan_n]" id="edit_catatan_n_hidden">
+                            <input type="hidden" name="form[n2_used]" id="edit_n2_used_hidden">
+                            <input type="hidden" name="form[n1_used]" id="edit_n1_used_hidden">
+                            <input type="hidden" name="form[n_used]" id="edit_n_used_hidden">
+                            <input type="hidden" name="form[sisa_cuti_tahunan]" id="edit_sisa_cuti_tahunan_hidden">
+
+                            <div id="edit_catatan_pns" class="hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                            N-2</label>
+                                        <input type="text" id="edit_val_n2_display" readonly
+                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                            N-1</label>
+                                        <input type="text" id="edit_val_n1_display" readonly
+                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    </div>
+                                    <div>
+                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                            N</label>
+                                        <input type="text" id="edit_val_n_display" readonly
+                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                        N-1</label>
-                                    <input type="text" id="edit_val_n1_display" readonly
-                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
-                                </div>
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                        N</label>
-                                    <input type="text" id="edit_val_n_display" readonly
-                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                                    <textarea name="form[catatan_n2_keterangan]" id="edit_catatan_n2_keterangan"
+                                        rows="2" placeholder="Keterangan N-2"
+                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                    <textarea name="form[catatan_n1_keterangan]" id="edit_catatan_n1_keterangan"
+                                        rows="2" placeholder="Keterangan N-1"
+                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                    <textarea name="form[catatan_n_keterangan]" id="edit_catatan_n_keterangan" rows="2"
+                                        placeholder="Keterangan N"
+                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                                <textarea name="form[catatan_n2_keterangan]" id="edit_catatan_n2_keterangan" rows="2"
-                                    placeholder="Keterangan N-2"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
-                                <textarea name="form[catatan_n1_keterangan]" id="edit_catatan_n1_keterangan" rows="2"
-                                    placeholder="Keterangan N-1"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
-                                <textarea name="form[catatan_n_keterangan]" id="edit_catatan_n_keterangan" rows="2"
-                                    placeholder="Keterangan N"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+
+                            <div id="edit_catatan_umum" class="hidden">
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                            Tahunan</label>
+                                        <input type="text" id="edit_val_umum_display" readonly
+                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    </div>
+                                    <div id="edit_keterangan_umum_container">
+                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Keterangan
+                                            (Opsional)</label>
+                                        <textarea name="form[catatan_n_keterangan_umum]"
+                                            id="edit_catatan_umum_keterangan" rows="2" placeholder="Keterangan"
+                                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <div id="edit_calc_preview"
@@ -217,7 +245,8 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">VI. ALAMAT SELAMA MENJALANKAN CUTI</h4>
@@ -238,7 +267,7 @@
                         </div>
                     </div>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">VII. PERTIMBANGAN ATASAN LANGSUNG</h4>
@@ -287,13 +316,13 @@
 
                 <div
                     class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3 rounded-b-xl">
-                    <button type="button" onclick="closeModal('modalEditCuti')"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                        Batal
+                    <button type="button" onclick="resetEditCutiForm()"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        Reset
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
-                        Simpan
+                    <button type="submit" id="submitEditCutiBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Perbarui
                     </button>
                 </div>
             </form>
@@ -350,6 +379,7 @@
 
     let baselineN = 0, baselineN1 = 0, baselineN2 = 0, baselineSisaTahunan = 0;
     let editModeCuti = false;
+    let currentCutiDraftData = null;
 
     async function openEditCutiModal(id) {
         try {
@@ -357,69 +387,103 @@
             const result = await response.json();
             if (!result.success) { notify('error', 'Gagal', 'Gagal mengambil data draft'); return; }
 
-            const data = result.data;
-            const cuti = data.cuti;
-            const formData = cuti.form_data;
-
-            document.getElementById('edit_cuti_id_surat').value = data.id_surat;
-            document.getElementById('edit_cuti_kategori').value = cuti.kategori;
-            document.getElementById('edit_cuti_kategori_display').value = cuti.kategori;
-
-            const pegId = formData.pegawai_id || formData.pegawai_id_pns || formData.pegawai_id_pppk || formData.pegawai_id_nonasn;
-            document.getElementById('edit_pegawai_id').value = pegId || '';
-
-            document.getElementById('edit_cuti_tempat_surat').value = formData.tempat_surat || 'Sragen';
-            document.getElementById('edit_cuti_tanggal_surat').value = formData.tanggal_surat ? formData.tanggal_surat.substring(0, 10) : '';
-
-            document.getElementById('edit_cuti_nama').value = formData.nama || '';
-            document.getElementById('edit_cuti_nip').value = formData.nip || '';
-            document.getElementById('edit_cuti_jabatan').value = formData.jabatan || '';
-            document.getElementById('edit_cuti_unit').value = formData.unit || formData.unit_kerja || 'RSUD dr. Soeratno Gemolong';
-            document.getElementById('edit_cuti_masa_kerja_tahun').value = formData.masa_kerja_tahun || '';
-            document.getElementById('edit_cuti_masa_kerja_bulan').value = formData.masa_kerja_bulan || '';
-            document.getElementById('edit_cuti_telp').value = formData.telp || formData.no_telp || '';
-
-            document.getElementById('edit_cuti_jenis').value = formData.jenis_cuti || '';
-            document.getElementById('edit_cuti_alasan').value = formData.alasan || formData.alasan_cuti || '';
-            document.getElementById('edit_cuti_mulai').value = formData.mulai ? formData.mulai.substring(0, 10) : (formData.tanggal_mulai ? formData.tanggal_mulai.substring(0, 10) : '');
-            document.getElementById('edit_cuti_sampai').value = formData.sampai ? formData.sampai.substring(0, 10) : (formData.tanggal_selesai ? formData.tanggal_selesai.substring(0, 10) : '');
-            document.getElementById('edit_cuti_lama').value = formData.lama_cuti || '';
-            document.getElementById('edit_cuti_alamat').value = formData.alamat || formData.alamat_cuti || '';
-
-            if (pegId) {
-                const pRes = await fetch(`/api/pegawai/${pegId}`);
-                const pInfo = await pRes.json();
-
-                baselineN = (pInfo.sisa_cuti_n || 0) + (parseInt(formData.n_used) || 0);
-                baselineN1 = (pInfo.sisa_cuti_n1 || 0) + (parseInt(formData.n1_used) || 0);
-                baselineN2 = (pInfo.sisa_cuti_n2 || 0) + (parseInt(formData.n2_used) || 0);
-                baselineSisaTahunan = (pInfo.sisa_cuti_tahunan || 0) + (parseInt(formData.lama_cuti) || 0);
-            }
-
-            const sisaCutiContainer = document.getElementById('edit_sisa_cuti_container');
-            const isTahunan = (formData.jenis_cuti === 'Cuti Tahunan');
-
-            if (isTahunan) {
-                sisaCutiContainer.classList.remove('hidden');
-                updateEditSisaCutiDisplay();
-            } else {
-                sisaCutiContainer.classList.add('hidden');
-            }
-
-            document.getElementById('edit_catatan_n2_keterangan').value = formData.catatan_n2_keterangan || '';
-            document.getElementById('edit_catatan_n1_keterangan').value = formData.catatan_n1_keterangan || '';
-            document.getElementById('edit_catatan_n_keterangan').value = formData.catatan_n_keterangan || '';
-
-            document.getElementById('edit_cuti_atasan_nama').value = formData.nama_atasan || formData.atasan_langsung_nama || '';
-            document.getElementById('edit_cuti_atasan_nip').value = formData.nip_atasan || formData.atasan_langsung_nip || '';
-            document.getElementById('edit_cuti_atasan_jabatan').value = formData.jabatan_atasan || formData.atasan_langsung_jabatan || '';
-
-            window.originalFormData = formData;
-            editModeCuti = true;
+            currentCutiDraftData = result.data;
+            await populateEditCutiForm(currentCutiDraftData);
             openModal('modalEditCuti');
         } catch (error) {
             console.error('Error fetching draft data:', error);
             notify('error', 'Gagal', 'Terjadi kesalahan saat mengambil data');
+        }
+    }
+
+    async function populateEditCutiForm(data) {
+        const cuti = data.cuti;
+        const formData = cuti.form_data;
+
+        document.getElementById('edit_cuti_id_surat').value = data.id_surat;
+        document.getElementById('edit_cuti_kategori').value = cuti.kategori;
+        document.getElementById('edit_cuti_kategori_display').value = cuti.kategori;
+
+        const pegId = formData.pegawai_id || formData.pegawai_id_pns || formData.pegawai_id_pppk || formData.pegawai_id_nonasn;
+        document.getElementById('edit_pegawai_id').value = pegId || '';
+
+        document.getElementById('edit_cuti_tempat_surat').value = formData.tempat_surat || 'Sragen';
+        document.getElementById('edit_cuti_tanggal_surat').value = formData.tanggal_surat ? formData.tanggal_surat.substring(0, 10) : '';
+
+        document.getElementById('edit_cuti_nama').value = formData.nama || '';
+        document.getElementById('edit_cuti_nip').value = formData.nip || '';
+        document.getElementById('edit_cuti_jabatan').value = formData.jabatan || '';
+        document.getElementById('edit_cuti_unit').value = formData.unit || formData.unit_kerja || 'RSUD dr. Soeratno Gemolong';
+        document.getElementById('edit_cuti_masa_kerja_tahun').value = formData.masa_kerja_tahun || '';
+        document.getElementById('edit_cuti_masa_kerja_bulan').value = formData.masa_kerja_bulan || '';
+        document.getElementById('edit_cuti_telp').value = formData.telp || formData.no_telp || '';
+
+        document.getElementById('edit_cuti_jenis').value = formData.jenis_cuti || '';
+        document.getElementById('edit_cuti_alasan').value = formData.alasan || formData.alasan_cuti || '';
+        document.getElementById('edit_cuti_mulai').value = formData.mulai ? formData.mulai.substring(0, 10) : (formData.tanggal_mulai ? formData.tanggal_mulai.substring(0, 10) : '');
+        document.getElementById('edit_cuti_sampai').value = formData.sampai ? formData.sampai.substring(0, 10) : (formData.tanggal_selesai ? formData.tanggal_selesai.substring(0, 10) : '');
+        document.getElementById('edit_cuti_lama').value = formData.lama_cuti || '';
+        document.getElementById('edit_cuti_alamat').value = formData.alamat || formData.alamat_cuti || '';
+
+        if (pegId) {
+            const pRes = await fetch(`/api/pegawai/${pegId}`);
+            const pInfo = await pRes.json();
+
+            baselineN = (pInfo.sisa_cuti_n || 0) + (parseInt(formData.n_used) || 0);
+            baselineN1 = (pInfo.sisa_cuti_n1 || 0) + (parseInt(formData.n1_used) || 0);
+            baselineN2 = (pInfo.sisa_cuti_n2 || 0) + (parseInt(formData.n2_used) || 0);
+            baselineSisaTahunan = (pInfo.sisa_cuti_tahunan || 0) + (parseInt(formData.lama_cuti) || 0);
+        }
+
+        editModeCuti = true;
+
+        const sisaCutiContainer = document.getElementById('edit_sisa_cuti_container');
+        const isTahunan = (formData.jenis_cuti === 'Cuti Tahunan');
+
+        if (isTahunan) {
+            sisaCutiContainer.classList.remove('hidden');
+
+            const catPNS = document.getElementById('edit_catatan_pns');
+            const catUmum = document.getElementById('edit_catatan_umum');
+            const ketUmum = document.getElementById('edit_keterangan_umum_container');
+
+            if (cuti.kategori === 'PNS') {
+                catPNS.classList.remove('hidden');
+                catUmum.classList.add('hidden');
+                document.getElementById('edit_catatan_n2_keterangan').value = formData.catatan_n2_keterangan || '';
+                document.getElementById('edit_catatan_n1_keterangan').value = formData.catatan_n1_keterangan || '';
+                document.getElementById('edit_catatan_n_keterangan').value = formData.catatan_n_keterangan || '';
+            } else {
+                catPNS.classList.add('hidden');
+                catUmum.classList.remove('hidden');
+
+                if (cuti.kategori === 'PPPK') {
+                    ketUmum.classList.add('hidden');
+                } else {
+                    ketUmum.classList.remove('hidden');
+                    document.getElementById('edit_catatan_umum_keterangan').value = formData.catatan_n_keterangan || '';
+                }
+            }
+
+            updateEditSisaCutiDisplay();
+        } else {
+            sisaCutiContainer.classList.add('hidden');
+        }
+
+        document.getElementById('edit_cuti_atasan_nama').value = formData.nama_atasan || formData.atasan_langsung_nama || '';
+        document.getElementById('edit_cuti_atasan_nip').value = formData.nip_atasan || formData.atasan_langsung_nip || '';
+        document.getElementById('edit_cuti_atasan_jabatan').value = formData.jabatan_atasan || formData.atasan_langsung_jabatan || '';
+
+        window.originalFormData = formData;
+
+        if (typeof FormDirtyMonitor !== 'undefined') {
+            new FormDirtyMonitor('editCutiForm', 'submitEditCutiBtn');
+        }
+    }
+
+    function resetEditCutiForm() {
+        if (currentCutiDraftData) {
+            populateEditCutiForm(currentCutiDraftData);
         }
     }
 
@@ -446,8 +510,13 @@
 
     function updateEditSisaCutiDisplay() {
         if (!editModeCuti) return;
-        const kategori = document.getElementById('edit_cuti_kategori').value;
-        const lamaCutiValue = parseInt(document.getElementById('edit_cuti_lama').value) || 0;
+
+        const katEl = document.getElementById('edit_cuti_kategori');
+        const lamaEl = document.getElementById('edit_cuti_lama');
+        if (!katEl || !lamaEl) return;
+
+        const kategori = katEl.value;
+        const lamaCutiValue = parseInt(lamaEl.value) || 0;
 
         const calcPreview = document.getElementById('edit_calc_preview');
         const calcDetails = document.getElementById('edit_calc_details');
@@ -488,8 +557,8 @@
             const finalSisa = Math.max(0, baselineSisaTahunan - lamaCutiValue);
             document.getElementById('edit_sisa_cuti_tahunan_hidden').value = finalSisa;
 
-            if (document.getElementById('edit_val_n_display')) {
-                document.getElementById('edit_val_n_display').value = finalSisa + ' Hari';
+            if (document.getElementById('edit_val_umum_display')) {
+                document.getElementById('edit_val_umum_display').value = finalSisa + ' Hari';
             }
 
             if (lamaCutiValue > baselineSisaTahunan) {
@@ -515,6 +584,11 @@
             }
         }
 
+        if (currentFields['catatan_n_keterangan_umum']) {
+            currentFields['catatan_n_keterangan'] = currentFields['catatan_n_keterangan_umum'];
+            delete currentFields['catatan_n_keterangan_umum'];
+        }
+
         const mergedData = { ...window.originalFormData, ...currentFields };
         const finalData = new FormData();
         finalData.append('_token', formData.get('_token'));
@@ -524,9 +598,9 @@
             finalData.append(`form[${key}]`, value);
         }
 
-        const submitBtn = form.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitEditCutiBtn');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
         fetch(`/cuti/${id}`, {
             method: 'POST', body: finalData,
@@ -537,12 +611,17 @@
                 if (res.success) {
                     closeModal('modalEditCuti');
                     notify('success', 'Berhasil', res.message);
-                    window.location.reload();
+
+                    window.dispatchEvent(new CustomEvent('update-cuti-draft', { detail: res.data }));
+
+                    setTimeout(() => {
+                        window.openDraftPreview(res.data);
+                    }, 500);
                 } else notify('error', 'Gagal', res.message);
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Simpan';
+                submitBtn.innerHTML = 'Perbarui';
                 editModeCuti = false;
             });
     }

@@ -49,6 +49,27 @@
         .v-middle {
             vertical-align: middle;
         }
+
+
+        table,
+        tr,
+        td,
+        th,
+        tbody,
+        thead,
+        tfoot {
+            page-break-inside: auto !important;
+        }
+
+        .justify,
+        .left-align,
+        ol,
+        li,
+        div {
+            page-break-inside: auto !important;
+            orphans: 1 !important;
+            widows: 1 !important;
+        }
     </style>
 </head>
 
@@ -83,7 +104,8 @@
                     </tr>
                     <tr>
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
-                            {{ $data['nomor_dokumen'] ?? '' }}</td>
+                            {{ $data['nomor_dokumen'] ?? '' }}
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -94,7 +116,8 @@
                     </tr>
                     <tr>
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
-                            {{ $data['nomor_revisi'] ?? '' }}</td>
+                            {{ $data['nomor_revisi'] ?? '' }}
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -105,7 +128,8 @@
                     </tr>
                     <tr>
                         <td class="center" style="border: none; padding: 3px 6px; font-size: 12pt;">
-                            {{ $data['halaman'] ?? '1/1' }}</td>
+                            {{ $data['halaman'] ?? '1/1' }}
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -134,7 +158,7 @@
                             'November' => 'November',
                             'December' => 'Desember'
                         ];
-                        $tanggal = \Carbon\Carbon::parse($data['tanggal_terbit']);
+                        $tanggal = \Carbon\Carbon::parse($data['tanggal_terbit'] ?? now(), config('app.timezone'));
                         $bulan = $bulanIndonesia[$tanggal->format('F')];
                         $tanggalFormatted = $tanggal->format('j') . ' ' . $bulan . ' ' . $tanggal->format('Y');
                     @endphp
@@ -163,7 +187,10 @@
                         $fontSize = '11pt';
                     }
                 @endphp
-                <div style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap; font-size: {{ $fontSize }}; overflow: hidden; text-overflow: clip;">{{ $direkturNama }}</div>
+                <div
+                    style="text-decoration: underline; margin-bottom: 2px; white-space: nowrap; font-size: {{ $fontSize }}; overflow: hidden; text-overflow: clip;">
+                    {{ $direkturNama }}
+                </div>
                 <div>NIP. {{ $direkturNip }}</div>
             </td>
         </tr>
@@ -171,79 +198,135 @@
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Pengertian</td>
             <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">{{ $data['pengertian'] ?? '' }}</td>
         </tr>
-        <tr>
-            <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Tujuan</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
-                @php
-                    $tujuan = $data['tujuan'] ?? [];
-                    if (is_string($tujuan)) {
-                        $tujuan = array_filter(explode("\n", $tujuan));
-                    }
-                @endphp
-                @if(count($tujuan) <= 1)
-                    {{ $tujuan[0] ?? ($data['tujuan'] ?? '') }}
-                @else
-                    <ol style="margin:0; padding-left:18px;">
-                        @foreach($tujuan as $item)
-                            <li>{{ $item }}</li>
+        @php
+            $tujuan = $data['tujuan'] ?? [];
+            if (is_string($tujuan)) {
+                $tujuan = array_filter(explode("\n", $tujuan));
+            }
+            $tujuan = array_map(function ($item) {
+                return preg_replace('/^\d+\.\s*/', '', trim($item));
+            }, array_values($tujuan));
+        @endphp
+        @if(count($tujuan) > 0)
+            <tr>
+                <td class="left-align"
+                    style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                    Tujuan</td>
+                <td class="justify" style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                    colspan="3">
+                    @if(count($tujuan) > 1)
+                        @foreach($tujuan as $index => $item)
+                            <table style="width: 100%; border: none; margin-bottom: 2px;">
+                                <tr style="border: none;">
+                                    <td
+                                        style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                        {{ $index + 1 }}.
+                                    </td>
+                                    <td
+                                        style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                        {{ $item }}
+                                    </td>
+                                </tr>
+                            </table>
                         @endforeach
-                    </ol>
-                @endif
-            </td>
-        </tr>
-        <tr>
-            <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Kebijakan</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
-                @php
-                    $rawKebijakan = trim($data['kebijakan'] ?? '');
-                    $kebijakanItems = [];
+                    @else
+                        {{ $tujuan[0] }}
+                    @endif
+                </td>
+            </tr>
+        @endif
 
-                    $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
-                    $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+        @php
+            $rawKebijakan = trim($data['kebijakan'] ?? '');
+            $kebijakanItems = [];
+            $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
+            $lines = array_filter($lines, function ($line) {
+                return trim($line) !== '';
+            });
 
-                    $allAreIds = true;
-                    $ids = [];
-                    foreach ($lines as $line) {
-                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                        if (preg_match('/^\d+$/', $cleaned)) {
-                            $ids[] = (int) $cleaned;
-                        } else {
-                            $allAreIds = false;
-                            break;
-                        }
+            $allAreIds = true;
+            $ids = [];
+            foreach ($lines as $line) {
+                $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                if (preg_match('/^\d+$/', $cleaned)) {
+                    $ids[] = (int) $cleaned;
+                } else {
+                    $allAreIds = false;
+                    break;
+                }
+            }
+
+            if ($allAreIds && count($ids) > 0) {
+                $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
+                    ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
+                    ->get();
+                $kebijakanItems = $regulasis->count() > 0 ? $regulasis->pluck('isi_regulasi')->toArray() : ['Data regulasi tidak ditemukan'];
+            } else {
+                foreach ($lines as $line) {
+                    $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                    if ($cleaned !== '') {
+                        $kebijakanItems[] = $cleaned;
                     }
+                }
+            }
+            $kebijakanItems = array_values($kebijakanItems);
+        @endphp
+        @if(count($kebijakanItems) > 0)
+            <tr>
+                <td class="left-align"
+                    style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                    Kebijakan</td>
+                <td class="justify" style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                    colspan="3">
+                    @foreach($kebijakanItems as $index => $item)
+                        <table style="width: 100%; border: none; margin-bottom: 2px;">
+                            <tr style="border: none;">
+                                <td
+                                    style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                    {{ $index + 1 }}.
+                                </td>
+                                <td
+                                    style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                    {{ $item }}
+                                </td>
+                            </tr>
+                        </table>
+                    @endforeach
+                </td>
+            </tr>
+        @endif
 
-                    if ($allAreIds && count($ids) > 0) {
-                        $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
-                            ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
-                            ->get();
-                        $kebijakanItems = $regulasis->count() > 0
-                            ? $regulasis->pluck('isi_regulasi')->toArray()
-                            : ['Data regulasi tidak ditemukan'];
-                    } else {
-                        foreach ($lines as $line) {
-                            $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                            if ($cleaned !== '') { $kebijakanItems[] = $cleaned; }
-                        }
-                    }
-                @endphp
-                <ol style="margin:0; padding-left:18px;">
-                    @foreach($kebijakanItems as $item)
-                        <li>{{ $item }}</li>
+        @php
+            $prosedur = array_values($data['prosedur'] ?? []);
+            $prosedur = array_map(function ($item) {
+                return preg_replace('/^\d+\.\s*/', '', trim($item));
+            }, $prosedur);
+        @endphp
+        @if(count($prosedur) > 0)
+            <tr>
+                <td class="left-align"
+                    style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                    Prosedur</td>
+                <td class="justify" style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                    colspan="3">
+                    @foreach($prosedur as $index => $item)
+                        <table style="width: 100%; border: none; margin-bottom: 2px;">
+                            <tr style="border: none;">
+                                <td
+                                    style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                    {{ $index + 1 }}.
+                                </td>
+                                <td
+                                    style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                    {!! $item !!}
+                                </td>
+                            </tr>
+                        </table>
                     @endforeach
-                </ol>
-            </td>
-        </tr>
-        <tr>
-            <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Prosedur</td>
-            <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
-                <ol style="margin:0; padding-left:18px;">
-                    @foreach(($data['prosedur'] ?? []) as $item)
-                        <li>{!! $item !!}</li>
-                    @endforeach
-                </ol>
-            </td>
-        </tr>
+                </td>
+            </tr>
+        @endif
+
         <tr>
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Unit Terkait</td>
             <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
@@ -252,7 +335,9 @@
                     $unitText = $rawUnit;
 
                     $lines = preg_split('/\r\n|\r|\n/', $rawUnit);
-                    $lines = array_filter($lines, function ($line) { return trim($line) !== ''; });
+                    $lines = array_filter($lines, function ($line) {
+                        return trim($line) !== '';
+                    });
 
                     $allAreIds = true;
                     $ids = [];

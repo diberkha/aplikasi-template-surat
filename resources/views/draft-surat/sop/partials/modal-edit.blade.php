@@ -175,13 +175,13 @@
 
                 <div
                     class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
-                    <button type="button" onclick="closeModal('modalEditSOP')"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                        Batal
+                    <button type="button" onclick="resetEditSopForm()"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        Reset
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
-                        Simpan
+                    <button type="submit" id="submitEditSopBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Perbarui
                     </button>
                 </div>
             </form>
@@ -192,6 +192,7 @@
 <script>
     let editTujuanCounter = 0;
     let editProsedurCounter = 0;
+    let currentSopDraftData = null;
 
     async function openEditSopModal(id) {
         try {
@@ -203,45 +204,58 @@
                 return;
             }
 
-            const data = result.data;
-            const sop = data.sop;
-
-            document.getElementById('edit_sop_id_surat').value = data.id_surat;
-            document.getElementById('edit_sop_judul').value = sop.judul_sop;
-
-            const nomorDokParts = (sop.nomor_dokumen || '///').split('/');
-            document.getElementById('edit_nomor_dok_part1').value = nomorDokParts[0] || '';
-            document.getElementById('edit_nomor_dok_part2').value = nomorDokParts[1] || '';
-            document.getElementById('edit_nomor_dok_part3').value = nomorDokParts[2] || '';
-            document.getElementById('edit_nomor_dok_part4').value = nomorDokParts[3] || '';
-
-            document.getElementById('edit_sop_nomor_revisi').value = sop.nomor_revisi;
-            document.getElementById('edit_sop_halaman').value = sop.halaman;
-            document.getElementById('edit_sop_tanggal_terbit').value = sop.tanggal_terbit ? sop.tanggal_terbit.substring(0, 10) : '';
-            document.getElementById('edit_sop_pengertian').value = sop.pengertian;
-
-            const tujuanContainer = document.getElementById('editTujuanContainer');
-            tujuanContainer.innerHTML = '';
-            editTujuanCounter = 0;
-            sop.tujuan_array.forEach((text, idx) => {
-                addEditTujuanField(text);
-            });
-
-            const prosedurContainer = document.getElementById('editProsedurContainer');
-            prosedurContainer.innerHTML = '';
-            editProsedurCounter = 0;
-            sop.prosedur_array.forEach((text, idx) => {
-                addEditProsedurField(text);
-            });
-
-            await loadEditRegulasiOptions(sop.kebijakan_array);
-
-            await loadEditUnitOptions(sop.unit_terkait_array);
-
+            currentSopDraftData = result.data;
+            populateEditSopForm(currentSopDraftData);
             openModal('modalEditSOP');
         } catch (error) {
             console.error('Error fetching draft data:', error);
             notify('error', 'Gagal', 'Terjadi kesalahan saat mengambil data');
+        }
+    }
+
+    function populateEditSopForm(data) {
+        const sop = data.sop;
+
+        document.getElementById('edit_sop_id_surat').value = data.id_surat;
+        document.getElementById('edit_sop_judul').value = sop.judul_sop;
+
+        const nomorDokParts = (sop.nomor_dokumen || '///').split('/');
+        document.getElementById('edit_nomor_dok_part1').value = nomorDokParts[0] || '';
+        document.getElementById('edit_nomor_dok_part2').value = nomorDokParts[1] || '';
+        document.getElementById('edit_nomor_dok_part3').value = nomorDokParts[2] || '';
+        document.getElementById('edit_nomor_dok_part4').value = nomorDokParts[3] || '';
+
+        document.getElementById('edit_sop_nomor_revisi').value = sop.nomor_revisi;
+        document.getElementById('edit_sop_halaman').value = sop.halaman;
+        const tanggalTerbit = sop.tanggal_terbit_formatted || (sop.tanggal_terbit ? sop.tanggal_terbit.substring(0, 10) : '');
+        document.getElementById('edit_sop_tanggal_terbit').value = tanggalTerbit;
+        document.getElementById('edit_sop_pengertian').value = sop.pengertian;
+
+        const tujuanContainer = document.getElementById('editTujuanContainer');
+        tujuanContainer.innerHTML = '';
+        editTujuanCounter = 0;
+        sop.tujuan_array.forEach((text, idx) => {
+            addEditTujuanField(text);
+        });
+
+        const prosedurContainer = document.getElementById('editProsedurContainer');
+        prosedurContainer.innerHTML = '';
+        editProsedurCounter = 0;
+        sop.prosedur_array.forEach((text, idx) => {
+            addEditProsedurField(text);
+        });
+
+        loadEditRegulasiOptions(sop.kebijakan_array);
+        loadEditUnitOptions(sop.unit_terkait_array);
+
+        if (typeof FormDirtyMonitor !== 'undefined') {
+            new FormDirtyMonitor('editSopForm', 'submitEditSopBtn');
+        }
+    }
+
+    function resetEditSopForm() {
+        if (currentSopDraftData) {
+            populateEditSopForm(currentSopDraftData);
         }
     }
 
@@ -295,6 +309,8 @@
 
     function addEditTujuanField(text = '') {
         const container = document.getElementById('editTujuanContainer');
+        const items = container.querySelectorAll('.tujuan-item').length;
+        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false); return; }
         const index = ++editTujuanCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'tujuan-item flex gap-3';
@@ -308,10 +324,13 @@
             </div>
         `;
         container.appendChild(wrapper);
+        renumberEditItems('editTujuanContainer', 'tujuan-item');
     }
 
     function addEditProsedurField(text = '') {
         const container = document.getElementById('editProsedurContainer');
+        const items = container.querySelectorAll('.prosedur-item').length;
+        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false); return; }
         const index = ++editProsedurCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'prosedur-item flex gap-3';
@@ -325,6 +344,17 @@
             </div>
         `;
         container.appendChild(wrapper);
+        renumberEditItems('editProsedurContainer', 'prosedur-item');
+    }
+
+    function renumberEditItems(containerId, itemClass) {
+        const container = document.getElementById(containerId);
+        const items = container.querySelectorAll(`.${itemClass}`);
+        items.forEach((el, idx) => {
+            el.querySelector('label').textContent = `${idx + 1}.`;
+        });
+        if (containerId === 'editTujuanContainer') editTujuanCounter = items.length;
+        else editProsedurCounter = items.length;
     }
 
     function removeEditField(button, containerId, itemClass) {
@@ -418,9 +448,9 @@
         const id = document.getElementById('edit_sop_id_surat').value;
         const formData = new FormData(form);
 
-        const submitBtn = form.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitEditSopBtn');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
         fetch(`/sop/${id}`, {
             method: 'POST',
@@ -435,7 +465,12 @@
                 if (result.success) {
                     closeModal('modalEditSOP');
                     notify('success', 'Berhasil', result.message);
-                    window.location.reload();
+
+                    window.dispatchEvent(new CustomEvent('update-sop-draft', { detail: result.data }));
+
+                    setTimeout(() => {
+                        window.openDraftPreview(result.data);
+                    }, 500);
                 } else {
                     notify('error', 'Gagal', result.message);
                 }
@@ -446,7 +481,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Simpan';
+                submitBtn.innerHTML = 'Perbarui';
             });
     }
 </script>

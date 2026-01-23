@@ -364,6 +364,8 @@
 
     function addTujuanField() {
         const container = document.getElementById('tujuanContainer');
+        const items = container.querySelectorAll('.tujuan-item').length;
+        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false); return; }
         const index = ++tujuanCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'tujuan-item flex gap-3';
@@ -377,6 +379,7 @@
             </div>
         `;
         container.appendChild(wrapper);
+        renumberItems('tujuanContainer', 'tujuan-item');
     }
 
     function removeTujuanField(button) {
@@ -390,6 +393,8 @@
 
     function addProsedurField() {
         const container = document.getElementById('prosedurContainer');
+        const items = container.querySelectorAll('.prosedur-item').length;
+        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false); return; }
         const index = ++prosedurCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'prosedur-item flex gap-3';
@@ -403,6 +408,7 @@
             </div>
         `;
         container.appendChild(wrapper);
+        renumberItems('prosedurContainer', 'prosedur-item');
     }
 
     function removeProsedurField(button) {

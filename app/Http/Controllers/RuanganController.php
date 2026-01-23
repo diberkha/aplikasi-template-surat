@@ -15,30 +15,68 @@ class RuanganController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan',
-        ]);
+        try {
+            $request->validate([
+                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan',
+            ]);
 
-        Ruangan::create([
-            'nama_ruangan' => $request->nama_ruangan,
-        ]);
+            Ruangan::create([
+                'nama_ruangan' => $request->nama_ruangan,
+            ]);
 
-        return redirect()->route('master-data.ruangan.index')
-            ->with('success', 'Ruangan berhasil ditambahkan');
+            return redirect()->route('master-data.ruangan.index')
+                ->with('success', 'Ruangan berhasil ditambahkan');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan ruangan: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan ruangan: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan ruangan: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, Ruangan $ruangan)
     {
-        $request->validate([
-            'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
-        ]);
+        try {
+            $request->validate([
+                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
+            ]);
 
-        $ruangan->update([
-            'nama_ruangan' => $request->nama_ruangan,
-        ]);
+            $ruangan->update([
+                'nama_ruangan' => $request->nama_ruangan,
+            ]);
 
-        return redirect()->route('master-data.ruangan.index')
-            ->with('success', 'Ruangan berhasil diperbarui');
+            return redirect()->route('master-data.ruangan.index')
+                ->with('success', 'Ruangan berhasil diperbarui');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui ruangan: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui ruangan: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui ruangan: ' . $e->getMessage());
+        }
     }
 
     public function destroy(Ruangan $ruangan)

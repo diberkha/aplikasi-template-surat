@@ -26,11 +26,20 @@
 
                     <div x-show="openDropdown" @click.outside="openDropdown = false" x-transition
                         class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-50">
-                        <a :href="`/arsip-surat/${suratId}/download`" :download="downloadFilename"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-file-pdf text-red-600 mr-3 w-5"></i>
-                            PDF
-                        </a>
+                        <template x-if="docxUrl !== '#'">
+                            <a :href="docxUrl" :download="downloadDocxFilename"
+                                class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-file-word text-green-600 mr-3 w-5"></i>
+                                DOCX
+                            </a>
+                        </template>
+                        <template x-if="pdfUrl !== '#'">
+                            <a :href="pdfUrl" :download="downloadFilename"
+                                class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-file-pdf text-red-600 mr-3 w-5"></i>
+                                PDF
+                            </a>
+                        </template>
                     </div>
                 </div>
 
@@ -48,7 +57,7 @@
         </div>
 
         <div
-            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
+            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center rounded-b-xl">
             <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">
                 <i class="fas fa-info-circle text-blue-500 mr-2"></i>
                 Draft ini belum diarsipkan
@@ -65,35 +74,69 @@
             nomorSurat: '',
             suratId: null,
             judulSurat: '',
+            pdfUrl: '#',
+            docxUrl: '#',
+            docType: 'draft',
 
             get downloadFilename() {
-                if (this.nomorSurat) {
-                    const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
-                    return `Draft-${cleanNomor}.pdf`;
-                }
-                return 'Draft.pdf';
+                if (!this.nomorSurat) return 'Draft.pdf';
+                const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
+                if (this.docType === 'sop') return `SOP-${cleanNomor}.pdf`;
+                if (this.docType === 'sk') return `SK-Direktur-${cleanNomor}.pdf`;
+                return `Draft-${cleanNomor}.pdf`;
+            },
+
+            get downloadDocxFilename() {
+                if (!this.nomorSurat) return 'Draft.docx';
+                const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
+                if (this.docType === 'sop') return `SOP-${cleanNomor}.docx`;
+                if (this.docType === 'sk') return `SK-Direktur-${cleanNomor}.docx`;
+                return `Draft-${cleanNomor}.docx`;
             },
 
             open(item) {
                 this.suratId = item.id_surat || item.id;
                 this.fileUrl = `/arsip-surat/${this.suratId}`;
 
-                // Set subtitle (nomorSurat) based on type
-                if (item.sop) {
-                    this.nomorSurat = item.sop.nomor_dokumen || item.nomor_surat || '-';
-                } else if (item.sk_direktur) {
-                    this.nomorSurat = item.sk_direktur.nomor_surat || item.nomor_surat || '-';
-                } else if (item.cuti) {
-                    const nama = (item.cuti.form_data && item.cuti.form_data.nama) ? item.cuti.form_data.nama : 'Pegawai';
+                this.pdfUrl = '#';
+                this.docxUrl = '#';
+
+                const sop = item.sop;
+                const sk = item.sk_direktur || item.skDirektur;
+                const cuti = item.cuti;
+
+                if (sop) {
+                    this.docType = 'sop';
+                    this.nomorSurat = sop.nomor_dokumen || item.nomor_surat || '-';
+                    this.pdfUrl = `{{ url('template-surat/sop/file') }}/${this.suratId}?download=1`;
+                    this.docxUrl = `{{ url('template-surat/sop/docx') }}/${this.suratId}`;
+                } else if (sk) {
+                    this.docType = 'sk';
+                    this.nomorSurat = sk.nomor_surat || item.nomor_surat || '-';
+                    this.pdfUrl = `{{ url('template-surat/sk-direktur/file') }}/${this.suratId}?download=1`;
+                    this.docxUrl = `{{ url('template-surat/sk-direktur/docx') }}/${this.suratId}`;
+                } else if (cuti) {
+                    this.docType = 'cuti';
+                    const nama = (cuti.form_data && cuti.form_data.nama) ? cuti.form_data.nama : 'Pegawai';
                     this.nomorSurat = nama;
+                    this.pdfUrl = `{{ url('template-surat/cuti/pdf') }}/${this.suratId}?download=1`;
+
+                    if (cuti.kategori) {
+                        const cat = cuti.kategori.toString().toUpperCase();
+                        if (cat === 'PNS') this.docxUrl = `{{ url('template-surat/cuti/pns/docx') }}/${this.suratId}`;
+                        else if (cat === 'PPPK') this.docxUrl = `{{ url('template-surat/cuti/pppk/docx') }}/${this.suratId}`;
+                        else if (cat === 'NON ASN' || cat === 'NONASN') this.docxUrl = `{{ url('template-surat/cuti/nonasn/docx') }}/${this.suratId}`;
+                    }
                 } else {
                     this.nomorSurat = item.nomor_surat || '-';
+                    this.pdfUrl = `/arsip-surat/${this.suratId}/download`;
+                    this.docxUrl = item.docx_url || '#';
                 }
 
                 let judul = item.nama_surat;
-                if (!judul && item.sop) judul = item.sop.judul_sop;
-                if (!judul && item.sk_direktur) judul = item.sk_direktur.tentang;
-                if (!judul && item.cuti && item.cuti.form_data) judul = item.cuti.form_data.nama + ' - ' + item.cuti.kategori;
+                if (!judul && sop) judul = sop.judul_sop;
+                if (!judul && sk) judul = sk.tentang;
+                if (!judul && cuti && cuti.form_data) judul = cuti.form_data.nama + ' - ' + cuti.kategori;
 
                 this.judulSurat = judul || '-';
 

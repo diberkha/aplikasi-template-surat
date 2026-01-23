@@ -30,7 +30,7 @@ trait LazyPdfTrait
         }
 
         if ($isImported) {
-            return $path; 
+            return $path;
         }
 
         try {
@@ -53,7 +53,7 @@ trait LazyPdfTrait
                     'direktur_nama' => $direktur_nama,
                     'direktur_nip' => $direktur_nip,
                 ];
-                $pdf = Pdf::loadView('template-surat.sop.pdf', ['data' => $data]);
+                $pdf = Pdf::loadView('template-surat.sop.pdf', ['data' => $data])->setOptions(['defaultFont' => 'Times New Roman']);
                 $newPath = 'surat/' . $surat->nomor_surat . '.pdf';
                 Storage::put($newPath, $pdf->output());
                 $surat->update(['file_path' => $newPath]);
@@ -72,7 +72,14 @@ trait LazyPdfTrait
                     'direktur_nip' => $direktur_nip,
                 ];
                 $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
-                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
+                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'isFontSubsettingEnabled' => false,
+                    'defaultFont' => 'Cambria',
+                    'fontDir' => storage_path('fonts'),
+                    'fontCache' => storage_path('fonts')
+                ]);
                 $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
                 Storage::put($newPath, $pdf->output());
                 $surat->update(['file_path' => $newPath]);
@@ -92,7 +99,7 @@ trait LazyPdfTrait
                     $view = 'template-surat.cuti.cuti-nonasn.pdf';
 
                 $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true, 'defaultFont' => 'Times New Roman']);
+                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
                 $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
                 Storage::put($newPath, $pdf->output());
                 $surat->update(['file_path' => $newPath]);

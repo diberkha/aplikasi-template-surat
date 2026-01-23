@@ -1,7 +1,3 @@
-/**
- * Show global notification (jika ada fungsi showNotification di layout)
- * Fallback ke alert jika fungsi tidak tersedia
- */
 function notify(type, title, message, autoClose = true) {
     if (typeof showNotification === "function") {
         showNotification(type, title, message, autoClose);
@@ -10,9 +6,6 @@ function notify(type, title, message, autoClose = true) {
     }
 }
 
-/**
- * Handle successful operation with notification and optional refresh
- */
 function handleSuccess(message, refreshDelay = 1500) {
     notify("success", "Berhasil!", message);
     if (refreshDelay > 0) {
@@ -22,30 +15,18 @@ function handleSuccess(message, refreshDelay = 1500) {
     }
 }
 
-/**
- * Handle error with notification
- */
 function handleError(message) {
-    notify("error", "Error!", message, false);
+    notify("error", "Error!", message, true);
 }
 
-/**
- * Handle warning with notification
- */
 function handleWarning(message) {
     notify("warning", "Peringatan!", message);
 }
 
-/**
- * Handle info with notification
- */
 function handleInfo(message) {
     notify("info", "Informasi", message);
 }
 
-/**
- * Handle validation errors
- */
 function handleValidationErrors(errors) {
     const fieldLabels = {
         judul_surat: "Judul Surat",
@@ -78,10 +59,6 @@ function handleValidationErrors(errors) {
     notify("error", "Validasi Gagal", errorMsg.trim(), false);
 }
 
-/**
- * Open modal by ID
- * Note: Added extra arguments handling (shim) to prevent recursion from old cached views
- */
 function openModal(modalId, templateName = null, templateId = null) {
     const modalElement = document.getElementById(modalId);
     if (!modalElement) {
@@ -95,7 +72,7 @@ function openModal(modalId, templateName = null, templateId = null) {
     }
 
     window.dispatchEvent(
-        new CustomEvent("modal-opened", { detail: { modalId: modalId } })
+        new CustomEvent("modal-opened", { detail: { modalId: modalId } }),
     );
     if (templateId) {
         let inputId = "";
@@ -118,12 +95,9 @@ function openModal(modalId, templateName = null, templateId = null) {
     }
 }
 
-/**
- * Check if any modal is currently open
- */
 function isAnyModalOpen() {
     const potentialModals = document.querySelectorAll(
-        "div[fixed].inset-0, .fixed.inset-0"
+        "div[fixed].inset-0, .fixed.inset-0",
     );
     for (let modal of potentialModals) {
         if (modal.classList.contains("hidden")) continue;
@@ -137,9 +111,6 @@ function isAnyModalOpen() {
     return false;
 }
 
-/**
- * Close modal by ID and reset its form
- */
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -150,7 +121,7 @@ function closeModal(modalId) {
             new CustomEvent("modal-closed", {
                 bubbles: true,
                 detail: { modalId },
-            })
+            }),
         );
 
         modal.classList.add("hidden");
@@ -171,11 +142,73 @@ function closeModal(modalId) {
     }
 }
 
-/**
- * Auto refresh page after delay
- */
 function autoRefresh(delay = 1500) {
     setTimeout(() => {
         window.location.reload();
     }, delay);
+}
+
+class FormDirtyMonitor {
+    constructor(formId, submitBtnId) {
+        this.form = document.getElementById(formId);
+        this.submitBtn = document.getElementById(submitBtnId);
+        this.initialData = null;
+
+        if (!this.form || !this.submitBtn) {
+            console.warn(
+                `FormDirtyMonitor: Form '${formId}' or Button '${submitBtnId}' not found.`,
+            );
+            return;
+        }
+
+        this.init();
+    }
+
+    init() {
+        this.initialData = this.getFormData(this.form);
+
+        this.toggleSubmitButton(true);
+
+        this.form.addEventListener("input", () => this.check());
+        this.form.addEventListener("change", () => this.check());
+    }
+
+    getFormData(form) {
+        const formData = new FormData(form);
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            if (data[key] !== undefined) {
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
+                }
+                data[key].push(value);
+            } else {
+                data[key] = value;
+            }
+        }
+        return JSON.stringify(data);
+    }
+
+    check() {
+        const currentData = this.getFormData(this.form);
+        const isDirty = currentData !== this.initialData;
+        this.toggleSubmitButton(!isDirty);
+    }
+
+    toggleSubmitButton(disabled) {
+        if (this.submitBtn) {
+            this.submitBtn.disabled = disabled;
+            if (disabled) {
+                this.submitBtn.classList.add(
+                    "opacity-50",
+                    "cursor-not-allowed",
+                );
+            } else {
+                this.submitBtn.classList.remove(
+                    "opacity-50",
+                    "cursor-not-allowed",
+                );
+            }
+        }
+    }
 }

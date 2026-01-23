@@ -3,7 +3,8 @@
 @section('title', 'Draft Surat Izin Cuti')
 
 @section('content')
-    <div class="space-y-6" x-data="draftCuti()">
+    <div class="space-y-6" x-data="draftCuti()"
+        @update-cuti-draft.window="allData = allData.map(item => item.id_surat === $event.detail.id_surat ? $event.detail : item)">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Draft Surat Izin Cuti</h1>
@@ -158,19 +159,20 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full" :class="{
-                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
-                                    item.cuti.kategori === 'PNS',
-                                    'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
-                                    item.cuti.kategori === 'PPPK',
-                                    'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
-                                    (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
-                                    }" x-text="item.cuti ? item.cuti.kategori : '-'">
+                                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
+                                                        item.cuti.kategori === 'PNS',
+                                                        'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
+                                                        item.cuti.kategori === 'PPPK',
+                                                        'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
+                                                        (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
+                                                        }" x-text="item.cuti ? item.cuti.kategori : '-'">
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
                                     x-text="formatDate(item.created_at)"></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="flex items-center justify-center space-x-2">
+
                                         <button @click="showDetailDraft(item)"
                                             class="p-1.5 text-purple-500 hover:text-purple-600 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
                                             title="Preview Draft">
@@ -236,11 +238,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                    ]">
+                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                        ]">
                             </button>
                         </template>
 

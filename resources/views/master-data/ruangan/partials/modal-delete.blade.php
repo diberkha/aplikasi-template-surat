@@ -12,7 +12,7 @@
 
         <div class="p-6">
             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                Apakah Anda yakin ingin menghapus ruangan ini? Data yang dihapus tidak dapat dikembalikan.
+                Apakah Anda yakin ingin menghapus data ruangan ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
             <div class="mt-4 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <p class="text-sm">

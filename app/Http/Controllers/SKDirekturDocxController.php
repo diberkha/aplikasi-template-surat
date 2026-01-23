@@ -23,7 +23,7 @@ class SKDirekturDocxController extends Controller
             $data = $sk->toArray();
 
             $phpWord = new PhpWord();
-            $phpWord->setDefaultFontName('Times New Roman');
+            $phpWord->setDefaultFontName('Cambria');
             $phpWord->setDefaultFontSize(12);
             $phpWord->setDefaultParagraphStyle(['spaceAfter' => 0, 'lineHeight' => 1.15]);
 
@@ -47,29 +47,32 @@ class SKDirekturDocxController extends Controller
 
             $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
             if (file_exists($logoLeftPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.8))->addImage($logoLeftPath, [
-                    'height' => (int) Converter::inchToPoint(0.8),
+                $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoLeftPath, [
+                    'height' => (int) Converter::inchToPoint(0.9),
                     'wrappingStyle' => 'inline'
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.8));
+                $table->addCell((int) Converter::inchToTwip(0.7));
             }
 
-            $centerCell = $table->addCell((int) Converter::inchToTwip(6.0));
-            $centerCell->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 12], ['alignment' => Jc::CENTER]);
-            $centerCell->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'bold' => true, 'size' => 16], ['alignment' => Jc::CENTER]);
-            $centerCell->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 10], ['alignment' => Jc::CENTER]);
-            $centerCell->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 10], ['alignment' => Jc::CENTER]);
+            $centerCell = $table->addCell((int) Converter::inchToTwip(6.2));
+            $centerCell->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 13], ['alignment' => Jc::CENTER]);
+            $centerCell->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'bold' => true, 'size' => 17], ['alignment' => Jc::CENTER]);
+            $centerCell->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 9], ['alignment' => Jc::CENTER]);
+
+            $contactRun = $centerCell->addTextRun(['alignment' => Jc::CENTER]);
+            $contactRun->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el ', ['name' => 'Arial', 'size' => 9]);
+            $contactRun->addText('rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 9, 'underline' => 'single']);
 
             $logoRightPath = public_path('img/logo-rs-kop.png');
             if (file_exists($logoRightPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.8))->addImage($logoRightPath, [
-                    'height' => (int) Converter::inchToPoint(0.8),
+                $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoRightPath, [
+                    'height' => (int) Converter::inchToPoint(0.9),
                     'wrappingStyle' => 'inline',
                     'alignment' => Jc::RIGHT
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.8));
+                $table->addCell((int) Converter::inchToTwip(0.7));
             }
 
             $phpWord->addTableStyle('HeaderBorder', [
@@ -139,9 +142,9 @@ class SKDirekturDocxController extends Controller
                                 'format' => 'lowerLetter',
                                 'text' => '%1.',
                                 'alignment' => 'left',
-                                'tabPos' => 720,
-                                'left' => 360,
-                                'hanging' => 360
+                                'tabPos' => 420,
+                                'left' => 420,
+                                'hanging' => 420
                             ]
                         ]
                     ]
@@ -213,9 +216,9 @@ class SKDirekturDocxController extends Controller
                             'format' => 'decimal',
                             'text' => '%1.',
                             'alignment' => 'left',
-                            'tabPos' => 720,
-                            'left' => 360,
-                            'hanging' => 360
+                            'tabPos' => 420,
+                            'left' => 420,
+                            'hanging' => 420
                         ]
                     ]
                 ]
@@ -279,7 +282,11 @@ class SKDirekturDocxController extends Controller
             $signCell = $footerTable->addCell((int) Converter::inchToTwip(4.0));
 
             $signCell->addText('Ditetapkan di Gemolong', null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
-            $tanggal = isset($data['tanggal_dibuat']) ? \Carbon\Carbon::parse($data['tanggal_dibuat'])->locale('id')->translatedFormat('j F Y') : '.......................';
+            $tanggal = '.......................';
+            if (!empty($sk->tanggal_dibuat)) {
+                $tanggalDate = \Carbon\Carbon::parse($sk->tanggal_dibuat, config('app.timezone'));
+                $tanggal = $tanggalDate->locale('id')->translatedFormat('j F Y');
+            }
             $signCell->addText('pada tanggal ' . $tanggal, null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
             $signCell->addTextBreak(1);
             $signCell->addText('DIREKTUR RSUD dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
@@ -290,10 +297,7 @@ class SKDirekturDocxController extends Controller
             $direkturNama = $direktur ? $direktur->nama : 'KINIK DARSONO';
             $direkturNip = $direktur ? $direktur->nip : null;
 
-            $signCell->addText($direkturNama, ['underline' => 'single'], ['alignment' => Jc::CENTER]);
-            if ($direkturNip) {
-                $signCell->addText('NIP. ' . $direkturNip, null, ['alignment' => Jc::CENTER]);
-            }
+            $signCell->addText($direkturNama, null, ['alignment' => Jc::CENTER]);
 
             $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');

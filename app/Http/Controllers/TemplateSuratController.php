@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use Exception;
 
+use Illuminate\Http\Request;
+
 class TemplateSuratController extends Controller
 {
     use \App\Traits\LazyPdfTrait;
-    public function file($id)
+    public function file(Request $request, $id)
     {
         $surat = Surat::with(['template', 'sop', 'skDirektur', 'cuti'])->findOrFail($id);
         $path = $this->ensurePdfExists($surat);
@@ -22,6 +24,10 @@ class TemplateSuratController extends Controller
 
         if (str_contains($templateName, 'Surat Izin Cuti')) {
             $filename = "{$surat->nomor_surat}.pdf";
+        }
+
+        if ($request->query('download') == '1') {
+            return response()->download($path, $filename);
         }
 
         return response()->file($path, [

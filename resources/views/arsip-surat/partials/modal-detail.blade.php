@@ -68,16 +68,16 @@
                             </button>
                             <div x-show="open" @click.away="open = false" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 z-10">
-                                <a id="detail-download-pdf" href="#"
-                                    class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-t-lg transition-colors">
-                                    <i class="fas fa-file-pdf text-red-500 mr-3"></i>
-                                    PDF
-                                </a>
                                 <button type="button" onclick="downloadAsWord()" id="detail-download-word"
-                                    class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
+                                    class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-t-lg transition-colors">
                                     <i class="fas fa-file-word text-green-500 mr-3"></i>
                                     DOCX
                                 </button>
+                                <a id="detail-download-pdf" href="#"
+                                    class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
+                                    <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                    PDF
+                                </a>
                             </div>
                         </div>
                     </div>

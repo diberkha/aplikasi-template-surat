@@ -54,13 +54,15 @@ return new class extends Migration {
         Schema::create('surat', function (Blueprint $table) {
             $table->id('id_surat');
             $table->string('nama_surat');
-            $table->string('nomor_surat')->unique();
+            $table->string('nomor_surat');
             $table->date('tanggal_dibuat');
             $table->string('file_path')->nullable();
             $table->unsignedBigInteger('id_template_surat')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->boolean('is_draft')->default(true);
             $table->timestamps();
+
+            $table->unique(['nomor_surat', 'nama_surat']);
 
             $table->foreign('id_template_surat')
                 ->references('id_template_surat')
@@ -173,7 +175,7 @@ return new class extends Migration {
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kabag', 'Kepala Bagian')");
     }
 
-public function down(): void
+    public function down(): void
     {
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Seksi', 'Kasi')");
         DB::statement("UPDATE pegawais SET jabatan = REPLACE(jabatan, 'Kepala Bidang', 'Kabid')");

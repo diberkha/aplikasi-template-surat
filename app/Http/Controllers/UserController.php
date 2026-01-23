@@ -26,43 +26,81 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'id_ruangan' => 'required|exists:ruangan,id_ruangan',
-            'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'id_ruangan' => 'required|exists:ruangan,id_ruangan',
+                'username' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
 
-        User::create([
-            'id_ruangan' => $request->id_ruangan,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-        ]);
+            User::create([
+                'id_ruangan' => $request->id_ruangan,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+            ]);
 
-        return redirect()->route('master-data.user.index')
-            ->with('success', 'Pengguna berhasil ditambahkan');
+            return redirect()->route('master-data.user.index')
+                ->with('success', 'Pengguna berhasil ditambahkan');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan pengguna: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan pengguna: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan pengguna: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'id_ruangan' => 'required|exists:ruangan,id_ruangan',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'id_ruangan' => 'required|exists:ruangan,id_ruangan',
+                'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+                'password' => 'nullable|string|min:8|confirmed',
+            ]);
 
-        $data = [
-            'id_ruangan' => $request->id_ruangan,
-            'username' => $request->username,
-        ];
+            $data = [
+                'id_ruangan' => $request->id_ruangan,
+                'username' => $request->username,
+            ];
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            $user->update($data);
+
+            return redirect()->route('master-data.user.index')
+                ->with('success', 'Pengguna berhasil diperbarui');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui pengguna: ' . implode(', ', $e->validator->errors()->all()),
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+            return redirect()->back()->withInput()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui pengguna: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui pengguna: ' . $e->getMessage());
         }
-
-        $user->update($data);
-
-        return redirect()->route('master-data.user.index')
-            ->with('success', 'Pengguna berhasil diperbarui');
     }
 
     public function destroy(User $user)

@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [ArsipSuratController::class, 'show'])->name('show');
         Route::get('/{id}/download', [ArsipSuratController::class, 'download'])->name('download');
         Route::post('/import', [ArsipSuratController::class, 'storeImport'])->name('import');
-        Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->name('destroy');
+        Route::delete('/{id}', [ArsipSuratController::class, 'destroy'])->middleware('role:Admin,Tata Usaha')->name('destroy');
     });
 
     Route::prefix('draft-surat')->name('draft-surat.')->group(function () {
@@ -158,7 +158,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
     });
 
-Route::post('/logout', function () {
+    Route::post('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();

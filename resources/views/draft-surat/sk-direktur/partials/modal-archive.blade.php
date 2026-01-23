@@ -8,8 +8,8 @@
         </div>
 
         <div class="p-6">
-            <p class="text-sm text-gray-600 dark:text-gray-400">Apakah Anda yakin ingin mengarsipkan SK Direktur ini ke
-                dalam arsip? Setelah diarsipkan, surat tidak dapat diubah kembali.</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Apakah Anda yakin ingin mengarsipkan surat ini ke
+                dalam arsip surat? Setelah diarsipkan, surat tidak dapat diubah kembali.</p>
             <div
                 class="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                 <p class="text-sm mb-2">

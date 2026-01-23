@@ -5,7 +5,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</title>
+    @php
+        $fontPath = storage_path('fonts/Cambria.ttf');
+        $fontBase64 = '';
+        if (file_exists($fontPath)) {
+            $fontBase64 = base64_encode(file_get_contents($fontPath));
+            \Illuminate\Support\Facades\Log::info("PDF: Cambria font found at $fontPath. Base64 length: " . strlen($fontBase64));
+        } else {
+            \Illuminate\Support\Facades\Log::error("PDF: Cambria font NOT found at $fontPath");
+        }
+    @endphp
     <style>
+        @font-face {
+            font-family: 'Cambria';
+            src: url(data:application/x-font-ttf;base64,{{ $fontBase64 }}) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Cambria';
+            src: url(data:application/x-font-ttf;base64,{{ $fontBase64 }}) format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +37,7 @@
         }
 
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Cambria', 'Times New Roman', serif;
             color: #000;
             line-height: 1.15;
             font-size: 12pt;
@@ -80,12 +104,7 @@
         .header-text {
             text-align: center;
             line-height: 1.3;
-        }
-
-        .header-text {
-            text-align: center;
-            line-height: 1.3;
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         .header-line1 {
@@ -186,11 +205,19 @@
         }
 
         .section-content {
-            font-size: 12pt;
+            font-size: 11pt;
             line-height: 1.5;
             text-align: justify;
             vertical-align: top;
             word-wrap: break-word;
+        }
+
+        .section-number {
+            width: 25px;
+            vertical-align: top;
+            font-size: 11pt;
+            line-height: 1.5;
+            padding-right: 2px;
         }
 
         .section-content ol {
@@ -274,6 +301,31 @@
             font-weight: normal;
             margin-top: 6px;
         }
+
+        table,
+        tr,
+        td,
+        th,
+        tbody,
+        thead,
+        tfoot {
+            page-break-inside: auto !important;
+        }
+
+        .justify,
+        .left-align,
+        ol,
+        li,
+        div {
+            page-break-inside: auto !important;
+            orphans: 1 !important;
+            widows: 1 !important;
+        }
+
+        /* Helper to ensure full width tables don't behave weirdly */
+        table {
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -351,90 +403,83 @@
 
         <div class="content">
             <div class="section">
+                @php
+                    $menimbang = $data['menimbang'] ?? [];
+                    if (is_string($menimbang)) {
+                        $menimbang = array_filter(explode("\n", $menimbang));
+                    }
+                    $menimbang = array_map(function ($line) {
+                        return preg_replace('/^[a-z]\.\s*/', '', trim($line));
+                    }, $menimbang);
+                    $menimbang = array_values(array_filter($menimbang));
+                @endphp
                 <table>
-                    <tr>
-                        <td class="section-label">Menimbang</td>
-                        <td class="section-separator">:</td>
-                        <td class="section-content">
-                            @php
-                                $menimbang = $data['menimbang'] ?? [];
-                                if (is_string($menimbang)) {
-                                    $menimbang = array_filter(explode("\n", $menimbang));
-                                }
-                                $menimbang = array_map(function ($line) {
-                                    return preg_replace('/^[a-z]\.\s*/', '', trim($line));
-                                }, $menimbang);
-                                $menimbang = array_values(array_filter($menimbang));
-                            @endphp
-                            @if(count($menimbang) <= 1)
-                                {{ $menimbang[0] ?? '' }}
+                    @foreach($menimbang as $index => $line)
+                        <tr>
+                            <td class="section-label">{{ $index === 0 ? 'Menimbang' : '' }}</td>
+                            <td class="section-separator">{{ $index === 0 ? ':' : '' }}</td>
+                            @if(count($menimbang) > 1)
+                                <td class="section-number">{{ chr(97 + $index) }}.</td>
+                                <td class="section-content">{{ trim($line) }}</td>
                             @else
-                                <ol type="a">
-                                    @foreach($menimbang as $line)
-                                        <li>{{ trim($line) }}</li>
-                                    @endforeach
-                                </ol>
+                                <td class="section-content" colspan="2">{{ trim($line) }}</td>
                             @endif
-                        </td>
-                    </tr>
+                        </tr>
+                    @endforeach
                 </table>
             </div>
 
             <div class="section">
+                @php
+                    $rawMengingat = trim($data['mengingat'] ?? '');
+                    $mengingatLines = [];
+                    $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
+                    $lines = array_filter($lines, function ($line) {
+                        return trim($line) !== '';
+                    });
+                    $allAreIds = true;
+                    $ids = [];
+                    foreach ($lines as $line) {
+                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                        if (preg_match('/^\d+$/', $cleaned)) {
+                            $ids[] = (int) $cleaned;
+                        } else {
+                            $allAreIds = false;
+                            break;
+                        }
+                    }
+                    if ($allAreIds && count($ids) > 0) {
+                        $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
+                            ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
+                            ->get();
+                        if ($regulasis->count() > 0) {
+                            $mengingatLines = $regulasis->pluck('isi_regulasi')->toArray();
+                        } else {
+                            $mengingatLines = ['Data regulasi tidak ditemukan'];
+                        }
+                    } else {
+                        foreach ($lines as $line) {
+                            $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
+                            if ($cleaned !== '') {
+                                $mengingatLines[] = $cleaned;
+                            }
+                        }
+                    }
+                    $mengingatLines = array_values($mengingatLines);
+                @endphp
                 <table>
-                    <tr>
-                        <td class="section-label">Mengingat</td>
-                        <td class="section-separator">:</td>
-                        <td class="section-content">
-                            @php
-                                $rawMengingat = trim($data['mengingat'] ?? '');
-                                $mengingatLines = [];
-
-                                $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-                                $lines = array_filter($lines, function ($line) {
-                                    return trim($line) !== '';
-                                });
-
-                                $allAreIds = true;
-                                $ids = [];
-
-                                foreach ($lines as $line) {
-                                    $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-
-                                    if (preg_match('/^\d+$/', $cleaned)) {
-                                        $ids[] = (int) $cleaned;
-                                    } else {
-                                        $allAreIds = false;
-                                        break;
-                                    }
-                                }
-
-                                if ($allAreIds && count($ids) > 0) {
-                                    $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
-                                        ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
-                                        ->get();
-
-                                    if ($regulasis->count() > 0) {
-                                        $mengingatLines = $regulasis->pluck('isi_regulasi')->toArray();
-                                    } else {
-                                        $mengingatLines = ['Data regulasi tidak ditemukan'];
-                                    }
-                                } else {
-                                    foreach ($lines as $line) {
-                                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                                        if ($cleaned !== '') {
-                                            $mengingatLines[] = $cleaned;
-                                        }
-                                    }
-                                }
-                            @endphp
-                            <ol type="1">
-                                @foreach($mengingatLines as $line)
-                                    <li>{{ trim($line) }}</li>
-                                @endforeach
-                            </ol>
-                        </td>
-                    </tr>
+                    @foreach($mengingatLines as $index => $line)
+                        <tr>
+                            <td class="section-label">{{ $index === 0 ? 'Mengingat' : '' }}</td>
+                            <td class="section-separator">{{ $index === 0 ? ':' : '' }}</td>
+                            @if(count($mengingatLines) > 1)
+                                <td class="section-number">{{ ($index + 1) }}.</td>
+                                <td class="section-content">{{ trim($line) }}</td>
+                            @else
+                                <td class="section-content" colspan="2">{{ trim($line) }}</td>
+                            @endif
+                        </tr>
+                    @endforeach
                 </table>
             </div>
         </div>
@@ -515,7 +560,7 @@
                     <td class="footer-right">
                         <p style="text-align: left;">Ditetapkan di {{ $data['tempat_surat'] ?? 'Gemolong' }}</p>
                         <p style="text-align: left;">pada tanggal
-                            {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now())->locale('id')->translatedFormat('j F Y') }}
+                            {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now(), config('app.timezone'))->locale('id')->translatedFormat('j F Y') }}
                         </p>
                         <div style="margin-left: -15mm;">
                             <p class="footer-title" style="margin-top: 10px; text-align: center;">DIREKTUR RSUD dr.
@@ -534,11 +579,9 @@
                                 $direkturNip = $data['direktur_nip'] ?? null;
                             @endphp
 
-                            <p class="signature-name" style="text-align: center; text-decoration: underline;">
-                                {{ $direkturNama }}</p>
-                            @if($direkturNip)
-                                <p style="text-align: center; margin-top: 2px;">NIP. {{ $direkturNip }}</p>
-                            @endif
+                            <p class="signature-name" style="text-align: center;">
+                                {{ $direkturNama }}
+                            </p>
                         </div>
                     </td>
                 </tr>

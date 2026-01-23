@@ -74,7 +74,7 @@
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                             Batal
                         </button>
-                        <button type="submit"
+                        <button type="submit" id="btnSubmitEditCutiBersama"
                             class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
                             Perbarui
                         </button>

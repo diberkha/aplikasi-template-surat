@@ -86,7 +86,19 @@
                                         :key="opt.id">
                                         <li>
                                             <button type="button"
-                                                @click="selectedId = opt.id; selectedName = opt.nama; open = false; search = ''"
+                                                @click="
+                                                    selectedId = opt.id; 
+                                                    selectedName = opt.nama; 
+                                                    open = false; 
+                                                    search = '';
+                                                    $nextTick(() => {
+                                                        const input = $el.closest('.relative').parentElement.querySelector('input[name=\'id_ruangan\']');
+                                                        if(input) {
+                                                            input.value = opt.id;
+                                                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                                                        }
+                                                    });
+                                                "
                                                 class="w-full text-left px-4 py-2.5 text-sm hover:bg-green-50 dark:hover:bg-green-900/30 text-gray-700 dark:text-gray-300 transition-colors"
                                                 :class="selectedId === opt.id && 'bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-medium'">
                                                 <span x-text="opt.nama"></span>
@@ -138,7 +150,8 @@
                         class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button type="submit" id="btnSubmitEditUser"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Perbarui
                     </button>
                 </div>
