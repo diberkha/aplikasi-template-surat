@@ -209,7 +209,7 @@ class IzinCutiNonAsnController extends Controller
             ]);
             $signCell->addText(strtoupper($data['jabatan_atasan'] ?? 'KEPALA BIDANG PENGEMBANGAN DAN INFORMASI'), null, ['alignment' => Jc::CENTER]);
             $signCell->addTextBreak(3);
-            $signCell->addText(strtoupper($data['nama_atasan'] ?? ''), ['underline' => 'single'], ['alignment' => Jc::CENTER]);
+            $signCell->addText($data['nama_atasan'] ?? '', ['underline' => 'single'], ['alignment' => Jc::CENTER]);
             $signCell->addText('NIP. ' . ($data['nip_atasan'] ?? ''), null, ['alignment' => Jc::CENTER]);
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);

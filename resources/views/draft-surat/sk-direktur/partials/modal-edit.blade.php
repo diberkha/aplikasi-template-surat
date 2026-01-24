@@ -106,15 +106,15 @@
                             <h4 class="font-bold text-gray-900 dark:text-white">MEMUTUSKAN</h4>
                         </div>
                         <div class="p-4">
-                            <div id="editMemutuskanContainer" class="space-y-3">
-                                <div class="memutuskan-item flex gap-3">
+                            <div id="editMemutuskanContainer" class="space-y-4">
+                                <div class="memutuskan-item flex gap-3 mb-2">
                                     <label
                                         class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Menetapkan
                                         :</label>
                                     <textarea name="menetapkan" id="edit_sk_menetapkan" rows="2"
                                         class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                                 </div>
-                                <div id="editKesatuContainer"></div>
+                                <div id="editKesatuContainer" class="space-y-4"></div>
                             </div>
                             <button type="button" onclick="addEditMemutuskanField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -168,9 +168,11 @@
 <script>
     let editMemutuskanCounter = 0;
     let currentSkDraftData = null;
+    let currentEditSkId = null;
 
     async function openEditSkModal(id) {
         try {
+            currentEditSkId = id;
             const response = await fetch(`/sk-direktur/${id}/edit`);
             const result = await response.json();
 
@@ -192,7 +194,7 @@
         const sk = data.sk_direktur;
         document.getElementById('edit_sk_id_surat').value = data.id_surat;
 
-        const nomorSuratParts = (sk.nomor_surat || '///').split('/');
+        const nomorSuratParts = (sk.nomor_surat || ' /').split('/');
         document.getElementById('edit_nomor_surat_part1').value = nomorSuratParts[0] || '';
         document.getElementById('edit_nomor_surat_part2').value = nomorSuratParts[1] || '';
         document.getElementById('edit_nomor_surat_part3').value = nomorSuratParts[2] || '';
@@ -230,28 +232,39 @@
         }
     }
 
-    async function loadEditMengingatOptions(selectedTexts) {
-        const response = await fetch('/api/regulasi');
-        let data = await response.json();
-        if (data.data) data = data.data;
+    async function loadEditMengingatOptions(selectedIds) {
+        try {
+            const response = await fetch('/api/regulasi');
+            let data = await response.json();
+            if (data.data) data = data.data;
 
-        const listContainer = document.getElementById('editMengingatList');
-        listContainer.innerHTML = '';
+            const listContainer = document.getElementById('editMengingatList');
+            listContainer.innerHTML = '';
 
-        data.forEach((item, index) => {
-            const isChecked = selectedTexts.some(text => item.id_regulasi == text || item.isi_regulasi === text);
-            const checkboxItem = document.createElement('div');
-            checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
-            checkboxItem.innerHTML = `
-                <input type="checkbox" name="mengingat[]" value="${item.isi_regulasi}"
-                    id="edit_mengingat_${index}" ${isChecked ? 'checked' : ''}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
-                <label for="edit_mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
-                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
-                </label>
-            `;
-            listContainer.appendChild(checkboxItem);
-        });
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tidak ada data regulasi</div>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const itemId = parseInt(item.id_regulasi);
+                const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}"
+                        id="edit_mengingat_${index}" ${isChecked ? 'checked' : ''}
+                        class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                    <label for="edit_mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
+            });
+        } catch (error) {
+            console.error('Error loading regulasi options:', error);
+            document.getElementById('editMengingatList').innerHTML = '<div class="text-sm text-red-500">Gagal memuat data</div>';
+        }
     }
 
     function addEditMenimbangField(text = '') {
@@ -279,7 +292,7 @@
         const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
         const label = labels[editMemutuskanCounter] || `Ke-${editMemutuskanCounter + 1}`;
         const wrapper = document.createElement('div');
-        wrapper.className = 'memutuskan-item flex gap-3';
+        wrapper.className = 'memutuskan-item flex gap-3 mb-2';
         wrapper.innerHTML = `
             <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">${label} :</label>
             <div class="flex-1 flex gap-2">
@@ -359,7 +372,7 @@
         const form = document.getElementById('editSkForm');
 
         combineEditNomorSurat();
-        const id = document.getElementById('edit_sk_id_surat').value;
+        const id = currentEditSkId;
         const formData = new FormData(form);
 
         const submitBtn = document.getElementById('submitEditSkBtn');

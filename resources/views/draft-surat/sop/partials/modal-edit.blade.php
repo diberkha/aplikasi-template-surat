@@ -18,7 +18,7 @@
             <form id="editSopForm" onsubmit="submitEditSOPForm(event)" class="flex flex-col flex-1 overflow-hidden">
                 @csrf
                 @method('PUT')
-                <input type="hidden" name="id_surat" id="edit_sop_id_surat">
+                <input type="hidden" id="edit_sop_id_surat">
 
                 <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
 
@@ -193,9 +193,11 @@
     let editTujuanCounter = 0;
     let editProsedurCounter = 0;
     let currentSopDraftData = null;
+    let currentEditSopId = null;
 
     async function openEditSopModal(id) {
         try {
+            currentEditSopId = id;
             const response = await fetch(`/sop/${id}/edit`);
             const result = await response.json();
 
@@ -259,52 +261,74 @@
         }
     }
 
-    async function loadEditRegulasiOptions(selectedTexts) {
-        const response = await fetch('/api/regulasi');
-        let data = await response.json();
-        if (data.data) data = data.data;
+    async function loadEditRegulasiOptions(selectedIds) {
+        try {
+            const response = await fetch('/api/regulasi');
+            let data = await response.json();
+            if (data.data) data = data.data;
 
-        const listContainer = document.getElementById('editKebijakanList');
-        listContainer.innerHTML = '';
+            const listContainer = document.getElementById('editKebijakanList');
+            listContainer.innerHTML = '';
 
-        data.forEach((item, index) => {
-            const isChecked = selectedTexts.some(text => item.id_regulasi == text || item.isi_regulasi === text);
-            const checkboxItem = document.createElement('div');
-            checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
-            checkboxItem.innerHTML = `
-                <input type="checkbox" name="kebijakan[]" value="${item.isi_regulasi}"
-                    id="edit_kebijakan_${index}" ${isChecked ? 'checked' : ''}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
-                <label for="edit_kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
-                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
-                </label>
-            `;
-            listContainer.appendChild(checkboxItem);
-        });
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tidak ada data regulasi</div>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const itemId = parseInt(item.id_regulasi);
+                const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="kebijakan[]" value="${item.id_regulasi}"
+                        id="edit_kebijakan_${index}" ${isChecked ? 'checked' : ''}
+                        class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                    <label for="edit_kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
+            });
+        } catch (error) {
+            console.error('Error loading regulasi options:', error);
+            document.getElementById('editKebijakanList').innerHTML = '<div class="text-sm text-red-500">Gagal memuat data</div>';
+        }
     }
 
-    async function loadEditUnitOptions(selectedTexts) {
-        const response = await fetch('/api/unit');
-        let data = await response.json();
-        if (data.data) data = data.data;
+    async function loadEditUnitOptions(selectedIds) {
+        try {
+            const response = await fetch('/api/unit');
+            let data = await response.json();
+            if (data.data) data = data.data;
 
-        const listContainer = document.getElementById('editUnitList');
-        listContainer.innerHTML = '';
+            const listContainer = document.getElementById('editUnitList');
+            listContainer.innerHTML = '';
 
-        data.forEach((item, index) => {
-            const isChecked = selectedTexts.some(text => item.id_unit == text || item.nama_unit === text);
-            const checkboxItem = document.createElement('div');
-            checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
-            checkboxItem.innerHTML = `
-                <input type="checkbox" name="unit_terkait[]" value="${item.nama_unit}"
-                    id="edit_unit_${index}" ${isChecked ? 'checked' : ''}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
-                <label for="edit_unit_${index}" class="ml-3 flex-1 cursor-pointer">
-                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.nama_unit}</span>
-                </label>
-            `;
-            listContainer.appendChild(checkboxItem);
-        });
+            if (!Array.isArray(data) || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tidak ada data unit</div>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const itemId = parseInt(item.id_unit);
+                const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" name="unit_terkait[]" value="${item.id_unit}"
+                        id="edit_unit_${index}" ${isChecked ? 'checked' : ''}
+                        class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                    <label for="edit_unit_${index}" class="ml-3 flex-1 cursor-pointer">
+                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.nama_unit}</span>
+                    </label>
+                `;
+                listContainer.appendChild(checkboxItem);
+            });
+        } catch (error) {
+            console.error('Error loading unit options:', error);
+            document.getElementById('editUnitList').innerHTML = '<div class="text-sm text-red-500">Gagal memuat data</div>';
+        }
     }
 
     function addEditTujuanField(text = '') {
@@ -445,7 +469,7 @@
         const form = document.getElementById('editSopForm');
 
         combineEditNomorDokumen();
-        const id = document.getElementById('edit_sop_id_surat').value;
+        const id = currentEditSopId;
         const formData = new FormData(form);
 
         const submitBtn = document.getElementById('submitEditSopBtn');

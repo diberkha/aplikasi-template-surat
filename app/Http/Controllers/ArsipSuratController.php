@@ -69,10 +69,15 @@ class ArsipSuratController extends Controller
             if (($tipeSurat === 'Standar Operasional Prosedur' || $tipeSurat === 'Standar Operasional Prosedur (SOP)') && $item->sop) {
                 $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
                 $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
+                $namaSuratDisplay = $item->sop->judul_sop ?? $namaSurat;
             }
 
             if (($tipeSurat === 'Surat Keputusan Direktur' || $tipeSurat === 'SK Direktur' || $item->nama_surat === 'Surat Keputusan Direktur')) {
                 $tipeSuratDisplay = 'Surat Keputusan Direktur';
+                if ($item->skDirektur && $item->skDirektur->tentang) {
+                    $words = explode(' ', $item->skDirektur->tentang);
+                    $namaSuratDisplay = implode(' ', array_slice($words, 0, 5));
+                }
             }
 
             if (strpos($tipeSurat, 'Surat Izin Cuti') !== false && $item->cuti) {

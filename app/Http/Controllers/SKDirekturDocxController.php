@@ -6,6 +6,7 @@ use App\Models\Surat;
 use App\Models\SKDirektur;
 use App\Models\Regulasi;
 use App\Models\Pegawai;
+use App\Helpers\StringHelper;
 use Exception;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
@@ -295,6 +296,7 @@ class SKDirekturDocxController extends Controller
 
             $direktur = Pegawai::getDirektur();
             $direkturNama = $direktur ? $direktur->nama : 'KINIK DARSONO';
+            $direkturNama = StringHelper::removeAcademicTitles($direkturNama);
             $direkturNip = $direktur ? $direktur->nip : null;
 
             $signCell->addText($direkturNama, null, ['alignment' => Jc::CENTER]);

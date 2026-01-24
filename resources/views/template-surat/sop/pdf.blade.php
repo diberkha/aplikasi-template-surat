@@ -237,39 +237,7 @@
         @endif
 
         @php
-            $rawKebijakan = trim($data['kebijakan'] ?? '');
-            $kebijakanItems = [];
-            $lines = preg_split('/\r\n|\r|\n/', $rawKebijakan);
-            $lines = array_filter($lines, function ($line) {
-                return trim($line) !== '';
-            });
-
-            $allAreIds = true;
-            $ids = [];
-            foreach ($lines as $line) {
-                $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                if (preg_match('/^\d+$/', $cleaned)) {
-                    $ids[] = (int) $cleaned;
-                } else {
-                    $allAreIds = false;
-                    break;
-                }
-            }
-
-            if ($allAreIds && count($ids) > 0) {
-                $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
-                    ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
-                    ->get();
-                $kebijakanItems = $regulasis->count() > 0 ? $regulasis->pluck('isi_regulasi')->toArray() : ['Data regulasi tidak ditemukan'];
-            } else {
-                foreach ($lines as $line) {
-                    $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                    if ($cleaned !== '') {
-                        $kebijakanItems[] = $cleaned;
-                    }
-                }
-            }
-            $kebijakanItems = array_values($kebijakanItems);
+            $kebijakanItems = is_array($data['kebijakan'] ?? null) ? $data['kebijakan'] : [];
         @endphp
         @if(count($kebijakanItems) > 0)
             <tr>
@@ -331,33 +299,9 @@
             <td class="left-align" style="width:1.87in; padding: 6px; font-size: 12pt;">Unit Terkait</td>
             <td class="justify" style="padding: 6px; font-size: 12pt;" colspan="3">
                 @php
-                    $rawUnit = trim($data['unit_terkait'] ?? '');
-                    $unitText = $rawUnit;
-
-                    $lines = preg_split('/\r\n|\r|\n/', $rawUnit);
-                    $lines = array_filter($lines, function ($line) {
-                        return trim($line) !== '';
-                    });
-
-                    $allAreIds = true;
-                    $ids = [];
-                    foreach ($lines as $line) {
-                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                        if (preg_match('/^\d+$/', $cleaned)) {
-                            $ids[] = (int) $cleaned;
-                        } else {
-                            $allAreIds = false;
-                            break;
-                        }
-                    }
-
-                    if ($allAreIds && count($ids) > 0) {
-                        $units = \App\Models\Unit::whereIn('id_unit', $ids)
-                            ->orderByRaw('FIELD(id_unit, ' . implode(',', $ids) . ')')
-                            ->get();
-                        $names = $units->pluck('nama_unit')->toArray();
-                        $unitText = implode(', ', $names);
-                    }
+                    // Unit Terkait sudah resolved by LazyPdfTrait (array of text values)
+                    $unitItems = is_array($data['unit_terkait'] ?? null) ? $data['unit_terkait'] : [];
+                    $unitText = implode(', ', $unitItems);
                 @endphp
                 {{ $unitText }}
             </td>

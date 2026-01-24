@@ -127,15 +127,15 @@
                             <h4 class="font-bold text-gray-900 dark:text-white">MEMUTUSKAN</h4>
                         </div>
                         <div class="p-4">
-                            <div id="memutuskanContainer" class="space-y-3">
-                                <div class="memutuskan-item flex gap-3">
+                            <div id="memutuskanContainer" class="space-y-4">
+                                <div class="memutuskan-item flex gap-3 mb-2">
                                     <label
                                         class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Menetapkan
                                         :</label>
                                     <textarea name="menetapkan" id="menetapkan_input" rows="2"
                                         class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                                 </div>
-                                <div class="memutuskan-item flex gap-3">
+                                <div class="memutuskan-item flex gap-3 mb-2">
                                     <label
                                         class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu
                                         :</label>
@@ -232,7 +232,7 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'mengingat-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="mengingat[]" value="${item.isi_regulasi}"
+                    <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}"
                         id="mengingat_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
                         onchange="updateMengingatCheck()">
                     <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">

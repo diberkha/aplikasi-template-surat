@@ -85,7 +85,7 @@ class SOPDocxController extends Controller
             $signCell->addText('Ditetapkan,', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
-            $signCell->addTextBreak(2);
+            $signCell->addTextBreak(3);
 
             $direktur = Pegawai::getDirektur();
             $direkturNama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';

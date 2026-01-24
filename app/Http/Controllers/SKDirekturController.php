@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
@@ -49,8 +50,8 @@ class SKDirekturController extends Controller
             $request->validate([
                 'nomor_surat' => [
                     'required',
-                    Rule::unique('surat', 'nomor_surat')->where(function ($query) {
-                        return $query->where('nama_surat', 'Surat Keputusan Direktur');
+                    Rule::unique('surat', 'nomor_surat')->where(function ($query) use ($request) {
+                        return $query->where('id_template_surat', $request->template_id);
                     })
                 ],
                 'tentang' => 'required',
@@ -101,7 +102,10 @@ class SKDirekturController extends Controller
             $menimbangArray = $request->menimbang;
             $menimbangText = implode("\n", array_map('trim', $menimbangArray));
 
-            $mengingatIds = is_array($request->mengingat) ? implode(',', $request->mengingat) : $request->mengingat;
+            $mengingatArray = is_array($request->mengingat) ? $request->mengingat : [];
+            $mengingatText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $mengingatArray, array_keys($mengingatArray)));
 
             $skDirektur = SKDirektur::create([
                 'judul_surat' => 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG',
@@ -242,7 +246,7 @@ class SKDirekturController extends Controller
     public function archive($id)
     {
         try {
-            $surat = Surat::findOrFail($id);
+            $surat = Surat::with('skDirektur')->findOrFail($id);
             $surat->update(['is_draft' => false]);
 
             return response()->json([
@@ -262,12 +266,27 @@ class SKDirekturController extends Controller
         try {
             $surat = Surat::with('skDirektur')->findOrFail($id);
 
+            if (!$surat->skDirektur) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Surat ini bukan SK Direktur'
+                ], 400);
+            }
+
             if ($surat->skDirektur) {
                 $surat->skDirektur->menimbang_array = explode("\n", $surat->skDirektur->menimbang);
 
-                $surat->skDirektur->mengingat_array = array_map(function ($line) {
-                    return preg_replace('/^\d+\.\s*/', '', trim($line));
-                }, explode("\n", trim($surat->skDirektur->mengingat)));
+                $mengingatText = trim($surat->skDirektur->mengingat);
+                $mengingatArray = [];
+                if (!empty($mengingatText)) {
+                    $items = preg_split('/\r\n|\r|\n/', $mengingatText);
+                    foreach ($items as $item) {
+                        if (preg_match('/^\d+\.\s*(\d+)/', trim($item), $matches)) {
+                            $mengingatArray[] = (int)$matches[1];
+                        }
+                    }
+                }
+                $surat->skDirektur->setAttribute('mengingat_array', $mengingatArray);
 
                 $memutuskanLines = explode("\n\n", $surat->skDirektur->memutuskan);
                 $surat->skDirektur->memutuskan_array = array_map(function ($block) {
@@ -293,10 +312,16 @@ class SKDirekturController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $surat = Surat::with('skDirektur')->findOrFail($id);
+
             $request->validate([
                 'nomor_surat' => [
                     'required',
-                    Rule::unique('surat', 'nomor_surat')->ignore($id, 'id_surat')
+                    Rule::unique('surat', 'nomor_surat')
+                        ->ignore($id, 'id_surat')
+                        ->where(function ($query) use ($surat) {
+                            return $query->where('id_template_surat', $surat->id_template_surat);
+                        })
                 ],
                 'tentang' => 'required',
                 'menimbang' => 'required|array|min:1',
@@ -311,11 +336,11 @@ class SKDirekturController extends Controller
                 'tanggal_dibuat' => 'required|date',
             ]);
 
-            $surat = Surat::findOrFail($id);
-
             if ($surat->file_path && file_exists(storage_path('app/' . $surat->file_path))) {
                 unlink(storage_path('app/' . $surat->file_path));
             }
+
+            DB::beginTransaction();
 
             $surat->update([
                 'nomor_surat' => $request->nomor_surat,
@@ -334,24 +359,32 @@ class SKDirekturController extends Controller
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
             }
 
-            $mengingatText = '';
-            foreach ($request->mengingat as $index => $item) {
-                $mengingatText .= ($index + 1) . ". " . trim($item) . "\n";
-            }
+            $mengingatArray = $request->mengingat;
+            $mengingatText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $mengingatArray, array_keys($mengingatArray)));
 
             $menimbangText = implode("\n", array_map('trim', $request->menimbang));
 
-            $skDirektur = SKDirektur::where('id_surat', $id)->firstOrFail();
-            $skDirektur->update([
-                'nomor_surat' => $request->nomor_surat,
-                'tentang' => $request->tentang,
-                'menimbang' => trim($menimbangText),
-                'mengingat' => trim($mengingatText),
-                'memutuskan' => trim($memutuskanText),
-                'menetapkan' => $request->menetapkan,
-                'tempat_dibuat' => $request->tempat_dibuat,
-                'tanggal_dibuat' => $request->tanggal_dibuat,
-            ]);
+            $defaultTitle = optional($surat->skDirektur)->judul_surat
+                ?: 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG';
+
+            $surat->skDirektur()->updateOrCreate(
+                [],
+                [
+                    'judul_surat' => $defaultTitle,
+                    'nomor_surat' => $request->nomor_surat,
+                    'tentang' => $request->tentang,
+                    'menimbang' => trim($menimbangText),
+                    'mengingat' => trim($mengingatText),
+                    'memutuskan' => trim($memutuskanText),
+                    'menetapkan' => $request->menetapkan,
+                    'tempat_dibuat' => $request->tempat_dibuat,
+                    'tanggal_dibuat' => $request->tanggal_dibuat,
+                ]
+            );
+
+            DB::commit();
 
             $surat->refresh();
             $surat->load('createdBy.ruangan', 'skDirektur');
@@ -368,6 +401,7 @@ class SKDirekturController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memperbarui draft: ' . $e->getMessage()

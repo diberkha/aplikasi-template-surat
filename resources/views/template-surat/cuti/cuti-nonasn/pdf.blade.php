@@ -289,7 +289,7 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
                 <td colspan="3" style="border: none; width: 100%;"></td>
                 <td class="center" style="vertical-align: middle; padding: 8px;">
                     <?= strtoupper($f['jabatan_atasan'] ?? 'Atasan') ?><br><br><br><br>
-                    <u><?= strtoupper($f['nama_atasan'] ?? '') ?></u><br>
+                    <u><?= $f['nama_atasan'] ?? '' ?></u><br>
                     NIP. <?= $f['nip_atasan'] ?? '' ?>
                 </td>
             </tr>

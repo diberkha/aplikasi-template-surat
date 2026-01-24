@@ -431,41 +431,7 @@
 
             <div class="section">
                 @php
-                    $rawMengingat = trim($data['mengingat'] ?? '');
-                    $mengingatLines = [];
-                    $lines = preg_split('/\r\n|\r|\n/', $rawMengingat);
-                    $lines = array_filter($lines, function ($line) {
-                        return trim($line) !== '';
-                    });
-                    $allAreIds = true;
-                    $ids = [];
-                    foreach ($lines as $line) {
-                        $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                        if (preg_match('/^\d+$/', $cleaned)) {
-                            $ids[] = (int) $cleaned;
-                        } else {
-                            $allAreIds = false;
-                            break;
-                        }
-                    }
-                    if ($allAreIds && count($ids) > 0) {
-                        $regulasis = \App\Models\Regulasi::whereIn('id_regulasi', $ids)
-                            ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $ids) . ')')
-                            ->get();
-                        if ($regulasis->count() > 0) {
-                            $mengingatLines = $regulasis->pluck('isi_regulasi')->toArray();
-                        } else {
-                            $mengingatLines = ['Data regulasi tidak ditemukan'];
-                        }
-                    } else {
-                        foreach ($lines as $line) {
-                            $cleaned = preg_replace('/^\d+\.\s*/', '', trim($line));
-                            if ($cleaned !== '') {
-                                $mengingatLines[] = $cleaned;
-                            }
-                        }
-                    }
-                    $mengingatLines = array_values($mengingatLines);
+                    $mengingatLines = is_array($data['mengingat'] ?? null) ? $data['mengingat'] : [];
                 @endphp
                 <table>
                     @foreach($mengingatLines as $index => $line)

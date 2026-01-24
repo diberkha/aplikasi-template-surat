@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
@@ -51,8 +52,8 @@ class SOPController extends Controller
                 'nomor_dokumen' => [
                     'required',
                     'string',
-                    Rule::unique('surat', 'nomor_surat')->where(function ($query) {
-                        return $query->where('nama_surat', 'Standar Operasional Prosedur');
+                    Rule::unique('surat', 'nomor_surat')->where(function ($query) use ($request) {
+                        return $query->where('id_template_surat', $request->template_id);
                     })
                 ],
                 'nomor_revisi' => 'nullable|string',
@@ -77,14 +78,16 @@ class SOPController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
-            $kebijakanIds = $request->kebijakan;
-            $kebijakanText = '';
-            foreach ($kebijakanIds as $index => $id) {
-                $kebijakanText .= ($index + 1) . ". " . trim($id) . "\n";
-            }
+            $kebijakanArray = is_array($request->kebijakan) ? $request->kebijakan : [];
+            $kebijakanText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $kebijakanArray, array_keys($kebijakanArray)));
+            
+            $unitArray = is_array($request->unit_terkait) ? $request->unit_terkait : [];
+            $unitText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $unitArray, array_keys($unitArray)));
 
-            $unitIds = $request->unit_terkait;
-            $unitText = implode(', ', array_map('trim', $unitIds));
             $tujuanText = implode("\n", array_filter($request->tujuan));
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
@@ -132,7 +135,7 @@ class SOPController extends Controller
     public function archive($id)
     {
         try {
-            $surat = Surat::findOrFail($id);
+            $surat = Surat::with('sop')->findOrFail($id);
             $surat->update(['is_draft' => false]);
 
             return response()->json([
@@ -149,38 +152,72 @@ class SOPController extends Controller
 
     public function edit($id)
     {
-        $surat = Surat::with('sop')->findOrFail($id);
+        try {
+            $surat = Surat::with('sop')->findOrFail($id);
 
-        if ($surat->sop) {
-            $surat->sop->tujuan_array = explode("\n", $surat->sop->tujuan);
-            $surat->sop->prosedur_array = explode("\n", $surat->sop->prosedur);
+            if (!$surat->sop) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Surat ini bukan SOP'
+                ], 400);
+            }
 
-            $surat->sop->kebijakan_array = array_map(function ($line) {
-                return preg_replace('/^\d+\.\s*/', '', trim($line));
-            }, explode("\n", trim($surat->sop->kebijakan)));
+            if ($surat->sop) {
+                $surat->sop->tujuan_array = explode("\n", $surat->sop->tujuan);
+                $surat->sop->prosedur_array = explode("\n", $surat->sop->prosedur);
 
-            $surat->sop->unit_terkait_array = array_map('trim', explode(',', $surat->sop->unit_terkait));
+                $kebijakanText = trim($surat->sop->kebijakan);
+                $kebijakanArray = [];
+                if (!empty($kebijakanText)) {
+                    $items = preg_split('/\r\n|\r|\n/', $kebijakanText);
+                    foreach ($items as $item) {
+                        if (preg_match('/^\d+\.\s*(\d+)/', trim($item), $matches)) {
+                            $kebijakanArray[] = (int)$matches[1];
+                        }
+                    }
+                }
+                $surat->sop->setAttribute('kebijakan_array', $kebijakanArray);
 
-            $surat->sop->tanggal_terbit_formatted = optional($surat->sop->tanggal_terbit)->format('Y-m-d');
+                $unitText = trim($surat->sop->unit_terkait);
+                $unitArray = [];
+                if (!empty($unitText)) {
+                    $items = preg_split('/\r\n|\r|\n/', $unitText);
+                    foreach ($items as $item) {
+                        if (preg_match('/^\d+\.\s*(\d+)/', trim($item), $matches)) {
+                            $unitArray[] = (int)$matches[1];
+                        }
+                    }
+                }
+                $surat->sop->setAttribute('unit_terkait_array', $unitArray);
+
+                $surat->sop->tanggal_terbit_formatted = optional($surat->sop->tanggal_terbit)->format('Y-m-d');
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $surat
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $surat
-        ]);
     }
 
     public function update(Request $request, $id)
     {
         try {
+            $surat = Surat::with('sop')->findOrFail($id);
+
             $request->validate([
                 'judul_sop' => 'required|string',
                 'nomor_dokumen' => [
                     'required',
                     'string',
                     Rule::unique('surat', 'nomor_surat')
-                        ->where(function ($query) {
-                            return $query->where('nama_surat', 'Standar Operasional Prosedur');
+                        ->where(function ($query) use ($surat) {
+                            return $query->where('id_template_surat', $surat->id_template_surat);
                         })
                         ->ignore($id, 'id_surat')
                 ],
@@ -196,17 +233,22 @@ class SOPController extends Controller
                 'unit_terkait' => 'required|array|min:1',
             ]);
 
-            $surat = Surat::findOrFail($id);
+            DB::beginTransaction();
+
             $surat->update([
                 'tanggal_dibuat' => $request->tanggal_terbit,
             ]);
 
-            $kebijakanText = '';
-            foreach ($request->kebijakan as $index => $val) {
-                $kebijakanText .= ($index + 1) . ". " . trim($val) . "\n";
-            }
+            $kebijakanArray = is_array($request->kebijakan) ? $request->kebijakan : [];
+            $kebijakanText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $kebijakanArray, array_keys($kebijakanArray)));
 
-            $unitText = implode(', ', array_map('trim', $request->unit_terkait));
+            $unitArray = is_array($request->unit_terkait) ? $request->unit_terkait : [];
+            $unitText = implode("\n", array_map(function ($id, $index) {
+                return ($index + 1) . '. ' . $id;
+            }, $unitArray, array_keys($unitArray)));
+
             $tujuanText = implode("\n", array_filter($request->tujuan));
             $prosedurText = implode("\n", array_filter($request->prosedur));
 
@@ -215,19 +257,23 @@ class SOPController extends Controller
                 'file_path' => null,
             ]);
 
-            $sop = SOP::where('id_surat', $id)->firstOrFail();
-            $sop->update([
-                'judul_sop' => $request->judul_sop,
-                'nomor_dokumen' => $request->nomor_dokumen,
-                'nomor_revisi' => $request->nomor_revisi,
-                'halaman' => $request->filled('halaman') ? $request->halaman : '1',
-                'tanggal_terbit' => $request->tanggal_terbit,
-                'pengertian' => $request->pengertian,
-                'tujuan' => $tujuanText,
-                'kebijakan' => trim($kebijakanText),
-                'prosedur' => $prosedurText,
-                'unit_terkait' => trim($unitText),
-            ]);
+            $surat->sop()->updateOrCreate(
+                [],
+                [
+                    'judul_sop' => $request->judul_sop,
+                    'nomor_dokumen' => $request->nomor_dokumen,
+                    'nomor_revisi' => $request->nomor_revisi,
+                    'halaman' => $request->filled('halaman') ? $request->halaman : '1',
+                    'tanggal_terbit' => $request->tanggal_terbit,
+                    'pengertian' => $request->pengertian,
+                    'tujuan' => $tujuanText,
+                    'kebijakan' => trim($kebijakanText),
+                    'prosedur' => $prosedurText,
+                    'unit_terkait' => trim($unitText),
+                ]
+            );
+
+            DB::commit();
 
             $surat->refresh();
             $surat->load('createdBy.ruangan', 'sop');
@@ -243,6 +289,7 @@ class SOPController extends Controller
                 'message' => 'Gagal memperbarui draft: ' . implode(', ', $e->validator->errors()->all())
             ], 422);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memperbarui draft: ' . $e->getMessage()
