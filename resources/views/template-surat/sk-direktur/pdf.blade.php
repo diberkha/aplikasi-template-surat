@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</title>
     @php
-        $fontPath = storage_path('fonts/Cambria.ttf');
+        $fontPath = storage_path('fonts/cambria.ttf');
         $fontBase64 = '';
         if (file_exists($fontPath)) {
             $fontBase64 = base64_encode(file_get_contents($fontPath));

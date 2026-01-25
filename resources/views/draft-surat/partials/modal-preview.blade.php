@@ -105,21 +105,11 @@
                 const sk = item.sk_direktur || item.skDirektur;
                 const cuti = item.cuti;
 
-                if (sop) {
-                    this.docType = 'sop';
-                    this.nomorSurat = sop.nomor_dokumen || item.nomor_surat || '-';
-                    this.pdfUrl = `{{ url('template-surat/sop/file') }}/${this.suratId}?download=1`;
-                    this.docxUrl = `{{ url('template-surat/sop/docx') }}/${this.suratId}`;
-                } else if (sk) {
-                    this.docType = 'sk';
-                    this.nomorSurat = sk.nomor_surat || item.nomor_surat || '-';
-                    this.pdfUrl = `{{ url('template-surat/sk-direktur/file') }}/${this.suratId}?download=1`;
-                    this.docxUrl = `{{ url('template-surat/sk-direktur/docx') }}/${this.suratId}`;
-                } else if (cuti) {
+                if (cuti && (cuti.id_cuti || cuti.kategori || cuti.form_data)) {
                     this.docType = 'cuti';
                     const nama = (cuti.form_data && cuti.form_data.nama) ? cuti.form_data.nama : 'Pegawai';
                     this.nomorSurat = nama;
-                    this.pdfUrl = `{{ url('template-surat/cuti/pdf') }}/${this.suratId}?download=1`;
+                    this.pdfUrl = `{{ url('template-surat/cuti/pdf') }}/${this.suratId}`;
 
                     if (cuti.kategori) {
                         const cat = cuti.kategori.toString().toUpperCase();
@@ -127,22 +117,34 @@
                         else if (cat === 'PPPK') this.docxUrl = `{{ url('template-surat/cuti/pppk/docx') }}/${this.suratId}`;
                         else if (cat === 'NON ASN' || cat === 'NONASN') this.docxUrl = `{{ url('template-surat/cuti/nonasn/docx') }}/${this.suratId}`;
                     }
+                } else if (sop && (sop.id_sop || sop.nomor_dokumen)) {
+                    this.docType = 'sop';
+                    this.nomorSurat = sop.nomor_dokumen || item.nomor_surat || '-';
+                    this.pdfUrl = `{{ url('template-surat/sop/file') }}/${this.suratId}`;
+                    this.docxUrl = `{{ url('template-surat/sop/docx') }}/${this.suratId}`;
+                } else if (sk && (sk.id_sk_direktur || sk.nomor_surat)) {
+                    this.docType = 'sk';
+                    this.nomorSurat = sk.nomor_surat || item.nomor_surat || '-';
+                    this.pdfUrl = `{{ url('template-surat/sk-direktur/file') }}/${this.suratId}`;
+                    this.docxUrl = `{{ url('template-surat/sk-direktur/docx') }}/${this.suratId}`;
                 } else {
+                    this.docType = 'draft';
                     this.nomorSurat = item.nomor_surat || '-';
                     this.pdfUrl = `/arsip-surat/${this.suratId}/download`;
                     this.docxUrl = item.docx_url || '#';
                 }
 
                 let judul = item.nama_surat;
+                if (!judul && cuti && cuti.form_data) judul = cuti.form_data.nama + ' - ' + cuti.kategori;
                 if (!judul && sop) judul = sop.judul_sop;
                 if (!judul && sk) judul = sk.tentang;
-                if (!judul && cuti && cuti.form_data) judul = cuti.form_data.nama + ' - ' + cuti.kategori;
 
                 this.judulSurat = judul || '-';
 
                 this.isOpen = true;
                 this.$nextTick(() => {
-                    this.$refs.pdfFrame.src = this.fileUrl;
+                    this.$refs.pdfFrame.src = '';
+                    this.$refs.pdfFrame.src = this.pdfUrl !== '#' ? this.pdfUrl : this.fileUrl;
                 });
             },
 

@@ -19,7 +19,7 @@ $options->set('isRemoteEnabled', true);
 $dompdf = new Dompdf($options);
 
 $fontName = 'Cambria';
-$fontPath = $fontDir . DIRECTORY_SEPARATOR . 'Cambria.ttf';
+$fontPath = $fontDir . DIRECTORY_SEPARATOR . 'cambria.ttf';
 
 if (!file_exists($fontPath)) {
     die("File font TIDAK ditemukan di: $fontPath\n");

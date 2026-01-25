@@ -8,6 +8,7 @@ use App\Models\Regulasi;
 use App\Models\Unit;
 use App\Helpers\StringHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -41,7 +42,27 @@ trait LazyPdfTrait
             $direktur_nama = $direktur ? $direktur->nama : 'Dr. dr. Kinik Darsono, M.Pd.Ked.';
             $direktur_nip = $direktur ? $direktur->nip : '19710415 200903 1 001';
 
-            if ($surat->sop) {
+            if ($surat->cuti) {
+                $data = [
+                    'kategori' => $surat->cuti->kategori,
+                    'form' => $surat->cuti->form_data,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'direktur_nama' => $direktur_nama,
+                    'direktur_nip' => $direktur_nip,
+                ];
+                $view = 'template-surat.cuti.cuti-pns.pdf';
+                if ($data['kategori'] === 'PPPK')
+                    $view = 'template-surat.cuti.cuti-pppk.pdf';
+                if ($data['kategori'] === 'NON ASN')
+                    $view = 'template-surat.cuti.cuti-nonasn.pdf';
+
+                $html = view($view, ['data' => $data, 'surat' => $surat])->render();
+                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+                $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
+                Storage::put($newPath, $pdf->output());
+                $surat->update(['file_path' => $newPath]);
+                return storage_path('app/' . $newPath);
+            } elseif ($surat->sop) {
                 $kebijakanText = trim($surat->sop->kebijakan);
                 $kebijakanResolved = [];
                 if (!empty($kebijakanText)) {
@@ -139,77 +160,29 @@ trait LazyPdfTrait
                     mkdir($directory, 0755, true);
                 }
 
-                $browsershot = \Spatie\Browsershot\Browsershot::html($html)
-                    ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-software-rasterizer'])
-                    ->newHeadless()
-                    ->timeout(120)
-                    ->showBackground()
-                    ->paperSize(8.5, 13, 'in')
-                    ->margins(0, 0, 0, 0);
-
-                $nodeBinary = env('NODE_BINARY', 'C:\\Program Files\\nodejs\\node.exe');
-                if (is_string($nodeBinary) && $nodeBinary !== '') {
-                    $browsershot->setNodeBinary($nodeBinary);
-                }
-
-                $chromePath = env('CHROME_PATH');
-                if (!is_string($chromePath) || $chromePath === '' || !file_exists($chromePath)) {
-                    $puppeteerPathEnv = env('PUPPETEER_EXECUTABLE_PATH');
-                    if (is_string($puppeteerPathEnv) && $puppeteerPathEnv !== '' && file_exists(base_path($puppeteerPathEnv))) {
-                        $chromePath = base_path($puppeteerPathEnv);
-                    } else {
-                        $base = base_path('node_modules/puppeteer/.local-chromium');
-                        if (file_exists($base)) {
-                            $candidates = glob($base . '/win64-*/chrome-win/chrome.exe');
-                            if (is_array($candidates) && count($candidates) > 0) {
-                                $chromePath = $candidates[0];
-                            }
-                        }
-                        if (!is_string($chromePath) || $chromePath === '' || !file_exists($chromePath)) {
-                            $edgeCandidates = [
-                                'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-                                'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-                            ];
-                            foreach ($edgeCandidates as $edgePath) {
-                                if (file_exists($edgePath)) { $chromePath = $edgePath; break; }
-                            }
-                        }
-                    }
-                }
-                if (is_string($chromePath) && $chromePath !== '' && file_exists($chromePath)) {
-                    $browsershot->setChromePath($chromePath);
-                }
-
                 try {
-                    $browsershot->save($fullPath);
-                } catch (\Throwable $bsEx) {
-                    \Illuminate\Support\Facades\Log::error('Browsershot failed, falling back to DomPDF for surat id ' . $surat->id_surat . ': ' . $bsEx->getMessage());
-                    $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-                    \Illuminate\Support\Facades\Storage::put($newPath, $pdf->output());
+                    $snappy = SnappyPdf::loadHTML($html)
+                        ->setOption('page-width', '215.9mm')
+                        ->setOption('page-height', '330.2mm')
+                        ->setOption('margin-top', '0mm')
+                        ->setOption('margin-right', '0mm')
+                        ->setOption('margin-bottom', '0mm')
+                        ->setOption('margin-left', '0mm')
+                        ->setOption('enable-local-file-access', true)
+                        ->setOption('images', true)
+                        ->setOption('print-media-type', true);
+
+                    $snappy->save($fullPath);
+                } catch (\Throwable $snappyEx) {
+                    Log::error('Snappy failed, falling back to DomPDF for surat id ' . $surat->id_surat . ': ' . $snappyEx->getMessage());
+                    $pdf = Pdf::loadHTML($html)
+                        ->setPaper([0, 0, 612, 936], 'portrait')
+                        ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+                    Storage::put($newPath, $pdf->output());
                 }
 
                 $surat->update(['file_path' => $newPath]);
                 return $fullPath;
-            } elseif ($surat->cuti) {
-                $data = [
-                    'kategori' => $surat->cuti->kategori,
-                    'form' => $surat->cuti->form_data,
-                    'nomor_surat' => $surat->nomor_surat,
-                    'direktur_nama' => $direktur_nama,
-                    'direktur_nip' => $direktur_nip,
-                ];
-                $view = 'template-surat.cuti.cuti-pns.pdf';
-                if ($data['kategori'] === 'PPPK')
-                    $view = 'template-surat.cuti.cuti-pppk.pdf';
-                if ($data['kategori'] === 'NON ASN')
-                    $view = 'template-surat.cuti.cuti-nonasn.pdf';
-
-                $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-                $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
-                Storage::put($newPath, $pdf->output());
-                $surat->update(['file_path' => $newPath]);
-                return storage_path('app/' . $newPath);
             }
         } catch (\Exception $e) {
             Log::error('Regeneration failed for surat id ' . $surat->id_surat . ': ' . $e->getMessage());
