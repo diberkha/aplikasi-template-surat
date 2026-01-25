@@ -6,11 +6,13 @@
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Draft Surat Izin Cuti</h3>
+            <div
+                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">Edit Draft
+                    Izin Cuti</h3>
                 <button onclick="closeModal('modalEditCuti')"
-                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                    <i class="fas fa-times text-lg"></i>
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i class="fas fa-times text-base sm:text-lg"></i>
                 </button>
             </div>
 
@@ -88,19 +90,25 @@
                                         class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                            <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Masa
                                         Kerja <span class="text-red-500">*</span></label>
-                                    <div class="flex items-center space-x-2">
-                                        <input type="number" name="form[masa_kerja_tahun]"
-                                            id="edit_cuti_masa_kerja_tahun" readonly
-                                            class="w-24 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
-                                        <span class="text-sm text-gray-600 dark:text-gray-300">tahun</span>
-                                        <input type="number" name="form[masa_kerja_bulan]"
-                                            id="edit_cuti_masa_kerja_bulan" readonly
-                                            class="w-24 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
-                                        <span class="text-sm text-gray-600 dark:text-gray-300">bulan</span>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" name="form[masa_kerja_tahun]"
+                                                id="edit_cuti_masa_kerja_tahun" readonly
+                                                class="w-16 sm:w-20 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
+                                            <span
+                                                class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Tahun</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" name="form[masa_kerja_bulan]"
+                                                id="edit_cuti_masa_kerja_bulan" readonly
+                                                class="w-16 sm:w-20 px-3 py-2 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed" />
+                                            <span
+                                                class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Bulan</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -315,13 +323,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3 rounded-b-xl">
+                    class="px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex flex-col-reverse sm:flex-row justify-end gap-3 rounded-b-xl">
                     <button type="button" onclick="resetEditCutiForm()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        class="w-full sm:w-auto px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-normal">
                         Reset
                     </button>
                     <button type="submit" id="submitEditCutiBtn"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-all">
                         Perbarui
                     </button>
                 </div>
@@ -363,6 +371,10 @@
                                 document.getElementById('edit_cuti_atasan_jabatan').value = p.jabatan || '-';
                                 atasanResults.classList.add('hidden');
                                 atasanSearch.value = p.nama;
+
+                                if (!isInitializingCuti && window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) {
+                                    window.formDirtyMonitors['editCutiForm'].check();
+                                }
                             };
                             atasanResults.appendChild(div);
                         });
@@ -380,6 +392,7 @@
     let baselineN = 0, baselineN1 = 0, baselineN2 = 0, baselineSisaTahunan = 0;
     let editModeCuti = false;
     let currentCutiDraftData = null;
+    let isInitializingCuti = false;
 
     async function openEditCutiModal(id) {
         try {
@@ -397,6 +410,7 @@
     }
 
     async function populateEditCutiForm(data) {
+        isInitializingCuti = true;
         const cuti = data.cuti;
         const formData = cuti.form_data;
 
@@ -477,8 +491,13 @@
         window.originalFormData = formData;
 
         if (typeof FormDirtyMonitor !== 'undefined') {
+            if (window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) {
+                window.formDirtyMonitors['editCutiForm'].destroy();
+            }
             new FormDirtyMonitor('editCutiForm', 'submitEditCutiBtn');
         }
+
+        isInitializingCuti = false;
     }
 
     function resetEditCutiForm() {

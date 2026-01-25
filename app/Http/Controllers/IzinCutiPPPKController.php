@@ -30,6 +30,8 @@ class IzinCutiPPPKController extends Controller
                 'marginBottom' => (int) Converter::inchToTwip(0.35),
                 'marginLeft' => (int) Converter::inchToTwip(0.5),
                 'marginRight' => (int) Converter::inchToTwip(0.5),
+                'pageSizeW' => (int) Converter::inchToTwip(8.5), 
+                'pageSizeH' => (int) Converter::inchToTwip(14)  
             ]);
 
             $formatTanggalIndonesia = function ($tanggal) {

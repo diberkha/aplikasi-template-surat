@@ -7,7 +7,8 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur (SOP)
+                </h3>
                 <button onclick="closeModal('modalCreateSOP')"
                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                     <i class="fas fa-times text-lg"></i>
@@ -107,7 +108,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" onclick="addTujuanField()"
+                            <button type="button" id="btnTambahTujuan" onclick="addTujuanField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Tujuan
@@ -166,7 +167,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" onclick="addProsedurField()"
+                            <button type="button" id="btnTambahProsedur" onclick="addProsedurField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Prosedur
@@ -365,7 +366,17 @@
     function addTujuanField() {
         const container = document.getElementById('tujuanContainer');
         const items = container.querySelectorAll('.tujuan-item').length;
-        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false); return; }
+        const btn = document.getElementById('btnTambahTujuan');
+        
+        if (items >= 15) { 
+            notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false); 
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return; 
+        }
+        
         const index = ++tujuanCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'tujuan-item flex gap-3';
@@ -380,6 +391,13 @@
         `;
         container.appendChild(wrapper);
         renumberItems('tujuanContainer', 'tujuan-item');
+        
+        if (container.querySelectorAll('.tujuan-item').length >= 15) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
     }
 
     function removeTujuanField(button) {
@@ -389,12 +407,28 @@
         item.remove();
         tujuanCounter = Math.max(1, tujuanCounter - 1);
         renumberItems('tujuanContainer', 'tujuan-item');
+        
+        const btn = document.getElementById('btnTambahTujuan');
+        if (btn && container.querySelectorAll('.tujuan-item').length < 15) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
     }
 
     function addProsedurField() {
         const container = document.getElementById('prosedurContainer');
         const items = container.querySelectorAll('.prosedur-item').length;
-        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false); return; }
+        const btn = document.getElementById('btnTambahProsedur');
+        
+        if (items >= 15) { 
+            notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false); 
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return; 
+        }
+        
         const index = ++prosedurCounter;
         const wrapper = document.createElement('div');
         wrapper.className = 'prosedur-item flex gap-3';
@@ -409,6 +443,13 @@
         `;
         container.appendChild(wrapper);
         renumberItems('prosedurContainer', 'prosedur-item');
+        
+        if (container.querySelectorAll('.prosedur-item').length >= 15) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
     }
 
     function removeProsedurField(button) {
@@ -418,6 +459,12 @@
         item.remove();
         prosedurCounter = Math.max(1, prosedurCounter - 1);
         renumberItems('prosedurContainer', 'prosedur-item');
+        
+        const btn = document.getElementById('btnTambahProsedur');
+        if (btn && container.querySelectorAll('.prosedur-item').length < 15) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
     }
 
     function renumberItems(containerId, itemClass) {

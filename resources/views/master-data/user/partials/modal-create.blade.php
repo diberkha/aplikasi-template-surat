@@ -6,8 +6,8 @@
             <i class="fas fa-times"></i>
         </button>
 
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tambah User</h3>
+        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Tambah User</h3>
         </div>
 
         <div class="p-6">
@@ -116,13 +116,14 @@
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-end space-x-3">
+                <div class="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3">
                     <button type="button" @click="document.getElementById('formCreateUser').reset()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        class="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                         Reset
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Simpan
+                    <button type="submit"
+                        class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg shadow-green-600/20 transition-all active:scale-95">
+                        Simpan User
                     </button>
                 </div>
             </form>

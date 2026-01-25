@@ -153,6 +153,7 @@ class FormDirtyMonitor {
         this.form = document.getElementById(formId);
         this.submitBtn = document.getElementById(submitBtnId);
         this.initialData = null;
+        this.observer = null;
 
         if (!this.form || !this.submitBtn) {
             console.warn(
@@ -160,6 +161,11 @@ class FormDirtyMonitor {
             );
             return;
         }
+
+        if (!window.formDirtyMonitors) {
+            window.formDirtyMonitors = {};
+        }
+        window.formDirtyMonitors[formId] = this;
 
         this.init();
     }
@@ -171,11 +177,32 @@ class FormDirtyMonitor {
 
         this.form.addEventListener("input", () => this.check());
         this.form.addEventListener("change", () => this.check());
+
+        this.observer = new MutationObserver(() => this.check());
+        this.observer.observe(this.form, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+        });
     }
 
     getFormData(form) {
         const formData = new FormData(form);
         const data = {};
+
+        const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb) => {
+            const name = cb.name;
+            if (name && !cb.checked) {
+                if (!data[name + "_unchecked"]) {
+                    data[name + "_unchecked"] = [];
+                }
+                if (Array.isArray(data[name + "_unchecked"])) {
+                    data[name + "_unchecked"].push(cb.value || "unchecked");
+                }
+            }
+        });
+
         for (let [key, value] of formData.entries()) {
             if (data[key] !== undefined) {
                 if (!Array.isArray(data[key])) {
@@ -209,6 +236,12 @@ class FormDirtyMonitor {
                     "cursor-not-allowed",
                 );
             }
+        }
+    }
+
+    destroy() {
+        if (this.observer) {
+            this.observer.disconnect();
         }
     }
 }

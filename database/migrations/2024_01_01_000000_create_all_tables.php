@@ -115,7 +115,7 @@ return new class extends Migration {
             $table->id('id_sk_direktur');
             $table->string('judul_surat');
             $table->string('nomor_surat');
-            $table->string('tentang');
+            $table->text('tentang');
             $table->text('menimbang');
             $table->text('mengingat');
             $table->text('memutuskan');

@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <style>
         @page {
-            margin-top: 0.35in;
-            margin-bottom: 0.35in;
-            margin-left: 0.5in;
-            margin-right: 0.5in;
+            size: 215.9mm 355.6mm;
+            margin: 0.35in 0.5in;
         }
 
         body {
@@ -79,8 +77,15 @@
         }
 
 
-        table,
-        tr,
+        table {
+            page-break-inside: avoid !important;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+            page-break-after: auto !important;
+        }
+
         td,
         th,
         tbody,

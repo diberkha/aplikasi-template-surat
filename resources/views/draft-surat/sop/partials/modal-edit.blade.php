@@ -6,12 +6,13 @@
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Draft Standar Operasional Prosedur
-                </h3>
+            <div
+                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">Edit Draft
+                    Standar Operasional Prosedur (SOP)</h3>
                 <button onclick="closeModal('modalEditSOP')"
-                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                    <i class="fas fa-times text-lg"></i>
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-times text-base sm:text-lg"></i>
                 </button>
             </div>
 
@@ -32,25 +33,26 @@
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="md:col-span-3">
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Dokumen <span
-                                            class="text-red-500">*</span></label>
-                                    <div class="flex items-center gap-2 w-full">
+                            <div class="space-y-4">
+                                <div>
+                                    <label
+                                        class="block mb-2 text-sm text-gray-700 dark:text-gray-300 tracking-wide uppercase">No.
+                                        Dokumen <span class="text-red-500">*</span></label>
+                                    <div class="flex flex-wrap items-center gap-2 w-full">
                                         <input type="text" id="edit_nomor_dok_part1"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
                                             required>
-                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <span class="text-gray-400 font-bold">/</span>
                                         <input type="text" id="edit_nomor_dok_part2"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
                                             required>
-                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <span class="text-gray-400 font-bold">/</span>
                                         <input type="text" id="edit_nomor_dok_part3"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
                                             required>
-                                        <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">/</span>
+                                        <span class="text-gray-400 font-bold">/</span>
                                         <input type="text" id="edit_nomor_dok_part4"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
                                             required>
                                     </div>
                                     <input type="hidden" name="nomor_dokumen" id="edit_nomor_dokumen_combined">
@@ -100,7 +102,7 @@
                         <div class="p-4">
                             <div id="editTujuanContainer" class="space-y-3">
                             </div>
-                            <button type="button" onclick="addEditTujuanField()"
+                            <button type="button" id="btnEditTambahTujuan" onclick="addEditTujuanField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Tujuan
@@ -140,7 +142,7 @@
                         <div class="p-4">
                             <div id="editProsedurContainer" class="space-y-3">
                             </div>
-                            <button type="button" onclick="addEditProsedurField()"
+                            <button type="button" id="btnEditTambahProsedur" onclick="addEditProsedurField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Prosedur
@@ -174,13 +176,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-3 flex-shrink-0">
                     <button type="button" onclick="resetEditSopForm()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        class="w-full sm:w-auto px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-normal">
                         Reset
                     </button>
                     <button type="submit" id="submitEditSopBtn"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-all">
                         Perbarui
                     </button>
                 </div>
@@ -194,6 +196,7 @@
     let editProsedurCounter = 0;
     let currentSopDraftData = null;
     let currentEditSopId = null;
+    let isInitializing = false;
 
     async function openEditSopModal(id) {
         try {
@@ -215,7 +218,8 @@
         }
     }
 
-    function populateEditSopForm(data) {
+    async function populateEditSopForm(data) {
+        isInitializing = true;
         const sop = data.sop;
 
         document.getElementById('edit_sop_id_surat').value = data.id_surat;
@@ -247,12 +251,17 @@
             addEditProsedurField(text);
         });
 
-        loadEditRegulasiOptions(sop.kebijakan_array);
-        loadEditUnitOptions(sop.unit_terkait_array);
+        await loadEditRegulasiOptions(sop.kebijakan_array);
+        await loadEditUnitOptions(sop.unit_terkait_array);
 
         if (typeof FormDirtyMonitor !== 'undefined') {
+            if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
+                window.formDirtyMonitors['editSopForm'].destroy();
+            }
             new FormDirtyMonitor('editSopForm', 'submitEditSopBtn');
         }
+        
+        isInitializing = false;
     }
 
     function resetEditSopForm() {
@@ -279,7 +288,7 @@
                 const itemId = parseInt(item.id_regulasi);
                 const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
                 const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.className = 'kebijakan-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
                     <input type="checkbox" name="kebijakan[]" value="${item.id_regulasi}"
                         id="edit_kebijakan_${index}" ${isChecked ? 'checked' : ''}
@@ -314,7 +323,7 @@
                 const itemId = parseInt(item.id_unit);
                 const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
                 const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
+                checkboxItem.className = 'unit-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
                     <input type="checkbox" name="unit_terkait[]" value="${item.id_unit}"
                         id="edit_unit_${index}" ${isChecked ? 'checked' : ''}
@@ -334,41 +343,83 @@
     function addEditTujuanField(text = '') {
         const container = document.getElementById('editTujuanContainer');
         const items = container.querySelectorAll('.tujuan-item').length;
-        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false); return; }
+        const btn = document.getElementById('btnEditTambahTujuan');
+
+        if (items >= 15) {
+            notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false);
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return;
+        }
+
         const index = ++editTujuanCounter;
         const wrapper = document.createElement('div');
-        wrapper.className = 'tujuan-item flex gap-3';
+        wrapper.className = 'tujuan-item flex flex-col sm:flex-row sm:gap-3 mb-2 px-1';
         wrapper.innerHTML = `
-            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${index}.</label>
+            <label class="sm:mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap sm:w-8 flex-shrink-0 mb-1 sm:mb-0">${index}.</label>
             <div class="flex-1 flex gap-2">
-                <textarea name="tujuan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y">${text}</textarea>
-                <button type="button" onclick="removeEditField(this, 'editTujuanContainer', 'tujuan-item')" class="mt-0 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+                <textarea name="tujuan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y focus:ring-2 focus:ring-indigo-500">${text}</textarea>
+                <button type="button" onclick="removeEditField(this, 'editTujuanContainer', 'tujuan-item')" class="h-10 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-transparent hover:border-red-200">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         `;
         container.appendChild(wrapper);
         renumberEditItems('editTujuanContainer', 'tujuan-item');
+
+        if (container.querySelectorAll('.tujuan-item').length >= 15) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
+            window.formDirtyMonitors['editSopForm'].check();
+        }
     }
 
     function addEditProsedurField(text = '') {
         const container = document.getElementById('editProsedurContainer');
         const items = container.querySelectorAll('.prosedur-item').length;
-        if (items >= 15) { notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false); return; }
+        const btn = document.getElementById('btnEditTambahProsedur');
+
+        if (items >= 15) {
+            notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false);
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return;
+        }
+
         const index = ++editProsedurCounter;
         const wrapper = document.createElement('div');
-        wrapper.className = 'prosedur-item flex gap-3';
+        wrapper.className = 'prosedur-item flex flex-col sm:flex-row sm:gap-3 mb-2 px-1';
         wrapper.innerHTML = `
-            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${index}.</label>
+            <label class="sm:mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap sm:w-8 flex-shrink-0 mb-1 sm:mb-0">${index}.</label>
             <div class="flex-1 flex gap-2">
-                <textarea name="prosedur[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y">${text}</textarea>
-                <button type="button" onclick="removeEditField(this, 'editProsedurContainer', 'prosedur-item')" class="mt-0 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+                <textarea name="prosedur[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y focus:ring-2 focus:ring-indigo-500">${text}</textarea>
+                <button type="button" onclick="removeEditField(this, 'editProsedurContainer', 'prosedur-item')" class="h-10 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-transparent hover:border-red-200">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         `;
         container.appendChild(wrapper);
         renumberEditItems('editProsedurContainer', 'prosedur-item');
+
+        if (container.querySelectorAll('.prosedur-item').length >= 15) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
+            window.formDirtyMonitors['editSopForm'].check();
+        }
     }
 
     function renumberEditItems(containerId, itemClass) {
@@ -389,8 +440,25 @@
         items.forEach((el, idx) => {
             el.querySelector('label').textContent = `${idx + 1}.`;
         });
-        if (containerId === 'editTujuanContainer') editTujuanCounter = items.length;
-        else editProsedurCounter = items.length;
+        if (containerId === 'editTujuanContainer') {
+            editTujuanCounter = items.length;
+            const btn = document.getElementById('btnEditTambahTujuan');
+            if (btn && items.length < 15) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        } else {
+            editProsedurCounter = items.length;
+            const btn = document.getElementById('btnEditTambahProsedur');
+            if (btn && items.length < 15) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
+            window.formDirtyMonitors['editSopForm'].check();
+        }
     }
 
     function filterEditKebijakan() {

@@ -13,34 +13,35 @@
                     </p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     <div class="relative w-full sm:w-64 lg:w-72">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
                         <input type="text" x-model.debounce.300ms="search" placeholder="Cari..."
-                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm">
+                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm shadow-sm transition-all focus:shadow-md">
                     </div>
                     <button type="button" onclick="openModal('modalImportSurat')"
-                        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-sm w-full sm:w-auto">
-                        <i class="fas fa-file-upload mr-2"></i>
-                        Import Surat
+                        class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap shadow-sm active:scale-95 w-full sm:w-auto">
+                        <i class="fas fa-file-upload"></i>
+                        <span>Import Surat</span>
                     </button>
                 </div>
             </div>
 
-            <div class="flex flex-wrap items-center justify-start gap-2 sm:gap-3 w-full">
-                <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial">
+            <div class="flex flex-wrap items-center justify-start gap-2 w-full mt-2">
+                <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
                     <button type="button" @click="toggleSort = !toggleSort"
-                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-300" x-text="sortLabel"></span>
+                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]" x-text="sortLabel"></span>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                            :class="toggleSort && 'rotate-180'"></i>
                     </button>
 
-                    <div x-show="toggleSort" @click.away="toggleSort = false" x-transition
+                    <div x-show="toggleSort" @click.away="toggleSort = false" x-transition x-cloak
                         class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1">
                             <li><button type="button" @click="sortOption = 'a-z'; toggleSort = false"
@@ -53,7 +54,7 @@
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
                             </li>
                             <li><button type="button" @click="sortOption = 'oldest'; toggleSort = false"
-                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-701 dark:text-gray-300 text-sm">Terlama</button>
                             </li>
                             <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
                                 <button type="button" @click="sortOption = ''; toggleSort = false"
@@ -64,18 +65,19 @@
                     </div>
                 </div>
 
-                <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial">
+                <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial min-w-[140px]">
                     <button type="button" @click="toggleFilter = !toggleFilter"
-                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                        class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-copy text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                            <span class="text-gray-700 dark:text-gray-300 truncate max-w-[100px]"
                                 x-text="selectedTemplateName"></span>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                            :class="toggleFilter && 'rotate-180'"></i>
                     </button>
 
-                    <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition
+                    <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition x-cloak
                         class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                         <ul class="py-1 max-h-64 overflow-y-auto sidebar-scrollbar list-none">
                             @foreach($templateOptions as $template)
@@ -98,24 +100,25 @@
                 </div>
 
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                    <div x-data="{ toggleRuangan: false }" class="relative flex-1 sm:flex-initial">
+                    <div x-data="{ toggleRuangan: false }" class="relative flex-1 sm:flex-initial min-w-[140px]">
                         <button type="button" @click="toggleRuangan = !toggleRuangan"
-                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-building text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[100px]"
                                     x-text="selectedRuanganName"></span>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="toggleRuangan && 'rotate-180'"></i>
                         </button>
 
-                        <div x-show="toggleRuangan" @click.away="toggleRuangan = false" x-transition
+                        <div x-show="toggleRuangan" @click.away="toggleRuangan = false" x-transition x-cloak
                             class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                            <div class="px-3 py-2">
+                            <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
                                 <input type="text" x-model="searchRuangan" placeholder="Cari ruangan..."
-                                    class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-300 focus:ring-green-500 focus:border-green-500">
+                                    class="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-green-500 outline-none">
                             </div>
-                            <ul class="max-h-64 overflow-y-auto sidebar-scrollbar list-none">
+                            <ul class="max-h-64 overflow-y-auto sidebar-scrollbar list-none py-1">
                                 <template x-for="ruangan in filteredRuanganOptions" :key="ruangan.id_ruangan">
                                     <li>
                                         <button type="button"
@@ -126,11 +129,11 @@
                                     </li>
                                 </template>
                                 <li x-show="filteredRuanganOptions.length === 0"
-                                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-                                    Tidak ada data
+                                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+                                    Tidak ditemukan
                                 </li>
                             </ul>
-                            <div class="border-t border-gray-100 dark:border-gray-700 p-2">
+                            <div class="border-t border-gray-100 dark:border-gray-700 p-1">
                                 <button type="button" @click="ruanganFilter = ''; toggleRuangan = false; applyFilters()"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
                                     Hapus Filter
@@ -140,32 +143,39 @@
                     </div>
                 @endif
 
-                <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
+                <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial min-w-[140px]">
                     <button type="button" @click="open = !open"
-                        class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300">
+                        class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                            <span class="truncate max-w-[80px] sm:max-w-none" x-text="dateDisplay"></span>
+                            <span class="truncate max-w-[100px]" x-text="dateDisplay"></span>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                        <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                            :class="open && 'rotate-180'"></i>
                     </button>
 
-                    <div x-show="open" @click.away="open = false" x-transition
-                        class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
-                        <div class="space-y-2">
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                            <input type="date" x-model="startDate" x-ref="startDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                    <div x-show="open" @click.away="open = false" x-transition x-cloak
+                        class="absolute mt-2 left-0 sm:right-0 sm:left-auto w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl z-50 p-4">
+                        <div class="space-y-3">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Mulai</label>
+                                <input type="date" x-model="startDate"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                            </div>
 
-                            <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                            <input type="date" x-model="endDate" x-ref="endDatePicker"
-                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Akhir</label>
+                                <input type="date" x-model="endDate"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                            </div>
 
-                            <div class="flex space-x-2 pt-2">
+                            <div class="flex space-x-2 pt-1">
                                 <button type="button" @click="applyDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
+                                    class="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">Terapkan</button>
                                 <button type="button" @click="clearDateFilter(); open = false"
-                                    class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
+                                    class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Hapus</button>
                             </div>
                         </div>
                     </div>
@@ -245,18 +255,18 @@
                                             </button>
 
                                             <div x-data="{ 
-                                                        openDownload: false, 
-                                                        dropdownStyle: '',
-                                                        toggle() { 
-                                                            this.openDownload = !this.openDownload;
-                                                            if (this.openDownload) {
-                                                                this.$nextTick(() => {
-                                                                    const rect = this.$refs.button.getBoundingClientRect();
-                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                });
-                                                            }
-                                                        } 
-                                                    }" @scroll.window="openDownload = false" class="relative">
+                                                                        openDownload: false, 
+                                                                        dropdownStyle: '',
+                                                                        toggle() { 
+                                                                            this.openDownload = !this.openDownload;
+                                                                            if (this.openDownload) {
+                                                                                this.$nextTick(() => {
+                                                                                    const rect = this.$refs.button.getBoundingClientRect();
+                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                });
+                                                                            }
+                                                                        } 
+                                                                    }" @scroll.window="openDownload = false" class="relative">
                                                 <button type="button" x-ref="button" @click="toggle()"
                                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
@@ -320,11 +330,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                            ]">
+                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                            ]">
                                 </button>
                             </template>
 
@@ -375,7 +385,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                            ruanganOptions: @json($ruanganOptions ?? []),
+                                            ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -476,9 +486,9 @@
         }
 
         return rangeWithDots;
-                    },
+                            },
 
-                    get sortLabel() {
+                            get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -488,13 +498,13 @@
             }
         },
 
-                    get selectedTemplateName() {
+                            get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                    get selectedRuanganName() {
+                            get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -502,9 +512,9 @@
             @else
                 return 'Ruangan';
             @endif
-                    },
+                            },
 
-                    get filteredRuanganOptions() {
+                            get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -512,13 +522,13 @@
             @else
                 return [];
             @endif
-                    },
+                            },
 
         applyFilters() {
             this.currentPage = 1;
         },
 
-                    get dateDisplay() {
+                            get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -564,8 +574,8 @@
             this.currentPage = 1;
             this.open = false;
         }
-                }));
-            });
+                        }));
+                    });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -602,8 +612,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                        ${tipe}
-                    </span>`;
+                                ${tipe}
+                            </span>`;
 
             const isSystemDoc = ['Surat Keputusan Direktur', 'Standar Operasional Prosedur (SOP)', 'Surat Izin Cuti'].includes(tipe);
 

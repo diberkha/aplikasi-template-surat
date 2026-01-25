@@ -15,7 +15,9 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "phpoffice/phpword": "^1.4"
+        "masterminds/html5": "2.0",
+        "phpoffice/phpword": "^1.4",
+        "spatie/browsershot": "3.52.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

@@ -5,27 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</title>
-    @php
-        $fontPath = storage_path('fonts/cambria.ttf');
-        $fontBase64 = '';
-        if (file_exists($fontPath)) {
-            $fontBase64 = base64_encode(file_get_contents($fontPath));
-            \Illuminate\Support\Facades\Log::info("PDF: Cambria font found at $fontPath. Base64 length: " . strlen($fontBase64));
-        } else {
-            \Illuminate\Support\Facades\Log::error("PDF: Cambria font NOT found at $fontPath");
-        }
-    @endphp
     <style>
         @font-face {
             font-family: 'Cambria';
-            src: url(data:application/x-font-ttf;base64,{{ $fontBase64 }}) format('truetype');
+            src: local('Cambria'), local('Cambria Math');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'Cambria';
-            src: url(data:application/x-font-ttf;base64,{{ $fontBase64 }}) format('truetype');
+            src: local('Cambria Bold'), local('Cambria');
             font-weight: bold;
             font-style: normal;
         }
@@ -43,7 +33,7 @@
             font-size: 12pt;
             background: white;
             margin: 0;
-            padding: 8.4mm 9.9mm 4.8mm 12.4mm;
+            padding: 0;
         }
 
         .page {
@@ -56,7 +46,7 @@
         @media print {
             body {
                 background: white;
-                padding: 8.4mm 9.9mm 4.8mm 12.4mm;
+                padding: 0;
             }
 
             .page {
@@ -70,8 +60,8 @@
         }
 
         @page {
-            size: 215.9mm 330.2mm;
-            margin: 0;
+            size: 8.27in 13in;
+            margin: 0.33in 0.39in 0.19in 0.49in;
         }
 
         .header {
@@ -144,7 +134,7 @@
         .title-section {
             text-align: center;
             font-weight: normal;
-            font-size: 11.5pt;
+            font-size: 12pt;
             margin: 14px 0 10px 0;
             white-space: nowrap;
         }
@@ -205,7 +195,7 @@
         }
 
         .section-content {
-            font-size: 11pt;
+            font-size: 12pt;
             line-height: 1.5;
             text-align: justify;
             vertical-align: top;
@@ -215,7 +205,7 @@
         .section-number {
             width: 25px;
             vertical-align: top;
-            font-size: 11pt;
+            font-size: 12pt;
             line-height: 1.5;
             padding-right: 2px;
         }
@@ -235,7 +225,7 @@
         .deciding-title {
             text-align: center;
             font-weight: normal;
-            font-size: 12.5pt;
+            font-size: 12pt;
             margin: 18px 0 10px 0;
             text-transform: uppercase;
             line-height: 1.5;
@@ -302,14 +292,28 @@
             margin-top: 6px;
         }
 
-        table,
-        tr,
+        table {
+            page-break-inside: auto;
+            border: none;
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+        }
+
+        tr {
+            page-break-inside: auto;
+        }
+
+        .footer table,
+        .footer tr {
+            page-break-inside: avoid !important;
+        }
+
         td,
         th,
         tbody,
         thead,
         tfoot {
-            page-break-inside: auto !important;
+            page-break-inside: auto;
         }
 
         .justify,
@@ -317,12 +321,11 @@
         ol,
         li,
         div {
-            page-break-inside: auto !important;
-            orphans: 1 !important;
-            widows: 1 !important;
+            page-break-inside: auto;
+            orphans: 1;
+            widows: 1;
         }
 
-        /* Helper to ensure full width tables don't behave weirdly */
         table {
             width: 100%;
         }
@@ -385,128 +388,143 @@
         </div>
 
         <div class="meta-info-tentang">
-            <p>TENTANG</p>
-            <br>
-            @php
-                $tentangText = strtoupper($data['tentang'] ?? '-');
-                $tentangLines = wordwrap($tentangText, 60, "\n", false);
-                $tentangArray = explode("\n", $tentangLines);
-            @endphp
-            @foreach($tentangArray as $line)
-                <p>{{ trim($line) }}</p>
-            @endforeach
+            <p style="margin-bottom: 0;">TENTANG</p>
+            <div
+                style="margin-top: 0; font-weight: normal; text-transform: uppercase; width: 75%; margin-left: auto; margin-right: auto; text-align: center;">
+                {!! nl2br(e($data['tentang'] ?? '-')) !!}
+            </div>
         </div>
 
-        <div style="text-align: center; margin: 32px 0 18px 0;">
+        <div style="text-align: center; margin: 12px 0;">
             <p>DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</p>
         </div>
 
         <div class="content">
-            <div class="section">
-                @php
-                    $menimbang = $data['menimbang'] ?? [];
-                    if (is_string($menimbang)) {
-                        $menimbang = array_filter(explode("\n", $menimbang));
-                    }
-                    $menimbang = array_map(function ($line) {
-                        return preg_replace('/^[a-z]\.\s*/', '', trim($line));
-                    }, $menimbang);
-                    $menimbang = array_values(array_filter($menimbang));
-                @endphp
-                <table>
-                    @foreach($menimbang as $index => $line)
-                        <tr>
-                            <td class="section-label">{{ $index === 0 ? 'Menimbang' : '' }}</td>
-                            <td class="section-separator">{{ $index === 0 ? ':' : '' }}</td>
-                            @if(count($menimbang) > 1)
-                                <td class="section-number">{{ chr(97 + $index) }}.</td>
-                                <td class="section-content">{{ trim($line) }}</td>
-                            @else
-                                <td class="section-content" colspan="2">{{ trim($line) }}</td>
-                            @endif
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-
-            <div class="section">
-                @php
-                    $mengingatLines = is_array($data['mengingat'] ?? null) ? $data['mengingat'] : [];
-                @endphp
-                <table>
-                    @foreach($mengingatLines as $index => $line)
-                        <tr>
-                            <td class="section-label">{{ $index === 0 ? 'Mengingat' : '' }}</td>
-                            <td class="section-separator">{{ $index === 0 ? ':' : '' }}</td>
-                            @if(count($mengingatLines) > 1)
-                                <td class="section-number">{{ ($index + 1) }}.</td>
-                                <td class="section-content">{{ trim($line) }}</td>
-                            @else
-                                <td class="section-content" colspan="2">{{ trim($line) }}</td>
-                            @endif
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-        </div>
-
-        <div class="deciding-title">MEMUTUSKAN</div>
-
-        <div class="deciding-content">
-            @php
-                $memutuskanText = $data['memutuskan'] ?? '';
-                $lines = explode("\n", $memutuskanText);
-                $currentLabel = '';
-                $currentText = '';
-                $items = [];
-                foreach ($lines as $line) {
-                    $line = trim($line);
-                    if (empty($line))
-                        continue;
-                    if (preg_match('/^(MENETAPKAN|KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
-                        if ($currentLabel) {
-                            $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
-                        }
-                        $currentLabel = $line;
-                        $currentText = '';
-                    } else {
-                        $currentText .= ' ' . $line;
-                    }
-                }
-                if ($currentLabel) {
-                    $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
-                }
-
-                usort($items, function ($a, $b) {
-                    $order = [
-                        'Menetapkan' => 0,
-                        'KESATU' => 1,
-                        'KEDUA' => 2,
-                        'KETIGA' => 3,
-                        'KEEMPAT' => 4,
-                        'KELIMA' => 5,
-                        'KEENAM' => 6,
-                        'KETUJUH' => 7,
-                        'KEDELAPAN' => 8,
-                        'KESEMBILAN' => 9,
-                        'KESEPULUH' => 10,
-                    ];
-                    return ($order[strtoupper($a['label'])] ?? 99) <=> ($order[strtoupper($b['label'])] ?? 99);
-                });
-            @endphp
-
-            <div class="deciding-item">
+            <div class="section" style="margin-bottom: 6px;">
                 <table>
                     <tr>
-                        <td class="section-label">Menetapkan</td>
+                        <td class="section-label">Menimbang</td>
                         <td class="section-separator">:</td>
-                        <td class="deciding-text">{{ trim($data['menetapkan'] ?? '') }}</td>
+                        <td class="section-content" style="padding: 0;">
+                            @if(isset($data['menimbang']) && is_string($data['menimbang']))
+                                @php
+                                    $menimbangLines = explode("\n", $data['menimbang']);
+                                @endphp
+                                <table style="margin: 0; padding: 0;">
+                                    @foreach($menimbangLines as $index => $item)
+                                        @if(trim($item))
+                                            <tr>
+                                                <td class="section-number" style="padding: 0;">{{ chr(97 + $index) }}.</td>
+                                                <td class="section-content" style="padding: 0;">{{ trim($item) }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                </table>
+                            @elseif(isset($data['menimbang']) && is_array($data['menimbang']))
+                                <table style="margin: 0; padding: 0;">
+                                    @foreach($data['menimbang'] as $index => $item)
+                                        <tr>
+                                            <td class="section-number" style="padding: 0;">{{ chr(97 + $index) }}.</td>
+                                            <td class="section-content" style="padding: 0;">{{ $item }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            @endif
+                        </td>
                     </tr>
                 </table>
             </div>
 
+            <div class="section" style="margin-bottom: 6px;">
+                <table>
+                    <tr>
+                        <td class="section-label">Mengingat</td>
+                        <td class="section-separator">:</td>
+                        <td class="section-content" style="padding: 0;">
+                            @if(isset($data['mengingat']) && is_string($data['mengingat']))
+                                @php
+                                    $mengingatLines = explode("\n", $data['mengingat']);
+                                    $idx = 0;
+                                @endphp
+                                <table style="margin: 0; padding: 0;">
+                                    @foreach($mengingatLines as $item)
+                                        @php
+                                            $cleaned = preg_replace('/^\d+\.\s*/', '', trim($item));
+                                        @endphp
+                                        @if($cleaned)
+                                            <tr>
+                                                <td class="section-number" style="padding: 0;">{{ ++$idx }}.</td>
+                                                <td class="section-content" style="padding: 0;">{{ $cleaned }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                </table>
+                            @elseif(isset($data['mengingat']) && is_array($data['mengingat']))
+                                <table style="margin: 0; padding: 0;">
+                                    @foreach($data['mengingat'] as $index => $item)
+                                        <tr>
+                                            <td class="section-number" style="padding: 0;">{{ $index + 1 }}.</td>
+                                            <td class="section-content" style="padding: 0;">{{ $item }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            @endif
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="deciding-title" style="margin: 12px 0;">MEMUTUSKAN :</div>
+
+        <div class="deciding-content">
+            <div class="deciding-item" style="margin-bottom: 0;">
+                <table>
+                    <tr>
+                        <td class="section-label">Menetapkan</td>
+                        <td class="section-separator">:</td>
+                        <td class="deciding-text" style="font-weight: bold; text-transform: uppercase;">
+                            {{ trim($data['menetapkan'] ?? '') }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            @php
+                $memutuskanText = $data['memutuskan'] ?? '';
+                $items = [];
+                if (is_string($memutuskanText)) {
+                    $lines = explode("\n", $memutuskanText);
+                    $currentLabel = '';
+                    $currentText = '';
+
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if (empty($line))
+                            continue;
+
+                        if (preg_match('/^(KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
+                            if ($currentLabel) {
+                                $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
+                            }
+                            $currentLabel = $line;
+                            $currentText = '';
+                        } else {
+                            $currentText .= ($currentText ? ' ' : '') . $line;
+                        }
+                    }
+                    if ($currentLabel) {
+                        $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
+                    }
+                } elseif (is_array($memutuskanText)) {
+                    $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
+                    foreach ($memutuskanText as $idx => $val) {
+                        $items[] = ['label' => $labels[$idx] ?? 'KE-' . ($idx + 1), 'text' => $val];
+                    }
+                }
+            @endphp
+
             @foreach($items as $item)
-                <div class="deciding-item">
+                <div class="deciding-item" style="margin-bottom: 0;">
                     <table>
                         <tr>
                             <td class="section-label">{{ strtoupper($item['label']) }}</td>

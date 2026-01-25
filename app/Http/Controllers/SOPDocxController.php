@@ -30,6 +30,8 @@ class SOPDocxController extends Controller
                 'marginBottom' => (int) Converter::inchToTwip(0.79),
                 'marginLeft' => (int) Converter::inchToTwip(1.18),
                 'marginRight' => (int) Converter::inchToTwip(0.98),
+                'pageSizeW' => (int) Converter::inchToTwip(8.5),
+                'pageSizeH' => (int) Converter::inchToTwip(13)  
             ]);
 
             $sopTableStyle = ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 80];
@@ -37,42 +39,46 @@ class SOPDocxController extends Controller
             $table = $section->addTable('SOPTable');
 
             // Logo & Title
-            $table->addRow((int) Converter::inchToTwip(1.0));
-            $logoCell = $table->addCell((int) Converter::inchToTwip(1.2), ['vMerge' => 'restart', 'valign' => 'center']);
+            $table->addRow();
+            $logoCell = $table->addCell((int) Converter::inchToTwip(2.3), ['vMerge' => 'restart', 'valign' => 'center']);
             $logoPath = public_path('img/logo-sragen.png');
             if (file_exists($logoPath)) {
-                $logoCell->addImage($logoPath, ['width' => (int) Converter::inchToPoint(0.8), 'alignment' => Jc::CENTER]);
+                $logoCell->addImage($logoPath, [
+                    'width' => (int) Converter::inchToPoint(0.8),
+                    'height' => (int) Converter::inchToPoint(1.0),
+                    'alignment' => Jc::CENTER
+                ]);
             }
-            $logoCell->addText('RSUD dr. SOERATNO', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
-            $logoCell->addText('GEMOLONG', ['bold' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
+            $logoCell->addText('RSUD dr. SOERATNO', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER]);
+            $logoCell->addText('GEMOLONG', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER]);
 
-            $titleCell = $table->addCell((int) Converter::inchToTwip(6.27), ['gridSpan' => 3, 'valign' => 'center']);
-            $titleCell->addText($data['judul_sop'] ?? '', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER]);
+            $titleCell = $table->addCell((int) Converter::inchToTwip(5.17), ['gridSpan' => 3, 'valign' => 'center']);
+            $titleCell->addText($data['judul_sop'] ?? '', ['bold' => true, 'size' => 12], ['alignment' => Jc::CENTER, 'spaceBefore' => 120, 'spaceAfter' => 120]);
 
             // Info
             $table->addRow();
             $table->addCell(null, ['vMerge' => 'continue']);
 
-            $docNoCell = $table->addCell((int) Converter::inchToTwip(2.6), ['valign' => 'center']);
+            $docNoCell = $table->addCell((int) Converter::inchToTwip(2.0), ['valign' => 'top']);
             $docNoCell->addText('No. Dokumen', null, ['alignment' => Jc::CENTER]);
             $docNoCell->addText($data['nomor_dokumen'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.67), ['valign' => 'center']);
+            $revNoCell = $table->addCell((int) Converter::inchToTwip(1.17), ['valign' => 'top']);
             $revNoCell->addText('No. Revisi', null, ['alignment' => Jc::CENTER]);
             $revNoCell->addText($data['nomor_revisi'] ?? '', null, ['alignment' => Jc::CENTER]);
 
-            $pageCell = $table->addCell((int) Converter::inchToTwip(2.0), ['valign' => 'center']);
+            $pageCell = $table->addCell((int) Converter::inchToTwip(2.0), ['valign' => 'top']);
             $pageCell->addText('Halaman', null, ['alignment' => Jc::CENTER]);
             $pageCell->addText($data['halaman'] ?? '1/1', null, ['alignment' => Jc::CENTER]);
 
             // Header
             $table->addRow((int) Converter::inchToTwip(0.8));
-            $spoCell = $table->addCell((int) Converter::inchToTwip(1.2), ['valign' => 'center']);
+            $spoCell = $table->addCell((int) Converter::inchToTwip(2.3), ['valign' => 'center']);
             $spoCell->addText('STANDAR', ['bold' => true], ['alignment' => Jc::CENTER]);
             $spoCell->addText('PROSEDUR', ['bold' => true], ['alignment' => Jc::CENTER]);
             $spoCell->addText('OPERASIONAL', ['bold' => true], ['alignment' => Jc::CENTER]);
 
-            $dateCell = $table->addCell((int) Converter::inchToTwip(2.6), ['valign' => 'center']);
+            $dateCell = $table->addCell((int) Converter::inchToTwip(2.3), ['valign' => 'center']);
             $dateCell->addText('Tanggal Terbit', null, ['alignment' => Jc::CENTER]);
             $tanggalFormatted = '.......................';
             if (!empty($sop->tanggal_terbit)) {
@@ -81,7 +87,7 @@ class SOPDocxController extends Controller
             }
             $dateCell->addText($tanggalFormatted, null, ['alignment' => Jc::CENTER]);
 
-            $signCell = $table->addCell((int) Converter::inchToTwip(3.67), ['gridSpan' => 2, 'valign' => 'center']);
+            $signCell = $table->addCell((int) Converter::inchToTwip(2.87), ['gridSpan' => 2, 'valign' => 'center']);
             $signCell->addText('Ditetapkan,', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Direktur RSUD dr. Soeratno', null, ['alignment' => Jc::CENTER]);
             $signCell->addText('Gemolong Kabupaten Sragen', null, ['alignment' => Jc::CENTER]);
@@ -175,8 +181,8 @@ class SOPDocxController extends Controller
 
             foreach ($contentRows as $label => $content) {
                 $table->addRow();
-                $table->addCell((int) Converter::inchToTwip(1.87))->addText($label);
-                $cell = $table->addCell((int) Converter::inchToTwip(5.4), ['gridSpan' => 3]);
+                $table->addCell((int) Converter::inchToTwip(2.3))->addText($label);
+                $cell = $table->addCell((int) Converter::inchToTwip(5.17), ['gridSpan' => 3]);
 
                 if (in_array($label, ['Tujuan', 'Kebijakan', 'Prosedur'])) {
                     $items = is_array($content) ? $content : preg_split('/\r?\n|\r|\•|\d+\./', $content, -1, PREG_SPLIT_NO_EMPTY);

@@ -13,19 +13,21 @@
                 </p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-4 lg:mt-0">
-                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                <div class="flex flex-wrap items-center gap-2">
+                    <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
                         <button type="button" @click="toggleSort = !toggleSort"
-                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300" x-text="sortLabel"></span>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                    x-text="sortLabel"></span>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="toggleSort && 'rotate-180'"></i>
                         </button>
 
-                        <div x-show="toggleSort" @click.away="toggleSort = false" x-transition
+                        <div x-show="toggleSort" @click.away="toggleSort = false" x-transition x-cloak
                             class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <ul class="py-1">
                                 <li><button type="button" @click="sortOption = 'a-z'; toggleSort = false"
@@ -49,17 +51,19 @@
                         </div>
                     </div>
 
-                    <div x-data="{ toggleCategory: false }" class="relative flex-1 sm:flex-initial">
+                    <div x-data="{ toggleCategory: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
                         <button type="button" @click="toggleCategory = !toggleCategory"
-                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-users text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300" x-text="categoryLabel"></span>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                    x-text="categoryLabel"></span>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="toggleCategory && 'rotate-180'"></i>
                         </button>
 
-                        <div x-show="toggleCategory" @click.away="toggleCategory = false" x-transition
+                        <div x-show="toggleCategory" @click.away="toggleCategory = false" x-transition x-cloak
                             class="absolute mt-2 left-0 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <ul class="py-1">
                                 <li><button type="button" @click="kategoriFilter = 'PNS'; toggleCategory = false"
@@ -81,45 +85,52 @@
                         </div>
                     </div>
 
-                    <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial">
+                    <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial min-w-[140px]">
                         <button type="button" @click="open = !open"
-                            class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px] sm:max-w-none"
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[100px]"
                                     x-text="dateDisplay"></span>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs text-right"></i>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="open && 'rotate-180'"></i>
                         </button>
 
-                        <div x-show="open" @click.away="open = false" x-transition
-                            class="absolute mt-2 left-0 w-56 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
-                            <div class="space-y-2">
-                                <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Mulai</label>
-                                <input type="date" x-model="startDate"
-                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                        <div x-show="open" @click.away="open = false" x-transition x-cloak
+                            class="absolute mt-2 left-0 sm:right-0 sm:left-auto w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl z-50 p-4">
+                            <div class="space-y-3">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Mulai</label>
+                                    <input type="date" x-model="startDate"
+                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                                </div>
 
-                                <label class="block text-xs text-gray-500 dark:text-gray-400">Tanggal Akhir</label>
-                                <input type="date" x-model="endDate"
-                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm" />
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Akhir</label>
+                                    <input type="date" x-model="endDate"
+                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                                </div>
 
-                                <div class="flex space-x-2 pt-2">
+                                <div class="flex space-x-2 pt-1">
                                     <button type="button" @click="applyDateFilter(); open = false"
-                                        class="flex-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">Terapkan</button>
+                                        class="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">Terapkan</button>
                                     <button type="button" @click="clearDateFilter(); open = false"
-                                        class="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Hapus</button>
+                                        class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Hapus</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="relative flex-1 sm:flex-initial w-full sm:w-auto mt-2 sm:mt-0">
+                <div class="relative flex-1 sm:w-64 lg:w-72 mt-2 sm:mt-0">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
                     <input type="text" x-model.debounce.300ms="search" placeholder="Cari draft..."
-                        class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full sm:w-64 text-sm">
+                        class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm shadow-sm transition-all focus:shadow-md">
                 </div>
             </div>
         </div>
@@ -159,13 +170,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full" :class="{
-                                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
-                                                        item.cuti.kategori === 'PNS',
-                                                        'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
-                                                        item.cuti.kategori === 'PPPK',
-                                                        'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
-                                                        (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
-                                                        }" x-text="item.cuti ? item.cuti.kategori : '-'">
+                                                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
+                                                            item.cuti.kategori === 'PNS',
+                                                            'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
+                                                            item.cuti.kategori === 'PPPK',
+                                                            'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
+                                                            (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
+                                                            }" x-text="item.cuti ? item.cuti.kategori : '-'">
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
@@ -238,11 +249,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                        ]">
+                                                            parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
+                                                            (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                            (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                            ]">
                             </button>
                         </template>
 

@@ -74,14 +74,32 @@
             this.isPegawaiSelected = false;
             this.pegawaiResults = [];
                                                             },
-                                                            resetForm() {
-            this.tipeSurat = '';
-            this.tipeSuratLabel = '';
-            this.jenisPegawai = '';
-            this.jenisPegawaiLabel = '';
-            this.resetPegawai();
-                                                            }
-                                                        }" @reset="resetForm()">
+                                                             resetForm() {
+                                                                this.tipeSurat = '';
+                                                                this.tipeSuratLabel = '';
+                                                                this.jenisPegawai = '';
+                                                                this.jenisPegawaiLabel = '';
+                                                                this.resetPegawai();
+                                                                this.selectedFile = null;
+                                                                this.fileType = '';
+                                                                this.fileUrl = '';
+                                                             },
+                                                             selectedFile: null,
+                                                             fileType: '',
+                                                             fileUrl: '',
+                                                             handleFileSelect(event) {
+                                                                const file = event.target.files[0];
+                                                                if (file) {
+                                                                    this.selectedFile = file.name;
+                                                                    this.fileType = file.type;
+                                                                    this.fileUrl = URL.createObjectURL(file);
+                                                                } else {
+                                                                    this.selectedFile = null;
+                                                                    this.fileType = '';
+                                                                    this.fileUrl = '';
+                                                                }
+                                                             }
+                                                         }" @reset="resetForm()">
                 @csrf
                 <div class="p-6 space-y-4">
                     <div>

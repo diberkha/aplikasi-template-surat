@@ -56,8 +56,8 @@
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Tentang <span
                                         class="text-red-500">*</span></label>
-                                <input type="text" name="tentang" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <textarea name="tentang" required rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" onclick="addMenimbangField()"
+                            <button type="button" id="btnTambahMenimbang" onclick="addMenimbangField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Menimbang
@@ -143,7 +143,7 @@
                                         class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                                 </div>
                             </div>
-                            <button type="button" onclick="addMemutuskanField()"
+                            <button type="button" id="btnTambahMemutuskan" onclick="addMemutuskanField()"
                                 class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
                                 Tambah Memutuskan
@@ -278,7 +278,17 @@
 
     function addMemutuskanField() {
         const maxAllowed = 10;
-        if (memutuskanCounter >= maxAllowed) { notify('warning', 'Peringatan', 'Maksimal sampai kesepuluh.', false); return; }
+        const btn = document.getElementById('btnTambahMemutuskan');
+
+        if (memutuskanCounter >= maxAllowed) {
+            notify('warning', 'Peringatan', 'Maksimal sampai kesepuluh.', false);
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return;
+        }
+
         const container = document.getElementById('memutuskanContainer');
         const labels = ['Kesatu', 'Kedua', 'Ketiga', 'Keempat', 'Kelima', 'Keenam', 'Ketujuh', 'Kedelapan', 'Kesembilan', 'Kesepuluh'];
         const label = labels[memutuskanCounter] || `Ke-${memutuskanCounter + 1}`;
@@ -295,12 +305,25 @@
         `;
         container.appendChild(newField);
         memutuskanCounter++;
+
+        if (memutuskanCounter >= maxAllowed) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
     }
 
     function removeMemutuskanField(button) {
         const item = button.closest('.memutuskan-item');
         item.remove();
         memutuskanCounter--;
+
+        const btn = document.getElementById('btnTambahMemutuskan');
+        if (btn && memutuskanCounter < 10) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
     }
 
     function resetFormSK() {
@@ -348,7 +371,17 @@
     function addMenimbangField() {
         const container = document.getElementById('menimbangContainer');
         const items = container.querySelectorAll('.menimbang-item').length;
-        if (items >= 10) { notify('warning', 'Peringatan', 'Maksimal 10 poin Menimbang.', false); return; }
+        const btn = document.getElementById('btnTambahMenimbang');
+
+        if (items >= 10) {
+            notify('warning', 'Peringatan', 'Maksimal 10 poin Menimbang.', false);
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            return;
+        }
+
         const labelChar = String.fromCharCode('a'.charCodeAt(0) + items) + '.';
         const wrapper = document.createElement('div');
         wrapper.className = 'menimbang-item flex gap-3';
@@ -362,6 +395,13 @@
             </div>
         `;
         container.appendChild(wrapper);
+
+        if (container.querySelectorAll('.menimbang-item').length >= 10) {
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
     }
 
     function removeMenimbangField(button) {
@@ -370,6 +410,12 @@
         if (container.querySelectorAll('.menimbang-item').length <= 1) return;
         item.remove();
         renumberMenimbangLabels();
+
+        const btn = document.getElementById('btnTambahMenimbang');
+        if (btn && container.querySelectorAll('.menimbang-item').length < 10) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
     }
 
     function renumberMenimbangLabels() {

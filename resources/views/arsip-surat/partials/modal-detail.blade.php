@@ -2,20 +2,21 @@
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         <div
-            class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0">
+            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
             <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Detail Surat</h3>
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Detail Surat</h3>
             </div>
             <button onclick="closeModal('modalDetailSurat')"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <i class="fas fa-times text-lg"></i>
+                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-times text-base sm:text-lg"></i>
             </button>
         </div>
 
-        <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 150px)">
-            <div class="space-y-6">
-                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Informasi Surat</h2>
+        <div class="overflow-y-auto p-4 sm:p-6" style="max-height: calc(90vh - 150px)">
+            <div class="space-y-4 sm:space-y-6">
+                <div
+                    class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">Informasi Surat</h2>
 
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -56,12 +57,13 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">File Surat</h2>
+                <div
+                    class="bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                        <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">File Surat</h2>
                         <div id="detail-download-dropdown" class="hidden relative" x-data="{ open: false }">
                             <button @click="open = !open" type="button"
-                                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium h-10">
                                 <i class="fas fa-download mr-2"></i>
                                 Download
                                 <i class="fas fa-chevron-down ml-2 text-xs"></i>
@@ -114,9 +116,9 @@
         </div>
 
         <div
-            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-white dark:bg-gray-800 sticky bottom-0">
+            class="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-white dark:bg-gray-800 sticky bottom-0">
             <button type="button" onclick="closeModal('modalDetailSurat')"
-                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                class="w-full sm:w-auto px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium h-11 text-sm">
                 Tutup
             </button>
         </div>

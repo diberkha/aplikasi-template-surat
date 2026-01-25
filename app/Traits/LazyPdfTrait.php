@@ -57,11 +57,8 @@ trait LazyPdfTrait
                     $view = 'template-surat.cuti.cuti-nonasn.pdf';
 
                 $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-                $pdf = Pdf::loadHTML($html)->setPaper([0, 0, 612, 936], 'portrait')->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
                 $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
-                Storage::put($newPath, $pdf->output());
-                $surat->update(['file_path' => $newPath]);
-                return storage_path('app/' . $newPath);
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->sop) {
                 $kebijakanText = trim($surat->sop->kebijakan);
                 $kebijakanResolved = [];
@@ -70,7 +67,7 @@ trait LazyPdfTrait
                     $kebijakanIds = [];
                     foreach ($kebijakanLines as $line) {
                         if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
-                            $kebijakanIds[] = (int)$matches[1];
+                            $kebijakanIds[] = (int) $matches[1];
                         }
                     }
                     if (!empty($kebijakanIds)) {
@@ -88,7 +85,7 @@ trait LazyPdfTrait
                     $unitIds = [];
                     foreach ($unitLines as $line) {
                         if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
-                            $unitIds[] = (int)$matches[1];
+                            $unitIds[] = (int) $matches[1];
                         }
                     }
                     if (!empty($unitIds)) {
@@ -113,11 +110,9 @@ trait LazyPdfTrait
                     'direktur_nama' => $direktur_nama,
                     'direktur_nip' => $direktur_nip,
                 ];
-                $pdf = Pdf::loadView('template-surat.sop.pdf', ['data' => $data])->setOptions(['defaultFont' => 'Times New Roman']);
+                $html = view('template-surat.sop.pdf', ['data' => $data])->render();
                 $newPath = 'surat/' . $surat->nomor_surat . '.pdf';
-                Storage::put($newPath, $pdf->output());
-                $surat->update(['file_path' => $newPath]);
-                return storage_path('app/' . $newPath);
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->skDirektur) {
                 $mengingatText = trim($surat->skDirektur->mengingat);
                 $mengingatResolved = [];
@@ -126,7 +121,7 @@ trait LazyPdfTrait
                     $mengingatIds = [];
                     foreach ($mengingatLines as $line) {
                         if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
-                            $mengingatIds[] = (int)$matches[1];
+                            $mengingatIds[] = (int) $matches[1];
                         }
                     }
                     if (!empty($mengingatIds)) {
@@ -153,36 +148,7 @@ trait LazyPdfTrait
                 $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
 
                 $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
-                $fullPath = storage_path('app/' . $newPath);
-
-                $directory = dirname($fullPath);
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
-                try {
-                    $snappy = SnappyPdf::loadHTML($html)
-                        ->setOption('page-width', '215.9mm')
-                        ->setOption('page-height', '330.2mm')
-                        ->setOption('margin-top', '0mm')
-                        ->setOption('margin-right', '0mm')
-                        ->setOption('margin-bottom', '0mm')
-                        ->setOption('margin-left', '0mm')
-                        ->setOption('enable-local-file-access', true)
-                        ->setOption('images', true)
-                        ->setOption('print-media-type', true);
-
-                    $snappy->save($fullPath);
-                } catch (\Throwable $snappyEx) {
-                    Log::error('Snappy failed, falling back to DomPDF for surat id ' . $surat->id_surat . ': ' . $snappyEx->getMessage());
-                    $pdf = Pdf::loadHTML($html)
-                        ->setPaper([0, 0, 612, 936], 'portrait')
-                        ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-                    Storage::put($newPath, $pdf->output());
-                }
-
-                $surat->update(['file_path' => $newPath]);
-                return $fullPath;
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             }
         } catch (\Exception $e) {
             Log::error('Regeneration failed for surat id ' . $surat->id_surat . ': ' . $e->getMessage());
@@ -190,5 +156,53 @@ trait LazyPdfTrait
         }
 
         return ($path && file_exists($path) && is_file($path)) ? $path : null;
+    }
+
+    protected function generatePdfWithPuppeteer($html, Surat $surat, $newPath)
+    {
+        $fullPath = storage_path('app/' . $newPath);
+        $directory = dirname($fullPath);
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        try {
+            $tempHtmlFile = storage_path('app/temp-pdf-' . uniqid() . '.html');
+            file_put_contents($tempHtmlFile, $html);
+
+            $jsRenderer = base_path('resources/js/pdf-renderer.js');
+            $nodePath = 'node';  
+
+            $command = sprintf(
+                '%s %s %s %s %s %s',
+                escapeshellarg($nodePath),
+                escapeshellarg($jsRenderer),
+                escapeshellarg($tempHtmlFile),
+                escapeshellarg($fullPath),
+                escapeshellarg('215.9mm'),
+                escapeshellarg('330.2mm')
+            );
+
+            $output = [];
+            $returnVar = 0;
+            exec($command, $output, $returnVar);
+
+            if (file_exists($tempHtmlFile)) {
+                unlink($tempHtmlFile);
+            }
+
+            if ($returnVar !== 0 || !file_exists($fullPath)) {
+                throw new \Exception('Puppeteer failed: ' . implode("\n", $output));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Puppeteer failed for surat ' . $surat->id_surat . ', falling back to DomPDF: ' . $e->getMessage());
+            $pdf = Pdf::loadHTML($html)
+                ->setPaper([0, 0, 612, 936], 'portrait')
+                ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+            Storage::put($newPath, $pdf->output());
+        }
+
+        $surat->update(['file_path' => $newPath]);
+        return $fullPath;
     }
 }

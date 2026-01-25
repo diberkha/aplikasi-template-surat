@@ -26,15 +26,15 @@ class SKDirekturDocxController extends Controller
             $phpWord = new PhpWord();
             $phpWord->setDefaultFontName('Cambria');
             $phpWord->setDefaultFontSize(12);
-            $phpWord->setDefaultParagraphStyle(['spaceAfter' => 0, 'lineHeight' => 1.15]);
+            $phpWord->setDefaultParagraphStyle(['spaceAfter' => 0, 'lineHeight' => 1.0]);
 
             $section = $phpWord->addSection([
-                'marginTop' => (int) Converter::cmToTwip(8.4 / 10),
-                'marginBottom' => (int) Converter::cmToTwip(4.8 / 10),
-                'marginLeft' => (int) Converter::cmToTwip(12.4 / 10),
-                'marginRight' => (int) Converter::cmToTwip(9.9 / 10),
-                'pageSizeW' => (int) Converter::cmToTwip(215.9 / 10),
-                'pageSizeH' => (int) Converter::cmToTwip(330.2 / 10),
+                'marginTop' => (int) Converter::inchToTwip(0.33),
+                'marginBottom' => (int) Converter::inchToTwip(0.19),
+                'marginLeft' => (int) Converter::inchToTwip(0.49),
+                'marginRight' => (int) Converter::inchToTwip(0.39),
+                'pageSizeW' => (int) Converter::inchToTwip(8.27),
+                'pageSizeH' => (int) Converter::inchToTwip(13),
             ]);
 
             // Header
@@ -49,7 +49,7 @@ class SKDirekturDocxController extends Controller
             $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
             if (file_exists($logoLeftPath)) {
                 $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoLeftPath, [
-                    'height' => (int) Converter::inchToPoint(0.9),
+                    'height' => (int) Converter::inchToPoint(0.7),
                     'wrappingStyle' => 'inline'
                 ]);
             } else {
@@ -68,7 +68,7 @@ class SKDirekturDocxController extends Controller
             $logoRightPath = public_path('img/logo-rs-kop.png');
             if (file_exists($logoRightPath)) {
                 $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoRightPath, [
-                    'height' => (int) Converter::inchToPoint(0.9),
+                    'height' => (int) Converter::inchToPoint(0.7),
                     'wrappingStyle' => 'inline',
                     'alignment' => Jc::RIGHT
                 ]);
@@ -100,7 +100,7 @@ class SKDirekturDocxController extends Controller
 
             // Tentang
             $tentang = strtoupper($data['tentang'] ?? '-');
-            $section->addText($tentang, null, ['alignment' => Jc::CENTER, 'indentation' => ['left' => 1700, 'right' => 1700], 'lineHeight' => 1.35]);
+            $section->addText($tentang, null, ['alignment' => Jc::CENTER, 'indentation' => ['left' => 1332, 'right' => 1332], 'lineHeight' => 1.0]);
             $section->addTextBreak(1);
             $section->addText('DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
@@ -152,10 +152,10 @@ class SKDirekturDocxController extends Controller
                 );
 
                 foreach ($menimbangLines as $line) {
-                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
+                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
                 }
             } else {
-                $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
+                $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
             }
 
             $section->addTextBreak(1);
@@ -228,7 +228,7 @@ class SKDirekturDocxController extends Controller
             foreach ($mengingatLines as $line) {
                 if (trim($line) === '')
                     continue;
-                $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
+                $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
             }
 
             $section->addTextBreak(1);
@@ -242,7 +242,7 @@ class SKDirekturDocxController extends Controller
             $m->addRow();
             $m->addCell((int) Converter::inchToTwip(1.2))->addText('Menetapkan');
             $m->addCell((int) Converter::inchToTwip(0.2))->addText(':');
-            $m->addCell((int) Converter::inchToTwip(6.0))->addText(trim($data['menetapkan'] ?? ''), null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
+            $m->addCell((int) Converter::inchToTwip(6.0))->addText(trim($data['menetapkan'] ?? ''), null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
 
             $memutuskanText = $data['memutuskan'] ?? '';
             $lines = explode("\n", $memutuskanText);
@@ -272,7 +272,7 @@ class SKDirekturDocxController extends Controller
                 $m->addRow();
                 $m->addCell((int) Converter::inchToTwip(1.2))->addText(strtoupper($item['label']));
                 $m->addCell((int) Converter::inchToTwip(0.2))->addText(':');
-                $m->addCell((int) Converter::inchToTwip(6.0))->addText($item['text'], null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.5]);
+                $m->addCell((int) Converter::inchToTwip(6.0))->addText($item['text'], null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
             }
 
             $section->addTextBreak(2);
