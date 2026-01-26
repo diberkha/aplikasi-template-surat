@@ -24,16 +24,23 @@
         }
 
         table {
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             width: 100%;
-            border: 1px solid #000;
+            border-top: 1px solid #000;
+            border-left: 1px solid #000;
+            border-right: 0;
+            border-bottom: 0;
             -webkit-box-decoration-break: clone;
             box-decoration-break: clone;
         }
 
         th,
         td {
-            border: 1px solid #000;
+            border-top: 0;
+            border-left: 0;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
             padding: 6px;
             vertical-align: top;
             -webkit-box-decoration-break: clone;
