@@ -51,10 +51,12 @@ trait LazyPdfTrait
                     'direktur_nip' => $direktur_nip,
                 ];
                 $view = 'template-surat.cuti.cuti-pns.pdf';
-                if ($data['kategori'] === 'PPPK')
+                if ($data['kategori'] === 'PPPK') {
                     $view = 'template-surat.cuti.cuti-pppk.pdf';
-                if ($data['kategori'] === 'NON ASN')
+                }
+                if ($data['kategori'] === 'NON ASN') {
                     $view = 'template-surat.cuti.cuti-nonasn.pdf';
+                }
 
                 $html = view($view, ['data' => $data, 'surat' => $surat])->render();
                 $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
@@ -171,7 +173,7 @@ trait LazyPdfTrait
             file_put_contents($tempHtmlFile, $html);
 
             $jsRenderer = base_path('resources/js/pdf-renderer.js');
-            $nodePath = 'node';  
+            $nodePath = 'node';
 
             $command = sprintf(
                 '%s %s %s %s %s %s',

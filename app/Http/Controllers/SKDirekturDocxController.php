@@ -226,8 +226,9 @@ class SKDirekturDocxController extends Controller
             );
 
             foreach ($mengingatLines as $line) {
-                if (trim($line) === '')
+                if (trim($line) === '') {
                     continue;
+                }
                 $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
             }
 
@@ -251,8 +252,9 @@ class SKDirekturDocxController extends Controller
             $items = [];
             foreach ($lines as $line) {
                 $line = trim($line);
-                if (empty($line))
+                if (empty($line)) {
                     continue;
+                }
                 if (preg_match('/^(KESATU|KEDUA|KETIGA|KEEMPAT|KELIMA|KEENAM|KETUJUH|KEDELAPAN|KESEMBILAN|KESEPULUH)$/i', $line)) {
                     if ($currentLabel) {
                         $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];

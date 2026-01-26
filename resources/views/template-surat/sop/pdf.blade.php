@@ -33,6 +33,7 @@
             border-bottom: 0;
             -webkit-box-decoration-break: clone;
             box-decoration-break: clone;
+            page-break-inside: auto;
         }
 
         th,
@@ -45,6 +46,7 @@
             vertical-align: top;
             -webkit-box-decoration-break: clone;
             box-decoration-break: clone;
+            page-break-inside: auto;
         }
 
         .center {
@@ -67,11 +69,6 @@
             vertical-align: middle;
         }
 
-
-        table {
-            page-break-inside: auto;
-        }
-
         tr {
             page-break-inside: auto;
         }
@@ -81,10 +78,7 @@
             page-break-after: auto;
         }
 
-        td,
-        th,
         tbody,
-        thead,
         tfoot {
             page-break-inside: auto;
         }

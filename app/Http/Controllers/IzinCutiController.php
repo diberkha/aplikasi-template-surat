@@ -24,10 +24,11 @@ class IzinCutiController extends Controller
             ->get()
             ->map(function ($t) {
                 $desc = 'Template Surat Izin Cuti PNS';
-                if (stripos($t->nama_template_surat, 'PPPK') !== false)
+                if (stripos($t->nama_template_surat, 'PPPK') !== false) {
                     $desc = 'Template Surat Izin Cuti PPPK';
-                elseif (stripos($t->nama_template_surat, 'Non ASN') !== false)
+                } elseif (stripos($t->nama_template_surat, 'Non ASN') !== false) {
                     $desc = 'Template Surat Izin Cuti Non ASN';
+                }
 
                 return [
                     'id_template_surat' => $t->id_template_surat,
@@ -351,7 +352,7 @@ class IzinCutiController extends Controller
 
             $surat->update([
                 'tanggal_dibuat' => $request->input('form.tanggal_surat'),
-                'file_path' => null, 
+                'file_path' => null,
             ]);
 
             $cuti->update([

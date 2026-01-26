@@ -30,13 +30,14 @@ class IzinCutiPNSController extends Controller
                 'marginBottom' => (int) Converter::inchToTwip(0.35),
                 'marginLeft' => (int) Converter::inchToTwip(0.5),
                 'marginRight' => (int) Converter::inchToTwip(0.5),
-                'pageSizeW' => (int) Converter::inchToTwip(8.5), 
-                'pageSizeH' => (int) Converter::inchToTwip(14)   
+                'pageSizeW' => (int) Converter::inchToTwip(8.5),
+                'pageSizeH' => (int) Converter::inchToTwip(14)
             ]);
 
             $formatTanggalIndonesia = function ($tanggal) {
-                if (empty($tanggal))
+                if (empty($tanggal)) {
                     return '';
+                }
                 $bulan = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
                 $timestamp = strtotime($tanggal);
                 $hari = date('d', $timestamp);

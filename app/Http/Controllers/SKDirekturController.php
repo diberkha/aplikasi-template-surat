@@ -282,7 +282,7 @@ class SKDirekturController extends Controller
                     $items = preg_split('/\r\n|\r|\n/', $mengingatText);
                     foreach ($items as $item) {
                         if (preg_match('/^\d+\.\s*(\d+)/', trim($item), $matches)) {
-                            $mengingatArray[] = (int)$matches[1];
+                            $mengingatArray[] = (int) $matches[1];
                         }
                     }
                 }
@@ -353,8 +353,9 @@ class SKDirekturController extends Controller
             $memutuskanText = '';
             foreach ($memutuskanArray as $index => $item) {
                 $item = trim((string) $item);
-                if ($index > 1 && $item === '')
+                if ($index > 1 && $item === '') {
                     continue;
+                }
                 $label = $labels[$index] ?? 'Ke-' . ($index + 1);
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
             }
