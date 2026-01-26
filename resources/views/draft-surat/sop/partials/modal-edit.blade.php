@@ -1,18 +1,17 @@
 <div id="modalEditSOP" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
         <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity"
-            onclick="closeModal('modalEditSOP')"></div>
+            onclick="closeModal('modalEditSOP'); editSopPages = [];"></div>
 
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div
-                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">Edit Draft
-                    Standar Operasional Prosedur (SOP)</h3>
-                <button onclick="closeModal('modalEditSOP')"
-                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-times text-base sm:text-lg"></i>
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Draft Standar Operasional Prosedur
+                    (SOP)</h3>
+                <button type="button" onclick="closeModal('modalEditSOP'); editSopPages = [];"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
                 </button>
             </div>
 
@@ -21,168 +20,29 @@
                 @method('PUT')
                 <input type="hidden" id="edit_sop_id_surat">
 
-                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                <div
+                    class="px-6 py-3 bg-gray-50 dark:bg-gray-700/30 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" id="editSopPageTabs">
 
-                    <div
-                        class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Judul SOP <span
-                                        class="text-red-500">*</span></label>
-                                <input type="text" name="judul_sop" id="edit_sop_judul" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-
-                            <div class="space-y-4">
-                                <div>
-                                    <label
-                                        class="block mb-2 text-sm text-gray-700 dark:text-gray-300 tracking-wide uppercase">No.
-                                        Dokumen <span class="text-red-500">*</span></label>
-                                    <div class="flex flex-wrap items-center gap-2 w-full">
-                                        <input type="text" id="edit_nomor_dok_part1"
-                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
-                                            required>
-                                        <span class="text-gray-400 font-bold">/</span>
-                                        <input type="text" id="edit_nomor_dok_part2"
-                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
-                                            required>
-                                        <span class="text-gray-400 font-bold">/</span>
-                                        <input type="text" id="edit_nomor_dok_part3"
-                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
-                                            required>
-                                        <span class="text-gray-400 font-bold">/</span>
-                                        <input type="text" id="edit_nomor_dok_part4"
-                                            class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500"
-                                            required>
-                                    </div>
-                                    <input type="hidden" name="nomor_dokumen" id="edit_nomor_dokumen_combined">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi</label>
-                                    <input type="text" name="nomor_revisi" id="edit_sop_nomor_revisi"
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                </div>
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Halaman</label>
-                                    <input type="text" name="halaman" id="edit_sop_halaman"
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Terbit <span
-                                        class="text-red-500">*</span></label>
-                                <input type="date" name="tanggal_terbit" id="edit_sop_tanggal_terbit" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                        </div>
                     </div>
+                    <button type="button" onclick="addEditSopPage()"
+                        class="flex-shrink-0 ml-2 p-1.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
+                        title="Tambah Halaman">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
 
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                        <div
-                            class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">PENGERTIAN <span
-                                    class="text-red-500">*</span></h4>
-                        </div>
-                        <div class="p-4">
-                            <textarea name="pengertian" id="edit_sop_pengertian" rows="3" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                        <div
-                            class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">TUJUAN <span
-                                    class="text-red-500">*</span></h4>
-                        </div>
-                        <div class="p-4">
-                            <div id="editTujuanContainer" class="space-y-3">
-                            </div>
-                            <button type="button" id="btnEditTambahTujuan" onclick="addEditTujuanField()"
-                                class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>
-                                Tambah Tujuan
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                        <div
-                            class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">KEBIJAKAN <span
-                                    class="text-red-500">*</span></h4>
-                        </div>
-                        <div class="p-4">
-                            <div class="mb-3">
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-search text-gray-400"></i>
-                                    </div>
-                                    <input type="text" id="searchEditKebijakan" placeholder="Cari regulasi..."
-                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        onkeyup="filterEditKebijakan()">
-                                </div>
-                            </div>
-                            <div id="editKebijakanList"
-                                class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                        <div
-                            class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">PROSEDUR <span
-                                    class="text-red-500">*</span></h4>
-                        </div>
-                        <div class="p-4">
-                            <div id="editProsedurContainer" class="space-y-3">
-                            </div>
-                            <button type="button" id="btnEditTambahProsedur" onclick="addEditProsedurField()"
-                                class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>
-                                Tambah Prosedur
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                        <div
-                            class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
-                            <h4 class="font-bold text-gray-900 dark:text-white">UNIT TERKAIT <span
-                                    class="text-red-500">*</span></h4>
-                        </div>
-                        <div class="p-4">
-                            <div class="mb-3">
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-search text-gray-400"></i>
-                                    </div>
-                                    <input type="text" id="searchEditUnit" placeholder="Cari unit..."
-                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                        onkeyup="filterEditUnit()">
-                                </div>
-                            </div>
-                            <div id="editUnitList"
-                                class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-gray-700 bg-white max-h-64 overflow-y-auto">
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar" id="editSopPageContent">
                 </div>
 
                 <div
-                    class="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-3 flex-shrink-0">
+                    class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
                     <button type="button" onclick="resetEditSopForm()"
-                        class="w-full sm:w-auto px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-normal">
+                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditSopBtn"
-                        class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-all">
+                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -192,25 +52,57 @@
 </div>
 
 <script>
-    let editTujuanCounter = 0;
-    let editProsedurCounter = 0;
-    let currentSopDraftData = null;
+    let editSopPages = [];
+    let editActivePageIndex = 0;
+    let editMasterRegulasi = [];
+    let editMasterUnit = [];
     let currentEditSopId = null;
-    let isInitializing = false;
+
+    async function loadEditMasterData() {
+        if (editMasterRegulasi.length > 0) return;
+        try {
+            const [regResp, unitResp] = await Promise.all([
+                fetch('/api/regulasi').then(r => r.json()),
+                fetch('/api/unit').then(r => r.json())
+            ]);
+            editMasterRegulasi = regResp.data || regResp;
+            editMasterUnit = unitResp.data || unitResp;
+        } catch (error) { console.error('Error loading master data:', error); }
+    }
 
     async function openEditSopModal(id) {
         try {
             currentEditSopId = id;
+            await loadEditMasterData();
             const response = await fetch(`/sop/${id}/edit`);
             const result = await response.json();
 
             if (!result.success) {
-                notify('error', 'Gagal', 'Gagal mengambil data draft');
+                notify('error', 'Gagal', (result.message || 'Gagal mengambil data draft'));
                 return;
             }
 
-            currentSopDraftData = result.data;
-            populateEditSopForm(currentSopDraftData);
+            editSopPages = result.data.sop.pages.map(p => {
+                const parts = (p.nomor_dokumen || '///').split('/');
+                return {
+                    id_sop_page: p.id_sop_page,
+                    judul_sop: p.judul_sop,
+                    nomor_dokumen: p.nomor_dokumen,
+                    nomor_dok_parts: [parts[0] || '', parts[1] || '', parts[2] || '', parts[3] || ''],
+                    nomor_revisi: p.nomor_revisi,
+                    halaman: p.halaman,
+                    tanggal_terbit: p.tanggal_terbit_formatted || (p.tanggal_terbit ? p.tanggal_terbit.substring(0, 10) : ''),
+                    pengertian: p.pengertian,
+                    tujuan: p.tujuan_array || [''],
+                    kebijakan: (p.kebijakan_array || []).map(String),
+                    prosedur: p.prosedur_array || [''],
+                    unit_terkait: (p.unit_terkait_array || []).map(String)
+                };
+            });
+
+            editActivePageIndex = 0;
+            renderEditSopTabs();
+            renderEditActivePage();
             openModal('modalEditSOP');
         } catch (error) {
             console.error('Error fetching draft data:', error);
@@ -218,362 +110,387 @@
         }
     }
 
-    async function populateEditSopForm(data) {
-        isInitializing = true;
-        const sop = data.sop;
+    function createBlankEditSopPage(halaman) {
+        return {
+            judul_sop: '',
+            nomor_dokumen: '',
+            nomor_dok_parts: ['', '', '', ''],
+            nomor_revisi: '',
+            halaman: halaman + '/1',
+            tanggal_terbit: new Date().toISOString().split('T')[0],
+            pengertian: '',
+            tujuan: [''],
+            kebijakan: [],
+            prosedur: [''],
+            unit_terkait: []
+        };
+    }
 
-        document.getElementById('edit_sop_id_surat').value = data.id_surat;
-        document.getElementById('edit_sop_judul').value = sop.judul_sop;
+    function addEditSopPage() {
+        saveEditActivePageData();
+        const newPageNum = editSopPages.length + 1;
+        editSopPages.push(createBlankEditSopPage(newPageNum));
+        updateEditHalamanCounts();
+        editActivePageIndex = editSopPages.length - 1;
+        renderEditSopTabs();
+        renderEditActivePage();
+    }
 
-        const nomorDokParts = (sop.nomor_dokumen || '///').split('/');
-        document.getElementById('edit_nomor_dok_part1').value = nomorDokParts[0] || '';
-        document.getElementById('edit_nomor_dok_part2').value = nomorDokParts[1] || '';
-        document.getElementById('edit_nomor_dok_part3').value = nomorDokParts[2] || '';
-        document.getElementById('edit_nomor_dok_part4').value = nomorDokParts[3] || '';
+    function removeEditSopPage(index) {
+        if (editSopPages.length <= 1) return;
+        editSopPages.splice(index, 1);
+        updateEditHalamanCounts();
+        editActivePageIndex = Math.min(editActivePageIndex, editSopPages.length - 1);
+        renderEditSopTabs();
+        renderEditActivePage();
+    }
 
-        document.getElementById('edit_sop_nomor_revisi').value = sop.nomor_revisi;
-        document.getElementById('edit_sop_halaman').value = sop.halaman;
-        const tanggalTerbit = sop.tanggal_terbit_formatted || (sop.tanggal_terbit ? sop.tanggal_terbit.substring(0, 10) : '');
-        document.getElementById('edit_sop_tanggal_terbit').value = tanggalTerbit;
-        document.getElementById('edit_sop_pengertian').value = sop.pengertian;
-
-        const tujuanContainer = document.getElementById('editTujuanContainer');
-        tujuanContainer.innerHTML = '';
-        editTujuanCounter = 0;
-        sop.tujuan_array.forEach((text, idx) => {
-            addEditTujuanField(text);
+    function updateEditHalamanCounts() {
+        const total = editSopPages.length;
+        editSopPages.forEach((p, i) => {
+            p.halaman = (i + 1) + '/' + total;
         });
+    }
 
-        const prosedurContainer = document.getElementById('editProsedurContainer');
-        prosedurContainer.innerHTML = '';
-        editProsedurCounter = 0;
-        sop.prosedur_array.forEach((text, idx) => {
-            addEditProsedurField(text);
+    function switchEditSopPage(index) {
+        saveEditActivePageData();
+        editActivePageIndex = index;
+        renderEditSopTabs();
+        renderEditActivePage();
+    }
+
+    function renderEditSopTabs() {
+        const container = document.getElementById('editSopPageTabs');
+        container.innerHTML = '';
+        editSopPages.forEach((page, i) => {
+            const activeClass = i === editActivePageIndex
+                ? 'bg-green-600 text-white shadow-sm'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700';
+
+            const tab = document.createElement('div');
+            tab.className = `flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${activeClass}`;
+            tab.onclick = () => switchEditSopPage(i);
+            tab.innerHTML = `
+                <span>Halaman ${i + 1}</span>
+                ${editSopPages.length > 1 ? `<i class="fas fa-times ml-1.5 opacity-60 hover:opacity-100" onclick="event.stopPropagation(); removeEditSopPage(${i})"></i>` : ''}
+            `;
+            container.appendChild(tab);
         });
-
-        await loadEditRegulasiOptions(sop.kebijakan_array);
-        await loadEditUnitOptions(sop.unit_terkait_array);
-
-        if (typeof FormDirtyMonitor !== 'undefined') {
-            if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
-                window.formDirtyMonitors['editSopForm'].destroy();
-            }
-            new FormDirtyMonitor('editSopForm', 'submitEditSopBtn');
-        }
-        
-        isInitializing = false;
     }
 
-    function resetEditSopForm() {
-        if (currentSopDraftData) {
-            populateEditSopForm(currentSopDraftData);
+    function saveEditActivePageData() {
+        const content = document.getElementById('editSopPageContent');
+        if (!content || editSopPages.length === 0) return;
+
+        const page = editSopPages[editActivePageIndex];
+        page.judul_sop = content.querySelector('[name="judul_sop"]')?.value || '';
+        page.nomor_revisi = content.querySelector('[name="nomor_revisi"]')?.value || '';
+        page.halaman = content.querySelector('[name="halaman"]')?.value || '';
+        page.tanggal_terbit = content.querySelector('[name="tanggal_terbit"]')?.value || '';
+        page.pengertian = content.querySelector('[name="pengertian"]')?.value || '';
+
+        page.nomor_dok_parts = [
+            content.querySelector('#edit_nomor_dok_part1')?.value || '',
+            content.querySelector('#edit_nomor_dok_part2')?.value || '',
+            content.querySelector('#edit_nomor_dok_part3')?.value || '',
+            content.querySelector('#edit_nomor_dok_part4')?.value || ''
+        ];
+        page.nomor_dokumen = page.nomor_dok_parts.join('/');
+
+        page.tujuan = Array.from(content.querySelectorAll('[name="tujuan[]"]')).map(el => el.value);
+        page.prosedur = Array.from(content.querySelectorAll('[name="prosedur[]"]')).map(el => el.value);
+
+        page.kebijakan = Array.from(content.querySelectorAll('input[name="kebijakan[]"]:checked')).map(el => el.value);
+        page.unit_terkait = Array.from(content.querySelectorAll('input[name="unit_terkait[]"]:checked')).map(el => el.value);
+    }
+
+    function renderEditActivePage() {
+        const container = document.getElementById('editSopPageContent');
+        const page = editSopPages[editActivePageIndex];
+
+        container.innerHTML = `
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Judul SOP <span class="text-red-500">*</span></label>
+                        <input type="text" name="judul_sop" value="${page.judul_sop}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Dokumen <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-2 w-full">
+                            <input type="text" id="edit_nomor_dok_part1" value="${page.nomor_dok_parts[0]}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required>
+                            <span class="text-gray-500">/</span>
+                            <input type="text" id="edit_nomor_dok_part2" value="${page.nomor_dok_parts[1]}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required>
+                            <span class="text-gray-500">/</span>
+                            <input type="text" id="edit_nomor_dok_part3" value="${page.nomor_dok_parts[2]}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required>
+                            <span class="text-gray-500">/</span>
+                            <input type="text" id="edit_nomor_dok_part4" value="${page.nomor_dok_parts[3]}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">No. Revisi</label>
+                            <input type="text" name="nomor_revisi" value="${page.nomor_revisi || ''}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-gray-700 dark:text-gray-300">Halaman</label>
+                            <input type="text" name="halaman" value="${page.halaman}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Terbit <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_terbit" value="${page.tanggal_terbit}" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                    <h4 class="font-bold text-gray-900 dark:text-white uppercase">Pengertian <span class="text-red-500">*</span></h4>
+                </div>
+                <div class="p-4">
+                    <textarea name="pengertian" rows="3" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y">${page.pengertian}</textarea>
+                </div>
+            </div>
+
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                    <h4 class="font-bold text-gray-900 dark:text-white uppercase">Tujuan <span class="text-red-500">*</span></h4>
+                </div>
+                <div class="p-4">
+                    <div id="editTujuanContainer" class="space-y-3">
+                        ${page.tujuan.map((t, i) => `
+                            <div class="tujuan-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${i + 1}.</label>
+                                <div class="flex-1 flex gap-2">
+                                    <textarea name="tujuan[]" rows="2" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y">${t}</textarea>
+                                    ${page.tujuan.length > 1 ? '<button type="button" onclick="removeEditTujuanField(this)" class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-trash"></i></button>' : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button type="button" onclick="addEditTujuanField()" class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Tambah Tujuan
+                    </button>
+                </div>
+            </div>
+
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                    <h4 class="font-bold text-gray-900 dark:text-white uppercase">Kebijakan <span class="text-red-500">*</span></h4>
+                </div>
+                <div class="p-4">
+                    <div class="mb-3">
+                        <input type="text" placeholder="Cari regulasi..." onkeyup="filterEditListItems(this, '#editKebijakanList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    </div>
+                    <div id="editKebijakanList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                        ${editMasterRegulasi.map((r, i) => `
+                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                                <input type="checkbox" name="kebijakan[]" value="${r.id_regulasi}" id="edit_kebijakan_${i}" 
+                                    ${page.kebijakan.includes(String(r.id_regulasi)) ? 'checked' : ''} 
+                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                <label for="edit_kebijakan_${i}" class="ml-3 flex-1 cursor-pointer">
+                                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${r.isi_regulasi}</span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                    <h4 class="font-bold text-gray-900 dark:text-white uppercase">Prosedur <span class="text-red-500">*</span></h4>
+                </div>
+                <div class="p-4">
+                    <div id="editProsedurContainer" class="space-y-3">
+                        ${page.prosedur.map((p, i) => `
+                            <div class="prosedur-item flex gap-3">
+                                <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${i + 1}.</label>
+                                <div class="flex-1 flex gap-2">
+                                    <textarea name="prosedur[]" rows="2" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y">${p}</textarea>
+                                    ${page.prosedur.length > 1 ? '<button type="button" onclick="removeEditProsedurField(this)" class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-trash"></i></button>' : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button type="button" onclick="addEditProsedurField()" class="mt-3 inline-flex items-center px-3 py-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Tambah Prosedur
+                    </button>
+                </div>
+            </div>
+
+            <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
+                    <h4 class="font-bold text-gray-900 dark:text-white uppercase">Unit Terkait <span class="text-red-500">*</span></h4>
+                </div>
+                <div class="p-4">
+                    <div class="mb-3">
+                        <input type="text" placeholder="Cari unit..." onkeyup="filterEditListItems(this, '#editUnitList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    </div>
+                    <div id="editUnitList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                        ${editMasterUnit.map((u, i) => `
+                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                                <input type="checkbox" name="unit_terkait[]" value="${u.id_unit}" id="edit_unit_${i}" 
+                                    ${page.unit_terkait.includes(String(u.id_unit)) ? 'checked' : ''} 
+                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                <label for="edit_unit_${i}" class="ml-3 flex-1 cursor-pointer">
+                                    <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${u.nama_unit}</span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const dateInput = container.querySelector('[name="tanggal_terbit"]');
+        if (dateInput && typeof flatpickr !== 'undefined') {
+            flatpickr(dateInput, { locale: 'id', dateFormat: 'Y-m-d' });
         }
     }
 
-    async function loadEditRegulasiOptions(selectedIds) {
-        try {
-            const response = await fetch('/api/regulasi');
-            let data = await response.json();
-            if (data.data) data = data.data;
-
-            const listContainer = document.getElementById('editKebijakanList');
-            listContainer.innerHTML = '';
-
-            if (!Array.isArray(data) || data.length === 0) {
-                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tidak ada data regulasi</div>';
-                return;
-            }
-
-            data.forEach((item, index) => {
-                const itemId = parseInt(item.id_regulasi);
-                const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
-                const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'kebijakan-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
-                checkboxItem.innerHTML = `
-                    <input type="checkbox" name="kebijakan[]" value="${item.id_regulasi}"
-                        id="edit_kebijakan_${index}" ${isChecked ? 'checked' : ''}
-                        class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
-                    <label for="edit_kebijakan_${index}" class="ml-3 flex-1 cursor-pointer">
-                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
-                    </label>
-                `;
-                listContainer.appendChild(checkboxItem);
-            });
-        } catch (error) {
-            console.error('Error loading regulasi options:', error);
-            document.getElementById('editKebijakanList').innerHTML = '<div class="text-sm text-red-500">Gagal memuat data</div>';
-        }
-    }
-
-    async function loadEditUnitOptions(selectedIds) {
-        try {
-            const response = await fetch('/api/unit');
-            let data = await response.json();
-            if (data.data) data = data.data;
-
-            const listContainer = document.getElementById('editUnitList');
-            listContainer.innerHTML = '';
-
-            if (!Array.isArray(data) || data.length === 0) {
-                listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tidak ada data unit</div>';
-                return;
-            }
-
-            data.forEach((item, index) => {
-                const itemId = parseInt(item.id_unit);
-                const isChecked = Array.isArray(selectedIds) && selectedIds.some(id => parseInt(id) === itemId);
-                const checkboxItem = document.createElement('div');
-                checkboxItem.className = 'unit-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
-                checkboxItem.innerHTML = `
-                    <input type="checkbox" name="unit_terkait[]" value="${item.id_unit}"
-                        id="edit_unit_${index}" ${isChecked ? 'checked' : ''}
-                        class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
-                    <label for="edit_unit_${index}" class="ml-3 flex-1 cursor-pointer">
-                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.nama_unit}</span>
-                    </label>
-                `;
-                listContainer.appendChild(checkboxItem);
-            });
-        } catch (error) {
-            console.error('Error loading unit options:', error);
-            document.getElementById('editUnitList').innerHTML = '<div class="text-sm text-red-500">Gagal memuat data</div>';
-        }
-    }
-
-    function addEditTujuanField(text = '') {
+    function addEditTujuanField() {
         const container = document.getElementById('editTujuanContainer');
-        const items = container.querySelectorAll('.tujuan-item').length;
-        const btn = document.getElementById('btnEditTambahTujuan');
+        const count = container.querySelectorAll('.tujuan-item').length;
+        if (count >= 15) return notify('warning', 'Peringatan', 'Maksimal 15 poin.');
 
-        if (items >= 15) {
-            notify('warning', 'Peringatan', 'Maksimal 15 poin Tujuan.', false);
-            if (btn) {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-            return;
-        }
-
-        const index = ++editTujuanCounter;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'tujuan-item flex flex-col sm:flex-row sm:gap-3 mb-2 px-1';
-        wrapper.innerHTML = `
-            <label class="sm:mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap sm:w-8 flex-shrink-0 mb-1 sm:mb-0">${index}.</label>
+        const div = document.createElement('div');
+        div.className = 'tujuan-item flex gap-3';
+        div.innerHTML = `
+            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${count + 1}.</label>
             <div class="flex-1 flex gap-2">
-                <textarea name="tujuan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y focus:ring-2 focus:ring-indigo-500">${text}</textarea>
-                <button type="button" onclick="removeEditField(this, 'editTujuanContainer', 'tujuan-item')" class="h-10 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-transparent hover:border-red-200">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <textarea name="tujuan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                <button type="button" onclick="removeEditTujuanField(this)" class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-trash"></i></button>
             </div>
         `;
-        container.appendChild(wrapper);
-        renumberEditItems('editTujuanContainer', 'tujuan-item');
-
-        if (container.querySelectorAll('.tujuan-item').length >= 15) {
-            if (btn) {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
-            window.formDirtyMonitors['editSopForm'].check();
-        }
+        container.appendChild(div);
+        renumberEditFields('#editTujuanContainer .tujuan-item');
     }
 
-    function addEditProsedurField(text = '') {
+    function removeEditTujuanField(btn) {
+        btn.closest('.tujuan-item').remove();
+        renumberEditFields('#editTujuanContainer .tujuan-item');
+    }
+
+    function addEditProsedurField() {
         const container = document.getElementById('editProsedurContainer');
-        const items = container.querySelectorAll('.prosedur-item').length;
-        const btn = document.getElementById('btnEditTambahProsedur');
+        const count = container.querySelectorAll('.prosedur-item').length;
+        if (count >= 15) return notify('warning', 'Peringatan', 'Maksimal 15 poin.');
 
-        if (items >= 15) {
-            notify('warning', 'Peringatan', 'Maksimal 15 poin Prosedur.', false);
-            if (btn) {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-            return;
-        }
-
-        const index = ++editProsedurCounter;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'prosedur-item flex flex-col sm:flex-row sm:gap-3 mb-2 px-1';
-        wrapper.innerHTML = `
-            <label class="sm:mt-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap sm:w-8 flex-shrink-0 mb-1 sm:mb-0">${index}.</label>
+        const div = document.createElement('div');
+        div.className = 'prosedur-item flex gap-3';
+        div.innerHTML = `
+            <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-8 flex-shrink-0">${count + 1}.</label>
             <div class="flex-1 flex gap-2">
-                <textarea name="prosedur[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y focus:ring-2 focus:ring-indigo-500">${text}</textarea>
-                <button type="button" onclick="removeEditField(this, 'editProsedurContainer', 'prosedur-item')" class="h-10 px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors border border-transparent hover:border-red-200">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <textarea name="prosedur[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                <button type="button" onclick="removeEditProsedurField(this)" class="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="fas fa-trash"></i></button>
             </div>
         `;
-        container.appendChild(wrapper);
-        renumberEditItems('editProsedurContainer', 'prosedur-item');
-
-        if (container.querySelectorAll('.prosedur-item').length >= 15) {
-            if (btn) {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
-            window.formDirtyMonitors['editSopForm'].check();
-        }
+        container.appendChild(div);
+        renumberEditFields('#editProsedurContainer .prosedur-item');
     }
 
-    function renumberEditItems(containerId, itemClass) {
-        const container = document.getElementById(containerId);
-        const items = container.querySelectorAll(`.${itemClass}`);
-        items.forEach((el, idx) => {
-            el.querySelector('label').textContent = `${idx + 1}.`;
+    function removeEditProsedurField(btn) {
+        btn.closest('.prosedur-item').remove();
+        renumberEditFields('#editProsedurContainer .prosedur-item');
+    }
+
+    function renumberEditFields(selector) {
+        document.querySelectorAll(selector).forEach((el, i) => {
+            el.querySelector('label').textContent = (i + 1) + '.';
         });
-        if (containerId === 'editTujuanContainer') editTujuanCounter = items.length;
-        else editProsedurCounter = items.length;
     }
 
-    function removeEditField(button, containerId, itemClass) {
-        const item = button.closest(`.${itemClass}`);
-        item.remove();
-        const container = document.getElementById(containerId);
-        const items = container.querySelectorAll(`.${itemClass}`);
-        items.forEach((el, idx) => {
-            el.querySelector('label').textContent = `${idx + 1}.`;
+    function filterEditListItems(input, listSelector) {
+        const val = input.value.toLowerCase();
+        document.querySelectorAll(`${listSelector} .option-row`).forEach(el => {
+            const text = el.querySelector('label').textContent.toLowerCase();
+            el.style.display = text.includes(val) ? 'flex' : 'none';
         });
-        if (containerId === 'editTujuanContainer') {
-            editTujuanCounter = items.length;
-            const btn = document.getElementById('btnEditTambahTujuan');
-            if (btn && items.length < 15) {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        } else {
-            editProsedurCounter = items.length;
-            const btn = document.getElementById('btnEditTambahProsedur');
-            if (btn && items.length < 15) {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
-            window.formDirtyMonitors['editSopForm'].check();
-        }
-    }
-
-    function filterEditKebijakan() {
-        const searchValue = document.getElementById('searchEditKebijakan').value.toLowerCase();
-        const items = document.querySelectorAll('#editKebijakanList > div');
-        let visibleCount = 0;
-
-        items.forEach(item => {
-            const text = item.querySelector('label span').textContent.toLowerCase();
-            if (text.includes(searchValue)) {
-                item.style.display = 'flex';
-                visibleCount++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        const noResultId = 'noEditKebijakanResult';
-        let noResultMsg = document.getElementById(noResultId);
-
-        if (visibleCount === 0 && items.length > 0) {
-            if (!noResultMsg) {
-                noResultMsg = document.createElement('div');
-                noResultMsg.id = noResultId;
-                noResultMsg.className = 'text-center text-gray-500 dark:text-gray-400 py-4';
-                noResultMsg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada regulasi yang cocok';
-                document.getElementById('editKebijakanList').appendChild(noResultMsg);
-            }
-        } else if (noResultMsg) {
-            noResultMsg.remove();
-        }
-    }
-
-    function filterEditUnit() {
-        const searchValue = document.getElementById('searchEditUnit').value.toLowerCase();
-        const items = document.querySelectorAll('#editUnitList > div');
-        let visibleCount = 0;
-
-        items.forEach(item => {
-            const text = item.querySelector('label span').textContent.toLowerCase();
-            if (text.includes(searchValue)) {
-                item.style.display = 'flex';
-                visibleCount++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        const noResultId = 'noEditUnitResult';
-        let noResultMsg = document.getElementById(noResultId);
-
-        if (visibleCount === 0 && items.length > 0) {
-            if (!noResultMsg) {
-                noResultMsg = document.createElement('div');
-                noResultMsg.id = noResultId;
-                noResultMsg.className = 'text-center text-gray-500 dark:text-gray-400 py-4';
-                noResultMsg.innerHTML = '<i class="fas fa-search mr-2"></i>Tidak ada unit yang cocok';
-                document.getElementById('editUnitList').appendChild(noResultMsg);
-            }
-            noResultMsg.remove();
-        }
-    }
-
-    function combineEditNomorDokumen() {
-        const part1 = document.getElementById('edit_nomor_dok_part1').value.trim();
-        const part2 = document.getElementById('edit_nomor_dok_part2').value.trim();
-        const part3 = document.getElementById('edit_nomor_dok_part3').value.trim();
-        const part4 = document.getElementById('edit_nomor_dok_part4').value.trim();
-
-        const combined = `${part1}/${part2}/${part3}/${part4}`;
-        document.getElementById('edit_nomor_dokumen_combined').value = combined;
     }
 
     function submitEditSOPForm(event) {
         event.preventDefault();
+        saveEditActivePageData();
+
+        for (let i = 0; i < editSopPages.length; i++) {
+            const p = editSopPages[i];
+            if (!p.judul_sop || !p.nomor_dokumen || !p.pengertian) {
+                switchEditSopPage(i);
+                return notify('error', 'Validasi Gagal', `Halaman ${i + 1} belum lengkap.`);
+            }
+            if (p.kebijakan.length === 0 || p.unit_terkait.length === 0) {
+                switchEditSopPage(i);
+                return notify('error', 'Validasi Gagal', `Halaman ${i + 1}: Minimal 1 Kebijakan dan 1 Unit.`);
+            }
+        }
+
         const form = document.getElementById('editSopForm');
-
-        combineEditNomorDokumen();
-        const id = currentEditSopId;
-        const formData = new FormData(form);
-
         const submitBtn = document.getElementById('submitEditSopBtn');
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
-        fetch(`/sop/${id}`, {
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('_method', 'PUT');
+
+        formData.append('judul_sop', editSopPages[0].judul_sop);
+        formData.append('nomor_dokumen', editSopPages[0].nomor_dokumen);
+        formData.append('tanggal_terbit', editSopPages[0].tanggal_terbit);
+        formData.append('pengertian', editSopPages[0].pengertian);
+
+        editSopPages[0].tujuan.forEach((v, i) => formData.append(`tujuan[${i}]`, v));
+        editSopPages[0].kebijakan.forEach((v, i) => formData.append(`kebijakan[${i}]`, v));
+        editSopPages[0].prosedur.forEach((v, i) => formData.append(`prosedur[${i}]`, v));
+        editSopPages[0].unit_terkait.forEach((v, i) => formData.append(`unit_terkait[${i}]`, v));
+
+        editSopPages.forEach((p, i) => {
+            formData.append(`pages[${i}][judul_sop]`, p.judul_sop);
+            formData.append(`pages[${i}][nomor_dokumen]`, p.nomor_dokumen);
+            formData.append(`pages[${i}][nomor_revisi]`, p.nomor_revisi);
+            formData.append(`pages[${i}][halaman]`, p.halaman);
+            formData.append(`pages[${i}][tanggal_terbit]`, p.tanggal_terbit);
+            formData.append(`pages[${i}][pengertian]`, p.pengertian);
+
+            p.tujuan.forEach((v, j) => formData.append(`pages[${i}][tujuan][${j}]`, v));
+            p.prosedur.forEach((v, j) => formData.append(`pages[${i}][prosedur][${j}]`, v));
+            p.kebijakan.forEach((v, j) => formData.append(`pages[${i}][kebijakan][${j}]`, v));
+            p.unit_terkait.forEach((v, j) => formData.append(`pages[${i}][unit_terkait][${j}]`, v));
+        });
+
+        fetch(`/sop/${currentEditSopId}`, {
             method: 'POST',
             body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
         })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
                     closeModal('modalEditSOP');
                     notify('success', 'Berhasil', result.message);
-
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                     window.dispatchEvent(new CustomEvent('update-sop-draft', { detail: result.data }));
-
                     setTimeout(() => {
                         window.openDraftPreview(result.data);
                     }, 500);
                 } else {
-                    notify('error', 'Gagal', result.message);
+                    notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
                 }
             })
             .catch(error => {
-                console.error('Error updating draft:', error);
+                console.error('Fetch error:', error);
                 notify('error', 'Gagal', 'Terjadi kesalahan sistem');
             })
             .finally(() => {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Perbarui';
             });
+    }
+
+    function resetEditSopForm() {
+        openEditSopModal(currentEditSopId);
     }
 </script>

@@ -311,7 +311,6 @@
                         document.getElementById('edit_nama_unit').value = nama;
                         document.getElementById('formEditUnit').action = "{{ route('master-data.unit.update', '') }}/" + id;
 
-                        // Initialize dirty form monitor
                         if (typeof FormDirtyMonitor !== 'undefined') {
                             new FormDirtyMonitor('formEditUnit', 'btnSubmitEditUnit');
                         }

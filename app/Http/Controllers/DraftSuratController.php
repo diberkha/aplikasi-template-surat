@@ -9,7 +9,7 @@ class DraftSuratController extends Controller
 {
     public function sopIndex()
     {
-        $drafts = Surat::with(['sop', 'createdBy.ruangan', 'template'])
+        $drafts = Surat::with(['sop.pages', 'createdBy.ruangan', 'template'])
             ->where('is_draft', true)
             ->where('created_by', auth()->id())
             ->whereHas('template', function ($query) {
@@ -20,6 +20,9 @@ class DraftSuratController extends Controller
             ->get();
 
         $drafts = $drafts->map(function ($item) {
+            $sopData = $item->sop;
+            $firstPage = $item->sop && $item->sop->pages->isNotEmpty() ? $item->sop->pages->first() : null;
+
             return [
                 'id_surat' => $item->id_surat,
                 'nama_surat' => $item->nama_surat,
@@ -27,7 +30,11 @@ class DraftSuratController extends Controller
                 'created_at' => $item->created_at->toDateTimeString(),
                 'username' => $item->createdBy->username ?? 'Unknown',
                 'ruangan' => $item->createdBy->ruangan->nama_ruangan ?? '-',
-                'sop' => $item->sop,
+                'sop' => $sopData ? [
+                    'id_sop' => $sopData->id_sop,
+                    'judul_sop' => $firstPage ? $firstPage->judul_sop : ($sopData->judul_sop ?? $item->nama_surat),
+                    'nomor_dokumen' => $firstPage ? $firstPage->nomor_dokumen : ($sopData->nomor_dokumen ?? $item->nomor_surat),
+                ] : null,
             ];
         });
 

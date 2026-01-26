@@ -458,6 +458,9 @@
                 if (result.success) {
                     closeModal('modalEditSK');
                     notify('success', 'Berhasil', result.message);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
 
                     window.dispatchEvent(new CustomEvent('update-sk-draft', { detail: result.data }));
 

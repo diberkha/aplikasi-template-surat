@@ -495,6 +495,9 @@
                     form.reset(); memutuskanCounter = 1;
                     resetFormSK();
                     notify('success', 'Berhasil', result.data.message);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                     setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat); }, 500);
                 } else { notify('error', 'Gagal', 'Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
             })

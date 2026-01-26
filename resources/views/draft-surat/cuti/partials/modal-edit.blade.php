@@ -630,6 +630,9 @@
                 if (res.success) {
                     closeModal('modalEditCuti');
                     notify('success', 'Berhasil', res.message);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
 
                     window.dispatchEvent(new CustomEvent('update-cuti-draft', { detail: res.data }));
 

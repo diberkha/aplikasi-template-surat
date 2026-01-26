@@ -11,21 +11,14 @@ class SOP extends Model
 
     protected $fillable = [
         'id_surat',
-        'judul_sop',
-        'nomor_dokumen',
-        'nomor_revisi',
-        'halaman',
-        'tanggal_terbit',
-        'pengertian',
-        'tujuan',
-        'kebijakan',
-        'prosedur',
-        'unit_terkait',
     ];
 
-    protected $casts = [
-        'tanggal_terbit' => 'date',
-    ];
+    protected $casts = [];
+
+    public function pages()
+    {
+        return $this->hasMany(SOPPage::class, 'id_sop')->orderBy('id_sop_page', 'asc');
+    }
 
     public function surat()
     {

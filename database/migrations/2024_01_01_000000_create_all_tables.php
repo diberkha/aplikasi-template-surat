@@ -134,6 +134,14 @@ return new class extends Migration {
         Schema::create('sop', function (Blueprint $table) {
             $table->id('id_sop');
             $table->unsignedBigInteger('id_surat')->nullable();
+            $table->timestamps();
+
+            $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
+        });
+
+        Schema::create('sop_pages', function (Blueprint $table) {
+            $table->id('id_sop_page');
+            $table->unsignedBigInteger('id_sop');
             $table->string('judul_sop');
             $table->string('nomor_dokumen');
             $table->string('nomor_revisi')->nullable();
@@ -146,7 +154,7 @@ return new class extends Migration {
             $table->text('unit_terkait');
             $table->timestamps();
 
-            $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
+            $table->foreign('id_sop')->references('id_sop')->on('sop')->onDelete('cascade');
         });
 
         Schema::create('surat_izin_cuti', function (Blueprint $table) {
@@ -184,6 +192,7 @@ return new class extends Migration {
 
         Schema::dropIfExists('cuti_bersama');
         Schema::dropIfExists('surat_izin_cuti');
+        Schema::dropIfExists('sop_pages');
         Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');
         Schema::dropIfExists('surat');

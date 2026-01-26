@@ -31,7 +31,7 @@ class ArsipSuratController extends Controller
                 ->get();
         }
 
-        $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop', 'cuti'])
+        $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop.pages', 'cuti'])
             ->where('is_draft', false)
             ->orderBy('created_at', 'desc');
 
@@ -67,9 +67,10 @@ class ArsipSuratController extends Controller
             $kategoriLabel = '';
 
             if (($tipeSurat === 'Standar Operasional Prosedur' || $tipeSurat === 'Standar Operasional Prosedur (SOP)') && $item->sop) {
-                $nomorSurat = $item->sop->nomor_dokumen ?? $nomorSurat;
+                $firstPage = $item->sop->pages->first();
+                $nomorSurat = ($firstPage && $firstPage->nomor_dokumen) ? $firstPage->nomor_dokumen : ($item->sop->nomor_dokumen ?: $nomorSurat);
                 $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
-                $namaSuratDisplay = $item->sop->judul_sop ?? $namaSurat;
+                $namaSuratDisplay = ($firstPage && $firstPage->judul_sop) ? $firstPage->judul_sop : ($item->sop->judul_sop ?: $namaSurat);
             }
 
             if (($tipeSurat === 'Surat Keputusan Direktur' || $tipeSurat === 'SK Direktur' || $item->nama_surat === 'Surat Keputusan Direktur')) {

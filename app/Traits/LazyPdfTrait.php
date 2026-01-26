@@ -62,53 +62,60 @@ trait LazyPdfTrait
                 $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
                 return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->sop) {
-                $kebijakanText = trim($surat->sop->kebijakan);
-                $kebijakanResolved = [];
-                if (!empty($kebijakanText)) {
-                    $kebijakanLines = preg_split('/\r\n|\r|\n/', $kebijakanText);
-                    $kebijakanIds = [];
-                    foreach ($kebijakanLines as $line) {
-                        if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
-                            $kebijakanIds[] = (int) $matches[1];
+                $pagesResolver = [];
+                foreach ($surat->sop->pages as $page) {
+                    $kebijakanText = trim($page->kebijakan);
+                    $kebijakanResolved = [];
+                    if (!empty($kebijakanText)) {
+                        $kebijakanLines = preg_split('/\r\n|\r|\n/', $kebijakanText);
+                        $kebijakanIds = [];
+                        foreach ($kebijakanLines as $line) {
+                            if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
+                                $kebijakanIds[] = (int) $matches[1];
+                            }
+                        }
+                        if (!empty($kebijakanIds)) {
+                            $kebijakanResolved = Regulasi::whereIn('id_regulasi', $kebijakanIds)
+                                ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $kebijakanIds) . ')')
+                                ->pluck('isi_regulasi')
+                                ->toArray();
                         }
                     }
-                    if (!empty($kebijakanIds)) {
-                        $kebijakanResolved = Regulasi::whereIn('id_regulasi', $kebijakanIds)
-                            ->orderByRaw('FIELD(id_regulasi, ' . implode(',', $kebijakanIds) . ')')
-                            ->pluck('isi_regulasi')
-                            ->toArray();
-                    }
-                }
 
-                $unitText = trim($surat->sop->unit_terkait);
-                $unitResolved = [];
-                if (!empty($unitText)) {
-                    $unitLines = preg_split('/\r\n|\r|\n/', $unitText);
-                    $unitIds = [];
-                    foreach ($unitLines as $line) {
-                        if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
-                            $unitIds[] = (int) $matches[1];
+                    $unitText = trim($page->unit_terkait);
+                    $unitResolved = [];
+                    if (!empty($unitText)) {
+                        $unitLines = preg_split('/\r\n|\r|\n/', $unitText);
+                        $unitIds = [];
+                        foreach ($unitLines as $line) {
+                            if (preg_match('/^\d+\.\s*(\d+)/', trim($line), $matches)) {
+                                $unitIds[] = (int) $matches[1];
+                            }
+                        }
+                        if (!empty($unitIds)) {
+                            $unitResolved = Unit::whereIn('id_unit', $unitIds)
+                                ->orderByRaw('FIELD(id_unit, ' . implode(',', $unitIds) . ')')
+                                ->pluck('nama_unit')
+                                ->toArray();
                         }
                     }
-                    if (!empty($unitIds)) {
-                        $unitResolved = Unit::whereIn('id_unit', $unitIds)
-                            ->orderByRaw('FIELD(id_unit, ' . implode(',', $unitIds) . ')')
-                            ->pluck('nama_unit')
-                            ->toArray();
-                    }
+
+                    $pagesResolver[] = [
+                        'judul_sop' => $page->judul_sop,
+                        'nomor_dokumen' => $page->nomor_dokumen,
+                        'nomor_revisi' => $page->nomor_revisi,
+                        'halaman' => $page->halaman,
+                        'tanggal_terbit' => $page->tanggal_terbit,
+                        'pengertian' => $page->pengertian,
+                        'tujuan' => explode("\n", $page->tujuan),
+                        'kebijakan' => $kebijakanResolved,
+                        'prosedur' => explode("\n", $page->prosedur),
+                        'unit_terkait' => $unitResolved,
+                    ];
                 }
 
                 $data = [
-                    'judul_sop' => $surat->sop->judul_sop,
-                    'nomor_dokumen' => $surat->sop->nomor_dokumen,
-                    'nomor_revisi' => $surat->sop->nomor_revisi,
-                    'halaman' => $surat->sop->halaman,
-                    'tanggal_terbit' => $surat->sop->tanggal_terbit,
-                    'pengertian' => $surat->sop->pengertian,
-                    'tujuan' => explode("\n", $surat->sop->tujuan),
-                    'kebijakan' => $kebijakanResolved,
-                    'prosedur' => explode("\n", $surat->sop->prosedur),
-                    'unit_terkait' => $unitResolved,
+                    'pages' => $pagesResolver,
                     'direktur_nama' => $direktur_nama,
                     'direktur_nip' => $direktur_nip,
                 ];

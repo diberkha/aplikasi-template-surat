@@ -353,7 +353,6 @@
 
                         document.getElementById('editRegulasiForm').action = `/master-data/regulasi/${regulasi.id_regulasi}`;
 
-                        // Initialize dirty form monitor
                         if (typeof FormDirtyMonitor !== 'undefined') {
                             new FormDirtyMonitor('editRegulasiForm', 'btnSubmitEditRegulasi');
                         }

@@ -170,4 +170,9 @@
         </div>
     </div>
 
+    <script>
+        setTimeout(() => {
+            window.location.reload();
+        }, 60000);
+    </script>
 @endsection

@@ -311,7 +311,6 @@
                         document.getElementById('edit_nama_jabatan').value = nama;
                         document.getElementById('formEditJabatan').action = "{{ route('master-data.jabatan.update', '') }}/" + id;
 
-                        // Initialize dirty form monitor
                         if (typeof FormDirtyMonitor !== 'undefined') {
                             new FormDirtyMonitor('formEditJabatan', 'btnSubmitEditJabatan');
                         }
