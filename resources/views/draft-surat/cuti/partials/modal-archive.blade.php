@@ -4,7 +4,7 @@
         <div
             class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 rounded-t-xl">
             <h3 class="text-base sm:text-lg font-semibold text-green-600 dark:text-green-400 truncate pr-4">Konfirmasi
-                Arsip</h3>
+                Arsipkan</h3>
             <button onclick="closeModal('modalArsipkanCuti')"
                 class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <i class="fas fa-times"></i>

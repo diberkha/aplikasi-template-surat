@@ -63,7 +63,7 @@ trait LazyPdfTrait
                 return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->sop) {
                 $pagesResolver = [];
-                foreach ($surat->sop->pages as $page) {
+                foreach ($surat->sop->contents as $page) {
                     $kebijakanText = trim($page->kebijakan);
                     $kebijakanResolved = [];
                     if (!empty($kebijakanText)) {
@@ -115,7 +115,7 @@ trait LazyPdfTrait
                 }
 
                 $data = [
-                    'pages' => $pagesResolver,
+                    'contents' => $pagesResolver,
                     'direktur_nama' => $direktur_nama,
                     'direktur_nip' => $direktur_nip,
                 ];

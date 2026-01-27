@@ -22,16 +22,16 @@
 
                 <div
                     class="px-6 py-3 bg-gray-50 dark:bg-gray-700/30 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" id="sopPageTabs">
+                    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" id="sopContentTabs">
                     </div>
-                    <button type="button" onclick="addNewSopPage()"
+                    <button type="button" onclick="addNewSopContent()"
                         class="flex-shrink-0 ml-2 p-1.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
                         title="Tambah Halaman">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
 
-                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar" id="sopPageContent">
+                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar" id="sopContentArea">
                     <div class="flex flex-col items-center justify-center py-12 text-gray-500">
                         <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
                         <p>Memuat data...</p>
@@ -56,14 +56,14 @@
 </div>
 
 <script>
-    let sopPages = [];
+    let sopContents = [];
     let activePageIndex = 0;
     let masterRegulasi = [];
     let masterUnit = [];
 
     document.addEventListener('DOMContentLoaded', async function () {
         await Promise.all([loadRegulasiOptions(), loadUnitOptions()]);
-        initDefaultSopPage();
+        initDefaultSopContent();
     });
 
     async function loadRegulasiOptions() {
@@ -82,20 +82,20 @@
         } catch (error) { console.error('Error loading unit:', error); }
     }
 
-    function initDefaultSopPage() {
-        sopPages = [createBlankSopPage(1)];
+    function initDefaultSopContent() {
+        sopContents = [createBlankSopContent(1)];
         renderSopTabs();
         renderActivePage();
     }
 
-    function createBlankSopPage(halaman) {
+    function createBlankSopContent(halaman) {
         return {
             judul_sop: '',
             nomor_dokumen: '',
             nomor_dok_parts: ['', '', '', ''],
             nomor_revisi: '',
             halaman: halaman + '/1',
-            tanggal_terbit: new Date().toISOString().split('T')[0],
+            tanggal_terbit: '',
             pengertian: '',
             tujuan: [''],
             kebijakan: [],
@@ -104,33 +104,33 @@
         };
     }
 
-    function addNewSopPage() {
+    function addNewSopContent() {
         saveActivePageData();
-        const newPageNum = sopPages.length + 1;
-        sopPages.push(createBlankSopPage(newPageNum));
+        const newPageNum = sopContents.length + 1;
+        sopContents.push(createBlankSopContent(newPageNum));
         updateHalamanCounts();
-        activePageIndex = sopPages.length - 1;
+        activePageIndex = sopContents.length - 1;
         renderSopTabs();
         renderActivePage();
     }
 
-    function removeSopPage(index) {
-        if (sopPages.length <= 1) return;
-        sopPages.splice(index, 1);
+    function removeSopContent(index) {
+        if (sopContents.length <= 1) return;
+        sopContents.splice(index, 1);
         updateHalamanCounts();
-        activePageIndex = Math.min(activePageIndex, sopPages.length - 1);
+        activePageIndex = Math.min(activePageIndex, sopContents.length - 1);
         renderSopTabs();
         renderActivePage();
     }
 
     function updateHalamanCounts() {
-        const total = sopPages.length;
-        sopPages.forEach((p, i) => {
+        const total = sopContents.length;
+        sopContents.forEach((p, i) => {
             p.halaman = (i + 1) + '/' + total;
         });
     }
 
-    function switchSopPage(index) {
+    function switchSopContent(index) {
         saveActivePageData();
         activePageIndex = index;
         renderSopTabs();
@@ -138,29 +138,29 @@
     }
 
     function renderSopTabs() {
-        const container = document.getElementById('sopPageTabs');
+        const container = document.getElementById('sopContentTabs');
         container.innerHTML = '';
-        sopPages.forEach((page, i) => {
+        sopContents.forEach((page, i) => {
             const activeClass = i === activePageIndex
-                ? 'bg-green-600 text-white shadow-sm'
+                ? 'bg-green-600 text-white'
                 : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700';
 
             const tab = document.createElement('div');
             tab.className = `flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${activeClass}`;
-            tab.onclick = () => switchSopPage(i);
+            tab.onclick = () => switchSopContent(i);
             tab.innerHTML = `
                 <span>Halaman ${i + 1}</span>
-                ${sopPages.length > 1 ? `<i class="fas fa-times ml-1.5 opacity-60 hover:opacity-100" onclick="event.stopPropagation(); removeSopPage(${i})"></i>` : ''}
+                ${sopContents.length > 1 ? `<i class="fas fa-times ml-1.5 opacity-60 hover:opacity-100" onclick="event.stopPropagation(); removeSopContent(${i})"></i>` : ''}
             `;
             container.appendChild(tab);
         });
     }
 
     function saveActivePageData() {
-        const content = document.getElementById('sopPageContent');
-        if (!content || sopPages.length === 0) return;
+        const content = document.getElementById('sopContentArea');
+        if (!content || sopContents.length === 0) return;
 
-        const page = sopPages[activePageIndex];
+        const page = sopContents[activePageIndex];
         page.judul_sop = content.querySelector('[name="judul_sop"]')?.value || '';
         page.nomor_revisi = content.querySelector('[name="nomor_revisi"]')?.value || '';
         page.halaman = content.querySelector('[name="halaman"]')?.value || '';
@@ -183,8 +183,8 @@
     }
 
     function renderActivePage() {
-        const container = document.getElementById('sopPageContent');
-        const page = sopPages[activePageIndex];
+        const container = document.getElementById('sopContentArea');
+        const page = sopContents[activePageIndex];
 
         container.innerHTML = `
             <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -392,49 +392,69 @@
         event.preventDefault();
         saveActivePageData();
 
-        for (let i = 0; i < sopPages.length; i++) {
-            const p = sopPages[i];
-            if (!p.judul_sop || !p.nomor_dokumen || !p.pengertian) {
-                switchSopPage(i);
-                return notify('error', 'Validasi Gagal', `Halaman ${i + 1} belum lengkap.`);
-            }
-            if (p.kebijakan.length === 0 || p.unit_terkait.length === 0) {
-                switchSopPage(i);
-                return notify('error', 'Validasi Gagal', `Halaman ${i + 1}: Minimal 1 Kebijakan dan 1 Unit.`);
-            }
-        }
+
 
         const form = document.getElementById('sopForm');
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
 
+
+        const processedContents = JSON.parse(JSON.stringify(sopContents));
+
+        for (let i = 0; i < processedContents.length; i++) {
+            const p = processedContents[i];
+
+            if (!p.judul_sop || !p.nomor_dokumen || !p.tanggal_terbit || !p.pengertian) {
+                switchSopContent(i);
+                notify('error', 'Validasi Gagal', `Data Halaman ${i + 1} tidak lengkap (Judul, Nomor, Tanggal, Pengertian harus diisi)`);
+                return;
+            }
+
+            p.tujuan = p.tujuan.filter(i => i && i.trim() !== '');
+            p.kebijakan = p.kebijakan.filter(i => i && i.trim() !== '');
+            p.prosedur = p.prosedur.filter(i => i && i.trim() !== '');
+            p.unit_terkait = p.unit_terkait.filter(i => i && i.trim() !== '');
+
+            const missing = [];
+            if (p.tujuan.length === 0) missing.push('Tujuan');
+            if (p.kebijakan.length === 0) missing.push('Kebijakan');
+            if (p.prosedur.length === 0) missing.push('Prosedur');
+            if (p.unit_terkait.length === 0) missing.push('Unit Terkait');
+
+            if (missing.length > 0) {
+                switchSopContent(i);
+                notify('error', 'Validasi Gagal', `Halaman ${i + 1}: ${missing.join(', ')} wajib diisi minimal 1 item.`);
+                return;
+            }
+        }
+
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
         formData.append('template_id', document.getElementById('template_surat_sop').value);
 
-        formData.append('judul_sop', sopPages[0].judul_sop);
-        formData.append('nomor_dokumen', sopPages[0].nomor_dokumen);
-        formData.append('tanggal_terbit', sopPages[0].tanggal_terbit);
-        formData.append('pengertian', sopPages[0].pengertian);
+        formData.append('judul_sop', processedContents[0].judul_sop);
+        formData.append('nomor_dokumen', processedContents[0].nomor_dokumen);
+        formData.append('tanggal_terbit', processedContents[0].tanggal_terbit);
+        formData.append('pengertian', processedContents[0].pengertian);
 
-        sopPages[0].tujuan.forEach((v, i) => formData.append(`tujuan[${i}]`, v));
-        sopPages[0].kebijakan.forEach((v, i) => formData.append(`kebijakan[${i}]`, v));
-        sopPages[0].prosedur.forEach((v, i) => formData.append(`prosedur[${i}]`, v));
-        sopPages[0].unit_terkait.forEach((v, i) => formData.append(`unit_terkait[${i}]`, v));
+        processedContents[0].tujuan.forEach((v, i) => formData.append(`tujuan[${i}]`, v));
+        processedContents[0].kebijakan.forEach((v, i) => formData.append(`kebijakan[${i}]`, v));
+        processedContents[0].prosedur.forEach((v, i) => formData.append(`prosedur[${i}]`, v));
+        processedContents[0].unit_terkait.forEach((v, i) => formData.append(`unit_terkait[${i}]`, v));
 
-        sopPages.forEach((p, i) => {
-            formData.append(`pages[${i}][judul_sop]`, p.judul_sop);
-            formData.append(`pages[${i}][nomor_dokumen]`, p.nomor_dokumen);
-            formData.append(`pages[${i}][nomor_revisi]`, p.nomor_revisi);
-            formData.append(`pages[${i}][halaman]`, p.halaman);
-            formData.append(`pages[${i}][tanggal_terbit]`, p.tanggal_terbit);
-            formData.append(`pages[${i}][pengertian]`, p.pengertian);
+        processedContents.forEach((p, i) => {
+            formData.append(`contents[${i}][judul_sop]`, p.judul_sop);
+            formData.append(`contents[${i}][nomor_dokumen]`, p.nomor_dokumen);
+            formData.append(`contents[${i}][nomor_revisi]`, p.nomor_revisi || '');
+            formData.append(`contents[${i}][halaman]`, p.halaman || '');
+            formData.append(`contents[${i}][tanggal_terbit]`, p.tanggal_terbit);
+            formData.append(`contents[${i}][pengertian]`, p.pengertian);
 
-            p.tujuan.forEach((v, j) => formData.append(`pages[${i}][tujuan][${j}]`, v));
-            p.prosedur.forEach((v, j) => formData.append(`pages[${i}][prosedur][${j}]`, v));
-            p.kebijakan.forEach((v, j) => formData.append(`pages[${i}][kebijakan][${j}]`, v));
-            p.unit_terkait.forEach((v, j) => formData.append(`pages[${i}][unit_terkait][${j}]`, v));
+            p.tujuan.forEach((v, j) => formData.append(`contents[${i}][tujuan][${j}]`, v));
+            p.prosedur.forEach((v, j) => formData.append(`contents[${i}][prosedur][${j}]`, v));
+            p.kebijakan.forEach((v, j) => formData.append(`contents[${i}][kebijakan][${j}]`, v));
+            p.unit_terkait.forEach((v, j) => formData.append(`contents[${i}][unit_terkait][${j}]`, v));
         });
 
         fetch(form.action, {
@@ -446,19 +466,22 @@
             .then(result => {
                 if (result.success) {
                     closeModal('modalCreateSOP');
-                    sopPages = [createBlankSopPage(1)];
+                    sopContents = [createBlankSopContent(1)];
                     activePageIndex = 0;
                     renderSopTabs();
                     renderActivePage();
                     notify('success', 'Berhasil', result.message);
+
                     setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                    setTimeout(() => {
-                        openPreviewPDF(result.file_url, result.nomor_surat, result.surat_id, result.judul_sop, result.tanggal_terbit);
+                        openPreviewPDF(result.file_url, result.nomor_surat, result.surat_id, result.judul_sop, result.tanggal_terbit, false);
                     }, 500);
                 } else {
-                    notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
+                    let msg = result.message || 'Terjadi kesalahan';
+                    if (result.errors) {
+                        const errDetails = Object.values(result.errors).flat().join('\n');
+                        msg += '\n' + errDetails;
+                    }
+                    notify('error', 'Gagal', msg);
                 }
             })
             .catch(error => {
@@ -472,7 +495,7 @@
     }
 
     function resetFormSOP() {
-        sopPages = [createBlankSopPage(1)];
+        sopContents = [createBlankSopContent(1)];
         activePageIndex = 0;
         renderSopTabs();
         renderActivePage();

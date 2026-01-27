@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SOP;
+use App\Models\SOPContent;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\Regulasi;
@@ -46,9 +47,10 @@ class SOPController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('SOP Store Request Data:', $request->all());
         try {
-            if ($request->has('pages.0')) {
-                $firstPage = $request->input('pages.0');
+            if ($request->has('contents.0')) {
+                $firstPage = $request->input('contents.0');
                 if (!$request->filled('judul_sop'))
                     $request->merge(['judul_sop' => $firstPage['judul_sop'] ?? null]);
                 if (!$request->filled('nomor_dokumen'))
@@ -89,14 +91,14 @@ class SOPController extends Controller
                 'template_id' => 'required|exists:template_surat,id_template_surat',
             ]);
 
-            $allRequestedNumbers = collect($request->input('pages', []))
+            $allRequestedNumbers = collect($request->input('contents', []))
                 ->pluck('nomor_dokumen')
                 ->push($request->nomor_dokumen)
                 ->filter()
                 ->unique();
 
             foreach ($allRequestedNumbers as $num) {
-                $existsOther = \App\Models\SOPPage::where('nomor_dokumen', $num)
+                $existsOther = \App\Models\SOPContent::where('nomor_dokumen', $num)
                     ->whereHas('sop', function ($q) {
                     })->exists();
 
@@ -122,7 +124,7 @@ class SOPController extends Controller
                 'id_surat' => $surat->id_surat,
             ]);
 
-            $pagesData = $request->input('pages', []);
+            $pagesData = $request->input('contents', []);
             if (empty($pagesData)) {
                 $pagesData = [
                     [
@@ -154,7 +156,7 @@ class SOPController extends Controller
                 $tujuanText = is_array($page['tujuan'] ?? []) ? implode("\n", array_filter(array_map('trim', (array) $page['tujuan']))) : trim($page['tujuan'] ?? '');
                 $prosedurText = is_array($page['prosedur'] ?? []) ? implode("\n", array_filter(array_map('trim', (array) $page['prosedur']))) : trim($page['prosedur'] ?? '');
 
-                $sop->pages()->create([
+                $sop->contents()->create([
                     'judul_sop' => $page['judul_sop'] ?? $request->judul_sop,
                     'nomor_dokumen' => $page['nomor_dokumen'] ?? $request->nomor_dokumen,
                     'nomor_revisi' => $page['nomor_revisi'] ?? $request->nomor_revisi ?? '',
@@ -171,15 +173,27 @@ class SOPController extends Controller
             DB::commit();
 
             if ($request->expectsJson()) {
-                $surat->refresh()->load(['sop.pages']);
+                $surat->refresh()->load(['sop.contents']);
                 return response()->json([
                     'success' => true,
                     'message' => 'Standar Operasional Prosedur berhasil dibuat',
-                    'data' => $surat,
+                    'data' => [
+                        'id_surat' => $surat->id_surat,
+                        'nama_surat' => $surat->nama_surat,
+                        'nomor_surat' => $surat->nomor_surat,
+                        'created_at' => $surat->created_at->toDateTimeString(),
+                        'username' => auth()->user()->username ?? 'Unknown',
+                        'ruangan' => auth()->user()->ruangan->nama_ruangan ?? '-',
+                        'sop' => $surat->sop ? [
+                            'id_sop' => $surat->sop->id_sop,
+                            'judul_sop' => $surat->sop->contents->first()->judul_sop ?? $surat->nama_surat,
+                            'nomor_dokumen' => $surat->sop->contents->first()->nomor_dokumen ?? $surat->nomor_surat,
+                        ] : null,
+                    ],
                     'surat_id' => $surat->id_surat,
                     'nomor_surat' => $surat->nomor_surat,
                     'tanggal_dibuat' => optional($surat->tanggal_dibuat)->format('Y-m-d'),
-                    'judul_sop' => $surat->sop->pages->first()->judul_sop ?? $surat->nama_surat,
+                    'judul_sop' => $surat->sop->contents->first()->judul_sop ?? $surat->nama_surat,
                     'file_url' => route('template-surat.sop.file', $surat->id_surat),
                 ]);
             }
@@ -220,12 +234,12 @@ class SOPController extends Controller
     public function edit($id)
     {
         try {
-            $surat = Surat::with(['sop.pages', 'template'])->findOrFail($id);
+            $surat = Surat::with(['sop.contents', 'template'])->findOrFail($id);
 
             if (!$surat->sop) {
                 if ($surat->template && (stripos($surat->template->nama_template_surat, 'SOP') !== false || stripos($surat->template->nama_template_surat, 'Standar Operasional') !== false)) {
                     $surat->sop()->create();
-                    $surat->load(['sop.pages']);
+                    $surat->load(['sop.contents']);
                 } else {
                     return response()->json([
                         'success' => false,
@@ -234,10 +248,10 @@ class SOPController extends Controller
                 }
             }
 
-            $pages = $surat->sop->pages->values();
+            $pages = $surat->sop->contents->values();
 
             if ($pages->isEmpty()) {
-                $virtualPage = new \App\Models\SOPPage([
+                $virtualPage = new \App\Models\SOPContent([
                     'judul_sop' => $surat->nama_surat ?? '',
                     'nomor_dokumen' => $surat->nomor_surat ?? '',
                     'halaman' => '1/1',
@@ -249,7 +263,7 @@ class SOPController extends Controller
                     'unit_terkait' => '',
                 ]);
                 $pages = collect([$virtualPage]);
-                $surat->sop->setRelation('pages', $pages);
+                $surat->sop->setRelation('contents', $pages);
             }
 
             return response()->json([
@@ -312,14 +326,14 @@ class SOPController extends Controller
                 'unit_terkait' => 'required|array|min:1',
             ]);
 
-            $allRequestedNumbers = collect($request->input('pages', []))
+            $allRequestedNumbers = collect($request->input('contents', []))
                 ->pluck('nomor_dokumen')
                 ->push($request->nomor_dokumen)
                 ->filter()
                 ->unique();
 
             foreach ($allRequestedNumbers as $num) {
-                $existsOther = \App\Models\SOPPage::where('nomor_dokumen', $num)
+                $existsOther = \App\Models\SOPContent::where('nomor_dokumen', $num)
                     ->whereHas('sop', function ($q) use ($surat) {
                         $q->where('id_surat', '!=', $surat->id_surat);
                     })->exists();
@@ -341,7 +355,7 @@ class SOPController extends Controller
 
             $sop = $surat->sop()->firstOrCreate([]);
 
-            $pagesData = $request->input('pages', []);
+            $pagesData = $request->input('contents', []);
             if (empty($pagesData)) {
                 $pagesData = [
                     [
@@ -359,7 +373,7 @@ class SOPController extends Controller
                 ];
             }
 
-            $sop->pages()->delete();
+            $sop->contents()->delete();
             foreach ($pagesData as $index => $page) {
                 $kebijakanArray = is_array($page['kebijakan'] ?? []) ? $page['kebijakan'] : [];
                 $kebijakanText = implode("\n", array_map(function ($id, $i) {
@@ -374,7 +388,7 @@ class SOPController extends Controller
                 $tujuanText = is_array($page['tujuan'] ?? []) ? implode("\n", array_filter(array_map('trim', (array) $page['tujuan']))) : trim($page['tujuan'] ?? '');
                 $prosedurText = is_array($page['prosedur'] ?? []) ? implode("\n", array_filter(array_map('trim', (array) $page['prosedur']))) : trim($page['prosedur'] ?? '');
 
-                $sop->pages()->create([
+                $sop->contents()->create([
                     'judul_sop' => $page['judul_sop'],
                     'nomor_dokumen' => $page['nomor_dokumen'],
                     'nomor_revisi' => $page['nomor_revisi'] ?? '',
@@ -390,12 +404,24 @@ class SOPController extends Controller
 
             DB::commit();
 
-            $surat->refresh()->load(['sop.pages']);
+            $surat->refresh()->load(['sop.contents']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Draft SOP berhasil diperbarui',
-                'data' => $surat
+                'data' => [
+                    'id_surat' => $surat->id_surat,
+                    'nama_surat' => $surat->nama_surat,
+                    'nomor_surat' => $surat->nomor_surat,
+                    'created_at' => $surat->created_at->toDateTimeString(),
+                    'username' => auth()->user()->username ?? 'Unknown',
+                    'ruangan' => auth()->user()->ruangan->nama_ruangan ?? '-',
+                    'sop' => $surat->sop ? [
+                        'id_sop' => $surat->sop->id_sop,
+                        'judul_sop' => $surat->sop->contents->first()->judul_sop ?? $surat->nama_surat,
+                        'nomor_dokumen' => $surat->sop->contents->first()->nomor_dokumen ?? $surat->nomor_surat,
+                    ] : null,
+                ],
             ]);
         } catch (ValidationException $e) {
             DB::rollBack();
@@ -424,7 +450,7 @@ class SOPController extends Controller
         try {
             $surat = Surat::findOrFail($id);
             if ($surat->sop) {
-                $surat->sop->pages()->delete();
+                $surat->sop->contents()->delete();
                 $surat->sop->delete();
             }
             $surat->delete();

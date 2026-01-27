@@ -64,7 +64,7 @@
                 <span class="font-medium">Surat berhasil dibuat dan disimpan</span>
             </div>
             <a href="{{ route('draft-surat.sk-direktur.index') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-semibold text-sm active:scale-95 shadow-md">
+                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-semibold text-sm active:scale-95">
                 <i class="fas fa-arrow-right mr-2 text-xs"></i> Lihat Draft
             </a>
         </div>
@@ -80,6 +80,7 @@
             suratId: null,
             judulSurat: '',
             tanggalDibuat: '',
+            shouldReloadOnClose: false,
 
             get downloadFilename() {
                 if (this.nomorSurat) {
@@ -89,7 +90,8 @@
                 return 'SK_Direktur.pdf';
             },
 
-            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
+                this.shouldReloadOnClose = reloadOnClose;
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;
                 this.suratId = suratId;
@@ -97,19 +99,27 @@
                 this.tanggalDibuat = tanggalDibuat;
                 this.isOpen = true;
                 this.$nextTick(() => {
-                    this.$refs.pdfFrame.src = fileUrl;
+                    const cacheBuster = '?t=' + new Date().getTime();
+                    this.$refs.pdfFrame.src = fileUrl + cacheBuster;
                     this.$refs.suratNomor.textContent = nomorSurat;
                 });
             },
 
             close() {
                 this.isOpen = false;
-                if (typeof showNotification === 'function') {
-                    showNotification('success', 'Berhasil!', 'Surat berhasil dibuat dan disimpan');
+
+                if (this.shouldReloadOnClose) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                } else {
+                    if (typeof showNotification === 'function') {
+                        showNotification('success', 'Berhasil!', 'Surat berhasil dibuat dan disimpan');
+                    }
+                    setTimeout(() => {
+                        window.location.href = "{{ route('draft-surat.sk-direktur.index') }}";
+                    }, 1000);
                 }
-                setTimeout(() => {
-                    window.location.href = "{{ route('draft-surat.sk-direktur.index') }}";
-                }, 1000);
             },
 
             print() {
@@ -146,10 +156,10 @@
         }
     }
 
-    function openPreviewPDF(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+    function openPreviewPDF(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
         const modal = Alpine.$data(document.getElementById('modalPreviewPDF'));
         if (modal) {
-            modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat);
+            modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat, reloadOnClose);
         }
     }
 

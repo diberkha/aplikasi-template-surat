@@ -115,6 +115,7 @@ function formatTanggalIndonesia($tanggal)
     return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
 }
     ?>
+
     <div class="container">
 
         <table class="no-border">

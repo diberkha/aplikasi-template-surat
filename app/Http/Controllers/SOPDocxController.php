@@ -16,7 +16,7 @@ class SOPDocxController extends Controller
     public function download($id)
     {
         try {
-            $surat = Surat::with('sop.pages')->findOrFail($id);
+            $surat = Surat::with('sop.contents')->findOrFail($id);
             $sop = $surat->sop;
 
             if (!$sop) {
@@ -40,7 +40,7 @@ class SOPDocxController extends Controller
             $sopTableStyle = ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 80];
             $phpWord->addTableStyle('SOPTable', $sopTableStyle);
 
-            foreach ($sop->pages as $pageIndex => $page) {
+            foreach ($sop->contents as $pageIndex => $page) {
                 if ($pageIndex > 0) {
                     $section->addPageBreak();
                 }
@@ -226,7 +226,9 @@ class SOPDocxController extends Controller
             $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
             $objWriter->save($tempFile);
 
-            $fileName = 'SOP-' . str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $data['nomor_dokumen'] ?? $surat->nomor_surat) . '.docx';
+            $firstPageData = $sop->contents->first() ? $sop->contents->first()->toArray() : [];
+            $docNumber = $firstPageData['nomor_dokumen'] ?? $surat->nomor_surat;
+            $fileName = 'SOP-' . str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $docNumber) . '.docx';
             return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
 
         } catch (Exception $e) {

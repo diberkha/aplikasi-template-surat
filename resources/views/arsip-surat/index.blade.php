@@ -19,10 +19,10 @@
                             <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
                         <input type="text" x-model.debounce.300ms="search" placeholder="Cari..."
-                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm shadow-sm transition-all focus:shadow-md">
+                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all">
                     </div>
                     <button type="button" onclick="openModal('modalImportSurat')"
-                        class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap shadow-sm active:scale-95 w-full sm:w-auto">
+                        class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap active:scale-95 w-full sm:w-auto">
                         <i class="fas fa-file-upload"></i>
                         <span>Import Surat</span>
                     </button>
@@ -159,14 +159,16 @@
                         <div class="space-y-3">
                             <div>
                                 <label
-                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Mulai</label>
+                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                    Mulai</label>
                                 <input type="date" x-model="startDate"
                                     class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
                             </div>
 
                             <div>
                                 <label
-                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Akhir</label>
+                                    class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                    Akhir</label>
                                 <input type="date" x-model="endDate"
                                     class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
                             </div>
@@ -235,8 +237,8 @@
                                             :class="item.badge_color" x-text="item.tipe_surat_display">
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"
-                                        x-text="item.nama_surat_display"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white max-w-[300px] truncate"
+                                        :title="item.nama_surat_display" x-text="item.nama_surat_display"></td>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white max-w-[200px] truncate"
                                         :title="item.tipe_surat_display === 'Surat Izin Cuti' ? '-' : item.nomor_surat"
                                         x-text="item.tipe_surat_display === 'Surat Izin Cuti' ? '-' : item.nomor_surat"></td>
@@ -255,18 +257,19 @@
                                             </button>
 
                                             <div x-data="{ 
-                                                                        openDownload: false, 
-                                                                        dropdownStyle: '',
-                                                                        toggle() { 
-                                                                            this.openDownload = !this.openDownload;
-                                                                            if (this.openDownload) {
-                                                                                this.$nextTick(() => {
-                                                                                    const rect = this.$refs.button.getBoundingClientRect();
-                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                                });
-                                                                            }
-                                                                        } 
-                                                                    }" @scroll.window="openDownload = false" class="relative">
+                                                                                                                openDownload: false, 
+                                                                                                                dropdownStyle: '',
+                                                                                                                toggle() { 
+                                                                                                                    this.openDownload = !this.openDownload;
+                                                                                                                    if (this.openDownload) {
+                                                                                                                        this.$nextTick(() => {
+                                                                                                                            const rect = this.$refs.button.getBoundingClientRect();
+                                                                                                                            this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                } 
+                                                                                                            }"
+                                                @scroll.window="openDownload = false" class="relative">
                                                 <button type="button" x-ref="button" @click="toggle()"
                                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                     <i class="fas fa-download text-sm"></i>
@@ -330,11 +333,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                            ]">
+                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                    ]">
                                 </button>
                             </template>
 
@@ -385,7 +388,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                            ruanganOptions: @json($ruanganOptions ?? []),
+                                                                                    ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -486,9 +489,9 @@
         }
 
         return rangeWithDots;
-                            },
+                                                },
 
-                            get sortLabel() {
+                                                get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -498,13 +501,13 @@
             }
         },
 
-                            get selectedTemplateName() {
+                                                get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                            get selectedRuanganName() {
+                                                get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -512,9 +515,9 @@
             @else
                 return 'Ruangan';
             @endif
-                            },
+                                                },
 
-                            get filteredRuanganOptions() {
+                                                get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -522,13 +525,13 @@
             @else
                 return [];
             @endif
-                            },
+                                                },
 
         applyFilters() {
             this.currentPage = 1;
         },
 
-                            get dateDisplay() {
+                                                get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -574,8 +577,8 @@
             this.currentPage = 1;
             this.open = false;
         }
-                        }));
-                    });
+                                            }));
+                                        });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -612,8 +615,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                ${tipe}
-                            </span>`;
+                                                    ${tipe}
+                                                </span>`;
 
             const isSystemDoc = ['Surat Keputusan Direktur', 'Standar Operasional Prosedur (SOP)', 'Surat Izin Cuti'].includes(tipe);
 

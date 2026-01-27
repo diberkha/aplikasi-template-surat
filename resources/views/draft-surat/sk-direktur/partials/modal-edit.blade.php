@@ -28,8 +28,8 @@
                         class="bg-blue-50 dark:bg-blue-900/20 p-4 sm:p-6 rounded-xl border border-blue-200 dark:border-blue-800">
                         <div class="space-y-5">
                             <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300 tracking-wide">NOMOR
-                                    SURAT <span class="text-red-500">*</span></label>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
+                                        class="text-red-500">*</span></label>
                                 <div class="flex flex-wrap items-center gap-2 w-full">
                                     <input type="text" id="edit_nomor_surat_part1"
                                         class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
@@ -55,8 +55,8 @@
                             </div>
 
                             <div>
-                                <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300 tracking-wide">TENTANG
-                                    <span class="text-red-500">*</span></label>
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tentang <span
+                                        class="text-red-500">*</span></label>
                                 <textarea name="tentang" id="edit_sk_tentang" required rows="3"
                                     class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
                             </div>
@@ -458,14 +458,11 @@
                 if (result.success) {
                     closeModal('modalEditSK');
                     notify('success', 'Berhasil', result.message);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
 
                     window.dispatchEvent(new CustomEvent('update-sk-draft', { detail: result.data }));
 
                     setTimeout(() => {
-                        window.openDraftPreview(result.data);
+                        window.openDraftPreview(result.data, true);
                     }, 500);
                 } else {
                     notify('error', 'Gagal', result.message);

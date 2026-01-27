@@ -117,29 +117,29 @@
         this.currentPage = 1;
     }
 }">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-1">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
             @if ($subtitle)
-                <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">{{ $subtitle }}</p>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $subtitle }}</p>
             @endif
         </div>
 
         @if ($showSearch || $showFilter)
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
                 <div class="flex items-center gap-2">
                     @if ($showFilter)
-                        <div class="relative flex-1 sm:flex-initial" x-data="{open:false}">
+                        <div class="relative flex-1 sm:flex-initial min-w-[120px]" x-data="{open:false}">
                             <button @click="open = !open" type="button"
-                                class="w-full flex items-center justify-between sm:justify-start space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                                class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                                 <div class="flex items-center space-x-2">
                                     <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                                    <span class="text-gray-700 dark:text-gray-300 truncate max-w-[100px]" x-text="sortText"></span>
+                                    <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]" x-text="sortText"></span>
                                 </div>
                                 <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform" :class="open && 'rotate-180'"></i>
                             </button>
                             <div x-show="open" @click.away="open=false" x-cloak x-transition
-                                class="absolute left-0 sm:right-0 sm:left-auto mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                                class="absolute left-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                                 <div class="py-1">
                                     <button @click.prevent="setSort('a-z'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                                     <button @click.prevent="setSort('z-a'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
@@ -155,14 +155,14 @@
                 </div>
 
                 @if ($showSearch)
-                    <div class="relative flex-1 sm:w-64">
+                    <div class="relative flex-1 sm:w-64 lg:w-72">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
                         <input type="text"
                                x-model="search"
                                placeholder="{{ $searchPlaceholder }}"
-                               class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm shadow-sm transition-all focus:shadow-md">
+                               class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all">
                     </div>
                 @endif
             </div>

@@ -63,7 +63,7 @@
                 <span class="font-medium">Surat berhasil dibuat dan disimpan</span>
             </div>
             <a href="{{ route('draft-surat.sop.index') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-semibold text-sm active:scale-95 shadow-md">
+                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-semibold text-sm active:scale-95">
                 <i class="fas fa-arrow-right mr-2 text-xs"></i> Lihat Draft
             </a>
         </div>
@@ -79,6 +79,7 @@
             suratId: null,
             judulSurat: '',
             tanggalDibuat: '',
+            shouldReloadOnClose: false,
 
             get downloadFilename() {
                 if (this.nomorSurat) {
@@ -88,7 +89,8 @@
                 return 'SOP.pdf';
             },
 
-            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
+                this.shouldReloadOnClose = reloadOnClose;
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;
                 this.suratId = suratId;
@@ -96,16 +98,24 @@
                 this.tanggalDibuat = tanggalDibuat;
                 this.isOpen = true;
                 this.$nextTick(() => {
-                    this.$refs.pdfFrame.src = fileUrl;
+                    const cacheBuster = '?t=' + new Date().getTime();
+                    this.$refs.pdfFrame.src = fileUrl + cacheBuster;
                     this.$refs.suratNomor.textContent = nomorSurat;
                 });
             },
 
             close() {
                 this.isOpen = false;
-                setTimeout(() => {
-                    window.location.href = "{{ route('draft-surat.sop.index') }}";
-                }, 800);
+
+                if (this.shouldReloadOnClose) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                } else {
+                    setTimeout(() => {
+                        window.location.href = "{{ route('draft-surat.sop.index') }}";
+                    }, 800);
+                }
             },
 
             print() {
@@ -142,11 +152,11 @@
         }
     }
 
-    function openPreviewPDF(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+    function openPreviewPDF(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
         const modalEl = document.getElementById('modalPreviewPDF');
         const modal = modalEl ? Alpine.$data(modalEl) : null;
         if (modal) {
-            modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat);
+            modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat, reloadOnClose);
         }
     }
 

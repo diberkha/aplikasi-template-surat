@@ -15,9 +15,9 @@ class SOP extends Model
 
     protected $casts = [];
 
-    public function pages()
+    public function contents()
     {
-        return $this->hasMany(SOPPage::class, 'id_sop')->orderBy('id_sop_page', 'asc');
+        return $this->hasMany(SOPContent::class, 'id_sop')->orderBy('id_sop_page', 'asc');
     }
 
     public function surat()

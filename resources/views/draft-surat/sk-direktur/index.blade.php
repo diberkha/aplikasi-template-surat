@@ -68,14 +68,16 @@
                             <div class="space-y-3">
                                 <div>
                                     <label
-                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Mulai</label>
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                        Mulai</label>
                                     <input type="date" x-model="startDate"
                                         class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
                                 </div>
 
                                 <div>
                                     <label
-                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Akhir</label>
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                        Akhir</label>
                                     <input type="date" x-model="endDate"
                                         class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
                                 </div>
@@ -96,7 +98,7 @@
                         <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
                     <input type="text" x-model.debounce.300ms="search" placeholder="Cari draft..."
-                        class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm shadow-sm transition-all focus:shadow-md">
+                        class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all">
                 </div>
             </div>
         </div>
@@ -210,11 +212,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white shadow-sm' :
-                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                        ]">
+                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                ]">
                             </button>
                         </template>
 

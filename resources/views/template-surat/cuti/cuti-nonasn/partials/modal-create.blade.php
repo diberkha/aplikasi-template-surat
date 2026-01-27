@@ -316,7 +316,7 @@
             }
 
             dobounceTimer = setTimeout(() => {
-                fetch(`/api/pegawai/search?term=${term}&type=NON ASN`)
+                fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&type=${encodeURIComponent('NON ASN')}`)
                     .then(r => r.json())
                     .then(data => {
                         resultsContainer.innerHTML = '';
@@ -577,6 +577,8 @@
         e.preventDefault();
         const form = document.getElementById('cutiFormNonASN');
         const submitBtn = form.querySelector('button[type="submit"]');
+        if (!submitBtn) return;
+
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
 
@@ -596,23 +598,20 @@
                     notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
                 } else if (res.data.success) {
                     notify('success', 'Berhasil', res.data.message);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
                     closeModal('modalCreateCutiNonASN');
                     form.reset();
+
                     if (typeof openPreviewPDFNonASN === 'function') {
-                        openPreviewPDFNonASN(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti Non ASN', new Date().toISOString().slice(0, 10));
+                        openPreviewPDFNonASN(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti Non ASN', new Date().toISOString().slice(0, 10), true);
                     } else {
-... (rest of the block)
-        notify('success', 'Berhasil', res.data.message);
-    }
+                        window.location.href = res.data.file_url;
+                    }
                 }
             })
-            .catch (err => notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + err.message, false))
+            .catch(err => notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + err.message, false))
             .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Simpan';
-    });
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Simpan';
+            });
     }
 </script>

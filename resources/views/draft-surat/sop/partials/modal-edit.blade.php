@@ -1,7 +1,7 @@
 <div id="modalEditSOP" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
         <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/80 backdrop-blur-sm transition-opacity"
-            onclick="closeModal('modalEditSOP'); editSopPages = [];"></div>
+            onclick="closeModal('modalEditSOP'); editSopContents = [];"></div>
 
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
@@ -9,7 +9,7 @@
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Draft Standar Operasional Prosedur
                     (SOP)</h3>
-                <button type="button" onclick="closeModal('modalEditSOP'); editSopPages = [];"
+                <button type="button" onclick="closeModal('modalEditSOP'); editSopContents = [];"
                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                     <i class="fas fa-times text-lg"></i>
                 </button>
@@ -22,17 +22,17 @@
 
                 <div
                     class="px-6 py-3 bg-gray-50 dark:bg-gray-700/30 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" id="editSopPageTabs">
+                    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1" id="editSopContentTabs">
 
                     </div>
-                    <button type="button" onclick="addEditSopPage()"
+                    <button type="button" onclick="addEditSopContent()"
                         class="flex-shrink-0 ml-2 p-1.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
                         title="Tambah Halaman">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
 
-                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar" id="editSopPageContent">
+                <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar" id="editSopContentArea">
                 </div>
 
                 <div
@@ -52,7 +52,7 @@
 </div>
 
 <script>
-    let editSopPages = [];
+    let editSopContents = [];
     let editActivePageIndex = 0;
     let editMasterRegulasi = [];
     let editMasterUnit = [];
@@ -82,7 +82,7 @@
                 return;
             }
 
-            editSopPages = result.data.sop.pages.map(p => {
+            editSopContents = result.data.sop.contents.map(p => {
                 const parts = (p.nomor_dokumen || '///').split('/');
                 return {
                     id_sop_page: p.id_sop_page,
@@ -110,14 +110,14 @@
         }
     }
 
-    function createBlankEditSopPage(halaman) {
+    function createBlankEditSopContent(halaman) {
         return {
             judul_sop: '',
             nomor_dokumen: '',
             nomor_dok_parts: ['', '', '', ''],
             nomor_revisi: '',
             halaman: halaman + '/1',
-            tanggal_terbit: new Date().toISOString().split('T')[0],
+            tanggal_terbit: '',
             pengertian: '',
             tujuan: [''],
             kebijakan: [],
@@ -126,33 +126,33 @@
         };
     }
 
-    function addEditSopPage() {
+    function addEditSopContent() {
         saveEditActivePageData();
-        const newPageNum = editSopPages.length + 1;
-        editSopPages.push(createBlankEditSopPage(newPageNum));
+        const newPageNum = editSopContents.length + 1;
+        editSopContents.push(createBlankEditSopContent(newPageNum));
         updateEditHalamanCounts();
-        editActivePageIndex = editSopPages.length - 1;
+        editActivePageIndex = editSopContents.length - 1;
         renderEditSopTabs();
         renderEditActivePage();
     }
 
-    function removeEditSopPage(index) {
-        if (editSopPages.length <= 1) return;
-        editSopPages.splice(index, 1);
+    function removeEditSopContent(index) {
+        if (editSopContents.length <= 1) return;
+        editSopContents.splice(index, 1);
         updateEditHalamanCounts();
-        editActivePageIndex = Math.min(editActivePageIndex, editSopPages.length - 1);
+        editActivePageIndex = Math.min(editActivePageIndex, editSopContents.length - 1);
         renderEditSopTabs();
         renderEditActivePage();
     }
 
     function updateEditHalamanCounts() {
-        const total = editSopPages.length;
-        editSopPages.forEach((p, i) => {
+        const total = editSopContents.length;
+        editSopContents.forEach((p, i) => {
             p.halaman = (i + 1) + '/' + total;
         });
     }
 
-    function switchEditSopPage(index) {
+    function switchEditSopContent(index) {
         saveEditActivePageData();
         editActivePageIndex = index;
         renderEditSopTabs();
@@ -160,29 +160,29 @@
     }
 
     function renderEditSopTabs() {
-        const container = document.getElementById('editSopPageTabs');
+        const container = document.getElementById('editSopContentTabs');
         container.innerHTML = '';
-        editSopPages.forEach((page, i) => {
+        editSopContents.forEach((page, i) => {
             const activeClass = i === editActivePageIndex
-                ? 'bg-green-600 text-white shadow-sm'
+                ? 'bg-green-600 text-white'
                 : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700';
 
             const tab = document.createElement('div');
             tab.className = `flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${activeClass}`;
-            tab.onclick = () => switchEditSopPage(i);
+            tab.onclick = () => switchEditSopContent(i);
             tab.innerHTML = `
                 <span>Halaman ${i + 1}</span>
-                ${editSopPages.length > 1 ? `<i class="fas fa-times ml-1.5 opacity-60 hover:opacity-100" onclick="event.stopPropagation(); removeEditSopPage(${i})"></i>` : ''}
+                ${editSopContents.length > 1 ? `<i class="fas fa-times ml-1.5 opacity-60 hover:opacity-100" onclick="event.stopPropagation(); removeEditSopContent(${i})"></i>` : ''}
             `;
             container.appendChild(tab);
         });
     }
 
     function saveEditActivePageData() {
-        const content = document.getElementById('editSopPageContent');
-        if (!content || editSopPages.length === 0) return;
+        const content = document.getElementById('editSopContentArea');
+        if (!content || editSopContents.length === 0) return;
 
-        const page = editSopPages[editActivePageIndex];
+        const page = editSopContents[editActivePageIndex];
         page.judul_sop = content.querySelector('[name="judul_sop"]')?.value || '';
         page.nomor_revisi = content.querySelector('[name="nomor_revisi"]')?.value || '';
         page.halaman = content.querySelector('[name="halaman"]')?.value || '';
@@ -205,8 +205,8 @@
     }
 
     function renderEditActivePage() {
-        const container = document.getElementById('editSopPageContent');
-        const page = editSopPages[editActivePageIndex];
+        const container = document.getElementById('editSopContentArea');
+        const page = editSopContents[editActivePageIndex];
 
         container.innerHTML = `
             <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -414,14 +414,14 @@
         event.preventDefault();
         saveEditActivePageData();
 
-        for (let i = 0; i < editSopPages.length; i++) {
-            const p = editSopPages[i];
+        for (let i = 0; i < editSopContents.length; i++) {
+            const p = editSopContents[i];
             if (!p.judul_sop || !p.nomor_dokumen || !p.pengertian) {
-                switchEditSopPage(i);
+                switchEditSopContent(i);
                 return notify('error', 'Validasi Gagal', `Halaman ${i + 1} belum lengkap.`);
             }
             if (p.kebijakan.length === 0 || p.unit_terkait.length === 0) {
-                switchEditSopPage(i);
+                switchEditSopContent(i);
                 return notify('error', 'Validasi Gagal', `Halaman ${i + 1}: Minimal 1 Kebijakan dan 1 Unit.`);
             }
         }
@@ -435,28 +435,28 @@
         formData.append('_token', '{{ csrf_token() }}');
         formData.append('_method', 'PUT');
 
-        formData.append('judul_sop', editSopPages[0].judul_sop);
-        formData.append('nomor_dokumen', editSopPages[0].nomor_dokumen);
-        formData.append('tanggal_terbit', editSopPages[0].tanggal_terbit);
-        formData.append('pengertian', editSopPages[0].pengertian);
+        formData.append('judul_sop', editSopContents[0].judul_sop);
+        formData.append('nomor_dokumen', editSopContents[0].nomor_dokumen);
+        formData.append('tanggal_terbit', editSopContents[0].tanggal_terbit);
+        formData.append('pengertian', editSopContents[0].pengertian);
 
-        editSopPages[0].tujuan.forEach((v, i) => formData.append(`tujuan[${i}]`, v));
-        editSopPages[0].kebijakan.forEach((v, i) => formData.append(`kebijakan[${i}]`, v));
-        editSopPages[0].prosedur.forEach((v, i) => formData.append(`prosedur[${i}]`, v));
-        editSopPages[0].unit_terkait.forEach((v, i) => formData.append(`unit_terkait[${i}]`, v));
+        editSopContents[0].tujuan.forEach((v, i) => formData.append(`tujuan[${i}]`, v));
+        editSopContents[0].kebijakan.forEach((v, i) => formData.append(`kebijakan[${i}]`, v));
+        editSopContents[0].prosedur.forEach((v, i) => formData.append(`prosedur[${i}]`, v));
+        editSopContents[0].unit_terkait.forEach((v, i) => formData.append(`unit_terkait[${i}]`, v));
 
-        editSopPages.forEach((p, i) => {
-            formData.append(`pages[${i}][judul_sop]`, p.judul_sop);
-            formData.append(`pages[${i}][nomor_dokumen]`, p.nomor_dokumen);
-            formData.append(`pages[${i}][nomor_revisi]`, p.nomor_revisi);
-            formData.append(`pages[${i}][halaman]`, p.halaman);
-            formData.append(`pages[${i}][tanggal_terbit]`, p.tanggal_terbit);
-            formData.append(`pages[${i}][pengertian]`, p.pengertian);
+        editSopContents.forEach((p, i) => {
+            formData.append(`contents[${i}][judul_sop]`, p.judul_sop);
+            formData.append(`contents[${i}][nomor_dokumen]`, p.nomor_dokumen);
+            formData.append(`contents[${i}][nomor_revisi]`, p.nomor_revisi);
+            formData.append(`contents[${i}][halaman]`, p.halaman);
+            formData.append(`contents[${i}][tanggal_terbit]`, p.tanggal_terbit);
+            formData.append(`contents[${i}][pengertian]`, p.pengertian);
 
-            p.tujuan.forEach((v, j) => formData.append(`pages[${i}][tujuan][${j}]`, v));
-            p.prosedur.forEach((v, j) => formData.append(`pages[${i}][prosedur][${j}]`, v));
-            p.kebijakan.forEach((v, j) => formData.append(`pages[${i}][kebijakan][${j}]`, v));
-            p.unit_terkait.forEach((v, j) => formData.append(`pages[${i}][unit_terkait][${j}]`, v));
+            p.tujuan.forEach((v, j) => formData.append(`contents[${i}][tujuan][${j}]`, v));
+            p.prosedur.forEach((v, j) => formData.append(`contents[${i}][prosedur][${j}]`, v));
+            p.kebijakan.forEach((v, j) => formData.append(`contents[${i}][kebijakan][${j}]`, v));
+            p.unit_terkait.forEach((v, j) => formData.append(`contents[${i}][unit_terkait][${j}]`, v));
         });
 
         fetch(`/sop/${currentEditSopId}`, {
@@ -469,12 +469,11 @@
                 if (result.success) {
                     closeModal('modalEditSOP');
                     notify('success', 'Berhasil', result.message);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+
                     window.dispatchEvent(new CustomEvent('update-sop-draft', { detail: result.data }));
+
                     setTimeout(() => {
-                        window.openDraftPreview(result.data);
+                        window.openDraftPreview(result.data, true);
                     }, 500);
                 } else {
                     notify('error', 'Gagal', result.message || 'Terjadi kesalahan');

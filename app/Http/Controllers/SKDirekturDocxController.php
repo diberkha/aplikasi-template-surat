@@ -31,8 +31,8 @@ class SKDirekturDocxController extends Controller
             $section = $phpWord->addSection([
                 'marginTop' => (int) Converter::inchToTwip(0.33),
                 'marginBottom' => (int) Converter::inchToTwip(0.19),
-                'marginLeft' => (int) Converter::inchToTwip(0.49),
-                'marginRight' => (int) Converter::inchToTwip(0.39),
+                'marginLeft' => (int) Converter::inchToTwip(0.7),
+                'marginRight' => (int) Converter::inchToTwip(0.7),
                 'pageSizeW' => (int) Converter::inchToTwip(8.27),
                 'pageSizeH' => (int) Converter::inchToTwip(13),
             ]);
@@ -48,44 +48,47 @@ class SKDirekturDocxController extends Controller
 
             $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
             if (file_exists($logoLeftPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoLeftPath, [
-                    'height' => (int) Converter::inchToPoint(0.7),
+                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center'])->addImage($logoLeftPath, [
+                    'height' => (int) Converter::inchToPoint(0.75),
+                    'elementHeight' => (int) Converter::inchToPoint(0.7),
+                    'width' => (int) Converter::inchToPoint(0.6),
                     'wrappingStyle' => 'inline'
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.7));
+                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center']);
             }
 
-            $centerCell = $table->addCell((int) Converter::inchToTwip(6.2));
+            $centerCell = $table->addCell((int) Converter::inchToTwip(5.67), ['valign' => 'center']);
             $centerCell->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 13], ['alignment' => Jc::CENTER]);
             $centerCell->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'bold' => true, 'size' => 17], ['alignment' => Jc::CENTER]);
+            $centerCell->addTextBreak(1, ['size' => 12]);
             $centerCell->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 9], ['alignment' => Jc::CENTER]);
 
             $contactRun = $centerCell->addTextRun(['alignment' => Jc::CENTER]);
-            $contactRun->addText('Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id, Pos-el ', ['name' => 'Arial', 'size' => 9]);
-            $contactRun->addText('rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 9, 'underline' => 'single']);
+            $contactRun->addText('Telepon (0271) 6811839, Laman ', ['name' => 'Arial', 'size' => 8]);
+            $contactRun->addLink('https://rsudgemolong.sragenkab.go.id', 'https://rsudgemolong.sragenkab.go.id', ['name' => 'Arial', 'size' => 8, 'color' => '0000FF']);
+            $contactRun->addText(', Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 8]);
 
             $logoRightPath = public_path('img/logo-rs-kop.png');
             if (file_exists($logoRightPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.7))->addImage($logoRightPath, [
+                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center'])->addImage($logoRightPath, [
                     'height' => (int) Converter::inchToPoint(0.7),
+                    'elementHeight' => (int) Converter::inchToPoint(0.65),
+                    'width' => (int) Converter::inchToPoint(0.6),
                     'wrappingStyle' => 'inline',
                     'alignment' => Jc::RIGHT
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.7));
+                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center']);
             }
 
-            $phpWord->addTableStyle('HeaderBorder', [
-                'borderSize' => 0,
-                'cellMargin' => 0,
+            $borderTable = $section->addTable(['cellMargin' => 0]);
+            $borderTable->addRow(null, ['cantSplit' => true]);
+            $borderTable->addCell((int) Converter::inchToTwip(6.87), [
                 'borderBottomSize' => 18,
-                'borderBottomColor' => '000000'
-            ]);
-            $borderTable = $section->addTable('HeaderBorder');
-            $borderTable->addRow();
-            $borderCell = $borderTable->addCell((int) Converter::inchToTwip(7.6));
-            $borderCell->addText('', null, ['lineHeight' => 0.1]);
+                'borderBottomColor' => '000000',
+                'borderBottomStyle' => 'single'
+            ])->addText('', null, ['lineHeight' => 0.5]);
 
             $section->addTextBreak(1);
 
@@ -269,12 +272,14 @@ class SKDirekturDocxController extends Controller
                 $items[] = ['label' => $currentLabel, 'text' => trim($currentText)];
             }
 
+            $actualIdx = 0;
             foreach ($items as $item) {
                 $m = $section->addTable('LayoutTable');
                 $m->addRow();
-                $m->addCell((int) Converter::inchToTwip(1.2))->addText(strtoupper($item['label']));
+                $m->addCell((int) Converter::inchToTwip(1.2))->addText($labels[$actualIdx] ?? strtoupper($item['label']));
                 $m->addCell((int) Converter::inchToTwip(0.2))->addText(':');
                 $m->addCell((int) Converter::inchToTwip(6.0))->addText($item['text'], null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
+                $actualIdx++;
             }
 
             $section->addTextBreak(2);

@@ -60,8 +60,8 @@ class SKDirekturController extends Controller
                 'mengingat' => 'required|array|min:1',
                 'mengingat.*' => 'required|string',
                 'menetapkan' => 'nullable|string',
-                'memutuskan' => 'required|array|min:1',
-                'memutuskan.0' => 'required|string',
+                'memutuskan' => 'nullable|array',
+                'memutuskan.0' => 'nullable|string',
                 'memutuskan.*' => 'nullable|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
@@ -81,16 +81,18 @@ class SKDirekturController extends Controller
 
             Log::info('Surat created', ['id' => $surat->id_surat, 'surat' => $surat->toArray()]);
 
-            $memutuskanArray = $request->memutuskan;
+            $memutuskanArray = is_array($request->memutuskan) ? $request->memutuskan : [];
             $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
             $memutuskanText = '';
-            foreach ($memutuskanArray as $index => $item) {
+            $actualIndex = 0;
+            foreach ($memutuskanArray as $item) {
                 $item = trim((string) $item);
-                if ($index > 1 && $item === '') {
+                if ($item === '') {
                     continue;
                 }
-                $label = $labels[$index] ?? 'Ke-' . ($index + 1);
+                $label = $labels[$actualIndex] ?? 'Ke-' . ($actualIndex + 1);
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
+                $actualIndex++;
             }
 
             $mengingatArray = $request->mengingat;
@@ -329,8 +331,8 @@ class SKDirekturController extends Controller
                 'mengingat' => 'required|array|min:1',
                 'mengingat.*' => 'required|string',
                 'menetapkan' => 'nullable|string',
-                'memutuskan' => 'required|array|min:1',
-                'memutuskan.0' => 'required|string',
+                'memutuskan' => 'nullable|array',
+                'memutuskan.0' => 'nullable|string',
                 'memutuskan.*' => 'nullable|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
@@ -348,16 +350,18 @@ class SKDirekturController extends Controller
                 'file_path' => null,
             ]);
 
-            $memutuskanArray = $request->memutuskan;
+            $memutuskanArray = is_array($request->memutuskan) ? $request->memutuskan : [];
             $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
             $memutuskanText = '';
-            foreach ($memutuskanArray as $index => $item) {
+            $actualIndex = 0;
+            foreach ($memutuskanArray as $item) {
                 $item = trim((string) $item);
-                if ($index > 1 && $item === '') {
+                if ($item === '') {
                     continue;
                 }
-                $label = $labels[$index] ?? 'Ke-' . ($index + 1);
+                $label = $labels[$actualIndex] ?? 'Ke-' . ($actualIndex + 1);
                 $memutuskanText .= $label . "\n" . $item . "\n\n";
+                $actualIndex++;
             }
 
             $mengingatArray = $request->mengingat;

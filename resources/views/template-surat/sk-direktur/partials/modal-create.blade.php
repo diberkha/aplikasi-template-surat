@@ -139,7 +139,7 @@
                                     <label
                                         class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu
                                         :</label>
-                                    <textarea name="memutuskan[]" rows="2" required
+                                    <textarea name="memutuskan[]" rows="2"
                                         class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
                                 </div>
                             </div>
@@ -337,7 +337,7 @@
             </div>
             <div class="memutuskan-item flex gap-3">
                 <label class="mt-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap w-28 flex-shrink-0">Kesatu :</label>
-                <textarea name="memutuskan[]" rows="2" required class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
+                <textarea name="memutuskan[]" rows="2" class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"></textarea>
             </div>
         `;
         memutuskanCounter = 1;
@@ -444,10 +444,6 @@
         combineNomorSurat();
 
         const memutuskanAreas = document.querySelectorAll('#memutuskanContainer textarea[name="memutuskan[]"]');
-        if (memutuskanAreas.length < 1 || !memutuskanAreas[0].value.trim()) {
-            notify('error', 'Validasi Gagal', 'Memutuskan minimal harus mengisi kesatu.', false);
-            return;
-        }
 
         const menimbangInputs = document.querySelectorAll('#menimbangContainer input[name="menimbang[]"]');
         const nonEmptyMenimbang = Array.from(menimbangInputs).filter(i => i.value.trim() !== '');
@@ -495,10 +491,8 @@
                     form.reset(); memutuskanCounter = 1;
                     resetFormSK();
                     notify('success', 'Berhasil', result.data.message);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                    setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat); }, 500);
+
+                    setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat, true); }, 500);
                 } else { notify('error', 'Gagal', 'Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
             })
             .catch(error => { console.error('Fetch error:', error); notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + error.message, false); })

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SOPPage extends Model
+class SOPContent extends Model
 {
-    protected $table = 'sop_pages';
+    protected $table = 'sop_contents';
     protected $primaryKey = 'id_sop_page';
 
     protected $fillable = [

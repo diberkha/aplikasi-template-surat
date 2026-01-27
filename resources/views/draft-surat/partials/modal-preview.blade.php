@@ -1,5 +1,6 @@
-<div id="modalDraftPreview" x-data="draftPreview()" @open-draft-preview.window="open($event.detail)" x-show="isOpen"
-    x-cloak class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-2 z-[70]">
+<div id="modalDraftPreview" x-data="draftPreview()"
+    @open-draft-preview.window="$event.detail.item ? open($event.detail.item, $event.detail.reloadOnClose) : open($event.detail)"
+    x-show="isOpen" x-cloak class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-2 z-[70]">
     <div
         class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-[98vw] sm:max-w-[95vw] w-full h-[98vh] sm:h-[97vh] flex flex-col overflow-hidden">
 
@@ -81,6 +82,7 @@
             pdfUrl: '#',
             docxUrl: '#',
             docType: 'draft',
+            shouldReloadOnClose: false,
 
             get downloadFilename() {
                 if (!this.nomorSurat) return 'Draft.pdf';
@@ -98,7 +100,8 @@
                 return `Draft-${cleanNomor}.docx`;
             },
 
-            open(item) {
+            open(item, reloadOnClose = false) {
+                this.shouldReloadOnClose = reloadOnClose;
                 this.suratId = item.id_surat || item.id;
                 this.fileUrl = `/arsip-surat/${this.suratId}`;
 
@@ -148,13 +151,21 @@
                 this.isOpen = true;
                 this.$nextTick(() => {
                     this.$refs.pdfFrame.src = '';
-                    this.$refs.pdfFrame.src = this.pdfUrl !== '#' ? this.pdfUrl : this.fileUrl;
+                    const cacheBuster = '?t=' + new Date().getTime();
+                    const urlToLoad = this.pdfUrl !== '#' ? this.pdfUrl : this.fileUrl;
+                    this.$refs.pdfFrame.src = urlToLoad + cacheBuster;
                 });
             },
 
             close() {
                 this.isOpen = false;
                 this.$refs.pdfFrame.src = '';
+
+                if (this.shouldReloadOnClose) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                }
             },
 
             print() {
@@ -167,7 +178,7 @@
         }));
     });
 
-    window.openDraftPreview = (item) => {
-        window.dispatchEvent(new CustomEvent('open-draft-preview', { detail: item }));
+    window.openDraftPreview = (item, reloadOnClose = false) => {
+        window.dispatchEvent(new CustomEvent('open-draft-preview', { detail: { item, reloadOnClose } }));
     }
 </script>

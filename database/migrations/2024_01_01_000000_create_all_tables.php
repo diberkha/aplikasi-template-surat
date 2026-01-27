@@ -139,7 +139,7 @@ return new class extends Migration {
             $table->foreign('id_surat')->references('id_surat')->on('surat')->onDelete('cascade');
         });
 
-        Schema::create('sop_pages', function (Blueprint $table) {
+        Schema::create('sop_contents', function (Blueprint $table) {
             $table->id('id_sop_page');
             $table->unsignedBigInteger('id_sop');
             $table->string('judul_sop');
@@ -192,7 +192,7 @@ return new class extends Migration {
 
         Schema::dropIfExists('cuti_bersama');
         Schema::dropIfExists('surat_izin_cuti');
-        Schema::dropIfExists('sop_pages');
+        Schema::dropIfExists('sop_contents');
         Schema::dropIfExists('sop');
         Schema::dropIfExists('sk_direktur');
         Schema::dropIfExists('surat');

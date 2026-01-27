@@ -96,7 +96,7 @@
 </head>
 
 <body>
-    @foreach($data['pages'] as $pageIndex => $page)
+    @foreach($data['contents'] as $pageIndex => $page)
         <table style="{{ $pageIndex > 0 ? 'page-break-before: always; margin-top: 20px;' : '' }}">
             <thead>
                 <tr>

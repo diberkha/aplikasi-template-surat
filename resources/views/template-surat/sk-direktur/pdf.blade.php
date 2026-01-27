@@ -61,7 +61,7 @@
 
         @page {
             size: 8.27in 13in;
-            margin: 0.33in 0.39in 0.19in 0.49in;
+            margin: 0.33in 0.70in 0.19in 0.70in;
         }
 
         .header {
@@ -93,27 +93,27 @@
 
         .header-text {
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.0;
             font-family: Arial, Helvetica, sans-serif;
         }
 
         .header-line1 {
-            font-size: 12pt;
+            font-size: 13pt;
             margin-bottom: 0;
             letter-spacing: 0.3px;
             font-weight: normal;
         }
 
         .header-line2 {
-            font-size: 16pt;
-            margin-bottom: 2px;
+            font-size: 17pt;
+            margin-bottom: 16px;
             letter-spacing: 0.5px;
             font-weight: bold;
         }
 
         .header-line3 {
-            font-size: 10pt;
-            line-height: 1.4;
+            font-size: 9pt;
+            line-height: 1.0;
             margin-top: 2px;
         }
 
@@ -123,12 +123,8 @@
 
         .header-border {
             margin-top: 8px;
-            border-bottom: 3px solid #000;
-            padding-bottom: 2px;
-        }
-
-        .header-border-inner {
-            border-bottom: 1px solid #000;
+            border-bottom: 2.5pt solid #000;
+            padding-bottom: 0;
         }
 
         .title-section {
@@ -142,13 +138,11 @@
         .meta-info {
             margin: 12px 0 16px 0;
             text-align: center;
-            line-height: 1.5;
         }
 
         .meta-info p {
             margin: 6px 0;
             font-size: 12pt;
-            line-height: 1.3;
         }
 
         .meta-info-tentang {
@@ -159,18 +153,19 @@
         .meta-info-tentang p {
             margin: 6px 0;
             font-size: 12pt;
-            line-height: 1.35;
+            line-height: 1.15;
         }
 
         .content {
             margin: 22px 0;
             text-align: justify;
-            line-height: 1.5;
+            text-justify: inter-word;
+            line-height: 1.15;
         }
 
         .section {
             margin-bottom: 16px;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .section table {
@@ -183,7 +178,6 @@
             width: 100px;
             vertical-align: top;
             padding-right: 8px;
-            line-height: 1.5;
             word-wrap: break-word;
         }
 
@@ -191,12 +185,12 @@
             width: 18px;
             vertical-align: top;
             text-align: center;
-            line-height: 1.5;
+            line-height: 1.0;
         }
 
         .section-content {
             font-size: 12pt;
-            line-height: 1.5;
+            line-height: 1.15;
             text-align: justify;
             vertical-align: top;
             word-wrap: break-word;
@@ -206,7 +200,6 @@
             width: 25px;
             vertical-align: top;
             font-size: 12pt;
-            line-height: 1.5;
             padding-right: 2px;
         }
 
@@ -219,7 +212,7 @@
         .section-content li {
             margin-bottom: 6px;
             text-align: justify;
-            line-height: 1.5;
+            text-justify: inter-word;
         }
 
         .deciding-title {
@@ -228,27 +221,28 @@
             font-size: 12pt;
             margin: 18px 0 10px 0;
             text-transform: uppercase;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .deciding-content {
             margin-top: 8px;
-            line-height: 1.5;
+            line-height: 1.0;
         }
 
         .deciding-item {
             margin-bottom: 12px;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .deciding-text {
             text-align: justify;
-            line-height: 1.5;
+            text-justify: inter-word;
+            line-height: 1.15;
         }
 
         .footer {
             margin-top: 46px;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .footer table {
@@ -260,7 +254,7 @@
             width: 55%;
             vertical-align: top;
             text-align: left;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .footer-right {
@@ -268,7 +262,7 @@
             vertical-align: top;
             text-align: left;
             padding-left: 20mm;
-            line-height: 1.5;
+            line-height: 1.15;
         }
 
         .footer-title {
@@ -354,9 +348,11 @@
                         <div class="header-line2">RSUD dr. SOERATNO GEMOLONG</div>
                         <div class="header-line3">
                             Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274<br>
-                            <span class="header-contact">Telepon (0271) 6811839, Laman rsudgemolong.sragenkab.go.id,
-                                Pos-el <a href="mailto:rsudgemolong@gmail.com"
-                                    style="color: #000; text-decoration: underline;">rsudgemolong@gmail.com</a></span>
+                            <span class="header-contact">Telepon (0271) 6811839, Laman <a
+                                    href="https://rsudgemolong.sragenkab.go.id"
+                                    style="color: #0000FF; text-decoration: none;">https://rsudgemolong.sragenkab.go.id</a>,
+                                Pos-el <span
+                                    style="color: #000; text-decoration: none;">rsudgemolong@gmail.com</span></span>
                         </div>
                     </td>
                     <td class="header-logo" style="text-align: right;">
@@ -373,9 +369,7 @@
                     </td>
                 </tr>
             </table>
-            <div class="header-border">
-                <div class="header-border-inner"></div>
-            </div>
+            <div class="header-border"></div>
         </div>
 
         <div class="title-section">
@@ -388,7 +382,7 @@
         </div>
 
         <div class="meta-info-tentang">
-            <p style="margin-bottom: 0;">TENTANG</p>
+            <p style="margin-bottom: 12px;">TENTANG</p>
             <div
                 style="margin-top: 0; font-weight: normal; text-transform: uppercase; width: 75%; margin-left: auto; margin-right: auto; text-align: center;">
                 {!! nl2br(e($data['tentang'] ?? '-')) !!}
@@ -475,7 +469,7 @@
             </div>
         </div>
 
-        <div class="deciding-title" style="margin: 12px 0;">MEMUTUSKAN :</div>
+        <div class="deciding-title" style="margin: 12px 0;">MEMUTUSKAN</div>
 
         <div class="deciding-content">
             <div class="deciding-item" style="margin-bottom: 0;">
@@ -483,8 +477,9 @@
                     <tr>
                         <td class="section-label">Menetapkan</td>
                         <td class="section-separator">:</td>
-                        <td class="deciding-text" style="font-weight: bold; text-transform: uppercase;">
-                            {{ trim($data['menetapkan'] ?? '') }}</td>
+                        <td class="deciding-text">
+                            {{ trim($data['menetapkan'] ?? '') }}
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -517,8 +512,13 @@
                     }
                 } elseif (is_array($memutuskanText)) {
                     $labels = ['KESATU', 'KEDUA', 'KETIGA', 'KEEMPAT', 'KELIMA', 'KEENAM', 'KETUJUH', 'KEDELAPAN', 'KESEMBILAN', 'KESEPULUH'];
-                    foreach ($memutuskanText as $idx => $val) {
-                        $items[] = ['label' => $labels[$idx] ?? 'KE-' . ($idx + 1), 'text' => $val];
+                    $actualIdx = 0;
+                    foreach ($memutuskanText as $val) {
+                        $val = trim((string) $val);
+                        if ($val !== '') {
+                            $items[] = ['label' => $labels[$actualIdx] ?? 'KE-' . ($actualIdx + 1), 'text' => $val];
+                            $actualIdx++;
+                        }
                     }
                 }
             @endphp
@@ -547,7 +547,7 @@
                             {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now(), config('app.timezone'))->locale('id')->translatedFormat('j F Y') }}
                         </p>
                         <div style="margin-left: -15mm;">
-                            <p class="footer-title" style="margin-top: 10px; text-align: center;">DIREKTUR RSUD dr.
+                            <p class="footer-title" style="margin-top: 24px; text-align: center;">DIREKTUR RSUD dr.
                                 SOERATNO GEMOLONG</p>
                             <p class="footer-title" style="text-align: center;">KABUPATEN SRAGEN</p>
 

@@ -341,7 +341,7 @@
             }
 
             dobounceTimer = setTimeout(() => {
-                fetch(`/api/pegawai/search?term=${term}&type=PNS`)
+                fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&type=PNS`)
                     .then(r => r.json())
                     .then(data => {
                         resultsContainer.innerHTML = '';
@@ -698,12 +698,10 @@
                     notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
                 } else if (res.data.success) {
                     notify('success', 'Berhasil', res.data.message);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
                     closeModal('modalCreateCuti');
                     form.reset();
-                    openPreviewPDFPNS(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti', new Date().toISOString().slice(0, 10));
+
+                    openPreviewPDFPNS(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti', new Date().toISOString().slice(0, 10), true);
                 }
             })
             .catch(err => notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + err.message, false))
