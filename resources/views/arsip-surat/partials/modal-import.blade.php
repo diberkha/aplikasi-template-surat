@@ -43,26 +43,23 @@
             this.openJenis = false;
             this.resetPegawai();
                                                             },
+                                                            masterPegawais: @json($pegawais),
                                                             pegawaiSearchTerm: '',
                                                             pegawaiResults: [],
                                                             isSearching: false,
                                                             isPegawaiSelected: false,
-                                                            debounceTimer: null,
                                                             searchPegawai() {
-            if (this.pegawaiSearchTerm.length < 2) {
-            this.pegawaiResults = [];
-            return;
-            }
-            clearTimeout(this.debounceTimer);
-            this.isSearching = true;
-            this.debounceTimer = setTimeout(() => {
-            fetch(`/api/pegawai/search?term=${this.pegawaiSearchTerm}&type=${this.jenisPegawai}`)
-            .then(r => r.json())
-            .then(data => {
-            this.pegawaiResults = data;
-            this.isSearching = false;
-            });
-            }, 300);
+                                                                const term = this.pegawaiSearchTerm.toLowerCase();
+                                                                if (term.length < 2) {
+                                                                    this.pegawaiResults = [];
+                                                                    return;
+                                                                }
+                                                                this.pegawaiResults = (this.masterPegawais || []).filter(p => {
+                                                                    const matchesSearch = (p.nama && p.nama.toLowerCase().includes(term)) || 
+                                                                                        (p.nip && p.nip.toLowerCase().includes(term));
+                                                                    const matchesType = !this.jenisPegawai || p.jenis_pegawai === this.jenisPegawai;
+                                                                    return matchesSearch && matchesType;
+                                                                }).slice(0, 10);
                                                             },
                                                             selectPegawai(p) {
             this.pegawaiSearchTerm = p.nama;

@@ -87,12 +87,5 @@ class UnitController extends Controller
             ->with('success', 'Unit berhasil dihapus');
     }
 
-    public function getUnitList()
-    {
-        $units = Unit::orderBy('nama_unit')->get();
-        return response()->json([
-            'success' => true,
-            'data' => $units
-        ]);
-    }
+
 }

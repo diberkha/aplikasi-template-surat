@@ -153,12 +153,15 @@ class ArsipSuratController extends Controller
             $debugRecent = Surat::orderBy('created_at', 'desc')->take(5)->get();
         }
 
+        $pegawais = Pegawai::orderBy('nama', 'asc')->get();
+
         return view('arsip-surat.index', [
             'surat' => $suratData,
             'totalSurat' => $totalSurat,
             'templateOptions' => $templateOptions,
             'ruanganOptions' => $ruanganOptions,
-            'debugRecent' => $debugRecent
+            'debugRecent' => $debugRecent,
+            'pegawais' => $pegawais
         ]);
     }
 

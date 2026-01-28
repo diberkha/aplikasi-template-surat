@@ -194,35 +194,45 @@
 
                             <div id="edit_catatan_pns" class="hidden">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                            N-2</label>
-                                        <input type="text" id="edit_val_n2_display" readonly
-                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                                N-2</label>
+                                            <input type="text" id="edit_val_n2_display" readonly
+                                                class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <textarea name="form[catatan_n2_keterangan]" id="edit_catatan_n2_keterangan"
+                                                rows="2" placeholder="Keterangan N-2"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                            N-1</label>
-                                        <input type="text" id="edit_val_n1_display" readonly
-                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                                N-1</label>
+                                            <input type="text" id="edit_val_n1_display" readonly
+                                                class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <textarea name="form[catatan_n1_keterangan]" id="edit_catatan_n1_keterangan"
+                                                rows="2" placeholder="Keterangan N-1"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
-                                            N</label>
-                                        <input type="text" id="edit_val_n_display" readonly
-                                            class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block mb-2 text-gray-700 dark:text-gray-300 text-xs">Sisa Cuti
+                                                N</label>
+                                            <input type="text" id="edit_val_n_display" readonly
+                                                class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <textarea name="form[catatan_n_keterangan]" id="edit_catatan_n_keterangan"
+                                                rows="2" placeholder="Keterangan N"
+                                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                                    <textarea name="form[catatan_n2_keterangan]" id="edit_catatan_n2_keterangan"
-                                        rows="2" placeholder="Keterangan N-2"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
-                                    <textarea name="form[catatan_n1_keterangan]" id="edit_catatan_n1_keterangan"
-                                        rows="2" placeholder="Keterangan N-1"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
-                                    <textarea name="form[catatan_n_keterangan]" id="edit_catatan_n_keterangan" rows="2"
-                                        placeholder="Keterangan N"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm"></textarea>
                                 </div>
                             </div>
 
@@ -343,14 +353,16 @@
 </div>
 
 <script>
+    window.masterPegawais = @json($pegawais);
+
     document.addEventListener('DOMContentLoaded', function () {
         const atasanSearch = document.getElementById('edit_atasan_search');
         const atasanResults = document.getElementById('edit_atasan_results');
         const atasanClearBtn = document.getElementById('edit_atasan_clear_btn');
 
         if (atasanSearch) {
-            atasanSearch.addEventListener('input', async function () {
-                const term = this.value;
+            atasanSearch.addEventListener('input', function () {
+                const term = this.value.toLowerCase();
 
                 if (atasanClearBtn) {
                     if (term.length > 0) atasanClearBtn.classList.remove('hidden');
@@ -362,36 +374,39 @@
                     return;
                 }
 
-                try {
-                    const response = await fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&is_atasan=true`);
-                    const data = await response.json();
+                const filtered = (window.masterPegawais || []).filter(p =>
+                    (p.nama && p.nama.toLowerCase().includes(term)) ||
+                    (p.nip && p.nip.toLowerCase().includes(term))
+                ).slice(0, 10);
 
-                    atasanResults.innerHTML = '';
-                    if (data.length > 0) {
-                        data.forEach(p => {
-                            const div = document.createElement('div');
-                            div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
-                            const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
-                            div.innerHTML = `
+                atasanResults.innerHTML = '';
+                if (filtered.length > 0) {
+                    filtered.forEach(p => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                        const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                        div.innerHTML = `
                                 <div class="font-semibold text-gray-900 dark:text-gray-100">${p.nama}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
                             `;
-                            div.onclick = () => {
-                                document.getElementById('edit_cuti_atasan_nama').value = p.nama;
-                                document.getElementById('edit_cuti_atasan_nip').value = p.nip || '-';
-                                document.getElementById('edit_cuti_atasan_jabatan').value = p.jabatan || '-';
-                                atasanResults.classList.add('hidden');
-                                atasanSearch.value = p.nama;
+                        div.onclick = () => {
+                            document.getElementById('edit_cuti_atasan_nama').value = p.nama;
+                            document.getElementById('edit_cuti_atasan_nip').value = p.nip || '-';
+                            document.getElementById('edit_cuti_atasan_jabatan').value = p.jabatan || '-';
+                            atasanResults.classList.add('hidden');
+                            atasanSearch.value = p.nama;
 
-                                if (!isInitializingCuti && window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) {
-                                    window.formDirtyMonitors['editCutiForm'].check();
-                                }
-                            };
-                            atasanResults.appendChild(div);
-                        });
-                        atasanResults.classList.remove('hidden');
-                    }
-                } catch (error) { console.error('Error searching atasan:', error); }
+                            if (!isInitializingCuti && window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) {
+                                window.formDirtyMonitors['editCutiForm'].check();
+                            }
+                        };
+                        atasanResults.appendChild(div);
+                    });
+                    atasanResults.classList.remove('hidden');
+                } else {
+                    atasanResults.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">Tidak ada pegawai ditemukan</div>';
+                    atasanResults.classList.remove('hidden');
+                }
             });
 
             document.addEventListener('click', e => {
@@ -460,13 +475,13 @@
         document.getElementById('edit_cuti_alamat').value = formData.alamat || formData.alamat_cuti || '';
 
         if (pegId) {
-            const pRes = await fetch(`/api/pegawai/${pegId}`);
-            const pInfo = await pRes.json();
-
-            baselineN = (pInfo.sisa_cuti_n || 0) + (parseInt(formData.n_used) || 0);
-            baselineN1 = (pInfo.sisa_cuti_n1 || 0) + (parseInt(formData.n1_used) || 0);
-            baselineN2 = (pInfo.sisa_cuti_n2 || 0) + (parseInt(formData.n2_used) || 0);
-            baselineSisaTahunan = (pInfo.sisa_cuti_tahunan || 0) + (parseInt(formData.lama_cuti) || 0);
+            const pInfo = (window.masterPegawais || []).find(p => p.id == pegId);
+            if (pInfo) {
+                baselineN = (pInfo.sisa_cuti_n || 0) + (parseInt(formData.n_used) || 0);
+                baselineN1 = (pInfo.sisa_cuti_n1 || 0) + (parseInt(formData.n1_used) || 0);
+                baselineN2 = (pInfo.sisa_cuti_n2 || 0) + (parseInt(formData.n2_used) || 0);
+                baselineSisaTahunan = (pInfo.sisa_cuti_tahunan || 0) + (parseInt(formData.lama_cuti) || 0);
+            }
         }
 
         editModeCuti = true;
@@ -642,8 +657,7 @@
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
         fetch(`/cuti/${id}`, {
-            method: 'POST', body: finalData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            method: 'POST', body: finalData
         })
             .then(r => r.json())
             .then(res => {

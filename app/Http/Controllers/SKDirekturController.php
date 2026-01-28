@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
 use App\Models\SKDirektur;
+use App\Models\Regulasi;
 use App\Models\Pegawai;
 use Exception;
 use Illuminate\Http\Request;
@@ -39,7 +40,8 @@ class SKDirekturController extends Controller
                 ];
             });
 
-        return view('template-surat.sk-direktur.index', compact('templates'));
+        $regulasis = Regulasi::all();
+        return view('template-surat.sk-direktur.index', compact('templates', 'regulasis'));
     }
 
     public function store(Request $request)

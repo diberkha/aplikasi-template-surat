@@ -178,41 +178,47 @@
                     </div>
                     <div class="p-4 bg-gray-50 dark:bg-gray-800/50">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N-2</label>
-                                <input type="text" id="val_n2_display" readonly
-                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
-                                    value="0 Hari">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti
+                                        N-2</label>
+                                    <input type="text" id="val_n2_display" readonly
+                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
+                                        value="0 Hari">
+                                </div>
+                                <div>
+                                    <textarea name="form[catatan_n2_keterangan]" rows="2"
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                        placeholder="Keterangan N-2 (Opsional)"></textarea>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N-1</label>
-                                <input type="text" id="val_n1_display" readonly
-                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
-                                    value="0 Hari">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti
+                                        N-1</label>
+                                    <input type="text" id="val_n1_display" readonly
+                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
+                                        value="0 Hari">
+                                </div>
+                                <div>
+                                    <textarea name="form[catatan_n1_keterangan]" rows="2"
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                        placeholder="Keterangan N-1 (Opsional)"></textarea>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti N</label>
-                                <input type="text" id="val_n_display" readonly
-                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
-                                    value="0 Hari">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                            <div>
-                                <textarea name="form[catatan_n2_keterangan]" rows="2"
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
-                                    placeholder="Keterangan N-2 (Opsional)"></textarea>
-                            </div>
-                            <div>
-                                <textarea name="form[catatan_n1_keterangan]" rows="2"
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
-                                    placeholder="Keterangan N-1 (Opsional)"></textarea>
-                            </div>
-                            <div>
-                                <textarea name="form[catatan_n_keterangan]" rows="2"
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
-                                    placeholder="Keterangan N (Opsional)"></textarea>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Sisa Cuti
+                                        N</label>
+                                    <input type="text" id="val_n_display" readonly
+                                        class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed"
+                                        value="0 Hari">
+                                </div>
+                                <div>
+                                    <textarea name="form[catatan_n_keterangan]" rows="2"
+                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y text-sm"
+                                        placeholder="Keterangan N (Opsional)"></textarea>
+                                </div>
                             </div>
                         </div>
 
@@ -348,27 +354,28 @@
             if (term.length < 2) return;
 
             dobounceTimer = setTimeout(() => {
-                fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&type=PNS`)
-                    .then(r => r.json())
-                    .then(data => {
-                        resultsContainer.innerHTML = '';
-                        if (data.length > 0) {
-                            data.forEach(p => {
-                                const div = document.createElement('div');
-                                div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
-                                const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
-                                div.innerHTML = `
-                                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
-                                `;
-                                div.onclick = () => selectPegawai(p.id);
-                                resultsContainer.appendChild(div);
-                            });
-                            resultsContainer.classList.remove('hidden');
-                        } else {
-                            resultsContainer.classList.add('hidden');
-                        }
+                const data = window.masterPegawais.filter(p =>
+                    (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
+                    (p.nip && p.nip.includes(term))
+                ).filter(p => p.jenis_pegawai === 'PNS').slice(0, 10);
+
+                resultsContainer.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(p => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                        const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                        div.innerHTML = `
+                            <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                        `;
+                        div.onclick = () => selectPegawai(p.id);
+                        resultsContainer.appendChild(div);
                     });
+                    resultsContainer.classList.remove('hidden');
+                } else {
+                    resultsContainer.classList.add('hidden');
+                }
             }, 300);
         });
 
@@ -379,33 +386,32 @@
         });
 
         function selectPegawai(id) {
-            fetch(`/api/pegawai/${id}`)
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('nama_pegawai').value = data.nama;
-                    document.getElementById('pegawai_id_pns').value = data.id;
-                    document.getElementById('pegawai_search').value = data.nama;
-                    document.getElementById('pegawai_search').readOnly = true;
-                    document.getElementById('pegawai_search').classList.add('bg-gray-100', 'cursor-not-allowed');
-                    document.getElementById('pegawai_reset').classList.remove('hidden');
+            const data = window.masterPegawais.find(p => p.id == id);
+            if (data) {
+                document.getElementById('nama_pegawai').value = data.nama;
+                document.getElementById('pegawai_id_pns').value = data.id;
+                document.getElementById('pegawai_search').value = data.nama;
+                document.getElementById('pegawai_search').readOnly = true;
+                document.getElementById('pegawai_search').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('pegawai_reset').classList.remove('hidden');
 
-                    document.getElementById('nip_pegawai').value = data.nip;
-                    document.getElementById('jabatan_pegawai').value = data.jabatan;
-                    document.getElementById('masa_kerja_tahun').value = data.masa_kerja_tahun;
-                    document.getElementById('masa_kerja_bulan').value = data.masa_kerja_bulan;
+                document.getElementById('nip_pegawai').value = data.nip || '';
+                document.getElementById('jabatan_pegawai').value = data.jabatan || '';
+                document.getElementById('masa_kerja_tahun').value = data.masa_kerja_tahun || 0;
+                document.getElementById('masa_kerja_bulan').value = data.masa_kerja_bulan || 0;
 
-                    sisaCutiGlobal = data.sisa_cuti_tahunan;
-                    sisaN = data.sisa_cuti_n;
-                    sisaN1 = data.sisa_cuti_n1;
-                    sisaN2 = data.sisa_cuti_n2;
+                sisaCutiGlobal = data.sisa_cuti_tahunan || 0;
+                sisaN = data.sisa_cuti_n || 0;
+                sisaN1 = data.sisa_cuti_n1 || 0;
+                sisaN2 = data.sisa_cuti_n2 || 0;
 
-                    document.getElementById('val_n_display').value = sisaN + ' Hari';
-                    document.getElementById('val_n1_display').value = sisaN1 + ' Hari';
-                    document.getElementById('val_n2_display').value = sisaN2 + ' Hari';
+                document.getElementById('val_n_display').value = sisaN + ' Hari';
+                document.getElementById('val_n1_display').value = sisaN1 + ' Hari';
+                document.getElementById('val_n2_display').value = sisaN2 + ' Hari';
 
-                    updateSisaCutiDisplay();
-                    resultsContainer.classList.add('hidden');
-                });
+                updateSisaCutiDisplay();
+                resultsContainer.classList.add('hidden');
+            }
         }
 
         const resetBtn = document.getElementById('pegawai_reset');
@@ -457,27 +463,28 @@
                 }
 
                 atasanDebounceTimer = setTimeout(() => {
-                    fetch(`/api/pegawai/search?term=${term}&is_atasan=true`)
-                        .then(r => r.json())
-                        .then(data => {
-                            atasanResultsContainer.innerHTML = '';
-                            if (data.length > 0) {
-                                data.forEach(p => {
-                                    const div = document.createElement('div');
-                                    div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
-                                    const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
-                                    div.innerHTML = `
-                                        <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
-                                    `;
-                                    div.onclick = () => selectAtasan(p.id);
-                                    atasanResultsContainer.appendChild(div);
-                                });
-                                atasanResultsContainer.classList.remove('hidden');
-                            } else {
-                                atasanResultsContainer.classList.add('hidden');
-                            }
+                    const data = window.masterPegawais.filter(p =>
+                        (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
+                        (p.nip && p.nip.includes(term))
+                    ).slice(0, 10);
+
+                    atasanResultsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(p => {
+                            const div = document.createElement('div');
+                            div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                            const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                            div.innerHTML = `
+                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                            `;
+                            div.onclick = () => selectAtasan(p.id);
+                            atasanResultsContainer.appendChild(div);
                         });
+                        atasanResultsContainer.classList.remove('hidden');
+                    } else {
+                        atasanResultsContainer.classList.add('hidden');
+                    }
                 }, 300);
             });
 
@@ -489,19 +496,18 @@
         }
 
         function selectAtasan(id) {
-            fetch(`/api/pegawai/${id}`)
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('nama_atasan').value = data.nama;
-                    document.getElementById('atasan_search').value = data.nama;
-                    document.getElementById('atasan_search').readOnly = true;
-                    document.getElementById('atasan_search').classList.add('bg-gray-100', 'cursor-not-allowed');
-                    document.getElementById('atasan_reset').classList.remove('hidden');
+            const data = window.masterPegawais.find(p => p.id == id);
+            if (data) {
+                document.getElementById('nama_atasan').value = data.nama;
+                document.getElementById('atasan_search').value = data.nama;
+                document.getElementById('atasan_search').readOnly = true;
+                document.getElementById('atasan_search').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('atasan_reset').classList.remove('hidden');
 
-                    document.getElementById('nip_atasan').value = data.nip;
-                    document.getElementById('jabatan_atasan').value = data.jabatan;
-                    atasanResultsContainer.classList.add('hidden');
-                });
+                document.getElementById('nip_atasan').value = data.nip || '';
+                document.getElementById('jabatan_atasan').value = data.jabatan || '';
+                atasanResultsContainer.classList.add('hidden');
+            }
         }
 
         const atasanResetBtn = document.getElementById('atasan_reset');

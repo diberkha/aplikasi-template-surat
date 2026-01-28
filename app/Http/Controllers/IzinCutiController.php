@@ -45,7 +45,9 @@ class IzinCutiController extends Controller
                 ];
             });
 
-        return view('template-surat.cuti.index', compact('templates'));
+        $regulasis = \App\Models\Regulasi::all();
+        $pegawais = \App\Models\Pegawai::orderBy('nama', 'asc')->get();
+        return view('template-surat.cuti.index', compact('templates', 'regulasis', 'pegawais'));
     }
 
     public function store(Request $request)

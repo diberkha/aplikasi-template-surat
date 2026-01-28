@@ -117,7 +117,7 @@
                     }, 300);
                 } else {
                     if (typeof showNotification === 'function') {
-                        showNotification('success', 'Berhasil!', 'Surat berhasil dibuat dan disimpan');
+                        showNotification('success', 'Berhasil', 'Surat berhasil dibuat dan disimpan');
                     }
                     setTimeout(() => {
                         window.location.href = "{{ route('draft-surat.sk-direktur.index') }}";

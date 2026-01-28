@@ -128,6 +128,8 @@
 @include('template-surat.cuti.cuti-nonasn.partials.modal-preview')
 
 <script>
+    window.masterPegawais = @json($pegawais);
+
     function openCutiModal(modalId, templateName, templateId) {
         const modal = document.getElementById(modalId);
         if (modal) {

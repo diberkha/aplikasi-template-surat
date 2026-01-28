@@ -38,7 +38,9 @@ class DraftSuratController extends Controller
             ];
         });
 
-        return view('draft-surat.sop.index', compact('drafts'));
+        $regulasis = \App\Models\Regulasi::all();
+        $units = \App\Models\Unit::all();
+        return view('draft-surat.sop.index', compact('drafts', 'regulasis', 'units'));
     }
 
     public function skDirekturIndex()
@@ -65,7 +67,8 @@ class DraftSuratController extends Controller
             ];
         });
 
-        return view('draft-surat.sk-direktur.index', compact('drafts'));
+        $regulasis = \App\Models\Regulasi::all();
+        return view('draft-surat.sk-direktur.index', compact('drafts', 'regulasis'));
     }
 
     public function cutiIndex()
@@ -92,6 +95,7 @@ class DraftSuratController extends Controller
             ];
         });
 
-        return view('draft-surat.cuti.index', compact('drafts'));
+        $pegawais = \App\Models\Pegawai::orderBy('nama', 'asc')->get();
+        return view('draft-surat.cuti.index', compact('drafts', 'pegawais'));
     }
 }

@@ -210,11 +210,11 @@
                             <button @click="page !== '...' && goToPage(page)"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                                                                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
-                                                                                                                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                            ]"
+                                                                                                                                                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
+                                                                                                                                                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                            ]"
                                 :disabled="page === '...'">
                                 <span x-text="page"></span>
                             </button>
@@ -397,50 +397,48 @@
                     },
 
                     openEditModal(id) {
+                        const data = this.data.find(p => p.id == id);
+                        if (!data) return;
+
+                        window.originalPegawai = { ...data };
                         openModal('modalEditPegawai');
 
-                        fetch(`/api/pegawai/${id}`)
-                            .then(r => r.json())
-                            .then(data => {
-                                window.originalPegawai = { ...data };
+                        document.getElementById('edit_id_pegawai').value = data.id;
+                        document.getElementById('edit_nama_pegawai').value = data.nama;
+                        document.getElementById('edit_nip_pegawai').value = data.nip || '';
 
-                                document.getElementById('edit_id_pegawai').value = data.id;
-                                document.getElementById('edit_nama_pegawai').value = data.nama;
-                                document.getElementById('edit_nip_pegawai').value = data.nip;
+                        window.dispatchEvent(new CustomEvent('populate-edit-modal', {
+                            detail: {
+                                jabatan: data.jabatan,
+                                jenis_pegawai: data.jenis_pegawai
+                            }
+                        }));
 
-                                window.dispatchEvent(new CustomEvent('populate-edit-modal', {
-                                    detail: {
-                                        jabatan: data.jabatan,
-                                        jenis_pegawai: data.jenis_pegawai
-                                    }
-                                }));
+                        document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
+                        document.getElementById('edit_masa_kerja_pegawai').value = data.masa_kerja;
 
-                                document.getElementById('edit_jenis_pegawai').value = data.jenis_pegawai;
-                                document.getElementById('edit_masa_kerja_pegawai').value = data.masa_kerja;
+                        document.getElementById('edit_sisa_cuti_n').value = data.sisa_cuti_n || 0;
+                        document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1 || 0;
+                        document.getElementById('edit_sisa_cuti_n2').value = data.sisa_cuti_n2 || 0;
 
-                                document.getElementById('edit_sisa_cuti_n').value = data.sisa_cuti_n;
-                                document.getElementById('edit_sisa_cuti_n1').value = data.sisa_cuti_n1;
-                                document.getElementById('edit_sisa_cuti_n2').value = data.sisa_cuti_n2;
+                        document.getElementById('formEditPegawai').action = "{{ route('master-data.pegawai.update', '') }}/" + data.id;
 
-                                document.getElementById('formEditPegawai').action = "{{ route('master-data.pegawai.update', '') }}/" + data.id;
+                        if (typeof toggleNIPField === 'function') {
+                            toggleNIPField(data.jenis_pegawai, 'edit');
+                        }
+                        if (typeof updateMasaKerjaLabel === 'function') {
+                            updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
+                        }
+                        if (typeof toggleLeaveFields === 'function') {
+                            toggleLeaveFields(data.jenis_pegawai, 'edit');
+                        }
+                        if (typeof setupCutiValidation === 'function') {
+                            setupCutiValidation('edit');
+                        }
 
-                                if (typeof toggleNIPField === 'function') {
-                                    toggleNIPField(data.jenis_pegawai, 'edit');
-                                }
-                                if (typeof updateMasaKerjaLabel === 'function') {
-                                    updateMasaKerjaLabel(data.jenis_pegawai, 'edit');
-                                }
-                                if (typeof toggleLeaveFields === 'function') {
-                                    toggleLeaveFields(data.jenis_pegawai, 'edit');
-                                }
-                                if (typeof setupCutiValidation === 'function') {
-                                    setupCutiValidation('edit');
-                                }
-
-                                if (typeof FormDirtyMonitor !== 'undefined') {
-                                    new FormDirtyMonitor('formEditPegawai', 'btnSubmitEditPegawai');
-                                }
-                            });
+                        if (typeof FormDirtyMonitor !== 'undefined') {
+                            new FormDirtyMonitor('formEditPegawai', 'btnSubmitEditPegawai');
+                        }
                     },
 
                     resetEditPegawai() {
@@ -594,8 +592,8 @@
 
                 refresh();
             }
-                                                                        });
-                                                                    };
+                                                                                        });
+                                                                                    };
 
             [fields.n, fields.n1, fields.n2].forEach((f) => {
                 if (f && !f.dataset.hasCutiListener) {
@@ -616,7 +614,7 @@
             }
 
             refresh();
-                                                                }
+                                                                                }
         </script>
 
 @endsection

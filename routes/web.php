@@ -90,9 +90,6 @@ Route::middleware('auth')->group(function () {
         Route::prefix('regulasi')->name('master-data.regulasi.')->middleware('role:Admin,Tata Usaha')->controller(RegulasiController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
-            Route::get('/get-surat/{templateId}', 'getSuratByTemplate')->name('get.surat');
-            Route::get('/detail/{id}', 'getRegulasiDetail')->name('detail');
-            Route::get('/edit-data/{id}', 'getRegulasiForEdit')->name('edit.data');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
         });
@@ -115,19 +112,6 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('api/regulasi')->group(function () {
-        Route::get('/', [RegulasiController::class, 'getRegulasiList']);
-        Route::get('/{id}/data', [RegulasiController::class, 'getRegulasiData']);
-    });
-
-    Route::prefix('api/unit')->group(function () {
-        Route::get('/', [UnitController::class, 'getUnitList']);
-    });
-
-    Route::prefix('api/pegawai')->controller(\App\Http\Controllers\PegawaiController::class)->group(function () {
-        Route::get('/search', 'search')->name('api.pegawai.search');
-        Route::get('/{id}', 'getDetail')->name('api.pegawai.detail');
-    });
 
     Route::prefix('template-surat')->name('template-surat.')->group(function () {
         Route::middleware('role:Admin,Tata Usaha')->group(function () {

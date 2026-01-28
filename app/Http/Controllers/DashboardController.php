@@ -20,7 +20,7 @@ class DashboardController extends Controller
         }
         $totalTemplate = $templateQuery->count();
 
-        $suratQuery = Surat::query();
+        $suratQuery = Surat::where('is_draft', false);
         if (!$user->hasRole('Admin')) {
             $suratQuery->whereHas('createdBy', function ($q) use ($user) {
                 $q->where('id_ruangan', $user->id_ruangan);

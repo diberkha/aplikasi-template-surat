@@ -6,7 +6,7 @@ use App\Models\SOP;
 use App\Models\SOPContent;
 use App\Models\Surat;
 use App\Models\TemplateSurat;
-use App\Models\Regulasi;
+use App\Models\Unit;
 use App\Models\Pegawai;
 use Exception;
 use Illuminate\Http\Request;
@@ -42,7 +42,9 @@ class SOPController extends Controller
                 ];
             });
 
-        return view('template-surat.sop.index', compact('templates'));
+        $regulasis = \App\Models\Regulasi::all();
+        $units = Unit::all();
+        return view('template-surat.sop.index', compact('templates', 'regulasis', 'units'));
     }
 
     public function store(Request $request)

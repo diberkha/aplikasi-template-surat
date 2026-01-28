@@ -223,11 +223,12 @@
 
     async function loadRegulasiOptions() {
         try {
-            const response = await fetch('/api/regulasi');
-            let data = await response.json();
-            if (data.data) data = data.data;
+            let data = @json($regulasis);
+            if (data && data.data) data = data.data;
 
             const listContainer = document.getElementById('mengingatList');
+            if (!listContainer) return;
+
             listContainer.innerHTML = '';
             if (!Array.isArray(data) || data.length === 0) {
                 listContainer.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Tidak ada data regulasi</div>';
@@ -237,19 +238,21 @@
                 const checkboxItem = document.createElement('div');
                 checkboxItem.className = 'mengingat-item flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0';
                 checkboxItem.innerHTML = `
-                    <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}"
-                        id="mengingat_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
-                        onchange="updateMengingatCheck()">
-                    <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
-                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
-                    </label>
-                `;
+                        <input type="checkbox" name="mengingat[]" value="${item.id_regulasi}"
+                            id="mengingat_${index}" class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer"
+                            onchange="updateMengingatCheck()">
+                        <label for="mengingat_${index}" class="ml-3 flex-1 cursor-pointer">
+                            <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block">${item.isi_regulasi}</span>
+                        </label>
+                    `;
                 listContainer.appendChild(checkboxItem);
             });
         } catch (error) {
             console.error('Error loading regulasi options:', error);
             const listContainer = document.getElementById('mengingatList');
-            listContainer.innerHTML = '<div class="text-sm text-red-500 dark:text-red-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data</div>';
+            if (listContainer) {
+                listContainer.innerHTML = '<div class="text-sm text-red-500 dark:text-red-400 text-center py-4"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat data</div>';
+            }
         }
     }
 

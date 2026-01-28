@@ -58,16 +58,11 @@
     let editMasterUnit = [];
     let currentEditSopId = null;
 
-    async function loadEditMasterData() {
-        if (editMasterRegulasi.length > 0) return;
-        try {
-            const [regResp, unitResp] = await Promise.all([
-                fetch('/api/regulasi').then(r => r.json()),
-                fetch('/api/unit').then(r => r.json())
-            ]);
-            editMasterRegulasi = regResp.data || regResp;
-            editMasterUnit = unitResp.data || unitResp;
-        } catch (error) { console.error('Error loading master data:', error); }
+    function loadEditMasterData() {
+        editMasterRegulasi = @json($regulasis);
+        editMasterUnit = @json($units);
+        if (editMasterRegulasi.data) editMasterRegulasi = editMasterRegulasi.data;
+        if (editMasterUnit.data) editMasterUnit = editMasterUnit.data;
     }
 
     async function openEditSopModal(id) {
@@ -442,7 +437,7 @@
         input.focus();
     }
 
-    function submitEditSOPForm(event) {
+    async function submitEditSOPForm(event) {
         event.preventDefault();
         saveEditActivePageData();
 
@@ -491,34 +486,32 @@
             p.unit_terkait.forEach((v, j) => formData.append(`contents[${i}][unit_terkait][${j}]`, v));
         });
 
-        fetch(`/sop/${currentEditSopId}`, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-        })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    closeModal('modalEditSOP');
-                    notify('success', 'Berhasil', result.message);
-
-                    window.dispatchEvent(new CustomEvent('update-sop-draft', { detail: result.data }));
-
-                    setTimeout(() => {
-                        window.openDraftPreview(result.data, true);
-                    }, 500);
-                } else {
-                    notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                notify('error', 'Gagal', 'Terjadi kesalahan sistem');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Perbarui';
+        try {
+            const response = await fetch(`/sop/${currentEditSopId}`, {
+                method: 'POST',
+                body: formData
             });
+            const result = await response.json();
+
+            if (result.success) {
+                closeModal('modalEditSOP');
+                notify('success', 'Berhasil', result.message);
+
+                window.dispatchEvent(new CustomEvent('update-sop-draft', { detail: result.data }));
+
+                setTimeout(() => {
+                    window.openDraftPreview(result.data, true);
+                }, 500);
+            } else {
+                notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            notify('error', 'Gagal', 'Terjadi kesalahan sistem');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Perbarui';
+        }
     }
 
     function resetEditSopForm() {

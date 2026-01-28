@@ -67,19 +67,11 @@
     });
 
     async function loadRegulasiOptions() {
-        try {
-            const response = await fetch('/api/regulasi');
-            let data = await response.json();
-            masterRegulasi = data.data || data;
-        } catch (error) { console.error('Error loading regulasi:', error); }
+        masterRegulasi = @json($regulasis);
     }
 
     async function loadUnitOptions() {
-        try {
-            const response = await fetch('/api/unit');
-            let data = await response.json();
-            masterUnit = data.data || data;
-        } catch (error) { console.error('Error loading unit:', error); }
+        masterUnit = @json($units);
     }
 
     function initDefaultSopContent() {

@@ -163,11 +163,11 @@
                                     <button @click="page !== '...' && goToPage(page)"
                                         class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                         :class="[
-                                                                                                            parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
-                                                                                                            (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                            (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                            ]"
+                                                                                                                                                            parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
+                                                                                                                                                            (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                            (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                            ]"
                                         :disabled="page === '...'">
                                         <span x-text="page"></span>
                                     </button>
@@ -340,76 +340,28 @@
                 openModal('modalDeleteRegulasi');
             }
 
-            async function openEditModal(id) {
-                try {
-                    const response = await fetch(`/master-data/regulasi/edit-data/${id}`);
-                    const result = await response.json();
-
-                    if (result.success) {
-                        const regulasi = result.data.regulasi;
-                        document.getElementById('editIdRegulasi').value = regulasi.id_regulasi;
-                        document.getElementById('editIsiRegulasiField').value = regulasi.isi_regulasi;
-
-                        const editIsiRegulasiField = document.getElementById('editIsiRegulasiField');
-                        const editIsiRegulasiCounter = document.getElementById('editIsiRegulasiCounter');
-                        if (editIsiRegulasiField && editIsiRegulasiCounter) {
-                            updateCounter(editIsiRegulasiField, editIsiRegulasiCounter);
-                        }
-
-                        document.getElementById('editRegulasiForm').action = `/master-data/regulasi/${regulasi.id_regulasi}`;
-
-                        if (typeof FormDirtyMonitor !== 'undefined') {
-                            new FormDirtyMonitor('editRegulasiForm', 'btnSubmitEditRegulasi');
-                        }
-
-                        openModal('modalEdit');
-                    } else {
-                        throw new Error('Gagal mengambil data untuk edit');
-                    }
-                } catch (error) {
-                    notify('error', 'Gagal', 'Gagal memuat data untuk edit', false);
-                }
-            }
-
             function editRegulasi(id) {
-                openEditModal(id);
-            }
+                const regulasi = Alpine.find(document.querySelector('[x-data="regulasi()"]')).regulasis.find(r => r.id_regulasi == id);
+                if (regulasi) {
+                    document.getElementById('editIdRegulasi').value = regulasi.id_regulasi;
+                    document.getElementById('editIsiRegulasiField').value = regulasi.isi_regulasi;
 
-            function getSuratByTemplate() {
-                const templateId = document.getElementById('template_surat').value;
-                const suratSelect = document.getElementById('surat');
+                    const editIsiRegulasiField = document.getElementById('editIsiRegulasiField');
+                    const editIsiRegulasiCounter = document.getElementById('editIsiRegulasiCounter');
+                    if (editIsiRegulasiField && editIsiRegulasiCounter) {
+                        updateCounter(editIsiRegulasiField, editIsiRegulasiCounter);
+                    }
 
-                if (!templateId) {
-                    suratSelect.innerHTML = '<option value="">-- Pilih Template Surat terlebih dahulu --</option>';
-                    suratSelect.disabled = true;
-                    return;
+                    document.getElementById('editRegulasiForm').action = `/master-data/regulasi/${regulasi.id_regulasi}`;
+
+                    if (typeof FormDirtyMonitor !== 'undefined') {
+                        new FormDirtyMonitor('editRegulasiForm', 'btnSubmitEditRegulasi');
+                    }
+
+                    openModal('modalEdit');
+                } else {
+                    notify('error', 'Gagal', 'Data regulasi tidak ditemukan', false);
                 }
-
-                suratSelect.innerHTML = '<option value="">Memuat data surat</option>';
-                suratSelect.disabled = true;
-
-                fetch(`/master-data/regulasi/get-surat/${templateId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        suratSelect.innerHTML = '<option value="">-- Pilih Surat --</option>';
-
-                        if (data.length === 0) {
-                            suratSelect.innerHTML += '<option value="" disabled>Tidak ada surat untuk template ini</option>';
-                        } else {
-                            data.forEach(surat => {
-                                const option = document.createElement('option');
-                                option.value = surat.id_surat;
-                                option.textContent = surat.nama_surat;
-                                suratSelect.appendChild(option);
-                            });
-                        }
-                        suratSelect.disabled = false;
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        suratSelect.innerHTML = '<option value="">Error loading data</option>';
-                        suratSelect.disabled = false;
-                    });
             }
 
             function updateCounter(textarea, counter) {

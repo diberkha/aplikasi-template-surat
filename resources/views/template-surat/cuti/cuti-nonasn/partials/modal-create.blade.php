@@ -323,27 +323,28 @@
             if (term.length < 2) return;
 
             dobounceTimer = setTimeout(() => {
-                fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&type=${encodeURIComponent('NON ASN')}`)
-                    .then(r => r.json())
-                    .then(data => {
-                        resultsContainer.innerHTML = '';
-                        if (data.length > 0) {
-                            data.forEach(p => {
-                                const div = document.createElement('div');
-                                div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
-                                const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
-                                div.innerHTML = `
-                                    <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
-                                `;
-                                div.onclick = () => selectPegawai(p.id);
-                                resultsContainer.appendChild(div);
-                            });
-                            resultsContainer.classList.remove('hidden');
-                        } else {
-                            resultsContainer.classList.add('hidden');
-                        }
+                const data = window.masterPegawais.filter(p =>
+                    (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
+                    (p.nip && p.nip.includes(term))
+                ).filter(p => p.jenis_pegawai === 'NON ASN').slice(0, 10);
+
+                resultsContainer.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(p => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                        const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                        div.innerHTML = `
+                            <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                        `;
+                        div.onclick = () => selectPegawai(p.id);
+                        resultsContainer.appendChild(div);
                     });
+                    resultsContainer.classList.remove('hidden');
+                } else {
+                    resultsContainer.classList.add('hidden');
+                }
             }, 300);
         });
 
@@ -354,34 +355,33 @@
         });
 
         function selectPegawai(id) {
-            fetch(`/api/pegawai/${id}`)
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('nama_pegawai_nonasn').value = data.nama;
-                    document.getElementById('pegawai_id_nonasn').value = data.id;
-                    document.getElementById('pegawai_search_nonasn').value = data.nama;
-                    document.getElementById('pegawai_search_nonasn').readOnly = true;
-                    document.getElementById('pegawai_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
-                    document.getElementById('pegawai_reset_nonasn').classList.remove('hidden');
+            const data = window.masterPegawais.find(p => p.id == id);
+            if (data) {
+                document.getElementById('nama_pegawai_nonasn').value = data.nama;
+                document.getElementById('pegawai_id_nonasn').value = data.id;
+                document.getElementById('pegawai_search_nonasn').value = data.nama;
+                document.getElementById('pegawai_search_nonasn').readOnly = true;
+                document.getElementById('pegawai_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('pegawai_reset_nonasn').classList.remove('hidden');
 
-                    const nipContainer = document.getElementById('nip_container_nonasn');
-                    const nipInput = document.getElementById('nip_pegawai_nonasn');
-                    if (data.nip && data.nip.trim() !== '') {
-                        nipInput.value = data.nip;
-                        if (nipContainer) nipContainer.style.display = 'block';
-                    } else {
-                        nipInput.value = '';
-                        if (nipContainer) nipContainer.style.display = 'none';
-                    }
+                const nipContainer = document.getElementById('nip_container_nonasn');
+                const nipInput = document.getElementById('nip_pegawai_nonasn');
+                if (data.nip && data.nip.trim() !== '') {
+                    nipInput.value = data.nip;
+                    if (nipContainer) nipContainer.style.display = 'block';
+                } else {
+                    nipInput.value = '';
+                    if (nipContainer) nipContainer.style.display = 'none';
+                }
 
-                    document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun;
-                    document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan;
-                    document.getElementById('jabatan_pegawai_nonasn').value = data.jabatan;
+                document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun || 0;
+                document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan || 0;
+                document.getElementById('jabatan_pegawai_nonasn').value = data.jabatan || '';
 
-                    sisaCutiGlobal = data.sisa_cuti_tahunan;
-                    updateSisaCutiDisplay();
-                    resultsContainer.classList.add('hidden');
-                });
+                sisaCutiGlobal = data.sisa_cuti_tahunan || 0;
+                updateSisaCutiDisplay();
+                resultsContainer.classList.add('hidden');
+            }
         }
 
         const resetBtn = document.getElementById('pegawai_reset_nonasn');
@@ -428,27 +428,28 @@
                 }
 
                 atasanDebounceTimer = setTimeout(() => {
-                    fetch(`/api/pegawai/search?term=${term}&is_atasan=true`)
-                        .then(r => r.json())
-                        .then(data => {
-                            atasanResultsContainer.innerHTML = '';
-                            if (data.length > 0) {
-                                data.forEach(p => {
-                                    const div = document.createElement('div');
-                                    div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
-                                    const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
-                                    div.innerHTML = `
-                                        <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
-                                    `;
-                                    div.onclick = () => selectAtasan(p.id);
-                                    atasanResultsContainer.appendChild(div);
-                                });
-                                atasanResultsContainer.classList.remove('hidden');
-                            } else {
-                                atasanResultsContainer.classList.add('hidden');
-                            }
+                    const data = window.masterPegawais.filter(p =>
+                        (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
+                        (p.nip && p.nip.includes(term))
+                    ).slice(0, 10);
+
+                    atasanResultsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(p => {
+                            const div = document.createElement('div');
+                            div.className = 'px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transition-all';
+                            const details = p.nip ? `${p.nip} | ${p.jabatan || '-'}` : (p.jabatan || '-');
+                            div.innerHTML = `
+                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">${p.nama}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${details}</div>
+                            `;
+                            div.onclick = () => selectAtasan(p.id);
+                            atasanResultsContainer.appendChild(div);
                         });
+                        atasanResultsContainer.classList.remove('hidden');
+                    } else {
+                        atasanResultsContainer.classList.add('hidden');
+                    }
                 }, 300);
             });
 
@@ -460,19 +461,18 @@
         }
 
         function selectAtasan(id) {
-            fetch(`/api/pegawai/${id}`)
-                .then(r => r.json())
-                .then(data => {
-                    document.getElementById('nama_atasan_nonasn').value = data.nama;
-                    document.getElementById('atasan_search_nonasn').value = data.nama;
-                    document.getElementById('atasan_search_nonasn').readOnly = true;
-                    document.getElementById('atasan_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
-                    document.getElementById('atasan_reset_nonasn').classList.remove('hidden');
+            const data = window.masterPegawais.find(p => p.id == id);
+            if (data) {
+                document.getElementById('nama_atasan_nonasn').value = data.nama;
+                document.getElementById('atasan_search_nonasn').value = data.nama;
+                document.getElementById('atasan_search_nonasn').readOnly = true;
+                document.getElementById('atasan_search_nonasn').classList.add('bg-gray-100', 'cursor-not-allowed');
+                document.getElementById('atasan_reset_nonasn').classList.remove('hidden');
 
-                    document.getElementById('nip_atasan_nonasn').value = data.nip;
-                    document.getElementById('jabatan_atasan_nonasn').value = data.jabatan;
-                    atasanResultsContainer.classList.add('hidden');
-                });
+                document.getElementById('nip_atasan_nonasn').value = data.nip || '';
+                document.getElementById('jabatan_atasan_nonasn').value = data.jabatan || '';
+                atasanResultsContainer.classList.add('hidden');
+            }
         }
 
         const atasanResetBtn = document.getElementById('atasan_reset_nonasn');

@@ -7,7 +7,7 @@ function notify(type, title, message, autoClose = true) {
 }
 
 function handleSuccess(message, refreshDelay = 1500) {
-    notify("success", "Berhasil!", message);
+    notify("success", "Berhasil", message);
     if (refreshDelay > 0) {
         setTimeout(() => {
             window.location.reload();
@@ -248,3 +248,29 @@ class FormDirtyMonitor {
         }
     }
 }
+
+// Smart Fetch Wrapper: Overrides native fetch to handle Base URL and Headers automatically
+const originalFetch = window.fetch;
+window.fetch = function (url, options = {}) {
+    // 1. Handle URL
+    let finalUrl = url;
+    if (typeof url === "string" && !url.startsWith("http")) {
+        finalUrl = `${window.APP_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+    }
+
+    // 2. Handle Headers
+    options.headers = {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(options.headers || {}),
+    };
+
+    // 3. Auto CSRF for non-GET requests
+    const method = (options.method || "GET").toUpperCase();
+    if (method !== "GET" && !options.headers["X-CSRF-TOKEN"]) {
+        const token = document.querySelector('meta[name="csrf-token"]');
+        if (token) options.headers["X-CSRF-TOKEN"] = token.content;
+    }
+
+    return originalFetch(finalUrl, options);
+};

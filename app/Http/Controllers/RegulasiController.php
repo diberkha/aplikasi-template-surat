@@ -47,37 +47,6 @@ class RegulasiController extends Controller
         }
     }
 
-    public function getRegulasiDetail($id)
-    {
-        $regulasi = Regulasi::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id_regulasi' => $regulasi->id_regulasi,
-                'isi_regulasi' => $regulasi->isi_regulasi,
-                'created_at' => $regulasi->formattedCreatedAt,
-                'updated_at' => $regulasi->updated_at ? $regulasi->updated_at->format('Y-m-d H:i') : 'N/A',
-            ]
-        ]);
-    }
-
-    public function getRegulasiForEdit($id)
-    {
-        $regulasi = Regulasi::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'regulasi' => [
-                    'id_regulasi' => $regulasi->id_regulasi,
-                    'isi_regulasi' => $regulasi->isi_regulasi,
-                    'created_at' => $regulasi->created_at,
-                    'updated_at' => $regulasi->updated_at,
-                ]
-            ]
-        ]);
-    }
 
     public function update(Request $request, $id_regulasi)
     {
@@ -128,26 +97,5 @@ class RegulasiController extends Controller
         return redirect()->route('master-data.regulasi.index')
             ->with('success', 'Regulasi berhasil dihapus');
     }
-
-    public function getRegulasiData($id)
-    {
-        $regulasi = Regulasi::findOrFail($id);
-
-        return response()->json([
-            'id_regulasi' => $regulasi->id_regulasi,
-            'isi_regulasi' => $regulasi->isi_regulasi,
-        ]);
-    }
-
-    public function getRegulasiList()
-    {
-        $regulasis = Regulasi::all();
-
-        return response()->json($regulasis->map(function ($regulasi) {
-            return [
-                'id_regulasi' => $regulasi->id_regulasi,
-                'isi_regulasi' => $regulasi->isi_regulasi,
-            ];
-        }));
-    }
 }
+
