@@ -69,13 +69,13 @@
                     </div>
 
                     <div
-                        class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 rounded-b-xl">
-                        <button type="button" onclick="closeModal('modalEditCutiBersama')"
-                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
-                            Batal
+                        class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 rounded-b-xl border-t border-gray-100 dark:border-gray-700">
+                        <button type="button" onclick="document.getElementById('formEditCutiBersama').reset()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors text-sm">
+                            Reset
                         </button>
                         <button type="submit" id="btnSubmitEditCutiBersama"
-                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
                             Perbarui
                         </button>
                     </div>

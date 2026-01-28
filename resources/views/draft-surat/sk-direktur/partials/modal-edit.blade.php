@@ -88,13 +88,18 @@
                         </div>
                         <div class="p-4">
                             <div class="mb-3">
-                                <div class="relative">
+                                <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400"></i>
                                     </div>
                                     <input type="text" id="searchEditMengingat" placeholder="Cari regulasi..."
-                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                                         onkeyup="filterEditMengingat()">
+                                    <button type="button" onclick="clearEditSearchMengingat()"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex"
+                                        id="btnClearEditSearchMengingat">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
                                 </div>
                             </div>
                             <div id="editMengingatList"
@@ -153,13 +158,13 @@
                 </div>
 
                 <div
-                    class="px-4 sm:px-6 py-4 sm:py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 rounded-b-xl">
                     <button type="button" onclick="resetEditSkForm()"
-                        class="w-full sm:w-auto px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-normal">
+                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditSkBtn"
-                        class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-all">
+                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -393,12 +398,20 @@
     }
 
     function filterEditMengingat() {
-        const searchValue = document.getElementById('searchEditMengingat').value.toLowerCase();
+        const input = document.getElementById('searchEditMengingat');
+        const searchValue = input.value.toLowerCase();
         const items = document.querySelectorAll('#editMengingatList > div');
+        const clearBtn = document.getElementById('btnClearEditSearchMengingat');
         let visibleCount = 0;
 
+        if (clearBtn) {
+            clearBtn.classList.toggle('hidden', searchValue === '');
+        }
+
         items.forEach(item => {
-            const text = item.querySelector('label span').textContent.toLowerCase();
+            const label = item.querySelector('label span');
+            if (!label) return;
+            const text = label.textContent.toLowerCase();
             if (text.includes(searchValue)) {
                 item.style.display = 'flex';
                 visibleCount++;
@@ -421,6 +434,15 @@
         } else if (noResultMsg) {
             noResultMsg.remove();
         }
+    }
+
+    function clearEditSearchMengingat() {
+        const input = document.getElementById('searchEditMengingat');
+        input.value = '';
+        const clearBtn = document.getElementById('btnClearEditSearchMengingat');
+        if (clearBtn) clearBtn.classList.add('hidden');
+        filterEditMengingat();
+        input.focus();
     }
 
     function combineEditNomorSurat() {

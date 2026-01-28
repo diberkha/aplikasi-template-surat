@@ -141,15 +141,15 @@ class IzinCutiPNSController extends Controller
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
 
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(2.35), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
-            $table->addCell((int) Converter::inchToTwip(2.35))->addText('2. CUTI BESAR');
-            $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Besar' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(3.2), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
+            $table->addCell((int) Converter::inchToTwip(2.97))->addText('2. CUTI BESAR');
+            $table->addCell((int) Converter::inchToTwip(1.1))->addText($jenisCuti == 'Cuti Besar' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(0.5))->addText('Tahun');
-            $table->addCell((int) Converter::inchToTwip(0.5))->addText('Sisa');
-            $table->addCell((int) Converter::inchToTwip(1.35))->addText('Keterangan');
-            $table->addCell((int) Converter::inchToTwip(2.35))->addText('3. CUTI SAKIT');
-            $table->addCell((int) Converter::inchToTwip(0.89))->addText($jenisCuti == 'Cuti Sakit' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
+            $table->addCell((int) Converter::inchToTwip(0.6))->addText('Tahun');
+            $table->addCell((int) Converter::inchToTwip(0.6))->addText('Sisa');
+            $table->addCell((int) Converter::inchToTwip(2.0))->addText('Keterangan');
+            $table->addCell((int) Converter::inchToTwip(2.97))->addText('3. CUTI SAKIT');
+            $table->addCell((int) Converter::inchToTwip(1.1))->addText($jenisCuti == 'Cuti Sakit' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
             $table->addCell()->addText('N-2');
@@ -265,12 +265,26 @@ class IzinCutiPNSController extends Controller
                 'borderColor' => 'FFFFFF'
             ]);
             $catatanText = ['size' => 10];
+            $catatanText = ['size' => 10];
             $catatanCell->addText('Catatan:', $catatanText);
-            $catatanCell->addText('* Coret yang tidak perlu', $catatanText);
-            $catatanCell->addText('** Pilih salah satu dengan memberi tanda centang (V)', $catatanText);
-            $catatanCell->addText('*** diisi oleh pejabat yang menangani bidang kepegawaian', $catatanText);
-            $catatanCell->addText('     sebelum PNS mengajukan cuti', $catatanText);
-            $catatanCell->addText('**** diberi tanda centang dan alasannya', $catatanText);
+
+            $innerTable = $catatanCell->addTable(['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 0]);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('*', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('Coret yang tidak perlu', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('**', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('Pilih salah satu dengan memberi tanda centang (V)', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('***', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('diisi oleh pejabat yang menangani bidang kepegawaian sebelum PNS mengajukan cuti', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('****', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('diberi tanda centang dan alasannya', $catatanText);
 
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,

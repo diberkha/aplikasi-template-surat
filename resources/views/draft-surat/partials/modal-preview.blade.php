@@ -149,6 +149,7 @@
                 this.judulSurat = judul || '-';
 
                 this.isOpen = true;
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
                 this.$nextTick(() => {
                     this.$refs.pdfFrame.src = '';
                     const cacheBuster = '?t=' + new Date().getTime();
@@ -160,6 +161,7 @@
             close() {
                 this.isOpen = false;
                 this.$refs.pdfFrame.src = '';
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
 
                 if (this.shouldReloadOnClose) {
                     setTimeout(() => {

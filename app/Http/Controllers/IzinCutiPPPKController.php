@@ -247,12 +247,26 @@ class IzinCutiPPPKController extends Controller
                 'borderColor' => 'FFFFFF'
             ]);
             $catatanText = ['size' => 10];
+            $catatanText = ['size' => 10];
             $catatanCell->addText('Catatan:', $catatanText);
-            $catatanCell->addText('* Coret yang tidak perlu', $catatanText);
-            $catatanCell->addText('** Pilih salah satu dengan memberi tanda centang (V)', $catatanText);
-            $catatanCell->addText('*** diisi oleh pejabat yang menangani bidang kepegawaian', $catatanText);
-            $catatanCell->addText('     sebelum PPPK mengajukan cuti', $catatanText);
-            $catatanCell->addText('**** diberi tanda centang dan alasannya', $catatanText);
+
+            $innerTable = $catatanCell->addTable(['borderSize' => 0, 'borderColor' => 'FFFFFF', 'cellMargin' => 0]);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('*', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('Coret yang tidak perlu', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('**', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('Pilih salah satu dengan memberi tanda centang (V)', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('***', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('diisi oleh pejabat yang menangani bidang kepegawaian sebelum PPPK mengajukan cuti', $catatanText);
+
+            $innerTable->addRow();
+            $innerTable->addCell((int) Converter::inchToTwip(0.25))->addText('****', $catatanText);
+            $innerTable->addCell((int) Converter::inchToTwip(3.65))->addText('diberi tanda centang dan alasannya', $catatanText);
 
             $signCell = $table->addCell((int) Converter::inchToTwip(3.37), [
                 'gridSpan' => 1,

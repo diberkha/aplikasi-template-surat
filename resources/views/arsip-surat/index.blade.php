@@ -14,12 +14,16 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                    <div class="relative w-full sm:w-64 lg:w-72">
+                    <div class="relative w-full sm:w-64 lg:w-72 group">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
                         <input type="text" x-model.debounce.300ms="search" placeholder="Cari..."
-                            class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all">
+                            class="pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
+                        <button type="button" x-show="search" @click="search = ''; applyFilters()"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
                     <button type="button" onclick="openModal('modalImportSurat')"
                         class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap active:scale-95 w-full sm:w-auto">
@@ -115,8 +119,14 @@
                         <div x-show="toggleRuangan" @click.away="toggleRuangan = false" x-transition x-cloak
                             class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
-                                <input type="text" x-model="searchRuangan" placeholder="Cari ruangan..."
-                                    class="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-green-500 outline-none">
+                                <div class="relative">
+                                    <input type="text" x-model="searchRuangan" placeholder="Cari ruangan..."
+                                        class="w-full pl-2 pr-8 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                                    <button type="button" x-show="searchRuangan" @click="searchRuangan = ''"
+                                        class="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                        <i class="fas fa-times-circle text-xs"></i>
+                                    </button>
+                                </div>
                             </div>
                             <ul class="max-h-64 overflow-y-auto sidebar-scrollbar list-none py-1">
                                 <template x-for="ruangan in filteredRuanganOptions" :key="ruangan.id_ruangan">
@@ -257,18 +267,18 @@
                                             </button>
 
                                             <div x-data="{ 
-                                                                                                                openDownload: false, 
-                                                                                                                dropdownStyle: '',
-                                                                                                                toggle() { 
-                                                                                                                    this.openDownload = !this.openDownload;
-                                                                                                                    if (this.openDownload) {
-                                                                                                                        this.$nextTick(() => {
-                                                                                                                            const rect = this.$refs.button.getBoundingClientRect();
-                                                                                                                            this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                                                                        });
-                                                                                                                    }
-                                                                                                                } 
-                                                                                                            }"
+                                                                                                                                                        openDownload: false, 
+                                                                                                                                                        dropdownStyle: '',
+                                                                                                                                                        toggle() { 
+                                                                                                                                                            this.openDownload = !this.openDownload;
+                                                                                                                                                            if (this.openDownload) {
+                                                                                                                                                                this.$nextTick(() => {
+                                                                                                                                                                    const rect = this.$refs.button.getBoundingClientRect();
+                                                                                                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                                                                                                });
+                                                                                                                                                            }
+                                                                                                                                                        } 
+                                                                                                                                                    }"
                                                 @scroll.window="openDownload = false" class="relative">
                                                 <button type="button" x-ref="button" @click="toggle()"
                                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -333,11 +343,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
-                                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                    ]">
+                                                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                            ]">
                                 </button>
                             </template>
 
@@ -388,7 +398,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                                                                    ruanganOptions: @json($ruanganOptions ?? []),
+                                                                                                                            ruanganOptions: @json($ruanganOptions ?? []),
                     searchRuangan: '',
                 @endif
                 search: '',
@@ -489,9 +499,9 @@
         }
 
         return rangeWithDots;
-                                                },
+                                                                    },
 
-                                                get sortLabel() {
+                                                                    get sortLabel() {
             switch (this.sortOption) {
                 case 'a-z': return 'A-Z';
                 case 'z-a': return 'Z-A';
@@ -501,13 +511,13 @@
             }
         },
 
-                                                get selectedTemplateName() {
+                                                                    get selectedTemplateName() {
             if (!this.templateFilter) return 'Tipe Surat';
             const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
             return tpl ? tpl.nama_template_surat : 'Tipe Surat';
         },
 
-                                                get selectedRuanganName() {
+                                                                    get selectedRuanganName() {
             if (!this.ruanganFilter) return 'Ruangan';
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 const r = this.ruanganOptions.find(t => t.id_ruangan == this.ruanganFilter);
@@ -515,9 +525,9 @@
             @else
                 return 'Ruangan';
             @endif
-                                                },
+                                                                    },
 
-                                                get filteredRuanganOptions() {
+                                                                    get filteredRuanganOptions() {
             @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                 if (!this.searchRuangan) return this.ruanganOptions;
                 const s = this.searchRuangan.toLowerCase();
@@ -525,13 +535,13 @@
             @else
                 return [];
             @endif
-                                                },
+                                                                    },
 
         applyFilters() {
             this.currentPage = 1;
         },
 
-                                                get dateDisplay() {
+                                                                    get dateDisplay() {
             if (this.appliedStartDate && this.appliedEndDate) {
                 return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
             } else if (this.appliedStartDate) {
@@ -577,8 +587,8 @@
             this.currentPage = 1;
             this.open = false;
         }
-                                            }));
-                                        });
+                                                                }));
+                                                            });
 
         function showDetailSurat(idSurat, nama, nomor, tipe, tanggal, itemRuangan, filePath, docxUrl) {
             const formatLongDate = (dateString) => {
@@ -615,8 +625,8 @@
 
             document.getElementById('detail-tipe-surat').innerHTML =
                 `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tipeBadge}">
-                                                    ${tipe}
-                                                </span>`;
+                                                                        ${tipe}
+                                                                    </span>`;
 
             const isSystemDoc = ['Surat Keputusan Direktur', 'Standar Operasional Prosedur (SOP)', 'Surat Izin Cuti'].includes(tipe);
 
@@ -625,8 +635,18 @@
                 document.getElementById('detail-no-file').classList.add('hidden');
                 document.getElementById('detail-download-dropdown').classList.remove('hidden');
 
-                const fileName = filePath ? filePath.split('/').pop() : `${tipe}-${nomor}.pdf`;
-                const extension = fileName.split('.').pop().toLowerCase();
+                const cleanNomor = nomor ? nomor.replace(/[\/\\*:\?"<>|]/g, '-') : '';
+                let fileName = '';
+
+                if (tipe === 'Standar Operasional Prosedur (SOP)') {
+                    fileName = `SOP-${cleanNomor}.pdf`;
+                } else if (tipe === 'Surat Keputusan Direktur') {
+                    fileName = `SK Direktur-${cleanNomor}.pdf`;
+                } else if (tipe === 'Surat Izin Cuti') {
+                    fileName = `Surat Izin Cuti-${nama}.pdf`;
+                } else {
+                    fileName = filePath ? filePath.split('/').pop() : `${tipe}-${cleanNomor || 'Document'}.pdf`;
+                }
 
                 document.getElementById('detail-file-nama').textContent = fileName;
                 document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
@@ -684,9 +704,19 @@
             openModal('modalDeleteSurat');
         }
 
+        function closeDetailModal() {
+            const iframe = document.getElementById('detail-pdf-preview');
+            if (iframe) {
+                iframe.src = '';
+            }
+            closeModal('modalDetailSurat');
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                ['modalDetailSurat', 'modalDeleteSurat'].forEach(id => closeModal(id));
+                closeDetailModal();
+                closeModal('modalDeleteSurat');
+                closeModal('modalImportSurat');
             }
         });
     </script>

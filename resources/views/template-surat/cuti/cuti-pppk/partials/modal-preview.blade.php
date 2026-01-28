@@ -73,23 +73,34 @@
                 }
                 return 'Surat_Izin_Cuti_PPPK.pdf';
             },
-            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+            open(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
+                this.shouldReloadOnClose = reloadOnClose;
                 this.fileUrl = fileUrl;
                 this.nomorSurat = nomorSurat;
                 this.suratId = suratId;
                 this.judulSurat = judulSurat;
                 this.tanggalDibuat = tanggalDibuat;
                 this.isOpen = true;
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
                 this.$nextTick(() => { this.$refs.pdfFrame.src = fileUrl; this.$refs.suratNomor.textContent = nomorSurat; });
             },
-            close() { this.isOpen = false; setTimeout(() => window.location.href = "{{ route('draft-surat.cuti.index') }}", 500); },
+            close() {
+                this.isOpen = false;
+                this.$refs.pdfFrame.src = '';
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
+                if (this.shouldReloadOnClose) {
+                    setTimeout(() => window.location.reload(), 300);
+                } else {
+                    setTimeout(() => window.location.href = "{{ route('draft-surat.cuti.index') }}", 500);
+                }
+            },
             print() { if (this.$refs.pdfFrame.contentWindow) this.$refs.pdfFrame.contentWindow.print(); }
         }
     }
 
-    function openPreviewPDFPPPK(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '') {
+    function openPreviewPDFPPPK(fileUrl, nomorSurat, suratId = null, judulSurat = '', tanggalDibuat = '', reloadOnClose = false) {
         const modalEl = document.getElementById('modalPreviewPDFPPPK');
         const modal = modalEl ? Alpine.$data(modalEl) : null;
-        if (modal) modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat);
+        if (modal) modal.open(fileUrl, nomorSurat, suratId, judulSurat, tanggalDibuat, reloadOnClose);
     }
 </script>

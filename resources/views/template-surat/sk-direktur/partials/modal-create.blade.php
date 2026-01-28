@@ -97,13 +97,18 @@
                             <input type="hidden" name="mengingat_check" id="mengingat_check">
 
                             <div class="mb-3">
-                                <div class="relative">
+                                <div class="relative group">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400"></i>
                                     </div>
                                     <input type="text" id="searchMengingat" placeholder="Cari regulasi..."
-                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                        class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                                         onkeyup="filterMengingat()">
+                                    <button type="button" onclick="clearSearchMengingat()"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex"
+                                        id="btnClearSearchMengingat">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -254,9 +259,16 @@
     }
 
     function filterMengingat() {
-        const searchValue = document.getElementById('searchMengingat').value.toLowerCase();
+        const input = document.getElementById('searchMengingat');
+        const searchValue = input.value.toLowerCase();
         const items = document.querySelectorAll('#mengingatList .mengingat-item');
+        const clearBtn = document.getElementById('btnClearSearchMengingat');
         let visibleCount = 0;
+
+        if (clearBtn) {
+            clearBtn.classList.toggle('hidden', searchValue === '');
+        }
+
         items.forEach(item => {
             const label = item.querySelector('label');
             if (!label) return;
@@ -274,6 +286,13 @@
                 document.getElementById('mengingatList').appendChild(msg);
             }
         } else if (noResultMsg) { noResultMsg.remove(); }
+    }
+
+    function clearSearchMengingat() {
+        const input = document.getElementById('searchMengingat');
+        input.value = '';
+        filterMengingat();
+        input.focus();
     }
 
     function addMemutuskanField() {
@@ -492,7 +511,7 @@
                     resetFormSK();
                     notify('success', 'Berhasil', result.data.message);
 
-                    setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat, true); }, 500);
+                    setTimeout(() => { openPreviewPDF(result.data.file_url, result.data.nomor_surat, result.data.surat_id, 'KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', result.data.tanggal_dibuat, false); }, 500);
                 } else { notify('error', 'Gagal', 'Gagal membuat surat: ' + (result.data.message || 'Kesalahan tidak diketahui'), false); }
             })
             .catch(error => { console.error('Fetch error:', error); notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + error.message, false); })

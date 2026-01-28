@@ -29,7 +29,7 @@
         body {
             font-family: 'Cambria', 'Times New Roman', serif;
             color: #000;
-            line-height: 1.15;
+            line-height: 1.3;
             font-size: 12pt;
             background: white;
             margin: 0;
@@ -153,19 +153,19 @@
         .meta-info-tentang p {
             margin: 6px 0;
             font-size: 12pt;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .content {
             margin: 22px 0;
             text-align: justify;
             text-justify: inter-word;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .section {
             margin-bottom: 16px;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .section table {
@@ -185,12 +185,12 @@
             width: 18px;
             vertical-align: top;
             text-align: center;
-            line-height: 1.0;
+            line-height: 1.3;
         }
 
         .section-content {
             font-size: 12pt;
-            line-height: 1.15;
+            line-height: 1.3;
             text-align: justify;
             vertical-align: top;
             word-wrap: break-word;
@@ -221,28 +221,28 @@
             font-size: 12pt;
             margin: 18px 0 10px 0;
             text-transform: uppercase;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .deciding-content {
             margin-top: 8px;
-            line-height: 1.0;
+            line-height: 1.3;
         }
 
         .deciding-item {
             margin-bottom: 12px;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .deciding-text {
             text-align: justify;
             text-justify: inter-word;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .footer {
             margin-top: 46px;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .footer table {
@@ -254,7 +254,7 @@
             width: 55%;
             vertical-align: top;
             text-align: left;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .footer-right {
@@ -262,7 +262,7 @@
             vertical-align: top;
             text-align: left;
             padding-left: 20mm;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .footer-title {
@@ -273,11 +273,11 @@
 
         .signature-wrapper {
             margin: 18px 0 10px 0;
-            min-height: 90px;
+            min-height: 60px;
         }
 
         .signature-wrapper img {
-            max-height: 90px;
+            max-height: 60px;
             object-fit: contain;
         }
 
@@ -555,7 +555,7 @@
                                 @if(!empty($data['ttd_image']))
                                     <img src="{{ public_path($data['ttd_image']) }}" alt="Tanda tangan">
                                 @else
-                                    <div style="height: 90px"></div>
+                                    <div style="height: 60px"></div>
                                 @endif
                             </div>
                             @php

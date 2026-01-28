@@ -71,6 +71,7 @@ function openModal(modalId, templateName = null, templateId = null) {
         document.body.classList.add("overflow-hidden");
     }
 
+    window.dispatchEvent(new CustomEvent("modal-state-changed"));
     window.dispatchEvent(
         new CustomEvent("modal-opened", { detail: { modalId: modalId } }),
     );
@@ -96,17 +97,19 @@ function openModal(modalId, templateName = null, templateId = null) {
 }
 
 function isAnyModalOpen() {
-    const potentialModals = document.querySelectorAll(
-        "div[fixed].inset-0, .fixed.inset-0",
-    );
+    const potentialModals = document.querySelectorAll(".fixed.inset-0");
     for (let modal of potentialModals) {
         if (modal.classList.contains("hidden")) continue;
-        if (modal.offsetParent !== null) return true;
+
         if (
-            modal.style.display !== "none" &&
-            window.getComputedStyle(modal).display !== "none"
-        )
-            return true;
+            modal.offsetWidth > 0 &&
+            modal.offsetHeight > 0 &&
+            modal.getClientRects().length > 0
+        ) {
+            if (!modal.classList.contains("sidebar-backdrop")) {
+                return true;
+            }
+        }
     }
     return false;
 }

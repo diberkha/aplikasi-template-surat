@@ -6,7 +6,7 @@
             <div>
                 <h3 class="text-base sm:text-lg font-medium text-gray-900 dark:text-white">Detail Surat</h3>
             </div>
-            <button onclick="closeModal('modalDetailSurat')"
+            <button onclick="closeDetailModal()"
                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <i class="fas fa-times text-base sm:text-lg"></i>
             </button>
@@ -117,7 +117,7 @@
 
         <div
             class="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-white dark:bg-gray-800 sticky bottom-0">
-            <button type="button" onclick="closeModal('modalDetailSurat')"
+            <button type="button" onclick="closeDetailModal()"
                 class="w-full sm:w-auto px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium h-11 text-sm">
                 Tutup
             </button>

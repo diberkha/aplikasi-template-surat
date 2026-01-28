@@ -258,15 +258,24 @@
                     <h4 class="font-bold text-gray-900 dark:text-white uppercase">Kebijakan <span class="text-red-500">*</span></h4>
                 </div>
                 <div class="p-4">
-                    <div class="mb-3">
-                        <input type="text" placeholder="Cari regulasi..." onkeyup="filterListItems(this, '#kebijakanList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="mb-3 relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                        </div>
+                        <input type="text" placeholder="Cari regulasi..." 
+                            onkeyup="filterListItems(this, '#kebijakanList')" 
+                            class="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                        <button type="button" onclick="clearSearchInput(this, '#kebijakanList')" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
-                    <div id="kebijakanList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                    <div id="kebijakanList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 custom-scrollbar">
                         ${masterRegulasi.map((r, i) => `
-                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                            <div class="option-row flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
                                 <input type="checkbox" name="kebijakan[]" value="${r.id_regulasi}" id="kebijakan_${i}" 
                                     ${page.kebijakan.includes(String(r.id_regulasi)) ? 'checked' : ''} 
-                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                    class="mt-1 h-4 w-4 text-green-600 border-green-600 focus:ring-green-500 rounded cursor-pointer">
                                 <label for="kebijakan_${i}" class="ml-3 flex-1 cursor-pointer">
                                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${r.isi_regulasi}</span>
                                 </label>
@@ -303,15 +312,24 @@
                     <h4 class="font-bold text-gray-900 dark:text-white uppercase">Unit Terkait <span class="text-red-500">*</span></h4>
                 </div>
                 <div class="p-4">
-                    <div class="mb-3">
-                        <input type="text" placeholder="Cari unit..." onkeyup="filterListItems(this, '#unitList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="mb-3 relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                        </div>
+                        <input type="text" placeholder="Cari unit..." 
+                            onkeyup="filterListItems(this, '#unitList')" 
+                            class="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                        <button type="button" onclick="clearSearchInput(this, '#unitList')" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
-                    <div id="unitList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                    <div id="unitList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 custom-scrollbar">
                         ${masterUnit.map((u, i) => `
-                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                            <div class="option-row flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
                                 <input type="checkbox" name="unit_terkait[]" value="${u.id_unit}" id="unit_${i}" 
                                     ${page.unit_terkait.includes(String(u.id_unit)) ? 'checked' : ''} 
-                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                    class="mt-1 h-4 w-4 text-green-600 border-green-600 focus:ring-green-500 rounded cursor-pointer">
                                 <label for="unit_${i}" class="ml-3 flex-1 cursor-pointer">
                                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${u.nama_unit}</span>
                                 </label>
@@ -382,10 +400,24 @@
 
     function filterListItems(input, listSelector) {
         const val = input.value.toLowerCase();
-        document.querySelectorAll(`${listSelector} .option-row`).forEach(el => {
+        const container = document.querySelector(listSelector);
+        const clearBtn = input.nextElementSibling;
+
+        if (clearBtn && clearBtn.tagName === 'BUTTON') {
+            clearBtn.classList.toggle('hidden', val === '');
+        }
+
+        container.querySelectorAll('.option-row').forEach(el => {
             const text = el.querySelector('label').textContent.toLowerCase();
             el.style.display = text.includes(val) ? 'flex' : 'none';
         });
+    }
+
+    function clearSearchInput(btn, listSelector) {
+        const input = btn.previousElementSibling;
+        input.value = '';
+        filterListItems(input, listSelector);
+        input.focus();
     }
 
     function submitSOPForm(event) {

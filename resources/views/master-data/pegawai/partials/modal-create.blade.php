@@ -135,7 +135,11 @@
                                                 <i class="fas fa-search text-xs"></i>
                                             </div>
                                             <input type="text" x-model="search" placeholder="Cari jabatan..."
-                                                class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded-md dark:bg-gray-700 focus:ring-1 focus:ring-green-500 outline-none">
+                                                class="w-full pl-9 pr-8 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded-md dark:bg-gray-700 focus:ring-1 focus:ring-green-500 outline-none transition-all">
+                                            <button type="button" x-show="search" @click="search = ''"
+                                                class="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                                <i class="fas fa-times-circle text-xs"></i>
+                                            </button>
                                         </div>
                                     </div>
                                     <ul class="max-h-56 overflow-y-auto py-1 custom-scrollbar">

@@ -287,11 +287,15 @@
                                 <div class="relative">
                                     <input type="text" id="edit_atasan_search"
                                         placeholder="Ketik nama atau NIP atasan..."
-                                        class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                        class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white transition-all outline-none focus:ring-2 focus:ring-green-500">
                                     <div
                                         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                         <i class="fas fa-search text-sm"></i>
                                     </div>
+                                    <button type="button" id="edit_atasan_clear_btn"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden transition-colors">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
                                 </div>
                                 <div id="edit_atasan_results"
                                     class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl hidden max-h-48 overflow-y-auto">
@@ -323,13 +327,13 @@
                 </div>
 
                 <div
-                    class="px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex flex-col-reverse sm:flex-row justify-end gap-3 rounded-b-xl">
+                    class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3 rounded-b-xl">
                     <button type="button" onclick="resetEditCutiForm()"
-                        class="w-full sm:w-auto px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-normal">
+                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditCutiBtn"
-                        class="w-full sm:w-auto px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-all">
+                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -342,10 +346,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         const atasanSearch = document.getElementById('edit_atasan_search');
         const atasanResults = document.getElementById('edit_atasan_results');
+        const atasanClearBtn = document.getElementById('edit_atasan_clear_btn');
 
         if (atasanSearch) {
             atasanSearch.addEventListener('input', async function () {
                 const term = this.value;
+
+                if (atasanClearBtn) {
+                    if (term.length > 0) atasanClearBtn.classList.remove('hidden');
+                    else atasanClearBtn.classList.add('hidden');
+                }
+
                 if (term.length < 2) {
                     atasanResults.classList.add('hidden');
                     return;
@@ -386,6 +397,15 @@
             document.addEventListener('click', e => {
                 if (!atasanSearch.contains(e.target) && !atasanResults.contains(e.target)) atasanResults.classList.add('hidden');
             });
+
+            if (atasanClearBtn) {
+                atasanClearBtn.addEventListener('click', () => {
+                    atasanSearch.value = '';
+                    atasanResults.classList.add('hidden');
+                    atasanClearBtn.classList.add('hidden');
+                    atasanSearch.focus();
+                });
+            }
         }
     });
 

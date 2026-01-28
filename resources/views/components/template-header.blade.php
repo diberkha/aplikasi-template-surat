@@ -155,14 +155,18 @@
                 </div>
 
                 @if ($showSearch)
-                    <div class="relative flex-1 sm:w-64 lg:w-72">
+                    <div class="relative flex-1 sm:w-64 lg:w-72 group">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
                         <input type="text"
                                x-model="search"
                                placeholder="{{ $searchPlaceholder }}"
-                               class="pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all">
+                               class="pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
+                        <button type="button" x-show="search" @click="search = ''; currentPage = 1"
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
                 @endif
             </div>

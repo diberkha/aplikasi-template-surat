@@ -356,7 +356,8 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">***</td>
-                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum PPPK mengajukan cuti</td>
+                            <td>diisi oleh pejabat yang menangani bidang kepegawaian sebelum Non ASN mengajukan cuti
+                            </td>
                         </tr>
                         <tr>
                             <td style="width: 15px; padding: 1px;">****</td>

@@ -36,7 +36,7 @@
                 </div>
 
                 <div
-                    class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
                     <button type="button" onclick="resetEditSopForm()"
                         class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
@@ -280,15 +280,24 @@
                     <h4 class="font-bold text-gray-900 dark:text-white uppercase">Kebijakan <span class="text-red-500">*</span></h4>
                 </div>
                 <div class="p-4">
-                    <div class="mb-3">
-                        <input type="text" placeholder="Cari regulasi..." onkeyup="filterEditListItems(this, '#editKebijakanList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="mb-3 relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                        </div>
+                        <input type="text" placeholder="Cari regulasi..." 
+                            onkeyup="filterEditListItems(this, '#editKebijakanList')" 
+                            class="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                        <button type="button" onclick="clearEditSearchInput(this, '#editKebijakanList')" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
-                    <div id="editKebijakanList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                    <div id="editKebijakanList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 custom-scrollbar">
                         ${editMasterRegulasi.map((r, i) => `
-                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                            <div class="option-row flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
                                 <input type="checkbox" name="kebijakan[]" value="${r.id_regulasi}" id="edit_kebijakan_${i}" 
                                     ${page.kebijakan.includes(String(r.id_regulasi)) ? 'checked' : ''} 
-                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                    class="mt-1 h-4 w-4 text-green-600 border-green-600 focus:ring-green-500 rounded cursor-pointer">
                                 <label for="edit_kebijakan_${i}" class="ml-3 flex-1 cursor-pointer">
                                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${r.isi_regulasi}</span>
                                 </label>
@@ -325,15 +334,24 @@
                     <h4 class="font-bold text-gray-900 dark:text-white uppercase">Unit Terkait <span class="text-red-500">*</span></h4>
                 </div>
                 <div class="p-4">
-                    <div class="mb-3">
-                        <input type="text" placeholder="Cari unit..." onkeyup="filterEditListItems(this, '#editUnitList')" class="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-white">
+                    <div class="mb-3 relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                        </div>
+                        <input type="text" placeholder="Cari unit..." 
+                            onkeyup="filterEditListItems(this, '#editUnitList')" 
+                            class="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
+                        <button type="button" onclick="clearEditSearchInput(this, '#editUnitList')" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hidden group-focus-within:flex">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
                     </div>
-                    <div id="editUnitList" class="border border-gray-300 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800">
+                    <div id="editUnitList" class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 custom-scrollbar">
                         ${editMasterUnit.map((u, i) => `
-                            <div class="flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
+                            <div class="option-row flex items-start mb-2 pb-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors px-1 rounded">
                                 <input type="checkbox" name="unit_terkait[]" value="${u.id_unit}" id="edit_unit_${i}" 
                                     ${page.unit_terkait.includes(String(u.id_unit)) ? 'checked' : ''} 
-                                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer">
+                                    class="mt-1 h-4 w-4 text-green-600 border-green-600 focus:ring-green-500 rounded cursor-pointer">
                                 <label for="edit_unit_${i}" class="ml-3 flex-1 cursor-pointer">
                                     <span class="text-sm text-gray-700 dark:text-gray-300 font-medium block leading-relaxed">${u.nama_unit}</span>
                                 </label>
@@ -404,10 +422,24 @@
 
     function filterEditListItems(input, listSelector) {
         const val = input.value.toLowerCase();
-        document.querySelectorAll(`${listSelector} .option-row`).forEach(el => {
+        const container = document.querySelector(listSelector);
+        const clearBtn = input.nextElementSibling;
+
+        if (clearBtn && clearBtn.tagName === 'BUTTON') {
+            clearBtn.classList.toggle('hidden', val === '');
+        }
+
+        container.querySelectorAll('.option-row').forEach(el => {
             const text = el.querySelector('label').textContent.toLowerCase();
             el.style.display = text.includes(val) ? 'flex' : 'none';
         });
+    }
+
+    function clearEditSearchInput(btn, listSelector) {
+        const input = btn.previousElementSibling;
+        input.value = '';
+        filterEditListItems(input, listSelector);
+        input.focus();
     }
 
     function submitEditSOPForm(event) {

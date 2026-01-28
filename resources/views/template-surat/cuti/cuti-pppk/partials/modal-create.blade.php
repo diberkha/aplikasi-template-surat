@@ -304,8 +304,15 @@
             const term = e.target.value;
             if (term.length < 2) {
                 resultsContainer.classList.add('hidden');
-                return;
             }
+
+            const resetBtn = document.getElementById('pegawai_reset_pppk');
+            if (resetBtn) {
+                if (term.length > 0) resetBtn.classList.remove('hidden');
+                else resetBtn.classList.add('hidden');
+            }
+
+            if (term.length < 2) return;
 
             dobounceTimer = setTimeout(() => {
                 fetch(`/api/pegawai/search?term=${encodeURIComponent(term)}&type=PPPK`)
@@ -389,6 +396,13 @@
             atasanSearchInput.addEventListener('input', function (e) {
                 clearTimeout(atasanDebounceTimer);
                 const term = e.target.value;
+
+                const atasanResetBtn = document.getElementById('atasan_reset_pppk');
+                if (atasanResetBtn) {
+                    if (term.length > 0) atasanResetBtn.classList.remove('hidden');
+                    else atasanResetBtn.classList.add('hidden');
+                }
+
                 if (term.length < 2) {
                     atasanResultsContainer.classList.add('hidden');
                     return;
@@ -574,7 +588,7 @@
                     closeModal('modalCreateCutiPPPK');
                     form.reset();
 
-                    openPreviewPDFPPPK(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti PPPK', new Date().toISOString().slice(0, 10), true);
+                    openPreviewPDFPPPK(res.data.file_url, res.data.nomor_surat, res.data.surat_id, 'Surat Izin Cuti PPPK', new Date().toISOString().slice(0, 10), false);
                 }
             })
             .catch(err => notify('error', 'Gagal', 'Terjadi kesalahan sistem: ' + err.message, false))

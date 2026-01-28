@@ -97,6 +97,7 @@
                 this.judulSurat = judulSurat;
                 this.tanggalDibuat = tanggalDibuat;
                 this.isOpen = true;
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
                 this.$nextTick(() => {
                     const cacheBuster = '?t=' + new Date().getTime();
                     this.$refs.pdfFrame.src = fileUrl + cacheBuster;
@@ -106,6 +107,8 @@
 
             close() {
                 this.isOpen = false;
+                this.$refs.pdfFrame.src = '';
+                window.dispatchEvent(new CustomEvent('modal-state-changed'));
 
                 if (this.shouldReloadOnClose) {
                     setTimeout(() => {

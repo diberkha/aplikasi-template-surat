@@ -32,12 +32,12 @@
 
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal('modalEdit')"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
-                        Batal
+                    <button type="button" onclick="document.getElementById('formEdit').reset()"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors text-sm">
+                        Reset
                     </button>
                     <button type="submit" id="btnSubmitEditRegulasi"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
                         Perbarui
                     </button>
                 </div>

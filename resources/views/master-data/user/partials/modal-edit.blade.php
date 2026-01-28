@@ -85,8 +85,7 @@
                                         x-for="opt in options.filter(o => o.nama.toLowerCase().includes(search.toLowerCase()))"
                                         :key="opt.id">
                                         <li>
-                                            <button type="button"
-                                                @click="
+                                            <button type="button" @click="
                                                     selectedId = opt.id; 
                                                     selectedName = opt.nama; 
                                                     open = false; 

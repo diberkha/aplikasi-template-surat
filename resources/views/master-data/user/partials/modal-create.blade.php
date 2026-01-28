@@ -118,11 +118,10 @@
 
                 <div class="mt-8 flex justify-end space-x-3">
                     <button type="button" @click="document.getElementById('formCreateUser').reset()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors h-[42px] active:scale-95">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                         Reset
                     </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all h-[42px] active:scale-95">
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Simpan
                     </button>
                 </div>

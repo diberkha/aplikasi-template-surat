@@ -12,9 +12,9 @@ class ResetCutiTahunan extends Command
 
     protected $signature = 'cuti:reset-tahunan';
 
-protected $description = 'Reset cuti tahunan semua pegawai setiap awal tahun';
+    protected $description = 'Reset cuti tahunan semua pegawai setiap awal tahun';
 
-public function handle()
+    public function handle()
     {
         $this->info('Memulai proses reset cuti tahunan...');
         $this->newLine();
