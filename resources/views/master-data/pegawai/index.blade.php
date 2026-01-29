@@ -11,14 +11,14 @@
                 <p class="text-gray-600 dark:text-gray-400 mt-1">Kelola informasi data pegawai</p>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
-                <div class="flex items-center gap-2">
-                    <div x-data="{ toggleFilter: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                <div class="flex items-center gap-2 w-full lg:w-auto">
+                    <div x-data="{ toggleFilter: false }" class="relative flex-1 lg:flex-none lg:w-36">
                         <button type="button" @click="toggleFilter = !toggleFilter"
-                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
-                                <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                <i class="fas fa-sort-alpha-down text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[50px] sm:max-w-[70px]"
                                     x-text="sortText"></span>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
@@ -49,12 +49,12 @@
                         </div>
                     </div>
 
-                    <div x-data="{ toggleType: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
+                    <div x-data="{ toggleType: false }" class="relative flex-1 lg:flex-none lg:w-36">
                         <button type="button" @click="toggleType = !toggleType"
-                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-users text-gray-600 dark:text-gray-400"></i>
-                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[50px] sm:max-w-[70px]"
                                     x-text="selectedType === '' ? 'Jenis' : selectedType"></span>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
@@ -84,31 +84,28 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                    <div class="relative flex-1 sm:w-48 lg:w-64 group">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400 text-xs"></i>
-                        </div>
-                        <input type="text" x-model="search" placeholder="Cari..."
-                            class="pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
-                        <button type="button" x-show="search" @click="search = ''"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
+                <div class="relative w-full lg:w-80 group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
-
-                    <button @click="openCreateModal()"
-                        class="flex items-center justify-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap active:scale-95 w-full sm:w-auto">
-                        <i class="fas fa-plus"></i>
-                        <span class="hidden sm:inline">Tambah Pegawai</span>
-                        <span class="sm:hidden">Tambah</span>
+                    <input type="text" x-model="search" placeholder="Cari..."
+                        class="pl-9 pr-10 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
+                    <button type="button" x-show="search" @click="search = ''"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times-circle"></i>
                     </button>
                 </div>
+
+                <button @click="openCreateModal()"
+                    class="flex items-center justify-center space-x-2 h-[42px] bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium w-full lg:w-auto lg:px-4 active:scale-95 shadow-none">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Pegawai</span>
+                </button>
             </div>
         </div>
 
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden relative">
             <div
                 class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Daftar Pegawai</h3>
@@ -210,11 +207,11 @@
                             <button @click="page !== '...' && goToPage(page)"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                                                                                                                                        parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
-                                                                                                                                                                                        (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                                        (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                                                    ]"
+                                                                                                                                                                                                                                        parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
+                                                                                                                                                                                                                                        (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                                                                        (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                                                                                    ]"
                                 :disabled="page === '...'">
                                 <span x-text="page"></span>
                             </button>
@@ -526,14 +523,14 @@
 
             function setupCutiValidation(context) {
                 const fields = {
-                    n: document.getElementById(context === 'create' ? 'sisa_cuti_n' : 'edit_sisa_cuti_n'),
-                    n1: document.getElementById(context === 'create' ? 'sisa_cuti_n1' : 'edit_sisa_cuti_n1'),
-                    n2: document.getElementById(context === 'create' ? 'sisa_cuti_n2' : 'edit_sisa_cuti_n2'),
+                    n: document.getElementById(context === 'create' ? 'sisa_cuti_n_create' : 'edit_sisa_cuti_n'),
+                    n1: document.getElementById(context === 'create' ? 'sisa_cuti_n1_create' : 'edit_sisa_cuti_n1'),
+                    n2: document.getElementById(context === 'create' ? 'sisa_cuti_n2_create' : 'edit_sisa_cuti_n2'),
                 };
 
                 const msg = document.getElementById(context === 'create' ? 'cuti_total_msg_create' : 'cuti_total_msg_edit');
                 const form = document.getElementById(context === 'create' ? 'formCreatePegawai' : 'formEditPegawai');
-                const jenisPegawaiSelect = document.getElementById(context === 'create' ? 'jenis_pegawai' : 'edit_jenis_pegawai');
+                const jenisPegawaiSelect = document.getElementById(context === 'create' ? 'jenis_pegawai_create' : 'edit_jenis_pegawai');
 
                 const refresh = () => {
                     const jenisPegawai = jenisPegawaiSelect?.value || 'PNS';

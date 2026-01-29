@@ -201,7 +201,7 @@
     <div x-show="backdrop && sidebarOpen" x-transition class="sidebar-backdrop md:hidden"
         @click="sidebarOpen = false; backdrop = false" :class="sidebarOpen ? 'sidebar-open' : ''"></div>
 
-    <div class="flex flex-1 pt-20 md:pt-0">
+    <div class="flex flex-1 pt-4 md:pt-6">
         <aside x-show="isDesktop || sidebarOpen" x-transition :class="[
                 sidebarCollapsed && isDesktop ? 'w-16 md:w-20 overflow-visible' : 'w-64 md:w-64 overflow-y-auto',
                 'bg-white dark:bg-gray-800 shadow-xl md:shadow border-r border-gray-200 dark:border-gray-700 fixed left-0 z-40'
@@ -259,7 +259,7 @@
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                             <a href="{{ route('template-surat.sk-direktur.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-scroll w-4 text-center"></i>
                                 <span>Surat Keputusan Direktur</span>
                             </a>
@@ -286,7 +286,7 @@
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                             <a href="{{ route('template-surat.sk-direktur.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('template-surat.sk-direktur.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-scroll w-4 text-center"></i>
                                 <span>Surat Keputusan Direktur</span>
                             </a>
@@ -329,7 +329,7 @@
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                             <a href="{{ route('draft-surat.sk-direktur.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                        {{ request()->routeIs('draft-surat.sk-direktur.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                        {{ request()->routeIs('draft-surat.sk-direktur.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-scroll w-4 text-center"></i>
                                 <span>Surat Keputusan Direktur</span>
                             </a>
@@ -350,7 +350,7 @@
                         @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
                             <a href="{{ route('draft-surat.sk-direktur.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                        {{ request()->routeIs('draft-surat.sk-direktur.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                        {{ request()->routeIs('draft-surat.sk-direktur.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-scroll w-4 text-center"></i>
                                 <span>Surat Keputusan Direktur</span>
                             </a>
@@ -378,7 +378,7 @@
                         class="space-y-1 relative">
                         <button @click.prevent="sidebarCollapsed && isDesktop ? flyout = !flyout : open = !open"
                             class="flex items-center justify-between w-full py-3 rounded-xl transition-all
-                                                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                                                                        {{ request()->routeIs('master-data.*') ? 'bg-green-50 dark:bg-green-900/20 border-r-2 border-green-600 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}"
                             :class="sidebarCollapsed && isDesktop ? 'px-3' : 'px-4'">
                             <div class="flex items-center"
                                 :class="sidebarCollapsed && isDesktop ? 'justify-center w-full' : 'space-x-3'">
@@ -394,7 +394,7 @@
 
                             <a href="{{ route('cuti-bersama.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-calendar-days w-4 text-center"></i>
                                 <span>Cuti Bersama</span>
                             </a>
@@ -402,7 +402,7 @@
                             @if(Auth::user()->hasRole('Admin'))
                                 <a href="{{ route('master-data.jabatan.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-briefcase w-4 text-center"></i>
                                     <span>Jabatan</span>
                                 </a>
@@ -410,14 +410,14 @@
 
                             <a href="{{ route('master-data.pegawai.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-id-card w-4 text-center"></i>
                                 <span>Pegawai</span>
                             </a>
 
                             <a href="{{ route('master-data.regulasi.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-file w-4 text-center"></i>
                                 <span>Regulasi</span>
                             </a>
@@ -425,21 +425,21 @@
                             @if(Auth::user()->hasRole('Admin'))
                                 <a href="{{ route('master-data.ruangan.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-door-open w-4 text-center"></i>
                                     <span>Ruangan</span>
                                 </a>
 
                                 <a href="{{ route('master-data.unit.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-layer-group w-4 text-center"></i>
                                     <span>Unit</span>
                                 </a>
 
                                 <a href="{{ route('master-data.user.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-users w-4 text-center"></i>
                                     <span>User</span>
                                 </a>
@@ -452,7 +452,7 @@
 
                             <a href="{{ route('cuti-bersama.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('cuti-bersama.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-calendar-days w-4 text-center"></i>
                                 <span>Cuti Bersama</span>
                             </a>
@@ -460,7 +460,7 @@
                             @if(Auth::user()->hasRole('Admin'))
                                 <a href="{{ route('master-data.jabatan.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.jabatan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-briefcase w-4 text-center"></i>
                                     <span>Jabatan</span>
                                 </a>
@@ -468,14 +468,14 @@
 
                             <a href="{{ route('master-data.pegawai.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('master-data.pegawai.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-id-card w-4 text-center"></i>
                                 <span>Pegawai</span>
                             </a>
 
                             <a href="{{ route('master-data.regulasi.index') }}"
                                 class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                            {{ request()->routeIs('master-data.regulasi.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                 <i class="fas fa-file w-4 text-center"></i>
                                 <span>Regulasi</span>
                             </a>
@@ -483,21 +483,21 @@
                             @if(Auth::user()->hasRole('Admin'))
                                 <a href="{{ route('master-data.ruangan.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.ruangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-door-open w-4 text-center"></i>
                                     <span>Ruangan</span>
                                 </a>
 
                                 <a href="{{ route('master-data.unit.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-layer-group w-4 text-center"></i>
                                     <span>Unit</span>
                                 </a>
 
                                 <a href="{{ route('master-data.user.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                                                                                                            {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-users w-4 text-center"></i>
                                     <span>User</span>
                                 </a>
@@ -508,7 +508,7 @@
             </nav>
         </aside>
 
-        <main class="flex-1 pt-4 px-4 pb-0 md:pt-6 md:px-6 md:pb-0 transition-all duration-300 w-full flex flex-col"
+        <main class="flex-1 pt-0 px-4 pb-0 md:pt-0 md:px-6 md:pb-0 transition-all duration-300 w-full flex flex-col"
             x-bind:style="isDesktop
                 ? { marginLeft: sidebarCollapsed ? '80px' : '256px', width: 'calc(100% - ' + (sidebarCollapsed ? '80px' : '256px') + ')' }
                 : { marginLeft: '0', width: '100%' }">

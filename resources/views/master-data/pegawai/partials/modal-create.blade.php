@@ -179,7 +179,8 @@
                                 <label
                                     class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun
                                     N</label>
-                                <input type="number" name="sisa_cuti_n" placeholder="12" min="0" value="12"
+                                <input type="number" name="sisa_cuti_n" id="sisa_cuti_n_create" placeholder="12" min="0"
+                                    value="12"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
 
@@ -187,7 +188,8 @@
                                 <label
                                     class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun
                                     N-1</label>
-                                <input type="number" name="sisa_cuti_n1" placeholder="0" min="0" value="0"
+                                <input type="number" name="sisa_cuti_n1" id="sisa_cuti_n1_create" placeholder="0"
+                                    min="0" value="0"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
 
@@ -195,7 +197,8 @@
                                 <label
                                     class="block mb-1 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400">Tahun
                                     N-2</label>
-                                <input type="number" name="sisa_cuti_n2" placeholder="0" min="0" value="0"
+                                <input type="number" name="sisa_cuti_n2" id="sisa_cuti_n2_create" placeholder="0"
+                                    min="0" value="0"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-green-500 transition-all outline-none">
                             </div>
                         </div>

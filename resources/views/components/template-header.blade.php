@@ -126,20 +126,20 @@
         </div>
 
         @if ($showSearch || $showFilter)
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
-                <div class="flex items-center gap-2">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                <div class="flex items-center gap-2 w-full lg:w-auto">
                     @if ($showFilter)
-                        <div class="relative flex-1 sm:flex-initial min-w-[120px]" x-data="{open:false}">
+                        <div class="relative flex-none w-[120px] sm:w-[140px]" x-data="{open:false}">
                             <button @click="open = !open" type="button"
-                                class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                                class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
-                                    <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]" x-text="sortText"></span>
+                                    <i class="fas fa-sort-alpha-down text-gray-600 dark:text-gray-400"></i>
+                                    <span class="text-gray-700 dark:text-gray-300 truncate max-w-[60px]" x-text="sortText"></span>
                                 </div>
                                 <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform" :class="open && 'rotate-180'"></i>
                             </button>
                             <div x-show="open" @click.away="open=false" x-cloak x-transition
-                                class="absolute left-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                                class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                                 <div class="py-1">
                                     <button @click.prevent="setSort('a-z'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                                     <button @click.prevent="setSort('z-a'); open=false" class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
@@ -152,28 +152,28 @@
                             </div>
                         </div>
                     @endif
-                </div>
 
-                @if ($showSearch)
-                    <div class="relative flex-1 sm:w-64 lg:w-72 group">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400 text-xs"></i>
+                    @if ($showSearch)
+                        <div class="relative flex-1 lg:w-64 group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400 text-xs"></i>
+                            </div>
+                            <input type="text"
+                                   x-model="search"
+                                   placeholder="{{ $searchPlaceholder }}"
+                                   class="pl-9 pr-10 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
+                            <button type="button" x-show="search" @click="search = ''; currentPage = 1"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
                         </div>
-                        <input type="text"
-                               x-model="search"
-                               placeholder="{{ $searchPlaceholder }}"
-                               class="pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
-                        <button type="button" x-show="search" @click="search = ''; currentPage = 1"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         @endif
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if ($count > 0)
             @if ($tableTitle)
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">

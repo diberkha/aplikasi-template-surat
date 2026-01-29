@@ -45,6 +45,10 @@ class PegawaiController extends Controller
             $sisaN2 = $validated['sisa_cuti_n2'] ?? 0;
             $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
 
+            $validated['sisa_cuti_n'] = $validated['sisa_cuti_n'] ?? 0;
+            $validated['sisa_cuti_n1'] = $validated['sisa_cuti_n1'] ?? 0;
+            $validated['sisa_cuti_n2'] = $validated['sisa_cuti_n2'] ?? 0;
+
             if ($validated['jenis_pegawai'] === 'PNS') {
                 if ($totalAkumulasi > 24) {
                     $errorMsg = 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 24 hari.';
@@ -55,7 +59,7 @@ class PegawaiController extends Controller
                 }
                 $validated['sisa_cuti_tahunan'] = min(24, $totalAkumulasi);
             } else {
-                $validated['sisa_cuti_tahunan'] = $sisaN;
+                $validated['sisa_cuti_tahunan'] = $validated['sisa_cuti_n'];
             }
 
             Pegawai::create($validated);
@@ -115,6 +119,10 @@ class PegawaiController extends Controller
             $sisaN2 = $validated['sisa_cuti_n2'] ?? 0;
             $totalAkumulasi = $sisaN + $sisaN1 + $sisaN2;
 
+            $validated['sisa_cuti_n'] = $validated['sisa_cuti_n'] ?? 0;
+            $validated['sisa_cuti_n1'] = $validated['sisa_cuti_n1'] ?? 0;
+            $validated['sisa_cuti_n2'] = $validated['sisa_cuti_n2'] ?? 0;
+
             if ($validated['jenis_pegawai'] === 'PNS') {
                 if ($totalAkumulasi > 24) {
                     $errorMsg = 'Total akumulasi cuti PNS (N + N-1 + N-2) tidak boleh melebihi 24 hari.';
@@ -125,7 +133,7 @@ class PegawaiController extends Controller
                 }
                 $validated['sisa_cuti_tahunan'] = min(24, $totalAkumulasi);
             } else {
-                $validated['sisa_cuti_tahunan'] = $sisaN;
+                $validated['sisa_cuti_tahunan'] = $validated['sisa_cuti_n'];
             }
 
             $pegawai->update($validated);

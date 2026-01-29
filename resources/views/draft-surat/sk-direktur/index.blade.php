@@ -13,13 +13,13 @@
                 </p>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
-                <div class="flex items-center gap-2">
-                    <div x-data="{ toggleSort: false }" class="relative flex-1 sm:flex-initial min-w-[120px]">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
+                <div class="flex items-center gap-2 w-full lg:w-auto">
+                    <div x-data="{ toggleSort: false }" class="relative flex-1 lg:w-36">
                         <button type="button" @click="toggleSort = !toggleSort"
-                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
-                                <i class="fas fa-filter text-gray-600 dark:text-gray-400"></i>
+                                <i class="fas fa-sort-alpha-down text-gray-600 dark:text-gray-400"></i>
                                 <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
                                     x-text="sortLabel"></span>
                             </div>
@@ -51,9 +51,9 @@
                         </div>
                     </div>
 
-                    <div x-data="{ open: false }" class="relative flex-1 sm:flex-initial min-w-[140px]">
+                    <div x-data="{ open: false }" class="relative flex-1 lg:w-44">
                         <button type="button" @click="open = !open"
-                            class="w-full flex items-center justify-between space-x-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
                                 <span class="text-gray-700 dark:text-gray-300 truncate max-w-[100px]"
@@ -93,12 +93,12 @@
                     </div>
                 </div>
 
-                <div class="relative flex-1 sm:w-64 lg:w-72">
+                <div class="relative w-full lg:w-80 group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-xs"></i>
                     </div>
                     <input type="text" x-model.debounce.300ms="search" placeholder="Cari draft..."
-                        class="pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
+                        class="pl-9 pr-10 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white w-full text-sm transition-all outline-none">
                     <button type="button" x-show="search" @click="search = ''; currentPage = 1"
                         class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
                         <i class="fas fa-times-circle"></i>
@@ -107,8 +107,7 @@
             </div>
         </div>
 
-        <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar-x">
                 <table class="w-full">
                     <thead>
@@ -216,11 +215,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
-                                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                    ]">
+                                                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                    ]">
                             </button>
                         </template>
 
