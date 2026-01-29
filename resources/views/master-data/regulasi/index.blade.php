@@ -163,11 +163,11 @@
                                     <button @click="page !== '...' && goToPage(page)"
                                         class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                         :class="[
-                                                                                                                                                            parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
-                                                                                                                                                            (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                                                            'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                            (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                            ]"
+                                                                                                                                                                                    parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
+                                                                                                                                                                                    (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                    (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                                    ]"
                                         :disabled="page === '...'">
                                         <span x-text="page"></span>
                                     </button>
@@ -317,6 +317,30 @@
                         this.currentPage = 1;
                     },
 
+                    editRegulasi(id) {
+                        const regulasi = this.regulasis.find(r => r.id_regulasi == id);
+                        if (regulasi) {
+                            document.getElementById('editIdRegulasi').value = regulasi.id_regulasi;
+                            document.getElementById('editIsiRegulasiField').value = regulasi.isi_regulasi;
+
+                            const editIsiRegulasiField = document.getElementById('editIsiRegulasiField');
+                            const editIsiRegulasiCounter = document.getElementById('editIsiRegulasiCounter');
+                            if (editIsiRegulasiField && editIsiRegulasiCounter) {
+                                updateCounter(editIsiRegulasiField, editIsiRegulasiCounter);
+                            }
+
+                            document.getElementById('editRegulasiForm').action = `/master-data/regulasi/${regulasi.id_regulasi}`;
+
+                            if (typeof FormDirtyMonitor !== 'undefined') {
+                                new FormDirtyMonitor('editRegulasiForm', 'btnSubmitEditRegulasi');
+                            }
+
+                            openModal('modalEdit');
+                        } else {
+                            notify('error', 'Gagal', 'Data regulasi tidak ditemukan', false);
+                        }
+                    },
+
                     nextPage() {
                         if (this.currentPage < this.totalPages) {
                             this.currentPage++;
@@ -340,29 +364,7 @@
                 openModal('modalDeleteRegulasi');
             }
 
-            function editRegulasi(id) {
-                const regulasi = Alpine.find(document.querySelector('[x-data="regulasi()"]')).regulasis.find(r => r.id_regulasi == id);
-                if (regulasi) {
-                    document.getElementById('editIdRegulasi').value = regulasi.id_regulasi;
-                    document.getElementById('editIsiRegulasiField').value = regulasi.isi_regulasi;
 
-                    const editIsiRegulasiField = document.getElementById('editIsiRegulasiField');
-                    const editIsiRegulasiCounter = document.getElementById('editIsiRegulasiCounter');
-                    if (editIsiRegulasiField && editIsiRegulasiCounter) {
-                        updateCounter(editIsiRegulasiField, editIsiRegulasiCounter);
-                    }
-
-                    document.getElementById('editRegulasiForm').action = `/master-data/regulasi/${regulasi.id_regulasi}`;
-
-                    if (typeof FormDirtyMonitor !== 'undefined') {
-                        new FormDirtyMonitor('editRegulasiForm', 'btnSubmitEditRegulasi');
-                    }
-
-                    openModal('modalEdit');
-                } else {
-                    notify('error', 'Gagal', 'Data regulasi tidak ditemukan', false);
-                }
-            }
 
             function updateCounter(textarea, counter) {
                 const len = textarea.value.length;

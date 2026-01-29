@@ -32,7 +32,7 @@
                 @method('DELETE')
                 <button type="submit"
                     class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm transition-all">
-                    Hapus
+                    Hapus Cuti
                 </button>
             </form>
         </div>
