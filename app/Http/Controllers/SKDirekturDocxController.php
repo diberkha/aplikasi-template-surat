@@ -48,38 +48,36 @@ class SKDirekturDocxController extends Controller
 
             $logoLeftPath = public_path('img/logo-sragen-kop.jpg');
             if (file_exists($logoLeftPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center'])->addImage($logoLeftPath, [
-                    'height' => (int) Converter::inchToPoint(0.75),
-                    'elementHeight' => (int) Converter::inchToPoint(0.7),
-                    'width' => (int) Converter::inchToPoint(0.6),
+                $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center'])->addImage($logoLeftPath, [
+                    'height' => (int) Converter::inchToPoint(0.82),
+                    'width' => (int) Converter::inchToPoint(0.65),
                     'wrappingStyle' => 'inline'
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center']);
+                $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center']);
             }
 
-            $centerCell = $table->addCell((int) Converter::inchToTwip(5.67), ['valign' => 'center']);
+            $centerCell = $table->addCell((int) Converter::inchToTwip(5.27), ['valign' => 'center']);
             $centerCell->addText('PEMERINTAH KABUPATEN SRAGEN', ['name' => 'Arial', 'size' => 13], ['alignment' => Jc::CENTER]);
             $centerCell->addText('RSUD dr. SOERATNO GEMOLONG', ['name' => 'Arial', 'bold' => true, 'size' => 17], ['alignment' => Jc::CENTER]);
             $centerCell->addTextBreak(1, ['size' => 12]);
             $centerCell->addText('Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274', ['name' => 'Arial', 'size' => 9], ['alignment' => Jc::CENTER]);
 
-            $contactRun = $centerCell->addTextRun(['alignment' => Jc::CENTER]);
+            $contactRun = $centerCell->addTextRun(['alignment' => Jc::CENTER, 'lineHeight' => 1.2]);
             $contactRun->addText('Telepon (0271) 6811839, Laman ', ['name' => 'Arial', 'size' => 8]);
             $contactRun->addLink('https://rsudgemolong.sragenkab.go.id', 'https://rsudgemolong.sragenkab.go.id', ['name' => 'Arial', 'size' => 8, 'color' => '0000FF']);
             $contactRun->addText(', Pos-el rsudgemolong@gmail.com', ['name' => 'Arial', 'size' => 8]);
 
             $logoRightPath = public_path('img/logo-rs-kop.png');
             if (file_exists($logoRightPath)) {
-                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center'])->addImage($logoRightPath, [
-                    'height' => (int) Converter::inchToPoint(0.7),
-                    'elementHeight' => (int) Converter::inchToPoint(0.65),
-                    'width' => (int) Converter::inchToPoint(0.6),
+                $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center'])->addImage($logoRightPath, [
+                    'height' => (int) Converter::inchToPoint(0.8),
+                    'width' => (int) Converter::inchToPoint(0.75),
                     'wrappingStyle' => 'inline',
                     'alignment' => Jc::RIGHT
                 ]);
             } else {
-                $table->addCell((int) Converter::inchToTwip(0.6), ['valign' => 'center']);
+                $table->addCell((int) Converter::inchToTwip(0.8), ['valign' => 'center']);
             }
 
             $borderTable = $section->addTable(['cellMargin' => 0]);
