@@ -8,7 +8,6 @@ use App\Models\Regulasi;
 use App\Models\Unit;
 use App\Helpers\StringHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
