@@ -431,7 +431,7 @@
 
     async function openEditCutiModal(id) {
         try {
-            const response = await fetch(`/cuti/${id}/edit`);
+            const response = await fetch(`{{ route('cuti.edit', '') }}/${id}`);
             const result = await response.json();
             if (!result.success) { notify('error', 'Gagal', 'Gagal mengambil data draft'); return; }
 
@@ -656,7 +656,7 @@
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
-        fetch(`/cuti/${id}`, {
+        fetch(`{{ route('cuti.update', '') }}/${id}`, {
             method: 'POST', body: finalData
         })
             .then(r => r.json())

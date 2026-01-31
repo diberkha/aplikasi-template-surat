@@ -50,7 +50,7 @@ class RuanganController extends Controller
     {
         try {
             $request->validate([
-                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
+                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $request->id_ruangan . ',id_ruangan',
             ]);
 
             $ruangan->update([

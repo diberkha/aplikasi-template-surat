@@ -146,18 +146,18 @@
                                             </button>
 
                                             <div x-data="{ 
-                                                                                                                                                                                                        openDownload: false, 
-                                                                                                                                                                                                        dropdownStyle: '',
-                                                                                                                                                                                                        toggle() { 
-                                                                                                                                                                                                            this.openDownload = !this.openDownload;
-                                                                                                                                                                                                            if (this.openDownload) {
-                                                                                                                                                                                                                this.$nextTick(() => {
-                                                                                                                                                                                                                    const rect = this.$refs.button.getBoundingClientRect();
-                                                                                                                                                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                                                                                                                                                                });
-                                                                                                                                                                                                            }
-                                                                                                                                                                                                        } 
-                                                                                                                                                                                                    }"
+                                                                                                                                                                                                                                openDownload: false, 
+                                                                                                                                                                                                                                dropdownStyle: '',
+                                                                                                                                                                                                                                toggle() { 
+                                                                                                                                                                                                                                    this.openDownload = !this.openDownload;
+                                                                                                                                                                                                                                    if (this.openDownload) {
+                                                                                                                                                                                                                                        this.$nextTick(() => {
+                                                                                                                                                                                                                                            const rect = this.$refs.button.getBoundingClientRect();
+                                                                                                                                                                                                                                            this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                                                                                                                                                                        });
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                } 
+                                                                                                                                                                                                                            }"
                                                 @scroll.window="openDownload = false" class="relative">
                                                 <button type="button" x-ref="button" @click="toggle()"
                                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -223,11 +223,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                                                                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
-                                                                                                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                                                            ]">
+                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                            ]">
                                 </button>
                             </template>
 
@@ -276,7 +276,7 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
             const RUANGAN_OPTIONS = @json($ruanganOptions ?? []);
         @else
-            const RUANGAN_OPTIONS = [];
+            const RUANGAN_OPTIONS = [];0
         @endif
 
         function arsipSurat() {
@@ -287,7 +287,7 @@
                     return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                            ruanganOptions: RUANGAN_OPTIONS,
+                                                                    ruanganOptions: RUANGAN_OPTIONS,
                     searchRuangan: '',
                 @endif
             search: '',
@@ -342,12 +342,12 @@
                 return data;
             },
 
-                            get paginatedData() {
+                                        get paginatedData() {
                 const start = (this.currentPage - 1) * this.itemsPerPage;
                 return this.filteredData.slice(start, start + this.itemsPerPage);
             },
 
-                            get totalPages() {
+                                        get totalPages() {
                 return Math.max(1, Math.ceil(this.filteredData.length / this.itemsPerPage));
             },
 
@@ -373,7 +373,7 @@
                 return rangeWithDots;
             },
 
-                            get sortLabel() {
+                                        get sortLabel() {
                 switch (this.sortOption) {
                     case 'a-z': return 'A-Z';
                     case 'z-a': return 'Z-A';
@@ -383,19 +383,19 @@
                 }
             },
 
-                            get selectedTemplateName() {
+                                        get selectedTemplateName() {
                 if (!this.templateFilter) return 'Tipe Surat';
                 const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
                 return tpl ? tpl.nama_template_surat : 'Tipe Surat';
             },
 
-                            get selectedRuanganName() {
+                                        get selectedRuanganName() {
                 if (!this.ruanganFilter) return 'Ruangan';
                 const r = RO_DATA().find(t => t.id_ruangan == this.ruanganFilter);
                 return r ? r.nama_ruangan : 'Ruangan';
             },
 
-                            get filteredRuanganOptions() {
+                                        get filteredRuanganOptions() {
                 if (!this.searchRuangan) return RUANGAN_OPTIONS;
                 const s = this.searchRuangan.toLowerCase();
                 return RUANGAN_OPTIONS.filter(r => r.nama_ruangan.toLowerCase().includes(s));
@@ -403,7 +403,7 @@
 
             applyFilters() { this.currentPage = 1; },
 
-                            get dateDisplay() {
+                                        get dateDisplay() {
                 if (this.appliedStartDate && this.appliedEndDate) {
                     return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
                 } else if (this.appliedStartDate) {
@@ -441,7 +441,7 @@
                 this.currentPage = 1; this.open = false;
             }
         };
-                    }
+                                }
 
         function RO_DATA() { return RUANGAN_OPTIONS; }
 
@@ -567,7 +567,7 @@
                 else fileName = filePath ? filePath.split('/').pop() : `${tipe}-${cleanNomor || 'Document'}.pdf`;
 
                 document.getElementById('detail-file-nama').textContent = fileName;
-                document.getElementById('detail-download-pdf').href = `/arsip-surat/${idSurat}/download`;
+                document.getElementById('detail-download-pdf').href = `{{ route('arsip-surat.download', '') }}/${idSurat}`;
 
                 const docxBtn = document.getElementById('detail-download-word');
                 if (filePath && (filePath.includes('arsip/import') || filePath.includes('arsip\\import'))) docxBtn.classList.add('hidden');
@@ -575,7 +575,7 @@
 
                 const previewIframe = document.getElementById('detail-pdf-preview');
                 previewIframe.classList.remove('hidden');
-                previewIframe.src = `/arsip-surat/${idSurat}`;
+                previewIframe.src = `{{ route('arsip-surat.show', '') }}/${idSurat}`;
                 document.getElementById('detail-file-icon').className = 'fas fa-file-pdf text-2xl text-red-500';
                 document.getElementById('detail-file-type-label').textContent = 'File PDF';
             } else {
@@ -605,7 +605,7 @@
             document.getElementById('delete-nama-surat').textContent = namaSurat;
             document.getElementById('delete-nomor-surat').textContent = nomorSurat;
             document.getElementById('delete-tipe-surat').textContent = tipeSurat;
-            document.getElementById('formDeleteSurat').action = `/arsip-surat/${id}`;
+            document.getElementById('formDeleteSurat').action = `{{ route('arsip-surat.destroy', '') }}/${id}`;
             openModal('modalDeleteSurat');
         }
 

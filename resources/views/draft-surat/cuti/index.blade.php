@@ -173,13 +173,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-medium rounded-full" :class="{
-                                                                                                                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
-                                                                                                                item.cuti.kategori === 'PNS',
-                                                                                                                'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
-                                                                                                                item.cuti.kategori === 'PPPK',
-                                                                                                                'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
-                                                                                                                (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
-                                                                                                                }"
+                                                                                                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': item.cuti &&
+                                                                                                                    item.cuti.kategori === 'PNS',
+                                                                                                                    'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': item.cuti &&
+                                                                                                                    item.cuti.kategori === 'PPPK',
+                                                                                                                    'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': item.cuti &&
+                                                                                                                    (item.cuti.kategori === 'Non ASN' || item.cuti.kategori === 'NON ASN')
+                                                                                                                    }"
                                         x-text="item.cuti ? item.cuti.kategori : '-'">
                                     </span>
                                 </td>
@@ -253,11 +253,11 @@
                             <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
-                                                                                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                ]">
+                                                                                                                    parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                                                                    (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                    'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                    (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                    ]">
                             </button>
                         </template>
 
@@ -477,9 +477,11 @@
                     btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
 
                     newBtn.addEventListener('click', () => {
-                        fetch(`/cuti/${id}/archive`, {
+                        fetch(`{{ route('cuti.archive', '') }}/${id}`, {
                             method: 'POST',
-                            body: JSON.stringify({})
+                            body: JSON.stringify({
+                                _token: '{{ csrf_token() }}'
+                            })
                         })
                             .then(response => response.json())
                             .then(data => {
@@ -510,8 +512,11 @@
                     btnConfirm.parentNode.replaceChild(newBtn, btnConfirm);
 
                     newBtn.addEventListener('click', () => {
-                        fetch(`/arsip-surat/${id}`, {
-                            method: 'DELETE'
+                        fetch(`{{ route('arsip-surat.destroy', '') }}/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
                         })
                             .then(response => response.json())
                             .then(data => {

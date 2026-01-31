@@ -70,19 +70,6 @@ class CutiBersamaController extends Controller
         return view('cuti-bersama.edit', compact('cutiBersama'));
     }
 
-    public function getDetail($id)
-    {
-        $cuti = CutiBersama::findOrFail($id);
-        return response()->json([
-            'id' => $cuti->id,
-            'jenis_cuti_bersama' => $cuti->jenis_cuti_bersama,
-            'tahun' => $cuti->tahun,
-            'jumlah_hari' => $cuti->jumlah_hari,
-            'is_perhitungan_cuti_tahunan' => $cuti->is_perhitungan_cuti_tahunan,
-            'catatan' => $cuti->catatan,
-        ]);
-    }
-
     public function update(Request $request, CutiBersama $cutiBersama)
     {
         try {

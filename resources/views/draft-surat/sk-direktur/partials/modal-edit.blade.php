@@ -182,7 +182,7 @@
     async function openEditSkModal(id) {
         try {
             currentEditSkId = id;
-            const response = await fetch(`/sk-direktur/${id}/edit`);
+            const response = await fetch("{{ url('sk-direktur') }}/" + id + "/edit");
             const result = await response.json();
 
             if (!result.success) {
@@ -462,7 +462,7 @@
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui';
 
         try {
-            const response = await fetch(`/sk-direktur/${id}`, {
+            const response = await fetch("{{ url('sk-direktur') }}/" + id, {
                 method: 'POST',
                 body: formData
             });

@@ -61,7 +61,7 @@
 
         @page {
             size: 8.27in 13in;
-            margin: 0.33in 0.70in 0.19in 0.70in;
+            margin: 0.33in 1.00in 0.19in 1.00in;
         }
 
         .header {

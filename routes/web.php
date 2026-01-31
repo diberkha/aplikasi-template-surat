@@ -106,7 +106,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [CutiBersamaController::class, 'create'])->name('create');
             Route::post('/', [CutiBersamaController::class, 'store'])->name('store');
             Route::get('/{cutiBersama}/edit', [CutiBersamaController::class, 'edit'])->name('edit');
-            Route::get('/{id}/detail', [CutiBersamaController::class, 'getDetail'])->name('detail');
             Route::put('/{cutiBersama}', [CutiBersamaController::class, 'update'])->name('update');
             Route::delete('/{cutiBersama}', [CutiBersamaController::class, 'destroy'])->name('destroy');
         });

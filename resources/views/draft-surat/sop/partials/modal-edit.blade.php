@@ -69,7 +69,7 @@
         try {
             currentEditSopId = id;
             await loadEditMasterData();
-            const response = await fetch(`/sop/${id}/edit`);
+            const response = await fetch("{{ url('sop') }}/" + id + "/edit");
             const result = await response.json();
 
             if (!result.success) {
@@ -487,7 +487,7 @@
         });
 
         try {
-            const response = await fetch(`/sop/${currentEditSopId}`, {
+            const response = await fetch("{{ url('sop') }}/" + currentEditSopId, {
                 method: 'POST',
                 body: formData
             });
