@@ -206,7 +206,12 @@ trait LazyPdfTrait
             Log::error('Puppeteer failed for surat ' . $surat->id_surat . ', falling back to DomPDF: ' . $e->getMessage());
             $pdf = Pdf::loadHTML($html)
                 ->setPaper([0, 0, 612, 936], 'portrait')
-                ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'defaultFont' => 'serif',
+                    'isFontSubsettingEnabled' => true
+                ]);
             Storage::put($newPath, $pdf->output());
         }
 

@@ -34,6 +34,7 @@
             background: white;
             margin: 0;
             padding: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
         .page {
@@ -60,8 +61,8 @@
         }
 
         @page {
-            size: 8.27in 13in;
-            margin: 0.75in 1.00in 0.75in 1.00in;
+            size: 8.5in 13in;
+            margin: 0.33in 0.70in 0.19in 0.70in;
         }
 
         .header {
