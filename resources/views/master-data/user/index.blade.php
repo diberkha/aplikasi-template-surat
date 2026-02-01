@@ -13,35 +13,35 @@
 
             <div class="flex flex-col lg:flex-row lg:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
                 <div class="flex items-center gap-2 w-full lg:w-auto">
-                    <div x-data="{ toggleFilter: false }" class="relative flex-none w-[120px] sm:w-[140px]">
-                        <button type="button" @click="toggleFilter = !toggleFilter"
+                    <div x-data="{ toggleSort: false }" class="relative flex-none w-[120px] sm:w-[140px]">
+                        <button type="button" @click="toggleSort = !toggleSort"
                             class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-sort-alpha-down text-gray-600 dark:text-gray-400"></i>
                                 <span class="text-gray-700 dark:text-gray-300 truncate max-w-[60px]"
-                                    x-text="sortOrderText"></span>
+                                    x-text="sortText"></span>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
-                                :class="toggleFilter && 'rotate-180'"></i>
+                                :class="toggleSort && 'rotate-180'"></i>
                         </button>
 
-                        <div x-show="toggleFilter" @click.away="toggleFilter = false" x-transition x-cloak
+                        <div x-show="toggleSort" @click.away="toggleSort = false" x-transition x-cloak
                             class="absolute mt-2 left-0 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
                             <ul class="py-1">
-                                <li><button @click="sortOrder='a-z'; toggleFilter=false"
+                                <li><button @click="sortOption='a-z'; toggleSort=false"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">A-Z</button>
                                 </li>
-                                <li><button @click="sortOrder='z-a'; toggleFilter=false"
+                                <li><button @click="sortOption='z-a'; toggleSort=false"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Z-A</button>
                                 </li>
-                                <li><button @click="sortOrder='latest'; toggleFilter=false"
+                                <li><button @click="sortOption='latest'; toggleSort=false"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terbaru</button>
                                 </li>
-                                <li><button @click="sortOrder='oldest'; toggleFilter=false"
+                                <li><button @click="sortOption='oldest'; toggleSort=false"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm">Terlama</button>
                                 </li>
                                 <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                                    <button @click="sortOrder=null; toggleFilter=false"
+                                    <button @click="sortOption=null; toggleSort=false"
                                         class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">Hapus
                                         Filter</button>
                                 </li>
@@ -102,7 +102,7 @@
                         </thead>
 
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            <template x-for="(user, index) in paginatedUsers()" :key="user.id">
+                            <template x-for="(user, index) in paginatedData()" :key="user.id">
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap"
                                         x-text="index + 1 + ((currentPage - 1) * itemsPerPage)"></td>
@@ -115,11 +115,11 @@
                                     <td class="px-6 py-4" x-text="user.ruangan || 'Tidak ada ruangan'"></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-2">
-                                            <button @click="openEdit(user)"
+                                            <button @click="openEditModal(user)"
                                                 class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                                                 <i class="fas fa-edit text-sm"></i>
                                             </button>
-                                            <button @click="openDelete(user)"
+                                            <button @click="openDeleteModal(user)"
                                                 class="inline-flex items-center p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                                 x-show="user.id !== {{ auth()->id() }}">
                                                 <i class="fas fa-trash text-sm"></i>
@@ -132,7 +132,7 @@
                                     </td>
                                 </tr>
                             </template>
-                            <template x-if="paginatedUsers().length === 0">
+                            <template x-if="paginatedData().length === 0">
                                 <tr>
                                     <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
@@ -172,11 +172,11 @@
                             <button @click="page !== '...' && goToPage(page)"
                                 class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                 :class="[
-                                                                                                                                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
-                                                                                                                                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                                                                                                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
-                                                                                                                                                            ]"
+                                                                                                                                                                                parseInt(page) === parseInt(currentPage) ? 'bg-green-600 text-white border-green-600' :
+                                                                                                                                                                                (page === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                                                                                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                                                                                                                (typeof page === 'number' && Math.abs(page - currentPage) > 1 && page !== 1 && page !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                                                                                                            ]"
                                 :disabled="page === '...'">
                                 <span x-text="page"></span>
                             </button>
@@ -192,7 +192,7 @@
                         <span x-text="startItem"></span> -
                         <span x-text="endItem"></span>
                         dari
-                        <span x-text="filteredUsers().length"></span>
+                        <span x-text="totalItems"></span>
                     </div>
 
                 </div>
@@ -216,7 +216,7 @@
             function userTable() {
                 return {
                     search: '',
-                    sortOrder: null,
+                    sortOption: null,
                     users: @json($usersJs),
 
                     itemsPerPage: 10,
@@ -224,9 +224,14 @@
 
                     init() { },
 
-                    get totalPages() {
-                        return Math.max(1, Math.ceil(this.filteredUsers().length / this.itemsPerPage));
+                    get totalItems() {
+                        return this.filteredSortedData().length;
                     },
+
+                    get totalPages() {
+                        return Math.max(1, Math.ceil(this.totalItems / this.itemsPerPage));
+                    },
+
                     pages() {
                         const total = this.totalPages;
                         const current = this.currentPage;
@@ -259,22 +264,23 @@
 
                         return rangeWithDots;
                     },
+
                     goToPage(page) {
                         this.currentPage = page;
                     },
 
                     get startItem() {
-                        return this.filteredUsers().length === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
+                        return this.totalItems === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
                     },
 
                     get endItem() {
-                        return Math.min(this.currentPage * this.itemsPerPage, this.filteredUsers().length);
+                        return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
                     },
 
-                    paginatedUsers() {
+                    paginatedData() {
                         const start = (this.currentPage - 1) * this.itemsPerPage;
                         const end = this.currentPage * this.itemsPerPage;
-                        return this.filteredUsers().slice(start, end);
+                        return this.filteredSortedData().slice(start, end);
                     },
 
                     nextPage() {
@@ -285,8 +291,8 @@
                         if (this.currentPage > 1) this.currentPage--;
                     },
 
-                    get sortOrderText() {
-                        switch (this.sortOrder) {
+                    get sortText() {
+                        switch (this.sortOption) {
                             case null: return 'Urutkan';
                             case 'a-z': return 'A-Z';
                             case 'z-a': return 'Z-A';
@@ -295,27 +301,38 @@
                         }
                     },
 
-                    filteredUsers() {
+                    filteredSortedData() {
                         let result = this.users.filter(u =>
                             u.username.toLowerCase().includes(this.search.toLowerCase()) ||
                             (u.ruangan && u.ruangan.toLowerCase().includes(this.search.toLowerCase()))
                         );
 
-                        switch (this.sortOrder) {
-                            case 'a-z': return result.sort((a, b) => a.username.localeCompare(b.username));
-                            case 'z-a': return result.sort((a, b) => b.username.localeCompare(a.username));
-                            case 'latest': return result.sort((a, b) => b.id - a.id);
-                            case 'oldest': return result.sort((a, b) => a.id - b.id);
-                            default: return result.sort((a, b) => b.id - a.id);
+                        switch (this.sortOption) {
+                            case 'a-z':
+                                result.sort((a, b) => a.username.localeCompare(b.username));
+                                break;
+                            case 'z-a':
+                                result.sort((a, b) => b.username.localeCompare(a.username));
+                                break;
+                            case 'latest':
+                                result.sort((a, b) => b.id - a.id);
+                                break;
+                            case 'oldest':
+                                result.sort((a, b) => a.id - b.id);
+                                break;
+                            default:
+                                result.sort((a, b) => b.id - a.id);
+                                break;
                         }
                         return result;
                     },
 
                     openCreateModal() {
+                        document.getElementById('formCreateUser').reset();
                         openModal('modalCreateUser');
                     },
 
-                    openEdit(user) {
+                    openEditModal(user) {
                         this.originalUser = { ...user };
                         openModal('modalEditUser');
 
@@ -337,13 +354,17 @@
                     },
 
                     resetEditUser() {
-                        document.getElementById('edit_username').value = this.originalUser.username;
-                        document.getElementById('edit_id_ruangan').value = this.originalUser.id_ruangan;
-                        document.getElementById('password_edit').value = '';
-                        document.getElementById('password_confirmation_edit').value = '';
+                        if (this.originalUser) {
+                            document.getElementById('edit_username').value = this.originalUser.username;
+                            window.dispatchEvent(new CustomEvent('populate-user-edit', {
+                                detail: { id_ruangan: this.originalUser.id_ruangan }
+                            }));
+                            document.getElementById('password_edit').value = '';
+                            document.getElementById('password_confirmation_edit').value = '';
+                        }
                     },
 
-                    openDelete(user) {
+                    openDeleteModal(user) {
                         openModal('modalDeleteUser');
                         document.getElementById('delete-username').textContent = user.username;
                         document.getElementById('delete-ruangan-user').textContent = user.ruangan || 'Tidak ada ruangan';

@@ -11,7 +11,7 @@
         </div>
 
         <div class="p-6">
-            <form id="formCreateUser" action="{{ route('master-data.user.store') }}" method="POST">
+            <form id="formCreateUser" action="{{ route('master-data.user.store') }}" method="POST" autocomplete="off">
                 @csrf
                 <div class="space-y-6">
                     <div class="relative" x-data="{
@@ -93,14 +93,14 @@
                     <div>
                         <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Username <span
                                 class="text-red-500">*</span></label>
-                        <input type="text" name="username" required
+                        <input type="text" name="username" required autocomplete="off"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                     </div>
 
                     <div>
                         <label class="block mb-2 text-sm text-gray-700 dark:text-gray-300">Password <span
                                 class="text-red-500">*</span></label>
-                        <input type="password" name="password" required
+                        <input type="password" name="password" required autocomplete="off"
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 outline-none transition-all">
                         <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
                             <i class="fas fa-info-circle mr-1"></i>
