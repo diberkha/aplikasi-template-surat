@@ -37,7 +37,7 @@ const path = require("path");
         const fileUrl = "file://" + absoluteInputPath;
 
         await page.goto(fileUrl, {
-            waitUntil: "load",
+            waitUntil: "networkidle0",
         });
 
         await page.pdf({
