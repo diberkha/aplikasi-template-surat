@@ -6,7 +6,8 @@
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-lg w-full overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Import File Surat</h3>
                 <button onclick="closeModal('modalImportSurat')"
                     class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
@@ -191,12 +192,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
                     <button type="reset"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                         Reset
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                         Import
                     </button>
                 </div>

@@ -15,7 +15,7 @@
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 Apakah Anda yakin ingin menghapus data regulasi ini? Data yang dihapus tidak dapat dikembalikan.
             </p>
-            <div class="mt-4 bg-red-50 dark:bg-green-900/10 p-4 rounded-lg border border-red-200 dark:border-red-800">
+            <div class="mt-4 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Isi Regulasi:</p>
                 <p id="delete-preview" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                     -

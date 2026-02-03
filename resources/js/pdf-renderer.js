@@ -18,6 +18,7 @@ const path = require("path");
 
     const browser = await puppeteer.launch({
         headless: "new",
+        executablePath: process.env.CHROME_PATH || undefined,
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",

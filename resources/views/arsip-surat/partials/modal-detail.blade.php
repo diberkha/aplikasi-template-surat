@@ -2,7 +2,7 @@
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         <div
-            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
+            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
             <div>
                 <h3 class="text-base sm:text-lg font-medium text-gray-900 dark:text-white">Detail Surat</h3>
             </div>
@@ -116,7 +116,7 @@
         </div>
 
         <div
-            class="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-white dark:bg-gray-800 sticky bottom-0">
+            class="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-gray-50 dark:bg-gray-700/50 sticky bottom-0">
             <button type="button" onclick="closeDetailModal()"
                 class="w-full sm:w-auto px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium h-11 text-sm">
                 Tutup

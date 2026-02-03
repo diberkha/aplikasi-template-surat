@@ -6,7 +6,8 @@
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Buat Standar Operasional Prosedur (SOP)
                 </h3>
                 <button type="button" onclick="closeModal('modalCreateSOP'); resetFormSOP();"
@@ -39,7 +40,7 @@
                 </div>
 
                 <div
-                    class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
                     <button type="button" onclick="resetFormSOP()"
                         class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
@@ -500,12 +501,11 @@
                         openPreviewPDF(result.file_url, result.nomor_surat, result.surat_id, result.judul_sop, result.tanggal_terbit, false);
                     }, 500);
                 } else {
-                    let msg = result.message || 'Terjadi kesalahan';
                     if (result.errors) {
-                        const errDetails = Object.values(result.errors).flat().join('\n');
-                        msg += '\n' + errDetails;
+                        handleValidationErrors(result.errors);
+                    } else {
+                        notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
                     }
-                    notify('error', 'Gagal', msg);
                 }
             })
             .catch(error => {

@@ -7,7 +7,7 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div
-                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">Edit Draft
                     Surat
                     Keputusan Direktur</h3>
@@ -31,19 +31,23 @@
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Nomor Surat <span
                                         class="text-red-500">*</span></label>
                                 <div class="flex flex-wrap items-center gap-2 w-full">
-                                    <input type="text" id="edit_nomor_surat_part1"
+                                    <input type="text" id="edit_nomor_surat_part1" name="nomor_surat_part1"
+                                        oninput="combineEditNomorSurat(); if(window.formDirtyMonitors && window.formDirtyMonitors['editSkForm']) window.formDirtyMonitors['editSkForm'].check();"
                                         class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                         required>
                                     <span class="text-gray-400 font-bold">/</span>
-                                    <input type="text" id="edit_nomor_surat_part2"
+                                    <input type="text" id="edit_nomor_surat_part2" name="nomor_surat_part2"
+                                        oninput="combineEditNomorSurat(); if(window.formDirtyMonitors && window.formDirtyMonitors['editSkForm']) window.formDirtyMonitors['editSkForm'].check();"
                                         class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                         required>
                                     <span class="text-gray-400 font-bold">/</span>
-                                    <input type="text" id="edit_nomor_surat_part3"
+                                    <input type="text" id="edit_nomor_surat_part3" name="nomor_surat_part3"
+                                        oninput="combineEditNomorSurat(); if(window.formDirtyMonitors && window.formDirtyMonitors['editSkForm']) window.formDirtyMonitors['editSkForm'].check();"
                                         class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                         required>
                                     <span class="text-gray-400 font-bold">/</span>
-                                    <input type="text" id="edit_nomor_surat_part4"
+                                    <input type="text" id="edit_nomor_surat_part4" name="nomor_surat_part4"
+                                        oninput="combineEditNomorSurat(); if(window.formDirtyMonitors && window.formDirtyMonitors['editSkForm']) window.formDirtyMonitors['editSkForm'].check();"
                                         class="flex-1 min-w-[60px] px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
                                         required>
                                 </div>
@@ -158,13 +162,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 rounded-b-xl">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 rounded-b-2xl">
                     <button type="button" onclick="resetEditSkForm()"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditSkBtn"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -230,6 +234,7 @@
         });
 
         await loadEditMengingatOptions(sk.mengingat_array);
+        combineEditNomorSurat();
 
         if (typeof FormDirtyMonitor !== 'undefined') {
             if (window.formDirtyMonitors && window.formDirtyMonitors['editSkForm']) {
@@ -478,7 +483,11 @@
                     window.openDraftPreview(result.data, true);
                 }, 500);
             } else {
-                notify('error', 'Gagal', result.message);
+                if (result.errors) {
+                    handleValidationErrors(result.errors);
+                } else {
+                    notify('error', 'Gagal', result.message || 'Gagal memperbarui draft');
+                }
             }
         } catch (error) {
             console.error('Error updating draft:', error);

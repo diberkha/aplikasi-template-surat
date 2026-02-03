@@ -1,6 +1,6 @@
 <div id="modalDeletePegawai"
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative overflow-hidden">
         <button type="button" @click="document.getElementById('modalDeletePegawai').classList.add('hidden')"
             class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
             <i class="fas fa-times"></i>
@@ -28,13 +28,14 @@
 
         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
             <button type="button" @click="document.getElementById('modalDeletePegawai').classList.add('hidden')"
-                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white text-sm">
+                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                 Batal
             </button>
             <form id="formDeletePegawai" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm">
+                <button type="submit"
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                     Hapus Pegawai
                 </button>
             </form>

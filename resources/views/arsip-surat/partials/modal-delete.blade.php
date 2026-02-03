@@ -1,6 +1,6 @@
 <div id="modalDeleteSurat"
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <h3 class="text-lg font-semibold text-red-600 dark:text-red-400">Konfirmasi Hapus</h3>
             <button onclick="closeModal('modalDeleteSurat')" class="text-gray-400 hover:text-gray-600">

@@ -28,35 +28,19 @@ function handleInfo(message) {
 }
 
 function handleValidationErrors(errors) {
-    const fieldLabels = {
-        judul_surat: "Judul Surat",
-        nomor_surat: "Nomor Surat",
-        tentang: "Tentang",
-        identitas_penetap: "Identitas Penetap",
-        id_regulasi: "Keputusan",
-        menimbang: "Menimbang",
-        mengingat: "Mengingat",
-        memutuskan: "Memutuskan",
-        tempat_dibuat: "Tempat",
-        tanggal_dibuat: "Tanggal Surat",
-        jabatan_pembuat: "Jabatan Pembuat",
-        nama_pembuat: "Nama Pembuat",
-        nama_ruangan: "Nama Ruangan",
-        username: "Username",
-        password: "Password",
-        role: "Role",
-    };
-
-    let errorMsg = "";
+    let errorMsg = "Terdapat beberapa isian yang belum sesuai:\n\n";
+    let count = 1;
+    
     for (let [field, messages] of Object.entries(errors)) {
-        const fieldLabel = fieldLabels[field] || field;
         const messageText = Array.isArray(messages)
             ? messages.join(", ")
             : messages;
-        errorMsg += `• ${fieldLabel}: ${messageText}\n`;
+        
+        errorMsg += `${count}. ${messageText}\n`;
+        count++;
     }
 
-    notify("error", "Validasi Gagal", errorMsg.trim(), false);
+    notify("error", "Periksa Kembali Isian Anda", errorMsg.trim(), false);
 }
 
 function openModal(modalId, templateName = null, templateId = null) {
@@ -249,23 +233,19 @@ class FormDirtyMonitor {
     }
 }
 
-// Smart Fetch Wrapper: Overrides native fetch to handle Base URL and Headers automatically
 const originalFetch = window.fetch;
 window.fetch = function (url, options = {}) {
-    // 1. Handle URL
     let finalUrl = url;
     if (typeof url === "string" && !url.startsWith("http")) {
         finalUrl = `${window.APP_URL}${url.startsWith("/") ? "" : "/"}${url}`;
     }
 
-    // 2. Handle Headers
     options.headers = {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
         ...(options.headers || {}),
     };
 
-    // 3. Auto CSRF for non-GET requests
     const method = (options.method || "GET").toUpperCase();
     if (method !== "GET" && !options.headers["X-CSRF-TOKEN"]) {
         const token = document.querySelector('meta[name="csrf-token"]');

@@ -13,7 +13,7 @@
             </div>
 
             <div class="flex flex-col lg:flex-row lg:items-center gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
-                <div class="flex items-center gap-2 w-full lg:w-auto">
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                     <div x-data="{ toggleSort: false }" class="relative flex-none w-[120px] sm:w-[140px]">
                         <button type="button" @click="toggleSort = !toggleSort"
                             class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
@@ -50,7 +50,81 @@
                         </div>
                     </div>
 
-                    <div class="relative flex-1 lg:w-64 group">
+                    <div x-data="{ open: false }" class="relative flex-none w-[140px] sm:w-[160px]">
+                        <button type="button" @click="open = !open"
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-file-alt text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                    x-text="selectedTemplateName"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="open && 'rotate-180'"></i>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" x-transition x-cloak
+                            class="absolute mt-2 left-0 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <ul class="py-1">
+                                <template x-for="tpl in templateOptions" :key="tpl.id_template_surat">
+                                    <li>
+                                        <button type="button"
+                                            @click="templateFilter = tpl.id_template_surat; open = false; applyFilters()"
+                                            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm"
+                                            x-text="tpl.nama_template_surat"></button>
+                                    </li>
+                                </template>
+                                <li class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                    <button type="button" @click="templateFilter = ''; open = false; applyFilters()"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 text-sm">
+                                        Hapus Filter
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div x-data="{ open: false }" class="relative flex-none w-[140px] sm:w-[160px]">
+                        <button type="button" @click="open = !open"
+                            class="w-full flex items-center justify-between space-x-2 px-3 h-[42px] border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-calendar-alt text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-gray-700 dark:text-gray-300 truncate max-w-[80px]"
+                                    x-text="dateDisplay"></span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 dark:text-gray-300 text-xs transition-transform"
+                                :class="open && 'rotate-180'"></i>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" x-transition x-cloak
+                            class="absolute mt-2 right-0 lg:left-0 lg:right-auto w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl z-50 p-4">
+                            <div class="space-y-3">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                        Mulai</label>
+                                    <input type="date" x-model="startDate"
+                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Tanggal
+                                        Akhir</label>
+                                    <input type="date" x-model="endDate"
+                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                                </div>
+
+                                <div class="flex space-x-2 pt-1">
+                                    <button type="button" @click="applyDateFilter(); open = false"
+                                        class="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">Terapkan</button>
+                                    <button type="button" @click="clearDateFilter(); open = false"
+                                        class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative flex-1 lg:w-48 group">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400 text-xs"></i>
                         </div>
@@ -65,7 +139,7 @@
 
                 @if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
                     <button type="button" onclick="openModal('modalImportSurat')"
-                        class="flex items-center justify-center space-x-2 h-[42px] bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium w-full lg:w-auto lg:px-4 active:scale-95 shadow-none">
+                        class="flex items-center justify-center space-x-2 h-[42px] bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium w-full lg:w-auto lg:px-4 active:scale-95 shadow-none whitespace-nowrap">
                         <i class="fas fa-file-upload"></i>
                         <span>Import Surat</span>
                     </button>
@@ -146,18 +220,18 @@
                                             </button>
 
                                             <div x-data="{ 
-                                                                                                                                                                                                                                openDownload: false, 
-                                                                                                                                                                                                                                dropdownStyle: '',
-                                                                                                                                                                                                                                toggle() { 
-                                                                                                                                                                                                                                    this.openDownload = !this.openDownload;
-                                                                                                                                                                                                                                    if (this.openDownload) {
-                                                                                                                                                                                                                                        this.$nextTick(() => {
-                                                                                                                                                                                                                                            const rect = this.$refs.button.getBoundingClientRect();
-                                                                                                                                                                                                                                            this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
-                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                } 
-                                                                                                                                                                                                                            }"
+                                                                                                                                                                                                                                                                        openDownload: false, 
+                                                                                                                                                                                                                                                                        dropdownStyle: '',
+                                                                                                                                                                                                                                                                        toggle() { 
+                                                                                                                                                                                                                                                                            this.openDownload = !this.openDownload;
+                                                                                                                                                                                                                                                                            if (this.openDownload) {
+                                                                                                                                                                                                                                                                                this.$nextTick(() => {
+                                                                                                                                                                                                                                                                                    const rect = this.$refs.button.getBoundingClientRect();
+                                                                                                                                                                                                                                                                                    this.dropdownStyle = `top: ${rect.bottom + 5}px; left: ${rect.right - 160}px;`;
+                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                        } 
+                                                                                                                                                                                                                                                                    }"
                                                 @scroll.window="openDownload = false" class="relative">
                                                 <button type="button" x-ref="button" @click="toggle()"
                                                     class="inline-flex items-center p-1.5 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -223,11 +297,11 @@
                                 <button @click="p !== '...' && setPage(p)" x-text="p" :disabled="p === '...'"
                                     class="h-8 min-w-[32px] sm:h-10 sm:min-w-[40px] px-2 sm:px-3 flex items-center justify-center rounded-lg border text-xs sm:text-sm font-semibold transition-colors"
                                     :class="[
-                                                parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
-                                                (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
-                                                'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
-                                                (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
-                                            ]">
+                                                                                        parseInt(p) === parseInt(currentPage) ? 'bg-green-600 border-green-600 text-white' :
+                                                                                        (p === '...' ? 'border-transparent text-gray-500 dark:text-gray-400 cursor-default' :
+                                                                                        'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'),
+                                                                                        (typeof p === 'number' && Math.abs(p - currentPage) > 1 && p !== 1 && p !== totalPages) ? 'hidden md:flex' : 'flex'
+                                                                                    ]">
                                 </button>
                             </template>
 
@@ -276,7 +350,7 @@
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
             const RUANGAN_OPTIONS = @json($ruanganOptions ?? []);
         @else
-            const RUANGAN_OPTIONS = [];0
+            const RUANGAN_OPTIONS = []; 0
         @endif
 
         function arsipSurat() {
@@ -284,10 +358,30 @@
                 allData: ARSIP_DATA,
                 templateOptions: TEMPLATE_OPTIONS.filter(t => {
                     const name = t.nama_template_surat.toLowerCase();
-                    return name.includes('cuti') || name.includes('sop') || name.includes('sk direktur');
+                    return name.includes('standar operasional prosedur (sop)') ||
+                        name.includes('surat izin cuti non asn') ||
+                        name.includes('surat izin cuti pns') ||
+                        name.includes('surat izin cuti pppk') @if(auth()->user()->hasRole(['Admin', 'Tata Usaha'])) ||
+                        name.includes('surat keputusan direktur') @endif ;
+                }).sort((a, b) => {
+                    const order = [
+                        'standar operasional prosedur (sop)',
+                        'surat izin cuti non asn',
+                        'surat izin cuti pns',
+                        'surat izin cuti pppk',
+                        'surat keputusan direktur'
+                    ];
+                    const getOrder = (name) => {
+                        name = name.toLowerCase();
+                        for (let i = 0; i < order.length; i++) {
+                            if (name.includes(order[i])) return i;
+                        }
+                        return 99;
+                    };
+                    return getOrder(a.nama_template_surat) - getOrder(b.nama_template_surat);
                 }),
                 @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Tata Usaha'))
-                                                                    ruanganOptions: RUANGAN_OPTIONS,
+                                                    ruanganOptions: RUANGAN_OPTIONS,
                     searchRuangan: '',
                 @endif
             search: '',
@@ -303,7 +397,13 @@
                                                     toggleSort: false,
                                                         toggleFilter: false,
 
-                                                            get filteredData() {
+                                                            init() {
+                if (this.appliedStartDate || this.appliedEndDate) {
+                    this.applyDateFilter();
+                }
+            },
+
+                                                                            get filteredData() {
                 let data = [...this.allData];
                 if (this.search) {
                     const s = this.search.toLowerCase();
@@ -342,12 +442,12 @@
                 return data;
             },
 
-                                        get paginatedData() {
+                                                            get paginatedData() {
                 const start = (this.currentPage - 1) * this.itemsPerPage;
                 return this.filteredData.slice(start, start + this.itemsPerPage);
             },
 
-                                        get totalPages() {
+                                                            get totalPages() {
                 return Math.max(1, Math.ceil(this.filteredData.length / this.itemsPerPage));
             },
 
@@ -373,7 +473,7 @@
                 return rangeWithDots;
             },
 
-                                        get sortLabel() {
+                                                            get sortLabel() {
                 switch (this.sortOption) {
                     case 'a-z': return 'A-Z';
                     case 'z-a': return 'Z-A';
@@ -383,19 +483,19 @@
                 }
             },
 
-                                        get selectedTemplateName() {
+                                                            get selectedTemplateName() {
                 if (!this.templateFilter) return 'Tipe Surat';
                 const tpl = this.templateOptions.find(t => t.id_template_surat == this.templateFilter);
                 return tpl ? tpl.nama_template_surat : 'Tipe Surat';
             },
 
-                                        get selectedRuanganName() {
+                                                            get selectedRuanganName() {
                 if (!this.ruanganFilter) return 'Ruangan';
                 const r = RO_DATA().find(t => t.id_ruangan == this.ruanganFilter);
                 return r ? r.nama_ruangan : 'Ruangan';
             },
 
-                                        get filteredRuanganOptions() {
+                                                            get filteredRuanganOptions() {
                 if (!this.searchRuangan) return RUANGAN_OPTIONS;
                 const s = this.searchRuangan.toLowerCase();
                 return RUANGAN_OPTIONS.filter(r => r.nama_ruangan.toLowerCase().includes(s));
@@ -403,7 +503,7 @@
 
             applyFilters() { this.currentPage = 1; },
 
-                                        get dateDisplay() {
+                                                            get dateDisplay() {
                 if (this.appliedStartDate && this.appliedEndDate) {
                     return `${this.formatDate(this.appliedStartDate, 'short')} - ${this.formatDate(this.appliedEndDate, 'short')}`;
                 } else if (this.appliedStartDate) {
@@ -441,7 +541,7 @@
                 this.currentPage = 1; this.open = false;
             }
         };
-                                }
+                                                    }
 
         function RO_DATA() { return RUANGAN_OPTIONS; }
 
@@ -567,7 +667,7 @@
                 else fileName = filePath ? filePath.split('/').pop() : `${tipe}-${cleanNomor || 'Document'}.pdf`;
 
                 document.getElementById('detail-file-nama').textContent = fileName;
-                document.getElementById('detail-download-pdf').href = `{{ route('arsip-surat.download', '') }}/${idSurat}`;
+                document.getElementById('detail-download-pdf').href = "{{ route('arsip-surat.download', ':id') }}".replace(':id', idSurat);
 
                 const docxBtn = document.getElementById('detail-download-word');
                 if (filePath && (filePath.includes('arsip/import') || filePath.includes('arsip\\import'))) docxBtn.classList.add('hidden');
@@ -575,7 +675,7 @@
 
                 const previewIframe = document.getElementById('detail-pdf-preview');
                 previewIframe.classList.remove('hidden');
-                previewIframe.src = `{{ route('arsip-surat.show', '') }}/${idSurat}`;
+                previewIframe.src = "{{ route('arsip-surat.show', ':id') }}".replace(':id', idSurat);
                 document.getElementById('detail-file-icon').className = 'fas fa-file-pdf text-2xl text-red-500';
                 document.getElementById('detail-file-type-label').textContent = 'File PDF';
             } else {
@@ -605,7 +705,7 @@
             document.getElementById('delete-nama-surat').textContent = namaSurat;
             document.getElementById('delete-nomor-surat').textContent = nomorSurat;
             document.getElementById('delete-tipe-surat').textContent = tipeSurat;
-            document.getElementById('formDeleteSurat').action = `{{ route('arsip-surat.destroy', '') }}/${id}`;
+            document.getElementById('formDeleteSurat').action = "{{ route('arsip-surat.destroy', ':id') }}".replace(':id', id);
             openModal('modalDeleteSurat');
         }
 

@@ -1,6 +1,7 @@
 <div id="modalEditPegawai"
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full relative flex flex-col max-h-[90vh]">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full relative overflow-hidden flex flex-col max-h-[90vh]">
         <button type="button" onclick="closeModal('modalEditPegawai')"
             class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 z-10 transition-colors">
             <i class="fas fa-times"></i>
@@ -222,18 +223,20 @@
                     </div>
                 </div>
 
-                <div
-                    class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 rounded-b-xl">
-                    <button type="button" @click="resetEditPegawai()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
-                        Reset
-                    </button>
-                    <button type="submit" id="btnSubmitEditPegawai"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Perbarui
-                    </button>
-                </div>
             </form>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex-none">
+            <div class="flex justify-end space-x-3">
+                <button type="button" @click="resetEditPegawai()"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                    Reset
+                </button>
+                <button type="submit" form="formEditPegawai" id="btnSubmitEditPegawai"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    Perbarui
+                </button>
+            </div>
         </div>
     </div>
 </div>

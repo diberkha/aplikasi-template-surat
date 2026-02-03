@@ -204,19 +204,22 @@
                         </div>
                     </div>
                 </div>
-
-                <div
-                    class="mt-8 flex justify-end space-x-3 sticky bottom-0 bg-white dark:bg-gray-800 py-4 rounded-b-xl">
-                    <button type="button"
-                        @click="document.getElementById('formCreatePegawai').reset(); toggleNIPField('PNS', 'create'); updateMasaKerjaLabel('PNS', 'create'); toggleLeaveFields('PNS', 'create')"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
-                        Reset
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Simpan
-                    </button>
-                </div>
             </form>
+        </div>
+
+        <div
+            class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex-none rounded-b-xl">
+            <div class="flex justify-end space-x-3">
+                <button type="button"
+                    @click="document.getElementById('formCreatePegawai').reset(); toggleNIPField('PNS', 'create'); updateMasaKerjaLabel('PNS', 'create'); toggleLeaveFields('PNS', 'create')"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
+                    Reset
+                </button>
+                <button type="submit" form="formCreatePegawai"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    Simpan
+                </button>
+            </div>
         </div>
     </div>
 </div>

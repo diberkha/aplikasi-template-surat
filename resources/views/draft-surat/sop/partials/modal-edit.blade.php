@@ -6,7 +6,8 @@
         <div
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Draft Standar Operasional Prosedur
                     (SOP)</h3>
                 <button type="button" onclick="closeModal('modalEditSOP'); editSopContents = [];"
@@ -36,13 +37,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0 rounded-b-xl">
                     <button type="button" onclick="resetEditSopForm()"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditSopBtn"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -98,6 +99,14 @@
             editActivePageIndex = 0;
             renderEditSopTabs();
             renderEditActivePage();
+
+            if (typeof FormDirtyMonitor !== 'undefined') {
+                if (window.formDirtyMonitors && window.formDirtyMonitors['editSopForm']) {
+                    window.formDirtyMonitors['editSopForm'].destroy();
+                }
+                new FormDirtyMonitor('editSopForm', 'submitEditSopBtn');
+            }
+
             openModal('modalEditSOP');
         } catch (error) {
             console.error('Error fetching draft data:', error);
@@ -503,7 +512,11 @@
                     window.openDraftPreview(result.data, true);
                 }, 500);
             } else {
-                notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
+                if (result.errors) {
+                    handleValidationErrors(result.errors);
+                } else {
+                    notify('error', 'Gagal', result.message || 'Terjadi kesalahan');
+                }
             }
         } catch (error) {
             console.error('Fetch error:', error);

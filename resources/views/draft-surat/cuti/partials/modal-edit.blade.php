@@ -7,7 +7,7 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div
-                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-between items-center">
                 <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate pr-4">Edit Draft
                     Izin Cuti</h3>
                 <button onclick="closeModal('modalEditCuti')"
@@ -124,6 +124,7 @@
                             <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Pilih Jenis Cuti <span
                                     class="text-red-500">*</span></label>
                             <select name="form[jenis_cuti]" id="edit_cuti_jenis" required
+                                onchange="if(window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) window.formDirtyMonitors['editCutiForm'].check();"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
                                 <option value="">-- Pilih Jenis Cuti --</option>
                                 <option value="Cuti Tahunan">1. Cuti Tahunan</option>
@@ -339,11 +340,11 @@
                 <div
                     class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3 rounded-b-xl">
                     <button type="button" onclick="resetEditCutiForm()"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
                     <button type="submit" id="submitEditCutiBtn"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Perbarui
                     </button>
                 </div>
@@ -463,8 +464,32 @@
         document.getElementById('edit_cuti_nip').value = formData.nip || '';
         document.getElementById('edit_cuti_jabatan').value = formData.jabatan || '';
         document.getElementById('edit_cuti_unit').value = formData.unit || formData.unit_kerja || 'RSUD dr. Soeratno Gemolong';
-        document.getElementById('edit_cuti_masa_kerja_tahun').value = formData.masa_kerja_tahun || '';
-        document.getElementById('edit_cuti_masa_kerja_bulan').value = formData.masa_kerja_bulan || '';
+
+        if (pegId) {
+            const pInfo = (window.masterPegawais || []).find(p => p.id == pegId);
+            if (pInfo && pInfo.masa_kerja) {
+                const tmt = new Date(pInfo.masa_kerja);
+                const now = new Date();
+                let years = now.getFullYear() - tmt.getFullYear();
+                let months = now.getMonth() - tmt.getMonth();
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+                document.getElementById('edit_cuti_masa_kerja_tahun').value = years;
+                document.getElementById('edit_cuti_masa_kerja_bulan').value = months;
+
+                formData.masa_kerja_tahun = years;
+                formData.masa_kerja_bulan = months;
+            } else {
+                document.getElementById('edit_cuti_masa_kerja_tahun').value = formData.masa_kerja_tahun || 0;
+                document.getElementById('edit_cuti_masa_kerja_bulan').value = formData.masa_kerja_bulan || 0;
+            }
+        } else {
+            document.getElementById('edit_cuti_masa_kerja_tahun').value = formData.masa_kerja_tahun || 0;
+            document.getElementById('edit_cuti_masa_kerja_bulan').value = formData.masa_kerja_bulan || 0;
+        }
+
         document.getElementById('edit_cuti_telp').value = formData.telp || formData.no_telp || '';
 
         document.getElementById('edit_cuti_jenis').value = formData.jenis_cuti || '';
@@ -622,6 +647,10 @@
                 calcPreview.classList.add('hidden');
             }
         }
+
+        if (window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) {
+            window.formDirtyMonitors['editCutiForm'].check();
+        }
     }
 
     function submitEditCutiForm(event) {
@@ -670,7 +699,13 @@
                     setTimeout(() => {
                         window.openDraftPreview(res.data, true);
                     }, 500);
-                } else notify('error', 'Gagal', res.message);
+                } else {
+                    if (res.errors) {
+                        handleValidationErrors(res.errors);
+                    } else {
+                        notify('error', 'Gagal', res.message || 'Gagal memperbarui draft');
+                    }
+                }
             })
             .finally(() => {
                 submitBtn.disabled = false;

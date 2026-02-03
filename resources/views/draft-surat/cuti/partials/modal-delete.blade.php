@@ -1,7 +1,7 @@
 <div id="modalDeleteCuti" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden">
         <div
-            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 rounded-t-xl">
+            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center rounded-t-xl">
             <h3 class="text-base sm:text-lg font-semibold text-red-600 dark:text-red-400 truncate pr-4">Konfirmasi Hapus
             </h3>
             <button onclick="closeModal('modalDeleteCuti')"
@@ -27,7 +27,7 @@
                 Batal
             </button>
             <button type="button" id="btnConfirmDeleteCuti"
-                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                 Hapus Surat
             </button>
         </div>

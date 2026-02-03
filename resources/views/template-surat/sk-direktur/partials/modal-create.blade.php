@@ -7,7 +7,7 @@
             class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl sm:max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
 
             <div
-                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 z-10">
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50 z-10">
                 <h3 id="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">Buat Surat Keputusan
                     Direktur</h3>
                 <button onclick="closeModal('modalCreateSK')"
@@ -182,13 +182,13 @@
                 </div>
 
                 <div
-                    class="px-6 py-5 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 flex-shrink-0">
                     <button type="button" onclick="resetFormSK()"
-                        class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
+                    <button type="submit" id="submitSkBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-normal transition-colors">
                         Simpan
                     </button>
                 </div>
@@ -493,15 +493,7 @@
                 if (result.parseError) { notify('error', 'Gagal', 'Error: Response parsing failed.', false); return; }
                 if (!result.ok) {
                     if (result.data?.errors) {
-                        const fieldLabels = { 'nomor_surat': 'Nomor Surat', 'tentang': 'Tentang', 'menimbang': 'Menimbang', 'mengingat': 'Mengingat', 'menetapkan': 'Menetapkan', 'memutuskan': 'Memutuskan', 'tempat_dibuat': 'Tempat', 'tanggal_dibuat': 'Tanggal Surat' };
-                        let errorMsg = 'Validasi Gagal:\n\n';
-                        for (let [field, messages] of Object.entries(result.data.errors)) {
-                            const baseField = field.startsWith('memutuskan') ? 'memutuskan' : (field.startsWith('menimbang') ? 'menimbang' : field);
-                            const fieldLabel = fieldLabels[baseField] || baseField;
-                            const messageText = Array.isArray(messages) ? messages.join(', ') : messages;
-                            errorMsg += `❌ ${fieldLabel}: ${messageText}\n`;
-                        }
-                        notify('error', 'Validasi Gagal', errorMsg, false);
+                        handleValidationErrors(result.data.errors);
                     } else {
                         notify('error', 'Gagal', (result.data?.message || 'Server error: ' + result.status), false);
                     }

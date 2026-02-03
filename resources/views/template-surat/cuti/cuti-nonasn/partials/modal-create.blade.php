@@ -1,7 +1,8 @@
 <div id="modalCreateCutiNonASN"
     class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full overflow-hidden">
+        <div
+            class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="modalTitleNonASN">Buat Surat Izin Cuti
                 Non ASN</h3>
             <button onclick="closeModal('modalCreateCutiNonASN')"
@@ -374,8 +375,21 @@
                     if (nipContainer) nipContainer.style.display = 'none';
                 }
 
-                document.getElementById('masa_kerja_tahun_nonasn').value = data.masa_kerja_tahun || 0;
-                document.getElementById('masa_kerja_bulan_nonasn').value = data.masa_kerja_bulan || 0;
+                if (data.masa_kerja) {
+                    const tmt = new Date(data.masa_kerja);
+                    const now = new Date();
+                    let years = now.getFullYear() - tmt.getFullYear();
+                    let months = now.getMonth() - tmt.getMonth();
+                    if (months < 0) {
+                        years--;
+                        months += 12;
+                    }
+                    document.getElementById('masa_kerja_tahun_nonasn').value = years;
+                    document.getElementById('masa_kerja_bulan_nonasn').value = months;
+                } else {
+                    document.getElementById('masa_kerja_tahun_nonasn').value = 0;
+                    document.getElementById('masa_kerja_bulan_nonasn').value = 0;
+                }
                 document.getElementById('jabatan_pegawai_nonasn').value = data.jabatan || '';
 
                 sisaCutiGlobal = data.sisa_cuti_tahunan || 0;
@@ -609,7 +623,11 @@
             .then(r => r.json().then(d => ({ ok: r.ok, status: r.status, data: d })))
             .then(res => {
                 if (!res.ok) {
-                    notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
+                    if (res.data?.errors) {
+                        handleValidationErrors(res.data.errors);
+                    } else {
+                        notify('error', 'Gagal', res.data.message || 'Validasi gagal. Periksa kembali data yang diinput.', false);
+                    }
                 } else if (res.data.success) {
                     notify('success', 'Berhasil', res.data.message);
                     closeModal('modalCreateCutiNonASN');

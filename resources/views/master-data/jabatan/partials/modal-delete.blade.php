@@ -22,8 +22,7 @@
             </div>
         </div>
 
-        <div
-            class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3 bg-gray-50 dark:bg-gray-700/50">
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
             <button type="button" @click="document.getElementById('modalDeleteJabatan').classList.add('hidden')"
                 class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                 Batal

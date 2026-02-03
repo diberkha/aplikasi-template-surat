@@ -24,6 +24,13 @@ class RuanganController extends Controller
                 'nama_ruangan' => $request->nama_ruangan,
             ]);
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Ruangan berhasil ditambahkan'
+                ]);
+            }
+
             return redirect()->route('master-data.ruangan.index')
                 ->with('success', 'Ruangan berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -50,12 +57,19 @@ class RuanganController extends Controller
     {
         try {
             $request->validate([
-                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $request->id_ruangan . ',id_ruangan',
+                'nama_ruangan' => 'required|string|max:255|unique:ruangan,nama_ruangan,' . $ruangan->id_ruangan . ',id_ruangan',
             ]);
 
             $ruangan->update([
                 'nama_ruangan' => $request->nama_ruangan,
             ]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Ruangan berhasil diperbarui'
+                ]);
+            }
 
             return redirect()->route('master-data.ruangan.index')
                 ->with('success', 'Ruangan berhasil diperbarui');
