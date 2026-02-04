@@ -442,10 +442,17 @@
                 }
 
                 atasanDebounceTimer = setTimeout(() => {
-                    const data = window.masterPegawais.filter(p =>
-                        (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
-                        (p.nip && p.nip.includes(term))
-                    ).slice(0, 10);
+                    const structuralKeywords = ['direktur', 'kepala bidang', 'kabid', 'kepala seksi', 'kasi', 'kepala sub bagian', 'kasubbag', 'kepala bagian', 'kabag', 'ketua'];
+
+                    const data = window.masterPegawais.filter(p => {
+                        const matchesTerm = (p.nama && p.nama.toLowerCase().includes(term.toLowerCase())) ||
+                            (p.nip && p.nip.includes(term));
+
+                        if (!matchesTerm) return false;
+
+                        const jabatan = (p.jabatan || '').toLowerCase();
+                        return structuralKeywords.some(keyword => jabatan.includes(keyword));
+                    }).slice(0, 10);
 
                     atasanResultsContainer.innerHTML = '';
                     if (data.length > 0) {
@@ -623,6 +630,9 @@
             .then(r => r.json().then(d => ({ ok: r.ok, status: r.status, data: d })))
             .then(res => {
                 if (!res.ok) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Simpan';
+
                     if (res.data?.errors) {
                         handleValidationErrors(res.data.errors);
                     } else {

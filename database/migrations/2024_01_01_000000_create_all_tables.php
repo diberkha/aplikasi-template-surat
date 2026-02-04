@@ -62,7 +62,6 @@ return new class extends Migration {
             $table->boolean('is_draft')->default(true);
             $table->timestamps();
 
-            $table->unique(['nomor_surat', 'id_template_surat']);
 
             $table->foreign('id_template_surat')
                 ->references('id_template_surat')

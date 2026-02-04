@@ -16,7 +16,8 @@
             </div>
 
             <form action="{{ route('arsip-surat.import') }}" method="POST" enctype="multipart/form-data"
-                class="flex flex-col flex-1 overflow-hidden" x-data="importSurat()" @reset="resetForm()">
+                class="flex flex-col flex-1 overflow-hidden" x-data="importSurat()" @reset="resetForm()"
+                @submit.prevent="submitImportForm">
                 @csrf
                 <div class="p-6 space-y-4">
                     <div>
@@ -197,9 +198,12 @@
                         class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors">
                         Reset
                     </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                        Import
+                    <button type="submit" :disabled="isSubmitting"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
+                        <template x-if="isSubmitting">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                        </template>
+                        <span x-text="isSubmitting ? 'Importing...' : 'Import'"></span>
                     </button>
                 </div>
             </form>

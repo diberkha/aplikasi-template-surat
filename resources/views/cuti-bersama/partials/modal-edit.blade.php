@@ -1,5 +1,5 @@
 <div id="modalEditCutiBersama"
-    class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-50">
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center p-4 z-[60]">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full relative overflow-hidden">
         <button type="button" onclick="closeModal('modalEditCutiBersama')"
             class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">

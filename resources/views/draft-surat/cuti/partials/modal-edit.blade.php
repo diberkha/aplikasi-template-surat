@@ -375,10 +375,17 @@
                     return;
                 }
 
-                const filtered = (window.masterPegawais || []).filter(p =>
-                    (p.nama && p.nama.toLowerCase().includes(term)) ||
-                    (p.nip && p.nip.toLowerCase().includes(term))
-                ).slice(0, 10);
+                const structuralKeywords = ['direktur', 'kepala bidang', 'kabid', 'kepala seksi', 'kasi', 'kepala sub bagian', 'kasubbag', 'kepala bagian', 'kabag', 'ketua'];
+
+                const filtered = (window.masterPegawais || []).filter(p => {
+                    const matchesTerm = (p.nama && p.nama.toLowerCase().includes(term)) ||
+                        (p.nip && p.nip.toLowerCase().includes(term));
+
+                    if (!matchesTerm) return false;
+
+                    const jabatan = (p.jabatan || '').toLowerCase();
+                    return structuralKeywords.some(keyword => jabatan.includes(keyword));
+                }).slice(0, 10);
 
                 atasanResults.innerHTML = '';
                 if (filtered.length > 0) {
@@ -700,6 +707,9 @@
                         window.openDraftPreview(res.data, true);
                     }, 500);
                 } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Perbarui';
+
                     if (res.errors) {
                         handleValidationErrors(res.errors);
                     } else {

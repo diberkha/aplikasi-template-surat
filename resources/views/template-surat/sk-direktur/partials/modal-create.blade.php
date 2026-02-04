@@ -492,6 +492,9 @@
             .then(result => {
                 if (result.parseError) { notify('error', 'Gagal', 'Error: Response parsing failed.', false); return; }
                 if (!result.ok) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Simpan';
+
                     if (result.data?.errors) {
                         handleValidationErrors(result.data.errors);
                     } else {

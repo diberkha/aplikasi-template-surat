@@ -420,11 +420,6 @@
 
 
         const form = document.getElementById('sopForm');
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
-
-
         const processedContents = JSON.parse(JSON.stringify(sopContents));
 
         for (let i = 0; i < processedContents.length; i++) {
@@ -453,6 +448,10 @@
                 return;
             }
         }
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';
 
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
@@ -501,6 +500,9 @@
                         openPreviewPDF(result.file_url, result.nomor_surat, result.surat_id, result.judul_sop, result.tanggal_terbit, false);
                     }, 500);
                 } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Simpan';
+
                     if (result.errors) {
                         handleValidationErrors(result.errors);
                     } else {

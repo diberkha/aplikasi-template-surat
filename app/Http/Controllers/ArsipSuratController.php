@@ -246,9 +246,25 @@ class ArsipSuratController extends Controller
                 ]);
             }
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Surat berhasil diimport',
+                    'id_surat' => $surat->id_surat
+                ]);
+            }
+
             return redirect()->route('arsip-surat.index')->with('success', 'Surat berhasil diimport');
         } catch (\Exception $e) {
             Log::error('Import failed: ' . $e->getMessage());
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengimport surat: ' . $e->getMessage()
+                ], 500);
+            }
+
             return back()->with('error', 'Gagal mengimport surat: ' . $e->getMessage());
         }
     }

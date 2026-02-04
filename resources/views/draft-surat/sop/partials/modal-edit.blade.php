@@ -512,6 +512,9 @@
                     window.openDraftPreview(result.data, true);
                 }, 500);
             } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Perbarui';
+
                 if (result.errors) {
                     handleValidationErrors(result.errors);
                 } else {
