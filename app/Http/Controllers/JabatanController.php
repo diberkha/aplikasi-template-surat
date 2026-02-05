@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jabatan;
+use App\Models\Pegawai;
 use Illuminate\Http\Request;
 
 class JabatanController extends Controller
@@ -52,7 +53,13 @@ class JabatanController extends Controller
             ]);
 
             $jabatan = Jabatan::findOrFail($id);
+            $oldNama = $jabatan->nama_jabatan;
+
             $jabatan->update($request->all());
+
+            if ($oldNama !== $request->nama_jabatan) {
+                Pegawai::where('jabatan', $oldNama)->update(['jabatan' => $request->nama_jabatan]);
+            }
 
             return redirect()->route('master-data.jabatan.index')
                 ->with('success', 'Jabatan berhasil diperbarui');

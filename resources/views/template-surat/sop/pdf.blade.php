@@ -238,21 +238,21 @@
                 @if(count($tujuan) > 0)
                     <tr>
                         <td class="left-align"
-                            style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                            style="width:1.87in; padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;">
                             Tujuan</td>
                         <td class="justify"
-                            style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                            style="padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;"
                             colspan="3">
                             @if(count($tujuan) > 1)
                                 @foreach($tujuan as $index => $item)
                                     <table style="width: 100%; border: none; margin-bottom: 2px;">
                                         <tr style="border: none;">
                                             <td
-                                                style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                                style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 12pt;">
                                                 {{ $index + 1 }}.
                                             </td>
                                             <td
-                                                style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                                style="border: none; padding: 0; vertical-align: top; font-size: 12pt; text-align: justify;">
                                                 {{ $item }}
                                             </td>
                                         </tr>
@@ -271,20 +271,20 @@
                 @if(count($kebijakanItems) > 0)
                     <tr>
                         <td class="left-align"
-                            style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                            style="width:1.87in; padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;">
                             Kebijakan</td>
                         <td class="justify"
-                            style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                            style="padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;"
                             colspan="3">
                             @foreach($kebijakanItems as $index => $item)
                                 <table style="width: 100%; border: none; margin-bottom: 2px;">
                                     <tr style="border: none;">
                                         <td
-                                            style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                            style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 12pt;">
                                             {{ $index + 1 }}.
                                         </td>
                                         <td
-                                            style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                            style="border: none; padding: 0; vertical-align: top; font-size: 12pt; text-align: justify;">
                                             {{ $item }}
                                         </td>
                                     </tr>
@@ -303,20 +303,20 @@
                 @if(count($prosedur) > 0)
                     <tr>
                         <td class="left-align"
-                            style="width:1.87in; padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;">
+                            style="width:1.87in; padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;">
                             Prosedur</td>
                         <td class="justify"
-                            style="padding: 6px; font-size: 11pt; border-bottom: 1px solid #000; line-height: 1.15;"
+                            style="padding: 6px; font-size: 12pt; border-bottom: 1px solid #000; line-height: 1.15;"
                             colspan="3">
                             @foreach($prosedur as $index => $item)
                                 <table style="width: 100%; border: none; margin-bottom: 2px;">
                                     <tr style="border: none;">
                                         <td
-                                            style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 11pt;">
+                                            style="width: 25px; border: none; padding: 0 5px 0 0; vertical-align: top; font-size: 12pt;">
                                             {{ $index + 1 }}.
                                         </td>
                                         <td
-                                            style="border: none; padding: 0; vertical-align: top; font-size: 11pt; text-align: justify;">
+                                            style="border: none; padding: 0; vertical-align: top; font-size: 12pt; text-align: justify;">
                                             {!! $item !!}
                                         </td>
                                     </tr>
