@@ -31,11 +31,11 @@
 
                     <div x-show="openDropdown" @click.outside="openDropdown = false" x-transition x-cloak
                         class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[70]">
-                        <button @click="downloadAs('docx'); openDropdown = false"
-                            class="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <a :href="'{{ url('template-surat/sk-direktur/docx') }}/' + suratId"
+                            class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-file-word text-green-600 mr-3 w-5 text-center"></i>
                             DOCX
-                        </button>
+                        </a>
                         <a :href="fileUrl" :download="downloadFilename"
                             class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-file-pdf text-red-600 mr-3 w-5 text-center"></i>
