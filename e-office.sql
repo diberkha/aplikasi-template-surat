@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 31, 2026 at 02:34 PM
+-- Generation Time: Feb 04, 2026 at 07:32 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -72,61 +72,61 @@ CREATE TABLE `jabatans` (
 --
 
 INSERT INTO `jabatans` (`id`, `nama_jabatan`, `created_at`, `updated_at`) VALUES
-(1, 'Direktur', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(2, 'Kepala Bidang Pelayanan dan Penunjang', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(3, 'Kepala Bidang Pengembangan dan Informasi', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(4, 'Kepala Seksi Pelayanan Medis dan Penunjang Medis', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(5, 'Kepala Seksi Pengembangan Kerjasama dan Diklat', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(6, 'Kepala Seksi Informasi dan Pemasaran', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(7, 'Kepala Seksi Keperawatan dan Penunjang Non Medis', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(8, 'Kepala Sub Bagian Perencanaan, Evaluasi dan Pelaporan', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(9, 'Kepala Sub Bagian Umum dan Kepegawaian', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(10, 'Kepala Sub Bagian Keuangan', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(11, 'Dokter', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(12, 'Dokter Umum', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(13, 'Dokter Pertama', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(14, 'Dokter Muda', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(15, 'Dokter Madya', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(16, 'Perawat Ahli Pertama', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(17, 'Perawat Ahli Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(18, 'Perawat Mahir', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(19, 'Perawat Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(20, 'Perawat Terampil', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(21, 'Perawat Gigi Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(22, 'Perawat Gigi Terampil', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(23, 'Bidan Ahli Pertama', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(24, 'Bidan Mahir', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(25, 'Bidan Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(26, 'Bidan Terampil', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(27, 'Apoteker Ahli Pertama', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(28, 'Apoteker Ahli Madya', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(29, 'Asisten Apoteker Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(30, 'Asisten Apoteker Pelaksana', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(31, 'Asisten Apoteker Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(32, 'Nutrisionis Madya', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(33, 'Nutrisionis Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(34, 'Sanitarian Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(35, 'Sanitarian Pelaksana', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(36, 'Sanitarian Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(37, 'Epidemiolog Kesehatan Ahli Pertama', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(38, 'Radiografer Pelaksana', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(39, 'Radiografer Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(40, 'Radiografer Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(41, 'Fisioterapis Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(42, 'Fisioterapis Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(43, 'Teknisi Elektromedis Terampil', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(44, 'Teknisi Elektromedis Mahir', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(45, 'Teknisi Elektromedis Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(46, 'Pranata Lab. Kes. Penyelia', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(47, 'Pranata Lab. Kes. Pelaksana', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(48, 'Pranata Lab. Kes. Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(49, 'Perekam Medis Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(50, 'Perekam Medis Pelaksana', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(51, 'Perekam Medis Pelaksana Lanjutan', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(52, 'Pranata Komputer Terampil', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(53, 'Pranata Komputer Ahli Muda', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(54, 'Pengadministrasi Umum', '2026-01-31 14:32:37', '2026-01-31 14:32:37'),
-(55, 'Penyusun Laporan Keuangan', '2026-01-31 14:32:37', '2026-01-31 14:32:37');
+(1, 'Direktur', '2026-02-04 07:31:22', '2026-02-04 07:31:22'),
+(2, 'Kepala Bidang Pelayanan dan Penunjang', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(3, 'Kepala Bidang Pengembangan dan Informasi', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(4, 'Kepala Seksi Pelayanan Medis dan Penunjang Medis', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(5, 'Kepala Seksi Pengembangan Kerjasama dan Diklat', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(6, 'Kepala Seksi Informasi dan Pemasaran', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(7, 'Kepala Seksi Keperawatan dan Penunjang Non Medis', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(8, 'Kepala Sub Bagian Perencanaan, Evaluasi dan Pelaporan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(9, 'Kepala Sub Bagian Umum dan Kepegawaian', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(10, 'Kepala Sub Bagian Keuangan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(11, 'Dokter', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(12, 'Dokter Umum', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(13, 'Dokter Pertama', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(14, 'Dokter Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(15, 'Dokter Madya', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(16, 'Perawat Ahli Pertama', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(17, 'Perawat Ahli Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(18, 'Perawat Mahir', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(19, 'Perawat Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(20, 'Perawat Terampil', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(21, 'Perawat Gigi Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(22, 'Perawat Gigi Terampil', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(23, 'Bidan Ahli Pertama', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(24, 'Bidan Mahir', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(25, 'Bidan Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(26, 'Bidan Terampil', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(27, 'Apoteker Ahli Pertama', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(28, 'Apoteker Ahli Madya', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(29, 'Asisten Apoteker Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(30, 'Asisten Apoteker Pelaksana', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(31, 'Asisten Apoteker Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(32, 'Nutrisionis Madya', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(33, 'Nutrisionis Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(34, 'Sanitarian Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(35, 'Sanitarian Pelaksana', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(36, 'Sanitarian Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(37, 'Epidemiolog Kesehatan Ahli Pertama', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(38, 'Radiografer Pelaksana', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(39, 'Radiografer Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(40, 'Radiografer Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(41, 'Fisioterapis Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(42, 'Fisioterapis Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(43, 'Teknisi Elektromedis Terampil', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(44, 'Teknisi Elektromedis Mahir', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(45, 'Teknisi Elektromedis Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(46, 'Pranata Lab. Kes. Penyelia', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(47, 'Pranata Lab. Kes. Pelaksana', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(48, 'Pranata Lab. Kes. Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(49, 'Perekam Medis Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(50, 'Perekam Medis Pelaksana', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(51, 'Perekam Medis Pelaksana Lanjutan', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(52, 'Pranata Komputer Terampil', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(53, 'Pranata Komputer Ahli Muda', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(54, 'Pengadministrasi Umum', '2026-02-04 07:31:23', '2026-02-04 07:31:23'),
+(55, 'Penyusun Laporan Keuangan', '2026-02-04 07:31:23', '2026-02-04 07:31:23');
 
 -- --------------------------------------------------------
 
@@ -489,41 +489,41 @@ CREATE TABLE `regulasi` (
 --
 
 INSERT INTO `regulasi` (`id_regulasi`, `isi_regulasi`, `created_at`, `updated_at`) VALUES
-(1, 'Undang-Undang Nomor 40 Tahun 2004 tentang Sistem Jaminan Sosial Nasional (SJSN)', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(2, 'Undang-Undang Nomor 29 Tahun 2004 tentang Praktik Kedokteran', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(3, 'Undang-Undang Nomor 44 Tahun 2009 tentang Rumah Sakit', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(4, 'Undang-Undang Nomor 24 Tahun 2011 tentang Badan Penyelenggara Jaminan Sosial (BPJS)', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(5, 'Undang-Undang Nomor 11 Tahun 2020 tentang Cipta Kerja', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(6, 'Undang-Undang Nomor 17 Tahun 2023 tentang Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(7, 'Peraturan Pemerintah Nomor 40 Tahun 2019 tentang Pelaksanaan Undang-Undang Nomor 23 Tahun 2006 tentang Administrasi Kependudukan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(8, 'Peraturan Pemerintah Nomor 5 Tahun 2021 tentang Penyelenggaraan Perizinan Berusaha Berbasis Risiko', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(9, 'Peraturan Pemerintah Republik Indonesia Nomor 47 Tahun 2021 tentang Penyelenggaraan Bidang Perumahsakitan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(10, 'Peraturan Presiden Nomor 12 Tahun 2013 tentang Jaminan Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(11, 'Peraturan Presiden Nomor 111 Tahun 2013 tentang Perubahan atas Peraturan Presiden Nomor 12 Tahun 2013 tentang Jaminan Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(12, 'Peraturan Presiden Nomor 77 Tahun 2015 tentang Pedoman Organisasi Rumah Sakit', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(13, 'Peraturan Presiden Nomor 96 Tahun 2018 tentang Persyaratan dan Tata Cara Pendaftaran Penduduk dan Catatan Sipil', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(14, 'Peraturan Menteri Dalam Negeri Nomor 19 Tahun 2016 tentang Pedoman Pengelolaan Barang Milik Daerah', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(15, 'Peraturan Menteri Dalam Negeri Nomor 79 Tahun 2018 tentang Badan Layanan Umum Daerah', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(16, 'Peraturan Menteri Dalam Negeri Nomor 7 Tahun 2019 tentang Pelayanan Administrasi Kependudukan secara daring', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(17, 'Peraturan Menteri Kesehatan Nomor 129 Tahun 2008 tentang Standar Pelayanan Minimal Rumah Sakit', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(18, 'Peraturan Menteri Kesehatan Nomor 71 Tahun 2013 tentang Pelayanan Kesehatan pada Jaminan Kesehatan Nasional', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(19, 'Peraturan Menteri Kesehatan Nomor 27 Tahun 2017 tentang Pedoman Pencegahan dan Pengendalian Infeksi', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(20, 'Peraturan Menteri Kesehatan Nomor 3 Tahun 2020 tentang Klasifikasi dan Perizinan Rumah Sakit', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(21, 'Peraturan Menteri Kesehatan Nomor 14 Tahun 2021 tentang Standar Kegiatan Usaha dan Produk pada Penyelenggaraan Perizinan Berusaha Berbasis Risiko Sektor Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(22, 'Peraturan Menteri Kesehatan Nomor 26 Tahun 2021 tentang Pedoman Indonesian Case Base Groups (INA-CBG)', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(23, 'Peraturan Menteri Kesehatan Nomor 26 Tahun 2021 tentang Pencegahan dan Penanganan Kecurangan (Fraud) dalam Program Jaminan Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(24, 'Peraturan Menteri Kesehatan Nomor 40 Tahun 2022 tentang Persyaratan Teknis Bangunan, Prasarana, dan Peralatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(25, 'Peraturan BPJS Kesehatan Nomor 1 Tahun 2014 tentang Penyelenggaraan Jaminan Kesehatan', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(26, 'Peraturan Daerah Kabupaten Sragen Nomor 15 Tahun 2008 tentang Organisasi dan Tata Kerja Lembaga Teknis Daerah', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(27, 'Peraturan Daerah Kabupaten Sragen Nomor 2 Tahun 2009 tentang Pokok-Pokok Pengelolaan Keuangan Daerah', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(28, 'Peraturan Daerah Kabupaten Sragen Nomor 5 Tahun 2023 tentang APBD Kabupaten Sragen Tahun Anggaran 2023', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(29, 'Peraturan Bupati Sragen Nomor 10 Tahun 2011 tentang Penjabaran Tugas dan Fungsi RSUD dr. Soeratno Gemolong', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(30, 'Peraturan Bupati Sragen Nomor 10 Tahun 2015 tentang Pedoman Pengelolaan Keuangan BLUD RSUD dr. Soeratno Gemolong', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(31, 'Peraturan Bupati Sragen Nomor 67 Tahun 2021 tentang Pembentukan RSUD dr. Soeratno Gemolong Kelas C', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(32, 'Peraturan Bupati Sragen Nomor 8 Tahun 2023 tentang Tata Kelola RSUD dr. Soeratno Gemolong', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(33, 'Peraturan Bupati Sragen Nomor 20 Tahun 2024 tentang Pedoman Pelaksanaan Inventarisasi Barang Milik Daerah', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(34, 'Keputusan Direktur Jenderal Pencegahan dan Pengendalian Penyakit Kementerian Kesehatan RI Nomor HK.02.02/1/1811/2022 tentang Petunjuk Teknis Kesiapan Sarana Prasarana Rumah Sakit dalam Penerapan Kelas Rawat Inap Standar JKN', '2026-01-31 14:33:43', '2026-01-31 14:33:43'),
-(35, 'Keputusan Bupati Sragen Nomor 900/441/002/2014 tentang Penerapan Pola Pengelolaan Keuangan BLUD secara Penuh pada RSUD dr. Soeratno Gemolong', '2026-01-31 14:33:43', '2026-01-31 14:33:43');
+(1, 'Undang-Undang Nomor 40 Tahun 2004 tentang Sistem Jaminan Sosial Nasional (SJSN)', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(2, 'Undang-Undang Nomor 29 Tahun 2004 tentang Praktik Kedokteran', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(3, 'Undang-Undang Nomor 44 Tahun 2009 tentang Rumah Sakit', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(4, 'Undang-Undang Nomor 24 Tahun 2011 tentang Badan Penyelenggara Jaminan Sosial (BPJS)', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(5, 'Undang-Undang Nomor 11 Tahun 2020 tentang Cipta Kerja', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(6, 'Undang-Undang Nomor 17 Tahun 2023 tentang Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(7, 'Peraturan Pemerintah Nomor 40 Tahun 2019 tentang Pelaksanaan Undang-Undang Nomor 23 Tahun 2006 tentang Administrasi Kependudukan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(8, 'Peraturan Pemerintah Nomor 5 Tahun 2021 tentang Penyelenggaraan Perizinan Berusaha Berbasis Risiko', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(9, 'Peraturan Pemerintah Republik Indonesia Nomor 47 Tahun 2021 tentang Penyelenggaraan Bidang Perumahsakitan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(10, 'Peraturan Presiden Nomor 12 Tahun 2013 tentang Jaminan Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(11, 'Peraturan Presiden Nomor 111 Tahun 2013 tentang Perubahan atas Peraturan Presiden Nomor 12 Tahun 2013 tentang Jaminan Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(12, 'Peraturan Presiden Nomor 77 Tahun 2015 tentang Pedoman Organisasi Rumah Sakit', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(13, 'Peraturan Presiden Nomor 96 Tahun 2018 tentang Persyaratan dan Tata Cara Pendaftaran Penduduk dan Catatan Sipil', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(14, 'Peraturan Menteri Dalam Negeri Nomor 19 Tahun 2016 tentang Pedoman Pengelolaan Barang Milik Daerah', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(15, 'Peraturan Menteri Dalam Negeri Nomor 79 Tahun 2018 tentang Badan Layanan Umum Daerah', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(16, 'Peraturan Menteri Dalam Negeri Nomor 7 Tahun 2019 tentang Pelayanan Administrasi Kependudukan secara daring', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(17, 'Peraturan Menteri Kesehatan Nomor 129 Tahun 2008 tentang Standar Pelayanan Minimal Rumah Sakit', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(18, 'Peraturan Menteri Kesehatan Nomor 71 Tahun 2013 tentang Pelayanan Kesehatan pada Jaminan Kesehatan Nasional', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(19, 'Peraturan Menteri Kesehatan Nomor 27 Tahun 2017 tentang Pedoman Pencegahan dan Pengendalian Infeksi', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(20, 'Peraturan Menteri Kesehatan Nomor 3 Tahun 2020 tentang Klasifikasi dan Perizinan Rumah Sakit', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(21, 'Peraturan Menteri Kesehatan Nomor 14 Tahun 2021 tentang Standar Kegiatan Usaha dan Produk pada Penyelenggaraan Perizinan Berusaha Berbasis Risiko Sektor Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(22, 'Peraturan Menteri Kesehatan Nomor 26 Tahun 2021 tentang Pedoman Indonesian Case Base Groups (INA-CBG)', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(23, 'Peraturan Menteri Kesehatan Nomor 26 Tahun 2021 tentang Pencegahan dan Penanganan Kecurangan (Fraud) dalam Program Jaminan Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(24, 'Peraturan Menteri Kesehatan Nomor 40 Tahun 2022 tentang Persyaratan Teknis Bangunan, Prasarana, dan Peralatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(25, 'Peraturan BPJS Kesehatan Nomor 1 Tahun 2014 tentang Penyelenggaraan Jaminan Kesehatan', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(26, 'Peraturan Daerah Kabupaten Sragen Nomor 15 Tahun 2008 tentang Organisasi dan Tata Kerja Lembaga Teknis Daerah', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(27, 'Peraturan Daerah Kabupaten Sragen Nomor 2 Tahun 2009 tentang Pokok-Pokok Pengelolaan Keuangan Daerah', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(28, 'Peraturan Daerah Kabupaten Sragen Nomor 5 Tahun 2023 tentang APBD Kabupaten Sragen Tahun Anggaran 2023', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(29, 'Peraturan Bupati Sragen Nomor 10 Tahun 2011 tentang Penjabaran Tugas dan Fungsi RSUD dr. Soeratno Gemolong', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(30, 'Peraturan Bupati Sragen Nomor 10 Tahun 2015 tentang Pedoman Pengelolaan Keuangan BLUD RSUD dr. Soeratno Gemolong', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(31, 'Peraturan Bupati Sragen Nomor 67 Tahun 2021 tentang Pembentukan RSUD dr. Soeratno Gemolong Kelas C', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(32, 'Peraturan Bupati Sragen Nomor 8 Tahun 2023 tentang Tata Kelola RSUD dr. Soeratno Gemolong', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(33, 'Peraturan Bupati Sragen Nomor 20 Tahun 2024 tentang Pedoman Pelaksanaan Inventarisasi Barang Milik Daerah', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(34, 'Keputusan Direktur Jenderal Pencegahan dan Pengendalian Penyakit Kementerian Kesehatan RI Nomor HK.02.02/1/1811/2022 tentang Petunjuk Teknis Kesiapan Sarana Prasarana Rumah Sakit dalam Penerapan Kelas Rawat Inap Standar JKN', '2026-02-04 07:32:40', '2026-02-04 07:32:40'),
+(35, 'Keputusan Bupati Sragen Nomor 900/441/002/2014 tentang Penerapan Pola Pengelolaan Keuangan BLUD secara Penuh pada RSUD dr. Soeratno Gemolong', '2026-02-04 07:32:40', '2026-02-04 07:32:40');
 
 -- --------------------------------------------------------
 
@@ -665,11 +665,11 @@ CREATE TABLE `template_surat` (
 --
 
 INSERT INTO `template_surat` (`id_template_surat`, `nama_template_surat`, `created_at`, `updated_at`) VALUES
-(1, 'Surat Keputusan Direktur', '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(2, 'Standar Operasional Prosedur (SOP)', '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(3, 'Surat Izin Cuti PNS', '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(4, 'Surat Izin Cuti PPPK', '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(5, 'Surat Izin Cuti Non ASN', '2026-01-31 14:32:38', '2026-01-31 14:32:38');
+(1, 'Surat Keputusan Direktur', '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(2, 'Standar Operasional Prosedur (SOP)', '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(3, 'Surat Izin Cuti PNS', '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(4, 'Surat Izin Cuti PPPK', '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(5, 'Surat Izin Cuti Non ASN', '2026-02-04 07:31:26', '2026-02-04 07:31:26');
 
 -- --------------------------------------------------------
 
@@ -689,10 +689,10 @@ CREATE TABLE `units` (
 --
 
 INSERT INTO `units` (`id_unit`, `nama_unit`, `created_at`, `updated_at`) VALUES
-(1, 'Instalasi Gawat Darurat', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(2, 'Instalasi Rawat Inap', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(3, 'Instalasi Rawat Jalan', '2026-01-31 14:32:36', '2026-01-31 14:32:36'),
-(4, 'Instalasi Penunjang Medis', '2026-01-31 14:32:36', '2026-01-31 14:32:36');
+(1, 'Instalasi Gawat Darurat', '2026-02-04 07:31:22', '2026-02-04 07:31:22'),
+(2, 'Instalasi Rawat Inap', '2026-02-04 07:31:22', '2026-02-04 07:31:22'),
+(3, 'Instalasi Rawat Jalan', '2026-02-04 07:31:22', '2026-02-04 07:31:22'),
+(4, 'Instalasi Penunjang Medis', '2026-02-04 07:31:22', '2026-02-04 07:31:22');
 
 -- --------------------------------------------------------
 
@@ -715,16 +715,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `id_ruangan`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$US5IJ5kWTt2pJkuEj6oeze.Xy3R42lBlzB7Ks6CzXVLWVHEsFEJYW', 1, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(2, 'direktur', '$2y$10$1jdv6PfAUUbRjBFcPl6JrOtdq2n3Bn5USuWGTDx.DrULz0o3/KI.G', 2, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(3, 'tatausaha', '$2y$10$DidVNoEF4dsO0QH.tTJtY.t5hLyMX8DWc/UKAVV2cxZy8m5yuc1WG', 3, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(4, 'pelayanan', '$2y$10$im9hRym7G41NKE/AhuJ7Ue9KosvJ/7e2SGbAMeGTMja7.80z6A4LS', 4, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(5, 'pengembangan', '$2y$10$YPCw4M/IHVpZoOscU2vy7.utELNgM2IhsaMQRPhAW3EbyyOrMeS2K', 5, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(6, 'pengadaan', '$2y$10$2iIRqfac0VC/A3jRwqvHo.N/0/pzmRqWqTsbo4q37G8iUODgicX..', 6, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(7, 'keuangan', '$2y$10$DgkcmfHHg.JjD8.1nI/wc.Bs95Y/5SyqRXQHyobRqXTk.2JVWUiey', 7, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(8, 'keperawatan', '$2y$10$cpZUYUSbYA/pvRySvcPkoOvJp5Ll2oZCsD/Z5Dy1EiXSxO3L.0BpC', 8, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(9, 'farmasi', '$2y$10$JST2OOEL.Q.vX/6akraGIOBzpv1SDQK67Na6u6pVmJWZ4xHfxPk2e', 9, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38'),
-(10, 'itrsud', '$2y$10$0KYvmNd7ByudoGCIdjsiOe34B1731E11ik4rV.Hj5t/wyyS3Vdury', 10, NULL, '2026-01-31 14:32:38', '2026-01-31 14:32:38');
+(1, 'admin', '$2y$10$UAHoJS7qN3odaCFXlsgupuLm9q0nxF9sScvc7AYdqXlpiO5xRqweS', 1, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(2, 'direktur', '$2y$10$AnZ567PwYQxmnZ90ejs/T.4OYRnm6WjnLSztcIRkhsM/ILiyC8CJS', 2, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(3, 'tatausaha', '$2y$10$oEnXHqDMSnEbEhFHqne2OOfqnXylQ2sUsBePlW3CAJq..WAc2XzaO', 3, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(4, 'pelayanan', '$2y$10$EZAS1lHksEn9cGcIpdHY.O0WMgWxN.ok6DWAht/DMo4wN3enKWPTa', 4, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(5, 'pengembangan', '$2y$10$Oxll.CZQTfY3A2tNNr9IEu0aPsB0jveBzN2zCBDO4hWOW9bkh6/A2', 5, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(6, 'pengadaan', '$2y$10$1AWLMuQV8BtZBr2b7Og02.Fd3EoSSFkXc.ndLzYIU/5huk4vbT8SO', 6, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(7, 'keuangan', '$2y$10$vII5jaofqgc.W84GjlNepOnGdm7NftVpguF8NAF9Bf3z9S.8tnsQq', 7, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(8, 'keperawatan', '$2y$10$DytxEBdOUx34NkGQuiumRuhB2A8YKvpsC/Tq1yWUC/1o7sKiZYtNu', 8, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(9, 'farmasi', '$2y$10$H4yBDGbjwIeK9En8dFnodekHF2/rB4I.OsC.6QPS1xcqUk9QZzr4i', 9, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26'),
+(10, 'itrsud', '$2y$10$.nhUkRXNgALv.RgAScZWn.y4gdayR78oWKA2.rkcnhKDGxtinOqmq', 10, NULL, '2026-02-04 07:31:26', '2026-02-04 07:31:26');
 
 --
 -- Indexes for dumped tables
@@ -801,7 +801,6 @@ ALTER TABLE `sop_contents`
 --
 ALTER TABLE `surat`
   ADD PRIMARY KEY (`id_surat`),
-  ADD UNIQUE KEY `surat_nomor_surat_id_template_surat_unique` (`nomor_surat`,`id_template_surat`),
   ADD KEY `surat_id_template_surat_foreign` (`id_template_surat`),
   ADD KEY `surat_created_by_foreign` (`created_by`),
   ADD KEY `surat_id_regulasi_foreign` (`id_regulasi`);
