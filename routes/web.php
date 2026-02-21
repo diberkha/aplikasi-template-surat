@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +21,8 @@ use App\Http\Controllers\SKDirekturDocxController;
 use App\Http\Controllers\SOPDocxController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\CutiBersamaController;
+use App\Http\Controllers\SuratUndanganController;
+use App\Http\Controllers\SuratUndanganDocxController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -44,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sop', [DraftSuratController::class, 'sopIndex'])->name('sop.index');
         Route::get('/sk-direktur', [DraftSuratController::class, 'skDirekturIndex'])->name('sk-direktur.index');
         Route::get('/cuti', [DraftSuratController::class, 'cutiIndex'])->name('cuti.index');
+        Route::get('/surat-undangan', [DraftSuratController::class, 'suratUndanganIndex'])->name('surat-undangan.index');
     });
 
     Route::post('/sop/{id}/archive', [SOPController::class, 'archive'])->name('sop.archive');
@@ -58,6 +61,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/cuti/{id}/edit', [IzinCutiController::class, 'edit'])->name('cuti.edit');
     Route::put('/cuti/{id}', [IzinCutiController::class, 'update'])->name('cuti.update');
 
+    Route::post('/surat-undangan/{id}/archive', [SuratUndanganController::class, 'archive'])->name('surat-undangan.archive');
+    Route::get('/surat-undangan/{id}/edit', [SuratUndanganController::class, 'edit'])->name('surat-undangan.edit');
+    Route::put('/surat-undangan/{id}', [SuratUndanganController::class, 'update'])->name('surat-undangan.update');
+
     Route::prefix('master-data')->group(function () {
         Route::prefix('ruangan')->group(function () {
             Route::get('/', [RuanganController::class, 'index'])->name('master-data.ruangan.index');
@@ -66,7 +73,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{ruangan}', [RuanganController::class, 'destroy'])->name('master-data.ruangan.destroy');
         });
 
-        Route::prefix('unit')->middleware('role:Admin')->group(function () {
+        Route::prefix('unit')->middleware('role:Admin,Tata Usaha')->group(function () {
             Route::get('/', [UnitController::class, 'index'])->name('master-data.unit.index');
             Route::post('/', [UnitController::class, 'store'])->name('master-data.unit.store');
             Route::put('/{unit}', [UnitController::class, 'update'])->name('master-data.unit.update');
@@ -120,6 +127,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('/sk-direktur/{template_surat}', [SKDirekturController::class, 'destroy'])->whereNumber('template_surat')->name('sk-direktur.destroy');
         });
 
+        Route::get('/surat-undangan', [SuratUndanganController::class, 'index'])->name('surat-undangan.index');
+        Route::post('/surat-undangan/store', [SuratUndanganController::class, 'store'])->name('surat-undangan.store');
+        Route::get('/surat-undangan/file/{id}', [SuratUndanganController::class, 'file'])->name('surat-undangan.file');
+        Route::delete('/surat-undangan/{template_surat}', [SuratUndanganController::class, 'destroy'])->whereNumber('template_surat')->name('surat-undangan.destroy');
+
         Route::get('/sop', [SOPController::class, 'index'])->name('sop.index');
         Route::post('/sop/store', [SOPController::class, 'store'])->name('sop.store');
         Route::get('/sop/file/{id}', [SOPController::class, 'file'])->name('sop.file');
@@ -139,6 +151,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/sk-direktur/docx/{id}', [SKDirekturDocxController::class, 'download'])->name('sk-direktur.docx');
         Route::get('/sop/docx/{id}', [SOPDocxController::class, 'download'])->name('sop.docx');
+        Route::get('/surat-undangan/docx/{id}', [SuratUndanganDocxController::class, 'download'])->name('surat-undangan.docx');
     });
 
     Route::post('/logout', function () {

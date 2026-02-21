@@ -63,21 +63,22 @@
                         <h2 class="text-base sm:text-lg font-medium text-gray-900 dark:text-white">File Surat</h2>
                         <div id="detail-download-dropdown" class="hidden relative" x-data="{ open: false }">
                             <button @click="open = !open" type="button"
-                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium h-10">
-                                <i class="fas fa-download mr-2"></i>
-                                Download
-                                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                                class="inline-flex items-center justify-center min-w-[40px] h-10 px-3 sm:px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors whitespace-nowrap text-sm"
+                                title="Download">
+                                <i class="fas fa-download sm:mr-2"></i>
+                                <span class="hidden sm:inline">Download</span>
+                                <i class="fas fa-chevron-down ml-2 text-[10px] hidden sm:inline"></i>
                             </button>
-                            <div x-show="open" @click.away="open = false" x-transition
-                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 z-10">
+                            <div x-show="open" @click.away="open = false" x-transition x-cloak
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-[80]">
                                 <button type="button" onclick="downloadAsWord()" id="detail-download-word"
-                                    class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-t-lg transition-colors">
-                                    <i class="fas fa-file-word text-green-500 mr-3"></i>
+                                    class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full">
+                                    <i class="fas fa-file-word text-green-600 mr-3 w-5 text-center"></i>
                                     DOCX
                                 </button>
                                 <a id="detail-download-pdf" href="#"
-                                    class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
-                                    <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                    class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-file-pdf text-red-600 mr-3 w-5 text-center"></i>
                                     PDF
                                 </a>
                             </div>

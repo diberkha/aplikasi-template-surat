@@ -10,6 +10,7 @@ use App\Helpers\StringHelper;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 trait LazyPdfTrait
 {
@@ -58,7 +59,8 @@ trait LazyPdfTrait
                 }
 
                 $html = view($view, ['data' => $data, 'surat' => $surat])->render();
-                $newPath = 'arsip/' . $surat->nomor_surat . '.pdf';
+                $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
+                $newPath = 'arsip/CUTI-' . $safeNomor . '.pdf';
                 return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->sop) {
                 $pagesResolver = [];
@@ -104,7 +106,7 @@ trait LazyPdfTrait
                         'nomor_dokumen' => $page->nomor_dokumen,
                         'nomor_revisi' => $page->nomor_revisi,
                         'halaman' => $page->halaman,
-                        'tanggal_terbit' => $page->tanggal_terbit,
+                        'tanggal_terbit' => $this->formatDateValue($page->tanggal_terbit),
                         'pengertian' => $page->pengertian,
                         'tujuan' => explode("\n", $page->tujuan),
                         'kebijakan' => $kebijakanResolved,
@@ -119,7 +121,8 @@ trait LazyPdfTrait
                     'direktur_nip' => $direktur_nip,
                 ];
                 $html = view('template-surat.sop.pdf', ['data' => $data])->render();
-                $newPath = 'surat/' . $surat->nomor_surat . '.pdf';
+                $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
+                $newPath = 'arsip/SOP-' . $safeNomor . '.pdf';
                 return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             } elseif ($surat->skDirektur) {
                 $mengingatText = trim($surat->skDirektur->mengingat);
@@ -149,13 +152,37 @@ trait LazyPdfTrait
                     'memutuskan' => $surat->skDirektur->memutuskan,
                     'menetapkan' => $surat->skDirektur->menetapkan,
                     'tempat_surat' => $surat->skDirektur->tempat_dibuat,
-                    'tanggal_dibuat' => $surat->skDirektur->tanggal_dibuat,
+                    'tanggal_dibuat' => $this->formatDateValue($surat->skDirektur->tanggal_dibuat),
                     'direktur_nama' => $direktur_nama_tanpa_gelar,
                     'direktur_nip' => $direktur_nip,
                 ];
                 $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
 
                 $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
+            } elseif ($surat->suratUndangan) {
+                $data = [
+                    'nomor_surat' => $surat->suratUndangan->nomor_surat,
+                    'lampiran' => $surat->suratUndangan->lampiran,
+                    'hal' => $surat->suratUndangan->hal,
+                    'kepada' => $surat->suratUndangan->kepada,
+                    'tempat_dibuat' => $surat->suratUndangan->tempat_dibuat,
+                    'tanggal_dibuat' => optional($surat->suratUndangan->tanggal_dibuat)->format('Y-m-d'),
+                    'hari_acara' => $surat->suratUndangan->hari_acara,
+                    'tanggal_acara' => optional($surat->suratUndangan->tanggal_acara)->format('Y-m-d'),
+                    'tempat_acara' => $surat->suratUndangan->tempat_acara,
+                    'keperluan' => $surat->suratUndangan->keperluan,
+                    'nama_tertanda' => $surat->suratUndangan->nama_tertanda,
+                    'nip_tertanda' => $surat->suratUndangan->nip_tertanda,
+                    'jabatan_tertanda' => $surat->suratUndangan->jabatan_tertanda,
+                    'nama_kegiatan' => $surat->suratUndangan->nama_kegiatan,
+                    'jam_mulai' => $surat->suratUndangan->jam_mulai,
+                    'jam_selesai' => $surat->suratUndangan->jam_selesai,
+                    'keterangan_waktu' => $surat->suratUndangan->keterangan_waktu,
+                ];
+                $html = view('template-surat.surat-undangan.pdf', ['data' => $data, 'surat' => $surat])->render();
+
+                $newPath = 'arsip/Surat Undangan-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
                 return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
             }
         } catch (\Exception $e) {
@@ -182,7 +209,7 @@ trait LazyPdfTrait
             $nodePath = 'node';
 
             $command = sprintf(
-                '%s %s %s %s %s %s',
+                '%s %s %s %s %s %s 2>&1',
                 escapeshellarg($nodePath),
                 escapeshellarg($jsRenderer),
                 escapeshellarg($tempHtmlFile),
@@ -200,17 +227,51 @@ trait LazyPdfTrait
             }
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
-                throw new \Exception('Puppeteer failed: ' . implode("\n", $output));
+                Log::error('Puppeteer command failed', [
+                    'command' => $command,
+                    'return_code' => $returnVar,
+                    'output' => $output,
+                    'file_exists' => file_exists($fullPath)
+                ]);
+                throw new \Exception('Puppeteer failed (code ' . $returnVar . '): ' . implode("\n", $output));
             }
+            
+            Log::info('Puppeteer PDF generated successfully', [
+                'surat_id' => $surat->id_surat,
+                'path' => $fullPath,
+                'size' => filesize($fullPath)
+            ]);
         } catch (\Throwable $e) {
-            Log::error('Puppeteer failed for surat ' . $surat->id_surat . ', falling back to DomPDF: ' . $e->getMessage());
-            $pdf = Pdf::loadHTML($html)
-                ->setPaper([0, 0, 612, 936], 'portrait')
-                ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
-            Storage::put($newPath, $pdf->output());
+            Log::error('Puppeteer failed for surat ' . $surat->id_surat . ', falling back to DomPDF: ' . $e->getMessage(), ['exception' => $e]);
+            try {
+                $pdf = Pdf::loadHTML($html)
+                    ->setPaper([0, 0, 612, 936], 'portrait')
+                    ->setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+                Storage::put($newPath, $pdf->output());
+            } catch (\Throwable $domPdfError) {
+                Log::error('DomPDF also failed for surat ' . $surat->id_surat . ': ' . $domPdfError->getMessage(), ['exception' => $domPdfError]);
+                throw $domPdfError;
+            }
         }
 
         $surat->update(['file_path' => $newPath]);
         return $fullPath;
+    }
+
+    protected function formatDateValue($value)
+    {
+        if ($value instanceof \Carbon\CarbonInterface) {
+            return $value->format('Y-m-d');
+        }
+
+        if (is_string($value) && trim($value) !== '') {
+            try {
+                return Carbon::parse($value)->format('Y-m-d');
+            } catch (\Throwable $e) {
+                return now()->format('Y-m-d');
+            }
+        }
+
+        return now()->format('Y-m-d');
     }
 }

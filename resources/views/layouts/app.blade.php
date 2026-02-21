@@ -264,6 +264,13 @@
                                 <span>Surat Keputusan Direktur</span>
                             </a>
                         @endif
+
+                        <a href="{{ route('template-surat.surat-undangan.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.surat-undangan.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-envelope w-4 text-center"></i>
+                            <span>Surat Undangan</span>
+                        </a>
                     </div>
 
                     <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
@@ -291,6 +298,13 @@
                                 <span>Surat Keputusan Direktur</span>
                             </a>
                         @endif
+
+                        <a href="{{ route('template-surat.surat-undangan.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('template-surat.surat-undangan.index') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-envelope w-4 text-center"></i>
+                            <span>Surat Undangan</span>
+                        </a>
                     </div>
                 </div>
 
@@ -334,6 +348,13 @@
                                 <span>Surat Keputusan Direktur</span>
                             </a>
                         @endif
+
+                        <a href="{{ route('draft-surat.surat-undangan.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('draft-surat.surat-undangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-envelope w-4 text-center"></i>
+                            <span>Surat Undangan</span>
+                        </a>
                     </div>
 
                     <div x-show="flyout && sidebarCollapsed && isDesktop" x-transition.origin.left
@@ -361,6 +382,13 @@
                             {{ request()->routeIs('draft-surat.cuti.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                             <i class="fas fa-calendar-check w-4 text-center"></i>
                             <span>Surat Izin Cuti</span>
+                        </a>
+
+                        <a href="{{ route('draft-surat.surat-undangan.index') }}"
+                            class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                            {{ request()->routeIs('draft-surat.surat-undangan.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                            <i class="fas fa-envelope w-4 text-center"></i>
+                            <span>Surat Undangan</span>
                         </a>
                     </div>
                 </div>
@@ -429,19 +457,20 @@
                                     <i class="fas fa-door-open w-4 text-center"></i>
                                     <span>Ruangan</span>
                                 </a>
-
-                                <a href="{{ route('master-data.unit.index') }}"
-                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                                                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                                    <i class="fas fa-layer-group w-4 text-center"></i>
-                                    <span>Unit</span>
-                                </a>
-
                                 <a href="{{ route('master-data.user.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
                                                                                                                                     {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-users w-4 text-center"></i>
                                     <span>User</span>
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
+                                <a href="{{ route('master-data.unit.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                                                                                                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-layer-group w-4 text-center"></i>
+                                    <span>Unit</span>
                                 </a>
                             @endif
                         </div>
@@ -487,19 +516,20 @@
                                     <i class="fas fa-door-open w-4 text-center"></i>
                                     <span>Ruangan</span>
                                 </a>
-
-                                <a href="{{ route('master-data.unit.index') }}"
-                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
-                                                                                                                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                                    <i class="fas fa-layer-group w-4 text-center"></i>
-                                    <span>Unit</span>
-                                </a>
-
                                 <a href="{{ route('master-data.user.index') }}"
                                     class="flex items-center space-x-3 py-2 px-3 rounded-lg
                                                                                                                                     {{ request()->routeIs('master-data.user.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                     <i class="fas fa-users w-4 text-center"></i>
                                     <span>User</span>
+                                </a>
+                            @endif
+
+                            @if(Auth::user()->hasRole(['Admin', 'Tata Usaha']))
+                                <a href="{{ route('master-data.unit.index') }}"
+                                    class="flex items-center space-x-3 py-2 px-3 rounded-lg
+                                                                                                                                    {{ request()->routeIs('master-data.unit.*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-medium' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                    <i class="fas fa-layer-group w-4 text-center"></i>
+                                    <span>Unit</span>
                                 </a>
                             @endif
                         </div>
@@ -525,73 +555,99 @@
         </main>
     </div>
 
-    <div id="globalNotification" class="hidden fixed top-4 right-4 z-[9999] max-w-md">
-        <div id="notificationContent"
-            class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300">
-            <div id="notificationIcon" class="flex-shrink-0 mt-0.5"></div>
-            <div class="flex-1">
-                <p id="notificationTitle" class="font-semibold text-sm"></p>
-                <p id="notificationMessage" class="text-sm mt-1"></p>
-            </div>
-            <button onclick="closeNotification()"
-                class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
+    <div id="notificationContainer" class="fixed top-4 right-4 z-[9999] max-w-md space-y-2"></div>
 
     <script>
-        function showNotification(type, title, message, autoClose = true) {
-            const notification = document.getElementById('globalNotification');
-            const content = document.getElementById('notificationContent');
-            const icon = document.getElementById('notificationIcon');
-            const titleEl = document.getElementById('notificationTitle');
-            const messageEl = document.getElementById('notificationMessage');
+        let notificationCounter = 0;
 
-            titleEl.textContent = title;
-            messageEl.textContent = message;
+        function showNotification(type, title, message, autoClose = true, autoCloseMs = null) {
+            const container = document.getElementById('notificationContainer');
+            const notifId = 'notification-' + (++notificationCounter);
+            
+            const notification = document.createElement('div');
+            notification.id = notifId;
+            notification.className = 'transform translate-x-full transition-all duration-300';
+            
+            let colorClasses = '';
+            let iconHtml = '';
+            let titleClass = '';
+            let messageClass = '';
 
             if (type === 'success') {
-                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
-                icon.innerHTML = '<i class="fas fa-check-circle text-2xl text-green-600 dark:text-green-400"></i>';
-                titleEl.className = 'font-semibold text-sm text-green-800 dark:text-green-200';
-                messageEl.className = 'text-sm mt-1 text-green-700 dark:text-green-300';
+                colorClasses = 'bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
+                iconHtml = '<i class="fas fa-check-circle text-2xl text-green-600 dark:text-green-400"></i>';
+                titleClass = 'font-semibold text-sm text-green-800 dark:text-green-200';
+                messageClass = 'text-sm mt-1 text-green-700 dark:text-green-300';
             } else if (type === 'error') {
-                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500';
-                icon.innerHTML = '<i class="fas fa-exclamation-circle text-2xl text-red-600 dark:text-red-400"></i>';
-                titleEl.className = 'font-semibold text-sm text-red-800 dark:text-red-200';
-                messageEl.className = 'text-sm mt-1 text-red-700 dark:text-red-300';
+                colorClasses = 'bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500';
+                iconHtml = '<i class="fas fa-exclamation-circle text-2xl text-red-600 dark:text-red-400"></i>';
+                titleClass = 'font-semibold text-sm text-red-800 dark:text-red-200';
+                messageClass = 'text-sm mt-1 text-red-700 dark:text-red-300';
             } else if (type === 'warning') {
-                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-500';
-                icon.innerHTML = '<i class="fas fa-exclamation-triangle text-2xl text-yellow-600 dark:text-yellow-400"></i>';
-                titleEl.className = 'font-semibold text-sm text-yellow-800 dark:text-yellow-200';
-                messageEl.className = 'text-sm mt-1 text-yellow-700 dark:text-yellow-300';
+                colorClasses = 'bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-500';
+                iconHtml = '<i class="fas fa-exclamation-triangle text-2xl text-yellow-600 dark:text-yellow-400"></i>';
+                titleClass = 'font-semibold text-sm text-yellow-800 dark:text-yellow-200';
+                messageClass = 'text-sm mt-1 text-yellow-700 dark:text-yellow-300';
             } else if (type === 'info') {
-                content.className = 'rounded-lg shadow-2xl p-4 flex items-start space-x-3 transform transition-all duration-300 bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
-                icon.innerHTML = '<i class="fas fa-info-circle text-2xl text-green-600 dark:text-green-400"></i>';
-                titleEl.className = 'font-semibold text-sm text-green-800 dark:text-green-200';
-                messageEl.className = 'text-sm mt-1 text-green-700 dark:text-green-300';
+                colorClasses = 'bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500';
+                iconHtml = '<i class="fas fa-info-circle text-2xl text-green-600 dark:text-green-400"></i>';
+                titleClass = 'font-semibold text-sm text-green-800 dark:text-green-200';
+                messageClass = 'text-sm mt-1 text-green-700 dark:text-green-300';
             }
 
-            notification.classList.remove('hidden');
+            notification.innerHTML = `
+                <div class="rounded-lg shadow-2xl p-4 flex items-start space-x-3 ${colorClasses}">
+                    <div class="flex-shrink-0 mt-0.5">${iconHtml}</div>
+                    <div class="flex-1">
+                        <p class="${titleClass}">${escapeHtml(title)}</p>
+                        <p class="${messageClass}">${escapeHtml(message)}</p>
+                    </div>
+                    <button onclick="closeNotification('${notifId}')"
+                        class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
             setTimeout(() => {
-                content.style.transform = 'translateX(0)';
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
             }, 10);
 
             if (autoClose) {
+                const defaultAutoCloseMs = type === 'success' ? 3000 : 5000;
+                const closeDelayMs = autoCloseMs !== null ? autoCloseMs : defaultAutoCloseMs;
                 setTimeout(() => {
-                    closeNotification();
-                }, 10000);
+                    closeNotification(notifId);
+                }, closeDelayMs);
             }
         }
 
-        function closeNotification() {
-            const notification = document.getElementById('globalNotification');
-            const content = document.getElementById('notificationContent');
-            content.style.transform = 'translateX(120%)';
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 300);
+        function closeNotification(notifId) {
+            const notification = notifId ? document.getElementById(notifId) : document.getElementById('globalNotification');
+            if (!notification) return;
+            
+            if (notifId) {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            } else {
+                const content = document.getElementById('notificationContent');
+                if (content) content.style.transform = 'translateX(120%)';
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         document.addEventListener('DOMContentLoaded', function () {

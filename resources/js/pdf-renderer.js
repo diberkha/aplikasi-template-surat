@@ -33,6 +33,11 @@ const path = require("path");
 
     try {
         const page = await browser.newPage();
+        
+        await page.setViewport({
+            width: 794,
+            height: 1123
+        });
 
         const absoluteInputPath = path.resolve(inputPath);
         const fileUrl = "file://" + absoluteInputPath;
@@ -44,7 +49,7 @@ const path = require("path");
         await page.pdf({
             path: outputPath,
             preferCSSPageSize: true,
-            printBackground: true,
+            printBackground: true
         });
 
         console.log("PDF generated successfully: " + outputPath);

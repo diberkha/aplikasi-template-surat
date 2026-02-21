@@ -68,6 +68,16 @@ class SKDirekturController extends Controller
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
+            ], [
+                'nomor_surat.unique' => 'Nomor surat duplikat',
+                'nomor_surat.required' => 'Nomor surat wajib diisi',
+                'tentang.required' => 'Tentang wajib diisi',
+                'menimbang.required' => 'Menimbang wajib diisi',
+                'menimbang.min' => 'Menimbang minimal 1 item',
+                'mengingat.required' => 'Mengingat wajib diisi',
+                'mengingat.min' => 'Mengingat minimal 1 item',
+                'tempat_dibuat.required' => 'Tempat dibuat wajib diisi',
+                'tanggal_dibuat.required' => 'Tanggal dibuat wajib diisi',
             ]);
 
             $namaSurat = 'Surat Keputusan Direktur';
@@ -183,8 +193,8 @@ class SKDirekturController extends Controller
         $surat = Surat::with('template', 'sop', 'skDirektur')->findOrFail($id);
         $path = $this->ensurePdfExists($surat);
 
-        if (!file_exists($path)) {
-            abort(404, 'File tidak ditemukan');
+        if (!$path || !file_exists($path)) {
+            abort(404, 'File PDF tidak dapat dibuat atau tidak ditemukan');
         }
 
         $templateName = $surat->template ? $surat->template->nama_template_surat : '';
@@ -338,6 +348,16 @@ class SKDirekturController extends Controller
                 'memutuskan.*' => 'nullable|string',
                 'tempat_dibuat' => 'required',
                 'tanggal_dibuat' => 'required|date',
+            ], [
+                'nomor_surat.unique' => 'Nomor surat duplikat',
+                'nomor_surat.required' => 'Nomor surat wajib diisi',
+                'tentang.required' => 'Tentang wajib diisi',
+                'menimbang.required' => 'Menimbang wajib diisi',
+                'menimbang.min' => 'Menimbang minimal 1 item',
+                'mengingat.required' => 'Mengingat wajib diisi',
+                'mengingat.min' => 'Mengingat minimal 1 item',
+                'tempat_dibuat.required' => 'Tempat dibuat wajib diisi',
+                'tanggal_dibuat.required' => 'Tanggal dibuat wajib diisi',
             ]);
 
             if ($surat->file_path && file_exists(storage_path('app/' . $surat->file_path))) {

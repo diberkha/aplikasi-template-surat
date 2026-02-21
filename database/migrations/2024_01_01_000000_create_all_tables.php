@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -130,6 +130,34 @@ return new class extends Migration {
                 ->onDelete('cascade');
         });
 
+        Schema::create('surat_undangan', function (Blueprint $table) {
+            $table->id('id_surat_undangan');
+            $table->string('nomor_surat');
+            $table->string('lampiran')->nullable();
+            $table->string('hal');
+            $table->string('kepada');
+            $table->string('tempat_dibuat');
+            $table->date('tanggal_dibuat');
+            $table->string('hari_acara');
+            $table->date('tanggal_acara');
+            $table->string('nama_kegiatan');
+            $table->string('jam_mulai');
+            $table->string('jam_selesai')->nullable();
+            $table->string('keterangan_waktu', 50)->nullable();
+            $table->string('tempat_acara');
+            $table->text('keperluan')->nullable();
+            $table->string('nama_tertanda');
+            $table->string('nip_tertanda');
+            $table->string('jabatan_tertanda');
+            $table->unsignedBigInteger('id_surat')->nullable();
+            $table->timestamps();
+
+            $table->foreign('id_surat')
+                ->references('id_surat')
+                ->on('surat')
+                ->onDelete('cascade');
+        });
+
         Schema::create('sop', function (Blueprint $table) {
             $table->id('id_sop');
             $table->unsignedBigInteger('id_surat')->nullable();
@@ -193,6 +221,7 @@ return new class extends Migration {
         Schema::dropIfExists('surat_izin_cuti');
         Schema::dropIfExists('sop_contents');
         Schema::dropIfExists('sop');
+        Schema::dropIfExists('surat_undangan');
         Schema::dropIfExists('sk_direktur');
         Schema::dropIfExists('surat');
         Schema::dropIfExists('regulasi');

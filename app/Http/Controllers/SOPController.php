@@ -91,6 +91,20 @@ class SOPController extends Controller
                 'prosedur.*' => 'required|string',
                 'unit_terkait' => 'required|array|min:1',
                 'template_id' => 'required|exists:template_surat,id_template_surat',
+            ], [
+                'nomor_dokumen.unique' => 'Nomor dokumen duplikat',
+                'nomor_dokumen.required' => 'Nomor dokumen wajib diisi',
+                'judul_sop.required' => 'Judul SOP wajib diisi',
+                'tanggal_terbit.required' => 'Tanggal terbit wajib diisi',
+                'pengertian.required' => 'Pengertian wajib diisi',
+                'tujuan.required' => 'Tujuan wajib diisi',
+                'tujuan.min' => 'Tujuan minimal 1 item',
+                'kebijakan.required' => 'Kebijakan wajib diisi',
+                'kebijakan.min' => 'Kebijakan minimal 1 item',
+                'prosedur.required' => 'Prosedur wajib diisi',
+                'prosedur.min' => 'Prosedur minimal 1 item',
+                'unit_terkait.required' => 'Unit terkait wajib diisi',
+                'unit_terkait.min' => 'Unit terkait minimal 1 item',
             ]);
 
             $allRequestedNumbers = collect($request->input('contents', []))
@@ -106,7 +120,7 @@ class SOPController extends Controller
 
                 if ($existsOther) {
                     throw \Illuminate\Validation\ValidationException::withMessages([
-                        'nomor_dokumen' => ["Nomor dokumen \"$num\" sudah digunakan oleh SOP lain."]
+                        'nomor_dokumen' => ["Nomor dokumen duplikat"]
                     ]);
                 }
             }
@@ -326,6 +340,20 @@ class SOPController extends Controller
                 'prosedur' => 'required|array|min:1',
                 'prosedur.*' => 'required|string',
                 'unit_terkait' => 'required|array|min:1',
+            ], [
+                'nomor_dokumen.unique' => 'Nomor dokumen duplikat',
+                'nomor_dokumen.required' => 'Nomor dokumen wajib diisi',
+                'judul_sop.required' => 'Judul SOP wajib diisi',
+                'tanggal_terbit.required' => 'Tanggal terbit wajib diisi',
+                'pengertian.required' => 'Pengertian wajib diisi',
+                'tujuan.required' => 'Tujuan wajib diisi',
+                'tujuan.min' => 'Tujuan minimal 1 item',
+                'kebijakan.required' => 'Kebijakan wajib diisi',
+                'kebijakan.min' => 'Kebijakan minimal 1 item',
+                'prosedur.required' => 'Prosedur wajib diisi',
+                'prosedur.min' => 'Prosedur minimal 1 item',
+                'unit_terkait.required' => 'Unit terkait wajib diisi',
+                'unit_terkait.min' => 'Unit terkait minimal 1 item',
             ]);
 
             $allRequestedNumbers = collect($request->input('contents', []))
@@ -342,7 +370,7 @@ class SOPController extends Controller
 
                 if ($existsOther) {
                     throw \Illuminate\Validation\ValidationException::withMessages([
-                        'nomor_dokumen' => ["Nomor dokumen \"$num\" sudah digunakan oleh SOP lain."]
+                        'nomor_dokumen' => ["Nomor dokumen duplikat"]
                     ]);
                 }
             }
@@ -474,8 +502,8 @@ class SOPController extends Controller
         $surat = Surat::with('sop')->findOrFail($id);
         $path = $this->ensurePdfExists($surat);
 
-        if (!file_exists($path)) {
-            abort(404, 'File tidak ditemukan');
+        if (!$path || !file_exists($path)) {
+            abort(404, 'File PDF tidak dapat dibuat atau tidak ditemukan');
         }
 
         $sop = $surat->sop;

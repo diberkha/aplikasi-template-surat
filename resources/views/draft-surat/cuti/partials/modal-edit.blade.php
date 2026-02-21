@@ -16,7 +16,22 @@
                 </button>
             </div>
 
-            <form id="editCutiForm" onsubmit="submitEditCutiForm(event)" class="flex flex-col flex-1 overflow-hidden">
+            <form id="editCutiForm" onsubmit="submitEditCutiForm(event)" class="flex flex-col flex-1 overflow-hidden" x-data="{ openJenisCuti: false, jenisCuti: '', jenisCutiLabel: '', jenisCutiOptions: [
+                { value: 'Cuti Tahunan', label: '1. Cuti Tahunan' },
+                { value: 'Cuti Besar', label: '2. Cuti Besar' },
+                { value: 'Cuti Sakit', label: '3. Cuti Sakit' },
+                { value: 'Cuti Melahirkan', label: '4. Cuti Melahirkan' },
+                { value: 'Cuti Karena Alasan Penting', label: '5. Cuti Karena Alasan Penting' },
+                { value: 'Cuti di Luar Tanggungan Negara', label: '6. Cuti di Luar Tanggungan Negara' }
+            ] }" x-effect="if (jenisCuti) {
+                const sisaCutiContainer = document.getElementById('edit_sisa_cuti_container');
+                if (jenisCuti === 'Cuti Tahunan') {
+                    sisaCutiContainer?.classList.remove('hidden');
+                    updateEditSisaCutiDisplay?.();
+                } else {
+                    sisaCutiContainer?.classList.add('hidden');
+                }
+            }">
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="edit_cuti_id_surat">
@@ -115,7 +130,7 @@
                         </div>
                     </div>
 
-                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                    <div class="border border-gray-300 dark:border-gray-600 rounded-lg">
                         <div
                             class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                             <h4 class="font-bold text-gray-900 dark:text-white">II. JENIS CUTI YANG DIAMBIL</h4>
@@ -123,18 +138,39 @@
                         <div class="p-4">
                             <label class="block mb-2 text-gray-700 dark:text-gray-300 text-sm">Pilih Jenis Cuti <span
                                     class="text-red-500">*</span></label>
-                            <select name="form[jenis_cuti]" id="edit_cuti_jenis" required
-                                onchange="if(window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) window.formDirtyMonitors['editCutiForm'].check();"
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                <option value="">-- Pilih Jenis Cuti --</option>
-                                <option value="Cuti Tahunan">1. Cuti Tahunan</option>
-                                <option value="Cuti Besar">2. Cuti Besar</option>
-                                <option value="Cuti Sakit">3. Cuti Sakit</option>
-                                <option value="Cuti Melahirkan">4. Cuti Melahirkan</option>
-                                <option value="Cuti Karena Alasan Penting">5. Cuti Karena Alasan Penting</option>
-                                <option value="Cuti di Luar Tanggungan Negara">6. Cuti di Luar Tanggungan Negara
-                                </option>
-                            </select>
+                            
+                            <div class="relative" @click.outside="openJenisCuti = false">
+                                <input type="hidden" name="form[jenis_cuti]" :value="jenisCuti" id="edit_cuti_jenis" required>
+
+                                <button type="button" @click="openJenisCuti = !openJenisCuti"
+                                    class="w-full px-4 py-3 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
+                                    <span x-text="jenisCutiLabel || 'Pilih Jenis Cuti'"
+                                        :class="!jenisCutiLabel && 'text-gray-400 font-normal'"
+                                        class="text-gray-700 dark:text-gray-300"></span>
+                                    <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200"
+                                        :class="openJenisCuti && 'rotate-180'"></i>
+                                </button>
+
+                                <div x-show="openJenisCuti" x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 transform scale-95"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-end="opacity-0 transform scale-95"
+                                    class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
+                                    style="display: none;">
+                                    <ul class="py-1">
+                                        <template x-for="opt in jenisCutiOptions" :key="opt.value">
+                                            <li>
+                                                <button type="button" @click="jenisCuti = opt.value; jenisCutiLabel = opt.label; openJenisCuti = false; if(window.formDirtyMonitors && window.formDirtyMonitors['editCutiForm']) window.formDirtyMonitors['editCutiForm'].check();"
+                                                    class="w-full px-4 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center justify-between group">
+                                                    <span x-text="opt.label"></span>
+                                                    <i class="fas fa-check text-green-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        x-show="jenisCuti === opt.value"></i>
+                                                </button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -499,7 +535,25 @@
 
         document.getElementById('edit_cuti_telp').value = formData.telp || formData.no_telp || '';
 
-        document.getElementById('edit_cuti_jenis').value = formData.jenis_cuti || '';
+        const jenisCutiValue = formData.jenis_cuti || '';
+        document.getElementById('edit_cuti_jenis').value = jenisCutiValue;
+        
+        const formEl = document.getElementById('editCutiForm');
+        if (formEl && formEl.__x) {
+            const alpineData = formEl.__x.$data;
+            alpineData.jenisCuti = jenisCutiValue;
+            
+            const jenisCutiMap = {
+                'Cuti Tahunan': '1. Cuti Tahunan',
+                'Cuti Besar': '2. Cuti Besar',
+                'Cuti Sakit': '3. Cuti Sakit',
+                'Cuti Melahirkan': '4. Cuti Melahirkan',
+                'Cuti Karena Alasan Penting': '5. Cuti Karena Alasan Penting',
+                'Cuti di Luar Tanggungan Negara': '6. Cuti di Luar Tanggungan Negara'
+            };
+            alpineData.jenisCutiLabel = jenisCutiMap[jenisCutiValue] || '';
+        }
+
         document.getElementById('edit_cuti_alasan').value = formData.alasan || formData.alasan_cuti || '';
         document.getElementById('edit_cuti_mulai').value = formData.mulai ? formData.mulai.substring(0, 10) : (formData.tanggal_mulai ? formData.tanggal_mulai.substring(0, 10) : '');
         document.getElementById('edit_cuti_sampai').value = formData.sampai ? formData.sampai.substring(0, 10) : (formData.tanggal_selesai ? formData.tanggal_selesai.substring(0, 10) : '');
@@ -574,20 +628,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const jenisSelect = document.getElementById('edit_cuti_jenis');
         const lamaInput = document.getElementById('edit_cuti_lama');
-
-        if (jenisSelect) {
-            jenisSelect.addEventListener('change', () => {
-                const sisaCutiContainer = document.getElementById('edit_sisa_cuti_container');
-                if (jenisSelect.value === 'Cuti Tahunan') {
-                    sisaCutiContainer.classList.remove('hidden');
-                    updateEditSisaCutiDisplay();
-                } else {
-                    sisaCutiContainer.classList.add('hidden');
-                }
-            });
-        }
 
         if (lamaInput) {
             lamaInput.addEventListener('input', updateEditSisaCutiDisplay);

@@ -4,11 +4,6 @@ namespace App\Helpers;
 
 class StringHelper
 {
-    /**
-     * 
-     * @param string $name
-     * @return string
-     */
     public static function removeAcademicTitles($name)
     {
         if (empty($name)) {

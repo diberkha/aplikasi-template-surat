@@ -64,7 +64,6 @@ class IzinCutiNonAsnController extends Controller
             $section->addText('FORMULIR PERMINTAAN DAN PEMBERIAN CUTI', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(0.1)]);
 
-            // I. DATA PEGAWAI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 4])->addText('I. DATA PEGAWAI');
@@ -86,7 +85,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // II. JENIS CUTI YANG DIAMBIL
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 2])->addText('II. JENIS CUTI YANG DIAMBIL**');
@@ -107,7 +105,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // III. ALASAN CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27))->addText('III. ALASAN CUTI');
@@ -116,7 +113,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // IV. LAMANYA CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 6])->addText('IV. LAMANYA CUTI');
@@ -130,7 +126,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // V. CATATAN CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.1), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
@@ -155,7 +150,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // VI. ALAMAT SELAMA MENJALANKAN CUTI
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 3])->addText('VI. ALAMAT SELAMA MENJALANKAN CUTI');
@@ -178,7 +172,6 @@ class IzinCutiNonAsnController extends Controller
             $noBottom = ['borderTopSize' => 6, 'borderLeftSize' => 6, 'borderRightSize' => 6, 'borderBottomSize' => 0, 'borderColor' => '000000'];
             $fullBorder = ['borderSize' => 6, 'borderColor' => '000000'];
 
-            // VII. PERTIMBANGAN ATASAN LANGSUNG
             $table = $section->addTable('ApprovalTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), array_merge(['gridSpan' => 4], $fullBorder))->addText('VII. PERTIMBANGAN ATASAN LANGSUNG**');
@@ -217,7 +210,6 @@ class IzinCutiNonAsnController extends Controller
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
-            // VIII. KEPUTUSAN PEJABAT
             $table = $section->addTable('ApprovalTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), array_merge(['gridSpan' => 4], $fullBorder))->addText('VIII. KEPUTUSAN PEJABAT YANG BERWENANG MEMBERIKAN CUTI**');

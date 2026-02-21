@@ -183,7 +183,7 @@
                                     'November' => 'November',
                                     'December' => 'Desember'
                                 ];
-                                $tanggal = \Carbon\Carbon::parse($page['tanggal_terbit'] ?? now(), config('app.timezone'));
+                                $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $page['tanggal_terbit'] ?? now()->format('Y-m-d'));
                                 $bulan = $bulanIndonesia[$tanggal->format('F')];
                                 $tanggalFormatted = $tanggal->format('j') . ' ' . $bulan . ' ' . $tanggal->format('Y');
                             @endphp

@@ -15,6 +15,7 @@ class TemplateSuratSeeder extends Seeder
             ['nama_template_surat' => 'Surat Izin Cuti PNS'],
             ['nama_template_surat' => 'Surat Izin Cuti PPPK'],
             ['nama_template_surat' => 'Surat Izin Cuti Non ASN'],
+            ['nama_template_surat' => 'Surat Undangan'],
         ];
 
         foreach ($templates as $tpl) {
