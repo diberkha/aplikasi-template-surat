@@ -60,8 +60,11 @@
         }
 
         @page {
-            size: 8.27in 13in;
-            margin: 0.33in 0.70in 0.19in 0.70in;
+            size: 210mm 330.2mm;
+            margin-top: 13mm;
+            margin-bottom: 12mm;
+            margin-left: 18mm;
+            margin-right: 18mm;
         }
 
         .header {
@@ -80,21 +83,24 @@
         }
 
         .header-logo {
-            width: 75px;
-            text-align: left;
-            padding-right: 8px;
+            width: 15%;
+            text-align: center;
+            padding: 0 4px;
+            vertical-align: middle;
         }
 
         .header-logo img {
-            width: 0.8in;
+            width: 0.7in;
             height: auto;
             object-fit: contain;
         }
 
         .header-text {
+            width: 70%;
             text-align: center;
             line-height: 1.0;
             font-family: Arial, Helvetica, sans-serif;
+            padding: 0 8px;
         }
 
         .header-line1 {
@@ -121,9 +127,14 @@
             white-space: nowrap;
         }
 
+        .header-link {
+            color: #0000FF;
+            text-decoration: none;
+        }
+
         .header-border {
             margin-top: 8px;
-            border-bottom: 2.5pt solid #000;
+            border-bottom: 1.5pt solid #000;
             padding-bottom: 0;
         }
 
@@ -131,7 +142,7 @@
             text-align: center;
             font-weight: normal;
             font-size: 12pt;
-            margin: 14px 0 10px 0;
+            margin: 20px 0 10px 0;
             white-space: nowrap;
         }
 
@@ -348,11 +359,7 @@
                         <div class="header-line2">RSUD dr. SOERATNO GEMOLONG</div>
                         <div class="header-line3">
                             Jalan R. Ngt. Tjitrosantjoko 10, Gemolong, Sragen, Jawa Tengah 57274<br>
-                            <span class="header-contact">Telepon (0271) 6811839, Laman <a
-                                    href="https://rsudgemolong.sragenkab.go.id"
-                                    style="color: #0000FF; text-decoration: none;">https://rsudgemolong.sragenkab.go.id</a>,
-                                Pos-el <span
-                                    style="color: #000; text-decoration: none;">rsudgemolong@gmail.com</span></span>
+                            <span class="header-contact">Telepon (0271) 6811839, Laman <a href="https://rsudgemolong.sragenkab.go.id" class="header-link">https://rsudgemolong.sragenkab.go.id</a>, Pos-el rsudgemolong@gmail.com</span>
                         </div>
                     </td>
                     <td class="header-logo" style="text-align: right;">
@@ -371,6 +378,8 @@
             </table>
             <div class="header-border"></div>
         </div>
+
+        <div style="line-height: 1.5;"></div>
 
         <div class="title-section">
             KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG<br>
@@ -544,7 +553,7 @@
                     <td class="footer-right">
                         <p style="text-align: left;">Ditetapkan di {{ $data['tempat_surat'] ?? 'Gemolong' }}</p>
                         <p style="text-align: left;">pada tanggal
-                            {{ \Carbon\Carbon::parse($data['tanggal_dibuat'] ?? now(), config('app.timezone'))->locale('id')->translatedFormat('j F Y') }}
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d', $data['tanggal_dibuat'] ?? now()->format('Y-m-d'))->locale('id')->translatedFormat('j F Y') }}
                         </p>
                         <div style="margin-left: -15mm;">
                             <p class="footer-title" style="margin-top: 24px; text-align: center;">DIREKTUR RSUD dr.

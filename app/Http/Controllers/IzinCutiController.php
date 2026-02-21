@@ -59,6 +59,12 @@ class IzinCutiController extends Controller
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
                 'form.nama_atasan' => 'required|string',
+            ], [
+                'kategori.required' => 'Kategori wajib diisi',
+                'kategori.in' => 'Kategori tidak valid',
+                'form.required' => 'Form wajib diisi',
+                'form.tanggal_surat.required' => 'Tanggal surat wajib diisi',
+                'form.nama_atasan.required' => 'Nama atasan wajib diisi',
             ]);
 
             $kategori = strtoupper($request->kategori);
@@ -282,6 +288,12 @@ class IzinCutiController extends Controller
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
                 'form.nama_atasan' => 'required|string',
+            ], [
+                'kategori.required' => 'Kategori wajib diisi',
+                'kategori.in' => 'Kategori tidak valid',
+                'form.required' => 'Form wajib diisi',
+                'form.tanggal_surat.required' => 'Tanggal surat wajib diisi',
+                'form.nama_atasan.required' => 'Nama atasan wajib diisi',
             ]);
 
             $surat = Surat::findOrFail($id);

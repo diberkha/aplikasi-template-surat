@@ -13,6 +13,7 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\SimpleType\Jc;
 use PhpOffice\PhpWord\Shared\Converter;
 use PhpOffice\PhpWord\Element\Table;
+use Illuminate\Support\Facades\Log;
 
 class SKDirekturDocxController extends Controller
 {
@@ -21,6 +22,12 @@ class SKDirekturDocxController extends Controller
         try {
             $surat = Surat::findOrFail($id);
             $sk = SKDirektur::where('id_surat', $id)->firstOrFail();
+
+            if (empty($sk->nomor_surat)) {
+                Log::warning('SK Direktur nomor_surat empty for surat ID: ' . $id);
+                return redirect()->back()->with('error', 'Nomor surat tidak lengkap');
+            }
+
             $data = $sk->toArray();
 
             $phpWord = new PhpWord();
@@ -37,7 +44,6 @@ class SKDirekturDocxController extends Controller
                 'pageSizeH' => (int) Converter::inchToTwip(13),
             ]);
 
-            // Header
             $phpWord->addTableStyle('HeaderTable', [
                 'borderSize' => 0,
                 'cellMargin' => 0,
@@ -83,14 +89,13 @@ class SKDirekturDocxController extends Controller
             $borderTable = $section->addTable(['cellMargin' => 0]);
             $borderTable->addRow(null, ['cantSplit' => true]);
             $borderTable->addCell((int) Converter::inchToTwip(6.87), [
-                'borderBottomSize' => 18,
+                'borderBottomSize' => 12,
                 'borderBottomColor' => '000000',
                 'borderBottomStyle' => 'single'
             ])->addText('', null, ['lineHeight' => 0.5]);
 
             $section->addTextBreak(1);
 
-            // Title
             $section->addText('KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $section->addText('KABUPATEN SRAGEN', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
@@ -99,14 +104,12 @@ class SKDirekturDocxController extends Controller
             $section->addText('TENTANG', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
 
-            // Tentang
             $tentang = strtoupper($data['tentang'] ?? '-');
             $section->addText($tentang, null, ['alignment' => Jc::CENTER, 'indentation' => ['left' => 1332, 'right' => 1332], 'lineHeight' => 1.0]);
             $section->addTextBreak(1);
             $section->addText('DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
 
-            // Menimbang
             $phpWord->addTableStyle('LayoutTable', [
                 'borderSize' => 0,
                 'cellMargin' => 40,
@@ -153,7 +156,7 @@ class SKDirekturDocxController extends Controller
                 );
 
                 foreach ($menimbangLines as $line) {
-                    $contentCell->addListItem($line, 0, null, 'menimbangList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
+                    $contentCell->addListItem($line, 0, null, 'menimbangList');
                 }
             } else {
                 $contentCell->addText($menimbangLines[0] ?? '', null, ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
@@ -161,7 +164,6 @@ class SKDirekturDocxController extends Controller
 
             $section->addTextBreak(1);
 
-            // Mengingat
             $mg = $section->addTable('LayoutTable');
             $mg->addRow();
             $mg->addCell((int) Converter::inchToTwip(1.2))->addText('Mengingat');
@@ -230,16 +232,14 @@ class SKDirekturDocxController extends Controller
                 if (trim($line) === '') {
                     continue;
                 }
-                $contentCell->addListItem(trim($line), 0, null, 'mengingatList', ['alignment' => Jc::BOTH, 'lineHeight' => 1.0]);
+                $contentCell->addListItem(trim($line), 0, null, 'mengingatList');
             }
 
             $section->addTextBreak(1);
 
-            // Memutuskan
             $section->addText('MEMUTUSKAN', null, ['alignment' => Jc::CENTER]);
             $section->addTextBreak(1);
 
-            // Menetapkan
             $m = $section->addTable('LayoutTable');
             $m->addRow();
             $m->addCell((int) Converter::inchToTwip(1.2))->addText('Menetapkan');
@@ -288,10 +288,20 @@ class SKDirekturDocxController extends Controller
             $signCell = $footerTable->addCell((int) Converter::inchToTwip(4.0));
 
             $signCell->addText('Ditetapkan di Gemolong', null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
-            $tanggal = '.......................';
+            $tanggal = '.............................';
             if (!empty($sk->tanggal_dibuat)) {
-                $tanggalDate = \Carbon\Carbon::parse($sk->tanggal_dibuat, config('app.timezone'));
-                $tanggal = $tanggalDate->locale('id')->translatedFormat('j F Y');
+                try {
+                    $dateValue = $sk->tanggal_dibuat;
+                    if (is_string($dateValue)) {
+                        $tanggalDate = \Carbon\Carbon::createFromFormat('Y-m-d', $dateValue);
+                    } else {
+                        $tanggalDate = \Carbon\Carbon::parse($dateValue);
+                    }
+                    $tanggal = $tanggalDate->locale('id')->translatedFormat('j F Y');
+                } catch (\Exception $e) {
+                    Log::warning('Failed to parse tanggal_dibuat for SK: ' . $e->getMessage(), ['value' => $sk->tanggal_dibuat]);
+                    $tanggal = '.............................';
+                }
             }
             $signCell->addText('pada tanggal ' . $tanggal, null, ['alignment' => Jc::LEFT, 'indentation' => ['left' => 630]]);
             $signCell->addTextBreak(1);
@@ -306,14 +316,40 @@ class SKDirekturDocxController extends Controller
 
             $signCell->addText($direkturNama, null, ['alignment' => Jc::CENTER]);
 
-            $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-            $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
-            $objWriter->save($tempFile);
+            try {
+                $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+            } catch (Exception $e) {
+                Log::error('Failed to create Word2007 writer for SK: ' . $e->getMessage());
+                throw new Exception('Gagal membuat dokumen Word: ' . $e->getMessage());
+            }
+
+            $tempDir = sys_get_temp_dir();
+            $tempFile = tempnam($tempDir, 'sk_');
+            if (!$tempFile) {
+                throw new Exception('Gagal membuat file temporary');
+            }
+
+            try {
+                $objWriter->save($tempFile);
+                if (!file_exists($tempFile) || filesize($tempFile) === 0) {
+                    throw new Exception('File temporary tidak berhasil dibuat atau kosong');
+                }
+            } catch (Exception $e) {
+                Log::error('Failed to save SK DOCX to temp file: ' . $e->getMessage());
+                if (file_exists($tempFile)) {
+                    unlink($tempFile);
+                }
+                throw new Exception('Gagal menyimpan dokumen: ' . $e->getMessage());
+            }
 
             $fileName = 'SK Direktur-' . str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat) . '.docx';
             return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
 
         } catch (Exception $e) {
+            Log::error('SK Direktur DOCX download failed for ID ' . $id . ': ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
             return redirect()->back()->with('error', 'Gagal membuat file: ' . $e->getMessage());
         }
     }

@@ -1,13 +1,13 @@
-function notify(type, title, message, autoClose = true) {
+function notify(type, title, message, autoClose = true, autoCloseMs = null) {
     if (typeof showNotification === "function") {
-        showNotification(type, title, message, autoClose);
+        showNotification(type, title, message, autoClose, autoCloseMs);
     } else {
         alert(`${title}: ${message}`);
     }
 }
 
 function handleSuccess(message, refreshDelay = 1500) {
-    notify("success", "Berhasil", message);
+    notify("success", "Berhasil", message, true);
     if (refreshDelay > 0) {
         setTimeout(() => {
             window.location.reload();
@@ -20,27 +20,25 @@ function handleError(message) {
 }
 
 function handleWarning(message) {
-    notify("warning", "Peringatan!", message);
+    notify("warning", "Peringatan!", message, true);
 }
 
 function handleInfo(message) {
-    notify("info", "Informasi", message);
+    notify("info", "Informasi", message, true);
 }
 
 function handleValidationErrors(errors) {
-    let errorMsg = "Terdapat beberapa isian yang belum sesuai:\n\n";
-    let count = 1;
+    const errorEntries = Object.entries(errors);
     
-    for (let [field, messages] of Object.entries(errors)) {
+    errorEntries.forEach(([field, messages], index) => {
         const messageText = Array.isArray(messages)
             ? messages.join(", ")
             : messages;
         
-        errorMsg += `${count}. ${messageText}\n`;
-        count++;
-    }
-
-    notify("error", "Periksa Kembali Isian Anda", errorMsg.trim(), false);
+        setTimeout(() => {
+            notify("error", "Gagal", messageText, true);
+        }, index * 200);
+    });
 }
 
 function openModal(modalId, templateName = null, templateId = null) {

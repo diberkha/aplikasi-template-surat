@@ -361,7 +361,8 @@
                     return name.includes('standar operasional prosedur (sop)') ||
                         name.includes('surat izin cuti non asn') ||
                         name.includes('surat izin cuti pns') ||
-                        name.includes('surat izin cuti pppk') @if(auth()->user()->hasRole(['Admin', 'Tata Usaha'])) ||
+                        name.includes('surat izin cuti pppk') ||
+                        name.includes('surat undangan') @if(auth()->user()->hasRole(['Admin', 'Tata Usaha'])) ||
                         name.includes('surat keputusan direktur') @endif ;
                 }).sort((a, b) => {
                     const order = [
@@ -369,7 +370,8 @@
                         'surat izin cuti non asn',
                         'surat izin cuti pns',
                         'surat izin cuti pppk',
-                        'surat keputusan direktur'
+                        'surat keputusan direktur',
+                        'surat undangan'
                     ];
                     const getOrder = (name) => {
                         name = name.toLowerCase();
@@ -435,9 +437,11 @@
                 } else if (this.sortOption === 'z-a') {
                     data.sort((a, b) => b.nama_surat_display.localeCompare(a.nama_surat_display));
                 } else if (this.sortOption === 'latest') {
-                    data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    data.sort((a, b) => new Date(b.tanggal_dibuat) - new Date(a.tanggal_dibuat));
                 } else if (this.sortOption === 'oldest') {
-                    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    data.sort((a, b) => new Date(a.tanggal_dibuat) - new Date(b.tanggal_dibuat));
+                } else {
+                    data.sort((a, b) => new Date(b.tanggal_dibuat) - new Date(a.tanggal_dibuat));
                 }
                 return data;
             },
@@ -552,8 +556,9 @@
                 tipeSuratLabel: '',
                 options: [
                     { value: 'Standar Operasional Prosedur (SOP)', label: 'Standar Operasional Prosedur (SOP)' },
-                    { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
                     { value: 'Surat Izin Cuti', label: 'Surat Izin Cuti' },
+                    { value: 'Surat Keputusan Direktur', label: 'Surat Keputusan Direktur' },
+                    { value: 'Surat Undangan', label: 'Surat Undangan' },
                 ],
                 openJenis: false,
                 jenisPegawai: '',
@@ -688,6 +693,7 @@
                 'Surat Keputusan Direktur': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                 'Standar Operasional Prosedur (SOP)': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
                 'Surat Izin Cuti': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                'Surat Undangan': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
             }[tipe] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
             document.getElementById('detail-tipe-surat').innerHTML =

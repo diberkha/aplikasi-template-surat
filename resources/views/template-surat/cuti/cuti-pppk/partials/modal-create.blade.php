@@ -12,7 +12,11 @@
         </div>
 
         <form action="{{ route('template-surat.cuti.store') }}" method="POST" id="cutiFormPPPK"
-            onsubmit="submitCutiFormPPPK(event)">
+            onsubmit="submitCutiFormPPPK(event)" x-data="{ openJenisCuti: false, jenisCuti: '', jenisCutiLabel: '', jenisCutiOptions: [
+                { value: 'Cuti Tahunan', label: '1. Cuti Tahunan' },
+                { value: 'Cuti Sakit', label: '2. Cuti Sakit' },
+                { value: 'Cuti Melahirkan', label: '3. Cuti Melahirkan' }
+            ] }">
             @csrf
             <input type="hidden" name="template_id" id="template_surat_cuti_pppk">
             <input type="hidden" name="kategori" id="kategori_cuti_pppk" value="PPPK">
@@ -108,7 +112,7 @@
                     </div>
                 </div>
 
-                <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                <div class="border border-gray-300 dark:border-gray-600 rounded-lg">
                     <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 border-b border-gray-300 dark:border-gray-600">
                         <h4 class="font-bold text-gray-900 dark:text-white">II. JENIS CUTI YANG DIAMBIL</h4>
                     </div>
@@ -116,13 +120,39 @@
                         <div>
                             <label class="block mb-2 text-gray-700 dark:text-gray-300">Pilih Jenis Cuti <span
                                     class="text-red-500">*</span></label>
-                            <select name="form[jenis_cuti]" required
-                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                <option value="">-- Pilih Jenis Cuti --</option>
-                                <option value="Cuti Tahunan">1. Cuti Tahunan</option>
-                                <option value="Cuti Sakit">2. Cuti Sakit</option>
-                                <option value="Cuti Melahirkan">3. Cuti Melahirkan</option>
-                            </select>
+                            
+                            <div class="relative" @click.outside="openJenisCuti = false">
+                                <input type="hidden" name="form[jenis_cuti]" :value="jenisCuti" required>
+
+                                <button type="button" @click="openJenisCuti = !openJenisCuti"
+                                    class="w-full px-4 py-3 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
+                                    <span x-text="jenisCutiLabel || 'Pilih Jenis Cuti'"
+                                        :class="!jenisCutiLabel && 'text-gray-400 font-normal'"
+                                        class="text-gray-700 dark:text-gray-300"></span>
+                                    <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200"
+                                        :class="openJenisCuti && 'rotate-180'"></i>
+                                </button>
+
+                                <div x-show="openJenisCuti" x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 transform scale-95"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-end="opacity-0 transform scale-95"
+                                    class="absolute z-[9999] mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-2xl overflow-hidden"
+                                    style="display: none;">
+                                    <ul class="py-1">
+                                        <template x-for="opt in jenisCutiOptions" :key="opt.value">
+                                            <li>
+                                                <button type="button" @click="jenisCuti = opt.value; jenisCutiLabel = opt.label; openJenisCuti = false"
+                                                    class="w-full px-4 py-2.5 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center justify-between group">
+                                                    <span x-text="opt.label"></span>
+                                                    <i class="fas fa-check text-green-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        x-show="jenisCuti === opt.value"></i>
+                                                </button>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -276,7 +306,7 @@
 
             <div
                 class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex justify-end space-x-3 rounded-b-xl">
-                <button type="button" onclick="document.getElementById('cutiFormPPPK').reset()"
+                <button type="button" @click="document.getElementById('cutiFormPPPK').reset(); jenisCuti = ''; jenisCutiLabel = ''"
                     class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                     Reset
                 </button>

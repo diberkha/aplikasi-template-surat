@@ -15,7 +15,8 @@ class DashboardController extends Controller
         if (!$user->hasRole(['Admin', 'Tata Usaha'])) {
             $templateQuery->where(function ($q) {
                 $q->where('nama_template_surat', 'LIKE', '%Cuti%')
-                    ->orWhere('nama_template_surat', 'LIKE', '%SOP%');
+                    ->orWhere('nama_template_surat', 'LIKE', '%SOP%')
+                    ->orWhere('nama_template_surat', 'LIKE', '%Undangan%');
             });
         }
         $totalTemplate = $templateQuery->count();

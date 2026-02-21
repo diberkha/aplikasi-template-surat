@@ -55,6 +55,11 @@ class Surat extends Model
         return $this->hasOne(SuratIzinCuti::class, 'id_surat');
     }
 
+    public function suratUndangan()
+    {
+        return $this->hasOne(SuratUndangan::class, 'id_surat');
+    }
+
     public function getTipeSuratAttribute()
     {
         return $this->template ? $this->template->nama_template_surat : 'Tidak ada template';

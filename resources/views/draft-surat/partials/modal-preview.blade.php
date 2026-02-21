@@ -89,6 +89,7 @@
                 const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
                 if (this.docType === 'sop') return `SOP-${cleanNomor}.pdf`;
                 if (this.docType === 'sk') return `SK-Direktur-${cleanNomor}.pdf`;
+                if (this.docType === 'undangan') return `Surat-Undangan-${cleanNomor}.pdf`;
                 return `Draft-${cleanNomor}.pdf`;
             },
 
@@ -97,6 +98,7 @@
                 const cleanNomor = this.nomorSurat.replace(/[\/\\*:\?"<>|]/g, '-');
                 if (this.docType === 'sop') return `SOP-${cleanNomor}.docx`;
                 if (this.docType === 'sk') return `SK-Direktur-${cleanNomor}.docx`;
+                if (this.docType === 'undangan') return `Surat-Undangan-${cleanNomor}.docx`;
                 return `Draft-${cleanNomor}.docx`;
             },
 
@@ -111,29 +113,35 @@
                 const sop = item.sop;
                 const sk = item.sk_direktur || item.skDirektur;
                 const cuti = item.cuti;
+                const undangan = item.surat_undangan || item.suratUndangan;
 
                 if (cuti && (cuti.id_cuti || cuti.kategori || cuti.form_data)) {
                     this.docType = 'cuti';
                     const nama = (cuti.form_data && cuti.form_data.nama) ? cuti.form_data.nama : 'Pegawai';
                     this.nomorSurat = nama;
-                    this.pdfUrl = `{{ url('template-surat/cuti/pdf') }}/${this.suratId}`;
+                    this.pdfUrl = `{{ url('/template-surat/cuti/pdf') }}/${this.suratId}`;
 
                     if (cuti.kategori) {
                         const cat = cuti.kategori.toString().toUpperCase();
-                        if (cat === 'PNS') this.docxUrl = `{{ url('template-surat/cuti/pns/docx') }}/${this.suratId}`;
-                        else if (cat === 'PPPK') this.docxUrl = `{{ url('template-surat/cuti/pppk/docx') }}/${this.suratId}`;
-                        else if (cat === 'NON ASN' || cat === 'NONASN') this.docxUrl = `{{ url('template-surat/cuti/nonasn/docx') }}/${this.suratId}`;
+                        if (cat === 'PNS') this.docxUrl = `{{ url('/template-surat/cuti/pns/docx') }}/${this.suratId}`;
+                        else if (cat === 'PPPK') this.docxUrl = `{{ url('/template-surat/cuti/pppk/docx') }}/${this.suratId}`;
+                        else if (cat === 'NON ASN' || cat === 'NONASN') this.docxUrl = `{{ url('/template-surat/cuti/nonasn/docx') }}/${this.suratId}`;
                     }
                 } else if (sop && (sop.id_sop || sop.nomor_dokumen)) {
                     this.docType = 'sop';
                     this.nomorSurat = sop.nomor_dokumen || item.nomor_surat || '-';
-                    this.pdfUrl = `{{ url('template-surat/sop/file') }}/${this.suratId}`;
-                    this.docxUrl = `{{ url('template-surat/sop/docx') }}/${this.suratId}`;
+                    this.pdfUrl = `{{ url('/template-surat/sop/file') }}/${this.suratId}`;
+                    this.docxUrl = `{{ url('/template-surat/sop/docx') }}/${this.suratId}`;
                 } else if (sk && (sk.id_sk_direktur || sk.nomor_surat)) {
                     this.docType = 'sk';
                     this.nomorSurat = sk.nomor_surat || item.nomor_surat || '-';
-                    this.pdfUrl = `{{ url('template-surat/sk-direktur/file') }}/${this.suratId}`;
-                    this.docxUrl = `{{ url('template-surat/sk-direktur/docx') }}/${this.suratId}`;
+                    this.pdfUrl = `{{ url('/template-surat/sk-direktur/file') }}/${this.suratId}`;
+                    this.docxUrl = `{{ url('/template-surat/sk-direktur/docx') }}/${this.suratId}`;
+                } else if (undangan && (undangan.id_surat_undangan || undangan.hal || item.nomor_surat)) {
+                    this.docType = 'undangan';
+                    this.nomorSurat = undangan.nomor_surat || item.nomor_surat || '-';
+                    this.pdfUrl = `{{ url('/template-surat/surat-undangan/file') }}/${this.suratId}`;
+                    this.docxUrl = `{{ url('/template-surat/surat-undangan/docx') }}/${this.suratId}`;
                 } else {
                     this.docType = 'draft';
                     this.nomorSurat = item.nomor_surat || '-';

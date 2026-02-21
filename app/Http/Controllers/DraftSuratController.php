@@ -98,4 +98,31 @@ class DraftSuratController extends Controller
         $pegawais = \App\Models\Pegawai::orderBy('nama', 'asc')->get();
         return view('draft-surat.cuti.index', compact('drafts', 'pegawais'));
     }
+
+    public function suratUndanganIndex()
+    {
+        $drafts = Surat::with(['suratUndangan', 'createdBy.ruangan', 'template'])
+            ->where('is_draft', true)
+            ->where('created_by', auth()->id())
+            ->whereHas('template', function ($query) {
+                $query->where('nama_template_surat', 'like', '%Undangan%')
+                    ->orWhere('nama_template_surat', 'like', '%Surat Undangan%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $drafts = $drafts->map(function ($item) {
+            return [
+                'id_surat' => $item->id_surat,
+                'nama_surat' => $item->nama_surat,
+                'nomor_surat' => $item->nomor_surat,
+                'created_at' => $item->created_at->toDateTimeString(),
+                'username' => $item->createdBy->username ?? 'Unknown',
+                'ruangan' => $item->createdBy->ruangan->nama_ruangan ?? '-',
+                'surat_undangan' => $item->suratUndangan,
+            ];
+        });
+
+        return view('draft-surat.surat-undangan.index', compact('drafts'));
+    }
 }

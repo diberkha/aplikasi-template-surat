@@ -31,8 +31,9 @@ class ArsipSuratController extends Controller
                 ->get();
         }
 
-        $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop.contents', 'cuti'])
+        $query = Surat::with(['template', 'createdBy', 'skDirektur', 'sop.contents', 'cuti', 'suratUndangan'])
             ->where('is_draft', false)
+            ->orderBy('tanggal_dibuat', 'desc')
             ->orderBy('created_at', 'desc');
 
         $user = auth()->user();
@@ -103,6 +104,13 @@ class ArsipSuratController extends Controller
                 }
             }
 
+            if (strpos($tipeSurat, 'Surat Undangan') !== false && $item->suratUndangan) {
+                $tipeSuratDisplay = 'Surat Undangan';
+                if ($item->suratUndangan->nama_kegiatan) {
+                    $namaSuratDisplay = $item->suratUndangan->nama_kegiatan;
+                }
+            }
+
             $docxUrl = '#';
             if ($tipeSuratDisplay === 'Surat Izin Cuti' && $kategoriLabel) {
                 $kat = strtoupper($kategoriLabel);
@@ -117,12 +125,15 @@ class ArsipSuratController extends Controller
             } elseif ($tipeSuratDisplay === 'Standar Operasional Prosedur (SOP)' || $tipeSuratDisplay === 'Standar Operasional Prosedur') {
                 $docxUrl = route('template-surat.sop.docx', $idSurat);
                 $tipeSuratDisplay = 'Standar Operasional Prosedur (SOP)';
+            } elseif ($tipeSuratDisplay === 'Surat Undangan') {
+                $docxUrl = route('template-surat.surat-undangan.docx', $idSurat);
             }
 
             $badgeColor = [
                 'Surat Keputusan Direktur' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                 'Standar Operasional Prosedur (SOP)' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
                 'Surat Izin Cuti' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                'Surat Undangan' => 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
             ][$tipeSuratDisplay] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
 
             return [
