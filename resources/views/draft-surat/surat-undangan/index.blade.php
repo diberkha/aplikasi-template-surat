@@ -221,6 +221,8 @@
     @include('draft-surat.surat-undangan.partials.modal-edit')
 
     <script>
+        window.masterPegawais = @json($pegawais);
+
         function draftUndangan() {
             return {
                 allData: @json($drafts),

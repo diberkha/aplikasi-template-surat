@@ -123,6 +123,7 @@ class DraftSuratController extends Controller
             ];
         });
 
-        return view('draft-surat.surat-undangan.index', compact('drafts'));
+        $pegawais = \App\Models\Pegawai::orderBy('nama', 'asc')->get();
+        return view('draft-surat.surat-undangan.index', compact('drafts', 'pegawais'));
     }
 }
