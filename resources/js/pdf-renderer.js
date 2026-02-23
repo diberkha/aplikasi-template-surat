@@ -6,7 +6,7 @@ const path = require("path");
     const args = process.argv.slice(2);
     if (args.length < 2) {
         console.error(
-            "Usage: node pdf-renderer.js <input_html_file> <output_pdf_file> [width] [height]",
+            "Usage: node pdf-renderer.js <input_html_file> <output_pdf_file> [width] [height] [marginTop] [marginBottom] [marginLeft] [marginRight]",
         );
         process.exit(1);
     }
@@ -15,6 +15,10 @@ const path = require("path");
     const outputPath = args[1];
     const width = args[2] || "215.9mm";
     const height = args[3] || "330.2mm";
+    const marginTop = args[4] || "13mm";
+    const marginBottom = args[5] || "12mm";
+    const marginLeft = args[6] || "18mm";
+    const marginRight = args[7] || "18mm";
 
     const browser = await puppeteer.launch({
         headless: "new",
@@ -48,8 +52,15 @@ const path = require("path");
 
         await page.pdf({
             path: outputPath,
-            preferCSSPageSize: true,
-            printBackground: true
+            width: width,
+            height: height,
+            printBackground: true,
+            margin: {
+                top: marginTop,
+                bottom: marginBottom,
+                left: marginLeft,
+                right: marginRight
+            }
         });
 
         console.log("PDF generated successfully: " + outputPath);

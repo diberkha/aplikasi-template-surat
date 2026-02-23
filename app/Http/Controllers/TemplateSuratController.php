@@ -13,9 +13,14 @@ class TemplateSuratController extends Controller
     public function file(Request $request, $id)
     {
         $surat = Surat::with(['template', 'sop', 'skDirektur', 'cuti'])->findOrFail($id);
-        $path = $this->ensurePdfExists($surat);
+        
+        if ($surat->is_draft) {
+            $path = $this->generateTempPdf($surat);
+        } else {
+            $path = $this->ensurePdfExists($surat);
+        }
 
-        if (!file_exists($path)) {
+        if (!$path || !file_exists($path)) {
             abort(404, 'File tidak ditemukan');
         }
 
@@ -24,6 +29,14 @@ class TemplateSuratController extends Controller
 
         if (str_contains($templateName, 'Surat Izin Cuti')) {
             $filename = "{$surat->nomor_surat}.pdf";
+        }
+
+        if ($surat->is_draft && file_exists($path)) {
+            register_shutdown_function(function() use ($path) {
+                if (file_exists($path)) {
+                    @unlink($path);
+                }
+            });
         }
 
         if ($request->query('download') == '1') {

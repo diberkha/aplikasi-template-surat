@@ -14,6 +14,11 @@ use Carbon\Carbon;
 
 trait LazyPdfTrait
 {
+    protected function generateTempPdf(Surat $surat)
+    {
+        return $this->generatePdfContent($surat, false);
+    }
+
     protected function ensurePdfExists(Surat $surat)
     {
         $path = storage_path('app/' . $surat->file_path);
@@ -22,6 +27,15 @@ trait LazyPdfTrait
             return $path;
         }
 
+        if (!$surat->is_draft) {
+            return $this->generatePdfContent($surat, true);
+        }
+
+        return null;
+    }
+
+    protected function generatePdfContent(Surat $surat, $savePermanently = false)
+    {
         $isImported = false;
         if ($surat->skDirektur && $surat->skDirektur->menimbang === 'Imported') {
             $isImported = true;
@@ -34,6 +48,7 @@ trait LazyPdfTrait
         }
 
         if ($isImported) {
+            $path = storage_path('app/' . $surat->file_path);
             return ($path && file_exists($path) && is_file($path)) ? $path : null;
         }
 
@@ -60,8 +75,16 @@ trait LazyPdfTrait
 
                 $html = view($view, ['data' => $data, 'surat' => $surat])->render();
                 $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
-                $newPath = 'arsip/CUTI-' . $safeNomor . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
+                $newPath = $savePermanently ? 'arsip/CUTI-' . $safeNomor . '.pdf' : 'temp/pdf/CUTI-' . $safeNomor . '-' . uniqid() . '.pdf';
+                $margins = [
+                    'width' => '215.9mm',
+                    'height' => '355.6mm',
+                    'top' => '8.9mm',
+                    'bottom' => '8.9mm',
+                    'left' => '12.7mm',
+                    'right' => '12.7mm'
+                ];
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, $margins, $savePermanently);
             } elseif ($surat->sop) {
                 $pagesResolver = [];
                 foreach ($surat->sop->contents as $page) {
@@ -122,8 +145,16 @@ trait LazyPdfTrait
                 ];
                 $html = view('template-surat.sop.pdf', ['data' => $data])->render();
                 $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
-                $newPath = 'arsip/SOP-' . $safeNomor . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
+                $newPath = $savePermanently ? 'arsip/SOP-' . $safeNomor . '.pdf' : 'temp/pdf/SOP-' . $safeNomor . '-' . uniqid() . '.pdf';
+                $margins = [
+                    'width' => '215.9mm',
+                    'height' => '330.2mm',
+                    'top' => '10mm',
+                    'bottom' => '20mm',
+                    'left' => '30mm',
+                    'right' => '25mm'
+                ];
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, $margins, $savePermanently);
             } elseif ($surat->skDirektur) {
                 $mengingatText = trim($surat->skDirektur->mengingat);
                 $mengingatResolved = [];
@@ -158,8 +189,9 @@ trait LazyPdfTrait
                 ];
                 $html = view('template-surat.sk-direktur.pdf', ['data' => $data, 'surat' => $surat])->render();
 
-                $newPath = 'arsip/SK Direktur-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
+                $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
+                $newPath = $savePermanently ? 'arsip/SK Direktur-' . $safeNomor . '.pdf' : 'temp/pdf/SK-' . $safeNomor . '-' . uniqid() . '.pdf';
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, null, $savePermanently);
             } elseif ($surat->suratUndangan) {
                 $data = [
                     'nomor_surat' => $surat->suratUndangan->nomor_surat,
@@ -182,23 +214,35 @@ trait LazyPdfTrait
                 ];
                 $html = view('template-surat.surat-undangan.pdf', ['data' => $data, 'surat' => $surat])->render();
 
-                $newPath = 'arsip/Surat Undangan-' . str_replace('/', '-', $surat->nomor_surat) . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath);
+                $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
+                $newPath = $savePermanently ? 'arsip/Surat Undangan-' . $safeNomor . '.pdf' : 'temp/pdf/Undangan-' . $safeNomor . '-' . uniqid() . '.pdf';
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, null, $savePermanently);
             }
         } catch (\Exception $e) {
             Log::error('Regeneration failed for surat id ' . $surat->id_surat . ': ' . $e->getMessage());
             return null;
         }
 
-        return ($path && file_exists($path) && is_file($path)) ? $path : null;
+        return null;
     }
 
-    protected function generatePdfWithPuppeteer($html, Surat $surat, $newPath)
+    protected function generatePdfWithPuppeteer($html, Surat $surat, $newPath, $margins = null, $savePermanently = false)
     {
         $fullPath = storage_path('app/' . $newPath);
         $directory = dirname($fullPath);
         if (!file_exists($directory)) {
             mkdir($directory, 0755, true);
+        }
+
+        if (!$margins) {
+            $margins = [
+                'width' => '215.9mm',
+                'height' => '330.2mm',
+                'top' => '10mm',
+                'bottom' => '10mm',
+                'left' => '15mm',
+                'right' => '15mm'
+            ];
         }
 
         try {
@@ -209,13 +253,17 @@ trait LazyPdfTrait
             $nodePath = 'node';
 
             $command = sprintf(
-                '%s %s %s %s %s %s 2>&1',
+                '%s %s %s %s %s %s %s %s %s %s 2>&1',
                 escapeshellarg($nodePath),
                 escapeshellarg($jsRenderer),
                 escapeshellarg($tempHtmlFile),
                 escapeshellarg($fullPath),
-                escapeshellarg('215.9mm'),
-                escapeshellarg('330.2mm')
+                escapeshellarg($margins['width']),
+                escapeshellarg($margins['height']),
+                escapeshellarg($margins['top']),
+                escapeshellarg($margins['bottom']),
+                escapeshellarg($margins['left']),
+                escapeshellarg($margins['right'])
             );
 
             $output = [];
@@ -254,7 +302,10 @@ trait LazyPdfTrait
             }
         }
 
-        $surat->update(['file_path' => $newPath]);
+        if ($savePermanently) {
+            $surat->update(['file_path' => $newPath]);
+        }
+        
         return $fullPath;
     }
 

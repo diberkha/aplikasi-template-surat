@@ -61,10 +61,10 @@
 
         @page {
             size: 210mm 330.2mm;
-            margin-top: 13mm;
-            margin-bottom: 12mm;
-            margin-left: 18mm;
-            margin-right: 18mm;
+            margin-top: 10mm;
+            margin-bottom: 10mm;
+            margin-left: 15mm;
+            margin-right: 15mm;
         }
 
         .header {

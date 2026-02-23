@@ -13,6 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 class IzinCutiController extends Controller
 {
+    use \App\Traits\LazyPdfTrait;
+    
     public function index(Request $request)
     {
         $templates = TemplateSurat::whereIn('nama_template_surat', [
@@ -257,6 +259,16 @@ class IzinCutiController extends Controller
     {
         try {
             $surat = Surat::findOrFail($id);
+            
+            $path = $this->generatePdfContent($surat, true);
+            
+            if (!$path || !file_exists($path)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal membuat file PDF surat'
+                ], 500);
+            }
+            
             $surat->update(['is_draft' => false]);
 
             return response()->json([

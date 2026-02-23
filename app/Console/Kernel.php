@@ -10,12 +10,17 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         Commands\ResetCutiTahunan::class,
+        Commands\CleanupTempPdf::class,
     ];
 
 protected function schedule(Schedule $schedule)
     {
         $schedule->command('cuti:reset-tahunan')
             ->yearlyOn(1, 1, '00:01')
+            ->timezone('Asia/Jakarta');
+        
+        $schedule->command('pdf:cleanup-temp')
+            ->hourly()
             ->timezone('Asia/Jakarta');
     }
 

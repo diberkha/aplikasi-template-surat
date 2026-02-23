@@ -164,13 +164,26 @@ class SuratUndanganController extends Controller
     {
         try {
             $surat = Surat::with('template', 'suratUndangan')->findOrFail($id);
-            $path = $this->ensurePdfExists($surat);
+            
+            if ($surat->is_draft) {
+                $path = $this->generateTempPdf($surat);
+            } else {
+                $path = $this->ensurePdfExists($surat);
+            }
 
             if (!$path || !file_exists($path)) {
                 abort(404, 'File tidak ditemukan');
             }
 
             $filename = 'Surat Undangan-' . str_replace(['/', '\\'], '-', $surat->nomor_surat) . '.pdf';
+
+            if ($surat->is_draft && file_exists($path)) {
+                register_shutdown_function(function() use ($path) {
+                    if (file_exists($path)) {
+                        @unlink($path);
+                    }
+                });
+            }
 
             if ($request->query('download') == '1') {
                 return response()->download($path, $filename);
@@ -228,6 +241,16 @@ class SuratUndanganController extends Controller
     {
         try {
             $surat = Surat::with('suratUndangan')->findOrFail($id);
+            
+            $path = $this->generatePdfContent($surat, true);
+            
+            if (!$path || !file_exists($path)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal membuat file PDF surat'
+                ], 500);
+            }
+            
             $surat->update(['is_draft' => false]);
 
             return response()->json([
