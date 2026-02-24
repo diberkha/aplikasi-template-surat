@@ -20,6 +20,10 @@ const path = require("path");
     const marginLeft = args[6] || "18mm";
     const marginRight = args[7] || "18mm";
 
+    const toFileUrl = (filePath) => {
+        return "file:///" + filePath.replace(/\\/g, "/");
+    };
+
     const browser = await puppeteer.launch({
         headless: "new",
         executablePath: process.env.CHROME_PATH || undefined,
@@ -44,7 +48,7 @@ const path = require("path");
         });
 
         const absoluteInputPath = path.resolve(inputPath);
-        const fileUrl = "file://" + absoluteInputPath;
+        const fileUrl = toFileUrl(absoluteInputPath);
 
         await page.goto(fileUrl, {
             waitUntil: "networkidle0",

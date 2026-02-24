@@ -6,20 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Surat Undangan</title>
     <style>
-        @font-face {
-            font-family: 'Times New Roman';
-            src: local('Times New Roman');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'Times New Roman';
-            src: local('Times New Roman Bold');
-            font-weight: bold;
-            font-style: normal;
-        }
-
         * {
             margin: 0;
             padding: 0;

@@ -6,18 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KEPUTUSAN DIREKTUR RUMAH SAKIT UMUM DAERAH dr. SOERATNO GEMOLONG</title>
     <style>
+        @php
+            $cambriaNormal = str_replace('\\', '/', storage_path('fonts/cambria.ttc'));
+            $cambriaBold = str_replace('\\', '/', storage_path('fonts/cambriab.ttf'));
+            $cambriaItalic = str_replace('\\', '/', storage_path('fonts/cambriai.ttf'));
+            $cambriaBoldItalic = str_replace('\\', '/', storage_path('fonts/cambriaz.ttf'));
+        @endphp
         @font-face {
             font-family: 'Cambria';
-            src: local('Cambria'), local('Cambria Math');
+            src: url('file:///{{ $cambriaNormal }}');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'Cambria';
-            src: local('Cambria Bold'), local('Cambria');
+            src: url('file:///{{ $cambriaBold }}');
             font-weight: bold;
             font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Cambria';
+            src: url('file:///{{ $cambriaItalic }}');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Cambria';
+            src: url('file:///{{ $cambriaBoldItalic }}');
+            font-weight: bold;
+            font-style: italic;
         }
 
         * {
@@ -61,10 +81,6 @@
 
         @page {
             size: 210mm 330.2mm;
-            margin-top: 10mm;
-            margin-bottom: 10mm;
-            margin-left: 15mm;
-            margin-right: 15mm;
         }
 
         .header {

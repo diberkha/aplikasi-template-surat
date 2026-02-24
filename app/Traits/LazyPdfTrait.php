@@ -191,7 +191,15 @@ trait LazyPdfTrait
 
                 $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
                 $newPath = $savePermanently ? 'arsip/SK Direktur-' . $safeNomor . '.pdf' : 'temp/pdf/SK-' . $safeNomor . '-' . uniqid() . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, null, $savePermanently);
+                $margins = [
+                    'width' => '215.9mm',
+                    'height' => '330.2mm',
+                    'top' => '10mm',
+                    'bottom' => '10mm',
+                    'left' => '15mm',
+                    'right' => '15mm'
+                ];
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, $margins, $savePermanently);
             } elseif ($surat->suratUndangan) {
                 $data = [
                     'nomor_surat' => $surat->suratUndangan->nomor_surat,
@@ -216,7 +224,15 @@ trait LazyPdfTrait
 
                 $safeNomor = str_replace(['/', '\\', '*', ':', '?', '"', '<', '>', '|'], '-', $surat->nomor_surat);
                 $newPath = $savePermanently ? 'arsip/Surat Undangan-' . $safeNomor . '.pdf' : 'temp/pdf/Undangan-' . $safeNomor . '-' . uniqid() . '.pdf';
-                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, null, $savePermanently);
+                $margins = [
+                    'width' => '215.9mm',
+                    'height' => '330.2mm',
+                    'top' => '10mm',
+                    'bottom' => '20mm',
+                    'left' => '30mm',
+                    'right' => '25mm'
+                ];
+                return $this->generatePdfWithPuppeteer($html, $surat, $newPath, $margins, $savePermanently);
             }
         } catch (\Exception $e) {
             Log::error('Regeneration failed for surat id ' . $surat->id_surat . ': ' . $e->getMessage());
