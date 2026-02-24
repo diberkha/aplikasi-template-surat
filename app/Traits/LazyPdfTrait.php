@@ -313,7 +313,23 @@ trait LazyPdfTrait
 
             // Simple 2-argument command: node script.js config.json
             $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
-            $command = '"' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '" 2>&1';
+
+            if (stripos(PHP_OS, 'WIN') === 0) {
+                // On Windows, cmd /c strips leading & trailing quotes when command starts with "
+                // Prefix with 'cd /d' to avoid this, and also sets cwd to project root for node_modules
+                $command = sprintf(
+                    'cd /d "%s" && "%s" "%s" "%s" 2>&1',
+                    base_path(),
+                    $nodePath,
+                    $jsRenderer,
+                    $configFile
+                );
+            } else {
+                $command = sprintf('"%s" "%s" "%s" 2>&1', $nodePath, $jsRenderer, $configFile);
+            }
+
+            // Manual test command (copy-paste in CMD on server):
+            // "C:\nodejs\node.exe" "C:\xampp74\htdocs\e-office\resources\js\pdf-renderer.js" "C:\xampp74\htdocs\e-office\storage\app\temp\pdf-config-XXXX.json"
 
             Log::debug('Launching Puppeteer', [
                 'command' => $command,
@@ -325,16 +341,21 @@ trait LazyPdfTrait
             $returnVar = 0;
             exec($command, $output, $returnVar);
             $outputString = implode("\n", $output);
-            @unlink($configFile);
             Log::debug('Puppeteer output', [
                 'return' => $returnVar,
                 'output' => $outputString,
                 'surat_id' => $surat->id_surat
             ]);
 
-            // only remove temp HTML when Puppeteer succeeded producing the PDF
-            if ($returnVar === 0 && file_exists($fullPath) && file_exists($tempHtmlFile)) {
-                @unlink($tempHtmlFile);
+            // only remove temp files when Puppeteer succeeded
+            if ($returnVar === 0 && file_exists($fullPath)) {
+                @unlink($configFile);
+                if (file_exists($tempHtmlFile)) {
+                    @unlink($tempHtmlFile);
+                }
+            } else {
+                // Keep config + html for manual debugging; log the manual test command
+                Log::info('Manual test: cd /d "' . base_path() . '" && "' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '"');
             }
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
