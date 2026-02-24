@@ -296,31 +296,14 @@ trait LazyPdfTrait
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
-            $processEnv = array_merge(
-                is_array($_SERVER) ? $_SERVER : [],
-                is_array($_ENV) ? $_ENV : []
-            );
-            if (!isset($processEnv['PATH']) && getenv('PATH')) {
-                $processEnv['PATH'] = getenv('PATH');
-            }
+            // Set CHROME_PATH in current process env so child inherits it
             $chromePath = env('CHROME_PATH', '');
             if ($chromePath) {
-                $processEnv['CHROME_PATH'] = $chromePath;
-            }
-            if (stripos(PHP_OS, 'WIN') === 0) {
-                if (!isset($processEnv['USERPROFILE'])) {
-                    $processEnv['USERPROFILE'] = getenv('USERPROFILE') ?: 'C:\\Users\\Default';
-                }
-                if (!isset($processEnv['APPDATA'])) {
-                    $processEnv['APPDATA'] = getenv('APPDATA') ?: ($processEnv['USERPROFILE'] . '\\AppData\\Roaming');
-                }
-                if (!isset($processEnv['LOCALAPPDATA'])) {
-                    $processEnv['LOCALAPPDATA'] = getenv('LOCALAPPDATA') ?: ($processEnv['USERPROFILE'] . '\\AppData\\Local');
-                }
+                putenv('CHROME_PATH=' . $chromePath);
             }
 
             $command = sprintf(
-                '%s %s %s %s %s %s %s %s %s %s',
+                '%s %s %s %s %s %s %s %s %s %s %s',
                 escapeshellarg($nodePath),
                 escapeshellarg($jsRenderer),
                 escapeshellarg($tempHtmlFile),
@@ -330,11 +313,12 @@ trait LazyPdfTrait
                 escapeshellarg($margins['top']),
                 escapeshellarg($margins['bottom']),
                 escapeshellarg($margins['left']),
-                escapeshellarg($margins['right'])
+                escapeshellarg($margins['right']),
+                escapeshellarg($chromePath ?: '')
             );
 
             $descriptors = [
-                0 => ['pipe', 'r'],   
+                0 => ['pipe', 'r'],
                 1 => ['pipe', 'w'],
                 2 => ['pipe', 'w'],
             ];
@@ -346,7 +330,8 @@ trait LazyPdfTrait
                 'surat_id' => $surat->id_surat
             ]);
 
-            $process = proc_open($command, $descriptors, $pipes, $cwd, $processEnv);
+            // Pass null for env to inherit parent process environment (with CHROME_PATH set above)
+            $process = proc_open($command, $descriptors, $pipes, $cwd, null);
 
             if (!is_resource($process)) {
                 throw new \Exception('proc_open failed to start Node.js process');

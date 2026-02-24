@@ -20,6 +20,8 @@ const { pathToFileURL } = require('url');
     const marginBottom = args[5] || "12mm";
     const marginLeft = args[6] || "18mm";
     const marginRight = args[7] || "18mm";
+    // Accept chrome executable path as 9th argument (most reliable way from PHP)
+    const chromePath = args[8] || process.env.CHROME_PATH || undefined;
 
     const toFileUrl = (filePath) => {
         return pathToFileURL(filePath).href;
@@ -27,7 +29,7 @@ const { pathToFileURL } = require('url');
 
     const browser = await puppeteer.launch({
         headless: "new",
-        executablePath: process.env.CHROME_PATH || undefined,
+        executablePath: chromePath,
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",
