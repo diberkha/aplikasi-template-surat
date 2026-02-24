@@ -272,7 +272,29 @@ trait LazyPdfTrait
             Log::info('Wrote temp HTML for Puppeteer', ['temp_html' => $tempHtmlFile, 'surat_id' => $surat->id_surat]);
 
             $jsRenderer = base_path('resources/js/pdf-renderer.js');
-            $nodePath = 'node';
+
+            // resolve node binary: prefer NODE_PATH env, otherwise try to locate
+            $nodePath = env('NODE_PATH', null);
+            if (!$nodePath) {
+                if (stripos(PHP_OS, 'WIN') === 0) {
+                    $whereOut = [];
+                    @exec('where node 2>&1', $whereOut, $whereRc);
+                    if (!empty($whereOut)) {
+                        $nodePath = trim($whereOut[0]);
+                    } else {
+                        $nodePath = 'node';
+                    }
+                } else {
+                    $whichOut = [];
+                    @exec('which node 2>&1', $whichOut, $whichRc);
+                    if (!empty($whichOut)) {
+                        $nodePath = trim($whichOut[0]);
+                    } else {
+                        $nodePath = 'node';
+                    }
+                }
+            }
+            Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
             $command = sprintf(
                 '%s %s %s %s %s %s %s %s %s %s 2>&1',
@@ -291,6 +313,8 @@ trait LazyPdfTrait
             $output = [];
             $returnVar = 0;
             exec($command, $output, $returnVar);
+            $outputString = is_array($output) ? implode("\n", $output) : (string) $output;
+            Log::debug('Puppeteer exec output', ['command' => $command, 'return' => $returnVar, 'output' => $outputString, 'surat_id' => $surat->id_surat]);
 
             // only remove temp HTML when Puppeteer succeeded producing the PDF
             if ($returnVar === 0 && file_exists($fullPath) && file_exists($tempHtmlFile)) {
@@ -301,12 +325,13 @@ trait LazyPdfTrait
                 Log::error('Puppeteer command failed', [
                     'command' => $command,
                     'return_code' => $returnVar,
-                    'output' => $output,
-                    'file_exists' => file_exists($fullPath)
+                    'output' => $outputString,
+                    'file_exists' => file_exists($fullPath),
+                    'surat_id' => $surat->id_surat
                 ]);
-                throw new \Exception('Puppeteer failed (code ' . $returnVar . '): ' . implode("\n", $output));
+                throw new \Exception('Puppeteer failed (code ' . $returnVar . '): ' . $outputString);
             }
-            
+
             Log::info('Puppeteer PDF generated successfully', [
                 'surat_id' => $surat->id_surat,
                 'path' => $fullPath,
@@ -328,7 +353,7 @@ trait LazyPdfTrait
         if ($savePermanently) {
             $surat->update(['file_path' => $newPath]);
         }
-        
+
         return $fullPath;
     }
 
