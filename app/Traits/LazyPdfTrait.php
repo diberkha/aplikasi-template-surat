@@ -296,56 +296,51 @@ trait LazyPdfTrait
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
-            // Set CHROME_PATH in current process env so child inherits it
             $chromePath = env('CHROME_PATH', '');
-            if ($chromePath) {
-                putenv('CHROME_PATH=' . $chromePath);
-            }
+
+            // Normalize paths to use OS-native directory separators
+            $jsRendererNorm = str_replace('/', DIRECTORY_SEPARATOR, $jsRenderer);
+            $tempHtmlNorm = str_replace('/', DIRECTORY_SEPARATOR, $tempHtmlFile);
+            $fullPathNorm = str_replace('/', DIRECTORY_SEPARATOR, $fullPath);
+
+            // Capture stderr via temp file (exec + 2>&1 is unreliable on Windows Apache)
+            $stderrFile = $tempDir . DIRECTORY_SEPARATOR . 'stderr-' . uniqid() . '.txt';
 
             $command = sprintf(
-                '%s %s %s %s %s %s %s %s %s %s %s',
+                '%s %s %s %s %s %s %s %s %s %s %s 2>%s',
                 escapeshellarg($nodePath),
-                escapeshellarg($jsRenderer),
-                escapeshellarg($tempHtmlFile),
-                escapeshellarg($fullPath),
+                escapeshellarg($jsRendererNorm),
+                escapeshellarg($tempHtmlNorm),
+                escapeshellarg($fullPathNorm),
                 escapeshellarg($margins['width']),
                 escapeshellarg($margins['height']),
                 escapeshellarg($margins['top']),
                 escapeshellarg($margins['bottom']),
                 escapeshellarg($margins['left']),
                 escapeshellarg($margins['right']),
-                escapeshellarg($chromePath ?: '')
+                escapeshellarg($chromePath ?: ''),
+                escapeshellarg($stderrFile)
             );
 
-            $descriptors = [
-                0 => ['pipe', 'r'],
-                1 => ['pipe', 'w'],
-                2 => ['pipe', 'w'],
-            ];
-            $cwd = base_path();
-            Log::debug('Launching Puppeteer via proc_open', [
+            Log::debug('Launching Puppeteer via exec', [
                 'command' => $command,
-                'cwd' => $cwd,
                 'CHROME_PATH' => $chromePath ?: '(not set)',
                 'surat_id' => $surat->id_surat
             ]);
 
-            // Pass null for env to inherit parent process environment (with CHROME_PATH set above)
-            $process = proc_open($command, $descriptors, $pipes, $cwd, null);
-
-            if (!is_resource($process)) {
-                throw new \Exception('proc_open failed to start Node.js process');
-            }
-
-            fclose($pipes[0]); // close stdin
-            $stdout = stream_get_contents($pipes[1]);
-            $stderr = stream_get_contents($pipes[2]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            $returnVar = proc_close($process);
-
-            $outputString = trim($stdout . "\n" . $stderr);
-            Log::debug('Puppeteer proc_open output', ['return' => $returnVar, 'stdout' => $stdout, 'stderr' => $stderr, 'surat_id' => $surat->id_surat]);
+            $output = [];
+            $returnVar = 0;
+            exec($command, $output, $returnVar);
+            $stdoutString = implode("\n", $output);
+            $stderrString = file_exists($stderrFile) ? file_get_contents($stderrFile) : '';
+            @unlink($stderrFile);
+            $outputString = trim($stdoutString . "\n" . $stderrString);
+            Log::debug('Puppeteer exec output', [
+                'return' => $returnVar,
+                'stdout' => $stdoutString,
+                'stderr' => $stderrString,
+                'surat_id' => $surat->id_surat
+            ]);
 
             // only remove temp HTML when Puppeteer succeeded producing the PDF
             if ($returnVar === 0 && file_exists($fullPath) && file_exists($tempHtmlFile)) {
