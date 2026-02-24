@@ -295,6 +295,10 @@ trait LazyPdfTrait
                 }
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
+            $chromePath = env('CHROME_PATH', '');
+            if ($chromePath) {
+                putenv('CHROME_PATH=' . $chromePath);
+            }
 
             $command = sprintf(
                 '%s %s %s %s %s %s %s %s %s %s 2>&1',
