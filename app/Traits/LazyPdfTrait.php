@@ -294,20 +294,10 @@ trait LazyPdfTrait
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
-            // Diagnostic: can PHP exec() run Node.js at all?
-            // IMPORTANT: On Windows, cmd /c strips first & last quotes when command starts with "
-            // So we must NOT start the command with a quoted path. Only quote paths containing spaces.
-            $diagOut = [];
-            $diagRc = -1;
-            exec($nodePath . ' -e "process.stdout.write(JSON.stringify({ok:true,v:process.version}))" 2>&1', $diagOut, $diagRc);
-            $diagStr = implode("\n", $diagOut);
-            Log::info('Node.js diagnostic', ['return' => $diagRc, 'output' => $diagStr, 'surat_id' => $surat->id_surat]);
-
             $chromePath = env('CHROME_PATH', '');
 
-            // Write config as JSON file — avoids all Windows cmd.exe quoting issues
+            // Write config as JSON file
             $configFile = $tempDir . DIRECTORY_SEPARATOR . 'pdf-config-' . uniqid() . '.json';
-            // Also add a logFile so Node.js can write its own debug output
             $nodeLogFile = $tempDir . DIRECTORY_SEPARATOR . 'node-log-' . uniqid() . '.txt';
             $config = [
                 'inputPath' => $tempHtmlFile,
@@ -325,49 +315,61 @@ trait LazyPdfTrait
 
             $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
 
-            // Helper: only quote a path if it contains spaces (avoids cmd.exe quote-stripping)
-            $q = function($p) { return (strpos($p, ' ') !== false) ? '"' . $p . '"' : $p; };
+            // Use proc_open with ARRAY command (PHP 7.4+) to bypass cmd.exe entirely.
+            // This calls node.exe directly — no shell, no quoting issues.
+            $cmdArray = [$nodePath, $jsRenderer, $configFile];
+            $descriptors = [
+                0 => ['pipe', 'r'],  // stdin
+                1 => ['pipe', 'w'],  // stdout
+                2 => ['pipe', 'w'],  // stderr
+            ];
 
-            $command = $q($nodePath) . ' ' . $q($jsRenderer) . ' ' . $q($configFile) . ' 2>&1';
-
-            Log::debug('Launching Puppeteer', [
-                'command' => $command,
+            Log::debug('Launching Puppeteer via proc_open (no shell)', [
+                'cmd' => $cmdArray,
+                'cwd' => base_path(),
                 'config' => $config,
                 'surat_id' => $surat->id_surat
             ]);
 
-            $shellOutput = shell_exec($command);
-            $outputString = trim((string) $shellOutput);
+            $process = proc_open($cmdArray, $descriptors, $pipes, base_path());
 
-            // Read node's own log file for detailed error info
-            $nodeLogContent = file_exists($nodeLogFile) ? file_get_contents($nodeLogFile) : '(no node log file created)';
+            if (!is_resource($process)) {
+                throw new \Exception('proc_open failed to start Node.js process');
+            }
 
-            // Check if PDF was created (more reliable than return code on Windows)
+            fclose($pipes[0]);
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            $returnVar = proc_close($process);
+
+            $outputString = trim($stdout . "\n" . $stderr);
+            $nodeLogContent = file_exists($nodeLogFile) ? file_get_contents($nodeLogFile) : '';
             $pdfCreated = file_exists($fullPath) && filesize($fullPath) > 0;
 
             Log::debug('Puppeteer output', [
-                'shell_output' => $outputString,
+                'return' => $returnVar,
+                'stdout' => $stdout,
+                'stderr' => $stderr,
                 'node_log' => $nodeLogContent,
                 'pdf_created' => $pdfCreated,
                 'surat_id' => $surat->id_surat
             ]);
 
-            // Cleanup temp files on success
+            // Cleanup temp files
+            @unlink($configFile);
+            @unlink($nodeLogFile);
             if ($pdfCreated) {
-                @unlink($configFile);
-                @unlink($nodeLogFile);
                 @unlink($tempHtmlFile);
-            } else {
-                @unlink($nodeLogFile);
-                // Keep config + html for manual debugging
-                Log::info('Manual test command for CMD: ' . $q($nodePath) . ' ' . $q($jsRenderer) . ' ' . $q($configFile));
             }
 
+            // Use file existence as success indicator (more reliable than return code)
             $returnVar = $pdfCreated ? 0 : 1;
 
-            if ($returnVar !== 0 || !file_exists($fullPath)) {
+            if (!$pdfCreated) {
                 Log::error('Puppeteer command failed', [
-                    'command' => $command,
+                    'cmd' => $cmdArray,
                     'return_code' => $returnVar,
                     'output' => $outputString,
                     'file_exists' => file_exists($fullPath),
