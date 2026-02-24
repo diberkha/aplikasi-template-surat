@@ -262,8 +262,14 @@ trait LazyPdfTrait
         }
 
         try {
-            $tempHtmlFile = storage_path('app/temp-pdf-' . uniqid() . '.html');
+            // ensure temp folder exists and write HTML there for easier discovery
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                @mkdir($tempDir, 0755, true);
+            }
+            $tempHtmlFile = $tempDir . DIRECTORY_SEPARATOR . 'temp-pdf-' . uniqid() . '.html';
             file_put_contents($tempHtmlFile, $html);
+            Log::info('Wrote temp HTML for Puppeteer', ['temp_html' => $tempHtmlFile, 'surat_id' => $surat->id_surat]);
 
             $jsRenderer = base_path('resources/js/pdf-renderer.js');
             $nodePath = 'node';
@@ -286,8 +292,9 @@ trait LazyPdfTrait
             $returnVar = 0;
             exec($command, $output, $returnVar);
 
-            if (file_exists($tempHtmlFile)) {
-                unlink($tempHtmlFile);
+            // only remove temp HTML when Puppeteer succeeded producing the PDF
+            if ($returnVar === 0 && file_exists($fullPath) && file_exists($tempHtmlFile)) {
+                @unlink($tempHtmlFile);
             }
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
