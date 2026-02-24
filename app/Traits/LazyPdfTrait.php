@@ -271,8 +271,6 @@ trait LazyPdfTrait
             file_put_contents($tempHtmlFile, $html);
             Log::info('Wrote temp HTML for Puppeteer', ['temp_html' => $tempHtmlFile, 'surat_id' => $surat->id_surat]);
 
-            $jsRenderer = base_path('resources/js/pdf-renderer.js');
-
             // resolve node binary: prefer NODE_PATH env, otherwise try to locate
             $nodePath = env('NODE_PATH', null);
             if (!$nodePath) {
@@ -298,60 +296,39 @@ trait LazyPdfTrait
 
             $chromePath = env('CHROME_PATH', '');
 
-            // Normalize paths to use OS-native directory separators
-            $jsRendererNorm = str_replace('/', DIRECTORY_SEPARATOR, $jsRenderer);
-            $tempHtmlNorm = str_replace('/', DIRECTORY_SEPARATOR, $tempHtmlFile);
-            $fullPathNorm = str_replace('/', DIRECTORY_SEPARATOR, $fullPath);
+            // Write config as JSON file — avoids all Windows cmd.exe quoting issues
+            $configFile = $tempDir . DIRECTORY_SEPARATOR . 'pdf-config-' . uniqid() . '.json';
+            $config = [
+                'inputPath' => $tempHtmlFile,
+                'outputPath' => $fullPath,
+                'width' => $margins['width'],
+                'height' => $margins['height'],
+                'marginTop' => $margins['top'],
+                'marginBottom' => $margins['bottom'],
+                'marginLeft' => $margins['left'],
+                'marginRight' => $margins['right'],
+                'chromePath' => $chromePath ?: null,
+            ];
+            file_put_contents($configFile, json_encode($config, JSON_UNESCAPED_SLASHES));
 
-            // On Windows, write a .bat file and execute it — most reliable method
-            // for running Node.js from Apache service context
-            $tempDirNorm = str_replace('/', DIRECTORY_SEPARATOR, $tempDir);
-            $stdoutFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'stdout-' . uniqid() . '.txt';
-            $stderrFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'stderr-' . uniqid() . '.txt';
-            $batFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'run-pdf-' . uniqid() . '.bat';
+            // Simple 2-argument command: node script.js config.json
+            $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
+            $command = '"' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '" 2>&1';
 
-            $batContent = '@echo off' . "\r\n";
-            if ($chromePath) {
-                $batContent .= 'set "CHROME_PATH=' . $chromePath . '"' . "\r\n";
-            }
-            $batContent .= sprintf(
-                '"%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" 1>"%s" 2>"%s"',
-                $nodePath,
-                $jsRendererNorm,
-                $tempHtmlNorm,
-                $fullPathNorm,
-                $margins['width'],
-                $margins['height'],
-                $margins['top'],
-                $margins['bottom'],
-                $margins['left'],
-                $margins['right'],
-                $chromePath ?: '',
-                $stdoutFile,
-                $stderrFile
-            ) . "\r\n";
-            $batContent .= 'exit /b %ERRORLEVEL%' . "\r\n";
-            file_put_contents($batFile, $batContent);
-
-            Log::debug('Launching Puppeteer via .bat', [
-                'bat_file' => $batFile,
-                'bat_content' => $batContent,
+            Log::debug('Launching Puppeteer', [
+                'command' => $command,
+                'config' => $config,
                 'surat_id' => $surat->id_surat
             ]);
 
             $output = [];
             $returnVar = 0;
-            exec('cmd /c "' . $batFile . '"', $output, $returnVar);
-            $stdoutString = file_exists($stdoutFile) ? file_get_contents($stdoutFile) : '';
-            $stderrString = file_exists($stderrFile) ? file_get_contents($stderrFile) : '';
-            @unlink($batFile);
-            @unlink($stdoutFile);
-            @unlink($stderrFile);
-            $outputString = trim($stdoutString . "\n" . $stderrString);
-            Log::debug('Puppeteer bat output', [
+            exec($command, $output, $returnVar);
+            $outputString = implode("\n", $output);
+            @unlink($configFile);
+            Log::debug('Puppeteer output', [
                 'return' => $returnVar,
-                'stdout' => $stdoutString,
-                'stderr' => $stderrString,
+                'output' => $outputString,
                 'surat_id' => $surat->id_surat
             ]);
 
@@ -362,7 +339,7 @@ trait LazyPdfTrait
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
                 Log::error('Puppeteer command failed', [
-                    'bat_file' => $batFile ?? '(cleaned up)',
+                    'command' => $command,
                     'return_code' => $returnVar,
                     'output' => $outputString,
                     'file_exists' => file_exists($fullPath),

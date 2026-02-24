@@ -5,23 +5,49 @@ const { pathToFileURL } = require('url');
 
 (async () => {
     const args = process.argv.slice(2);
-    if (args.length < 2) {
+
+    let inputPath, outputPath, width, height, marginTop, marginBottom, marginLeft, marginRight, chromePath;
+
+    // Support JSON config file as single argument (avoids Windows cmd quoting issues)
+    if (args.length === 1 && args[0].endsWith('.json')) {
+        try {
+            const config = JSON.parse(fs.readFileSync(args[0], 'utf8'));
+            inputPath = config.inputPath;
+            outputPath = config.outputPath;
+            width = config.width || "215.9mm";
+            height = config.height || "330.2mm";
+            marginTop = config.marginTop || "13mm";
+            marginBottom = config.marginBottom || "12mm";
+            marginLeft = config.marginLeft || "18mm";
+            marginRight = config.marginRight || "18mm";
+            chromePath = config.chromePath || process.env.CHROME_PATH || undefined;
+        } catch (e) {
+            console.error("Failed to read config JSON:", e.message);
+            process.exit(1);
+        }
+    } else if (args.length >= 2) {
+        // Legacy: positional arguments
+        inputPath = args[0];
+        outputPath = args[1];
+        width = args[2] || "215.9mm";
+        height = args[3] || "330.2mm";
+        marginTop = args[4] || "13mm";
+        marginBottom = args[5] || "12mm";
+        marginLeft = args[6] || "18mm";
+        marginRight = args[7] || "18mm";
+        chromePath = args[8] || process.env.CHROME_PATH || undefined;
+    } else {
         console.error(
-            "Usage: node pdf-renderer.js <input_html_file> <output_pdf_file> [width] [height] [marginTop] [marginBottom] [marginLeft] [marginRight]",
+            "Usage: node pdf-renderer.js <config.json>\n" +
+            "   or: node pdf-renderer.js <input_html_file> <output_pdf_file> [width] [height] [marginTop] [marginBottom] [marginLeft] [marginRight] [chromePath]",
         );
         process.exit(1);
     }
 
-    const inputPath = args[0];
-    const outputPath = args[1];
-    const width = args[2] || "215.9mm";
-    const height = args[3] || "330.2mm";
-    const marginTop = args[4] || "13mm";
-    const marginBottom = args[5] || "12mm";
-    const marginLeft = args[6] || "18mm";
-    const marginRight = args[7] || "18mm";
-    // Accept chrome executable path as 9th argument (most reliable way from PHP)
-    const chromePath = args[8] || process.env.CHROME_PATH || undefined;
+    if (!inputPath || !outputPath) {
+        console.error("inputPath and outputPath are required");
+        process.exit(1);
+    }
 
     const toFileUrl = (filePath) => {
         return pathToFileURL(filePath).href;
