@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { pathToFileURL } = require('url');
 
 (async () => {
     const args = process.argv.slice(2);
@@ -21,7 +22,7 @@ const path = require("path");
     const marginRight = args[7] || "18mm";
 
     const toFileUrl = (filePath) => {
-        return "file:///" + filePath.replace(/\\/g, "/");
+        return pathToFileURL(filePath).href;
     };
 
     const browser = await puppeteer.launch({
@@ -41,13 +42,19 @@ const path = require("path");
 
     try {
         const page = await browser.newPage();
-        
+
         await page.setViewport({
             width: 794,
             height: 1123
         });
 
         const absoluteInputPath = path.resolve(inputPath);
+
+        if (!fs.existsSync(absoluteInputPath)) {
+            console.error("Input HTML not found:", absoluteInputPath);
+            process.exit(2);
+        }
+
         const fileUrl = toFileUrl(absoluteInputPath);
 
         await page.goto(fileUrl, {
@@ -69,7 +76,16 @@ const path = require("path");
 
         console.log("PDF generated successfully: " + outputPath);
     } catch (error) {
-        console.error("Error generating PDF:", error);
+        console.error("Error generating PDF:", error && error.stack ? error.stack : error);
+        try {
+            if (typeof page !== 'undefined') {
+                const debugPath = outputPath + '.error.png';
+                await page.screenshot({ path: debugPath, fullPage: true });
+                console.error('Saved debug screenshot to', debugPath);
+            }
+        } catch (sErr) {
+            // ignore screenshot errors
+        }
         process.exit(1);
     } finally {
         await browser.close();
