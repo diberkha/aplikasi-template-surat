@@ -295,13 +295,32 @@ trait LazyPdfTrait
                 }
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
+
+            $processEnv = array_merge(
+                is_array($_SERVER) ? $_SERVER : [],
+                is_array($_ENV) ? $_ENV : []
+            );
+            if (!isset($processEnv['PATH']) && getenv('PATH')) {
+                $processEnv['PATH'] = getenv('PATH');
+            }
             $chromePath = env('CHROME_PATH', '');
             if ($chromePath) {
-                putenv('CHROME_PATH=' . $chromePath);
+                $processEnv['CHROME_PATH'] = $chromePath;
+            }
+            if (stripos(PHP_OS, 'WIN') === 0) {
+                if (!isset($processEnv['USERPROFILE'])) {
+                    $processEnv['USERPROFILE'] = getenv('USERPROFILE') ?: 'C:\\Users\\Default';
+                }
+                if (!isset($processEnv['APPDATA'])) {
+                    $processEnv['APPDATA'] = getenv('APPDATA') ?: ($processEnv['USERPROFILE'] . '\\AppData\\Roaming');
+                }
+                if (!isset($processEnv['LOCALAPPDATA'])) {
+                    $processEnv['LOCALAPPDATA'] = getenv('LOCALAPPDATA') ?: ($processEnv['USERPROFILE'] . '\\AppData\\Local');
+                }
             }
 
             $command = sprintf(
-                '%s %s %s %s %s %s %s %s %s %s 2>&1',
+                '%s %s %s %s %s %s %s %s %s %s',
                 escapeshellarg($nodePath),
                 escapeshellarg($jsRenderer),
                 escapeshellarg($tempHtmlFile),
@@ -314,11 +333,34 @@ trait LazyPdfTrait
                 escapeshellarg($margins['right'])
             );
 
-            $output = [];
-            $returnVar = 0;
-            exec($command, $output, $returnVar);
-            $outputString = is_array($output) ? implode("\n", $output) : (string) $output;
-            Log::debug('Puppeteer exec output', ['command' => $command, 'return' => $returnVar, 'output' => $outputString, 'surat_id' => $surat->id_surat]);
+            $descriptors = [
+                0 => ['pipe', 'r'],   
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ];
+            $cwd = base_path();
+            Log::debug('Launching Puppeteer via proc_open', [
+                'command' => $command,
+                'cwd' => $cwd,
+                'CHROME_PATH' => $chromePath ?: '(not set)',
+                'surat_id' => $surat->id_surat
+            ]);
+
+            $process = proc_open($command, $descriptors, $pipes, $cwd, $processEnv);
+
+            if (!is_resource($process)) {
+                throw new \Exception('proc_open failed to start Node.js process');
+            }
+
+            fclose($pipes[0]); // close stdin
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            $returnVar = proc_close($process);
+
+            $outputString = trim($stdout . "\n" . $stderr);
+            Log::debug('Puppeteer proc_open output', ['return' => $returnVar, 'stdout' => $stdout, 'stderr' => $stderr, 'surat_id' => $surat->id_surat]);
 
             // only remove temp HTML when Puppeteer succeeded producing the PDF
             if ($returnVar === 0 && file_exists($fullPath) && file_exists($tempHtmlFile)) {
