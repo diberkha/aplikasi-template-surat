@@ -294,10 +294,19 @@ trait LazyPdfTrait
             }
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
+            // Diagnostic: can PHP exec() run Node.js at all?
+            $diagOut = [];
+            $diagRc = -1;
+            exec('"' . $nodePath . '" -e "process.stdout.write(JSON.stringify({ok:true,v:process.version,cwd:process.cwd()}))" 2>&1', $diagOut, $diagRc);
+            $diagStr = implode("\n", $diagOut);
+            Log::info('Node.js diagnostic', ['return' => $diagRc, 'output' => $diagStr, 'surat_id' => $surat->id_surat]);
+
             $chromePath = env('CHROME_PATH', '');
 
             // Write config as JSON file — avoids all Windows cmd.exe quoting issues
             $configFile = $tempDir . DIRECTORY_SEPARATOR . 'pdf-config-' . uniqid() . '.json';
+            // Also add a logFile so Node.js can write its own debug output
+            $nodeLogFile = $tempDir . DIRECTORY_SEPARATOR . 'node-log-' . uniqid() . '.txt';
             $config = [
                 'inputPath' => $tempHtmlFile,
                 'outputPath' => $fullPath,
@@ -308,28 +317,14 @@ trait LazyPdfTrait
                 'marginLeft' => $margins['left'],
                 'marginRight' => $margins['right'],
                 'chromePath' => $chromePath ?: null,
+                'logFile' => $nodeLogFile,
             ];
             file_put_contents($configFile, json_encode($config, JSON_UNESCAPED_SLASHES));
 
-            // Simple 2-argument command: node script.js config.json
             $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
 
-            if (stripos(PHP_OS, 'WIN') === 0) {
-                // On Windows, cmd /c strips leading & trailing quotes when command starts with "
-                // Prefix with 'cd /d' to avoid this, and also sets cwd to project root for node_modules
-                $command = sprintf(
-                    'cd /d "%s" && "%s" "%s" "%s" 2>&1',
-                    base_path(),
-                    $nodePath,
-                    $jsRenderer,
-                    $configFile
-                );
-            } else {
-                $command = sprintf('"%s" "%s" "%s" 2>&1', $nodePath, $jsRenderer, $configFile);
-            }
-
-            // Manual test command (copy-paste in CMD on server):
-            // "C:\nodejs\node.exe" "C:\xampp74\htdocs\e-office\resources\js\pdf-renderer.js" "C:\xampp74\htdocs\e-office\storage\app\temp\pdf-config-XXXX.json"
+            // Use shell_exec which may work better than exec on Windows Apache
+            $command = sprintf('"%s" "%s" "%s" 2>&1', $nodePath, $jsRenderer, $configFile);
 
             Log::debug('Launching Puppeteer', [
                 'command' => $command,
@@ -337,26 +332,34 @@ trait LazyPdfTrait
                 'surat_id' => $surat->id_surat
             ]);
 
-            $output = [];
-            $returnVar = 0;
-            exec($command, $output, $returnVar);
-            $outputString = implode("\n", $output);
+            $shellOutput = shell_exec($command);
+            $outputString = trim((string) $shellOutput);
+
+            // Read node's own log file for detailed error info
+            $nodeLogContent = file_exists($nodeLogFile) ? file_get_contents($nodeLogFile) : '(no node log file created)';
+
+            // Check if PDF was created (more reliable than return code on Windows)
+            $pdfCreated = file_exists($fullPath) && filesize($fullPath) > 0;
+
             Log::debug('Puppeteer output', [
-                'return' => $returnVar,
-                'output' => $outputString,
+                'shell_output' => $outputString,
+                'node_log' => $nodeLogContent,
+                'pdf_created' => $pdfCreated,
                 'surat_id' => $surat->id_surat
             ]);
 
-            // only remove temp files when Puppeteer succeeded
-            if ($returnVar === 0 && file_exists($fullPath)) {
+            // Cleanup temp files on success
+            if ($pdfCreated) {
                 @unlink($configFile);
-                if (file_exists($tempHtmlFile)) {
-                    @unlink($tempHtmlFile);
-                }
+                @unlink($nodeLogFile);
+                @unlink($tempHtmlFile);
             } else {
-                // Keep config + html for manual debugging; log the manual test command
-                Log::info('Manual test: cd /d "' . base_path() . '" && "' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '"');
+                @unlink($nodeLogFile);
+                // Keep config + html for manual debugging
+                Log::info('Manual test command for CMD: "' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '"');
             }
+
+            $returnVar = $pdfCreated ? 0 : 1;
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
                 Log::error('Puppeteer command failed', [

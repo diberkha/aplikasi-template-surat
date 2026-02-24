@@ -3,15 +3,31 @@ const fs = require("fs");
 const path = require("path");
 const { pathToFileURL } = require('url');
 
+// Helper: write to log file if configured
+let logFilePath = null;
+function writeLog(msg) {
+    const line = new Date().toISOString() + ' ' + msg + '\n';
+    if (logFilePath) {
+        try { fs.appendFileSync(logFilePath, line); } catch(e) { /* ignore */ }
+    }
+    console.error(line.trim());
+}
+
 (async () => {
     const args = process.argv.slice(2);
 
     let inputPath, outputPath, width, height, marginTop, marginBottom, marginLeft, marginRight, chromePath;
 
+    writeLog('pdf-renderer.js started, args: ' + JSON.stringify(args));
+    writeLog('cwd: ' + process.cwd());
+    writeLog('node version: ' + process.version);
+
     // Support JSON config file as single argument (avoids Windows cmd quoting issues)
     if (args.length === 1 && args[0].endsWith('.json')) {
         try {
-            const config = JSON.parse(fs.readFileSync(args[0], 'utf8'));
+            const configRaw = fs.readFileSync(args[0], 'utf8');
+            writeLog('Config file contents: ' + configRaw);
+            const config = JSON.parse(configRaw);
             inputPath = config.inputPath;
             outputPath = config.outputPath;
             width = config.width || "215.9mm";
@@ -21,7 +37,10 @@ const { pathToFileURL } = require('url');
             marginLeft = config.marginLeft || "18mm";
             marginRight = config.marginRight || "18mm";
             chromePath = config.chromePath || process.env.CHROME_PATH || undefined;
+            logFilePath = config.logFile || null;
+            writeLog('Config parsed OK. chromePath=' + (chromePath || '(auto)'));
         } catch (e) {
+            writeLog("Failed to read config JSON: " + e.message);
             console.error("Failed to read config JSON:", e.message);
             process.exit(1);
         }
@@ -45,6 +64,7 @@ const { pathToFileURL } = require('url');
     }
 
     if (!inputPath || !outputPath) {
+        writeLog("inputPath and outputPath are required");
         console.error("inputPath and outputPath are required");
         process.exit(1);
     }
@@ -52,6 +72,8 @@ const { pathToFileURL } = require('url');
     const toFileUrl = (filePath) => {
         return pathToFileURL(filePath).href;
     };
+
+    writeLog('Launching browser with chromePath=' + (chromePath || '(auto-detect)'));
 
     const browser = await puppeteer.launch({
         headless: "new",
@@ -69,6 +91,7 @@ const { pathToFileURL } = require('url');
     });
 
     try {
+        writeLog('Browser launched OK');
         const page = await browser.newPage();
 
         await page.setViewport({
@@ -103,7 +126,9 @@ const { pathToFileURL } = require('url');
         });
 
         console.log("PDF generated successfully: " + outputPath);
+        writeLog("PDF generated successfully: " + outputPath);
     } catch (error) {
+        writeLog("Error generating PDF: " + (error && error.stack ? error.stack : error));
         console.error("Error generating PDF:", error && error.stack ? error.stack : error);
         try {
             if (typeof page !== 'undefined') {
