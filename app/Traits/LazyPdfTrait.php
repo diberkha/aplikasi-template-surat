@@ -305,9 +305,10 @@ trait LazyPdfTrait
 
             // On Windows, write a .bat file and execute it — most reliable method
             // for running Node.js from Apache service context
-            $stdoutFile = $tempDir . DIRECTORY_SEPARATOR . 'stdout-' . uniqid() . '.txt';
-            $stderrFile = $tempDir . DIRECTORY_SEPARATOR . 'stderr-' . uniqid() . '.txt';
-            $batFile = $tempDir . DIRECTORY_SEPARATOR . 'run-pdf-' . uniqid() . '.bat';
+            $tempDirNorm = str_replace('/', DIRECTORY_SEPARATOR, $tempDir);
+            $stdoutFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'stdout-' . uniqid() . '.txt';
+            $stderrFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'stderr-' . uniqid() . '.txt';
+            $batFile = $tempDirNorm . DIRECTORY_SEPARATOR . 'run-pdf-' . uniqid() . '.bat';
 
             $batContent = '@echo off' . "\r\n";
             if ($chromePath) {
@@ -340,7 +341,7 @@ trait LazyPdfTrait
 
             $output = [];
             $returnVar = 0;
-            exec('"' . $batFile . '"', $output, $returnVar);
+            exec('cmd /c "' . $batFile . '"', $output, $returnVar);
             $stdoutString = file_exists($stdoutFile) ? file_get_contents($stdoutFile) : '';
             $stderrString = file_exists($stderrFile) ? file_get_contents($stderrFile) : '';
             @unlink($batFile);
@@ -361,7 +362,7 @@ trait LazyPdfTrait
 
             if ($returnVar !== 0 || !file_exists($fullPath)) {
                 Log::error('Puppeteer command failed', [
-                    'command' => $command,
+                    'bat_file' => $batFile ?? '(cleaned up)',
                     'return_code' => $returnVar,
                     'output' => $outputString,
                     'file_exists' => file_exists($fullPath),
