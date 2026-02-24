@@ -303,39 +303,51 @@ trait LazyPdfTrait
             $tempHtmlNorm = str_replace('/', DIRECTORY_SEPARATOR, $tempHtmlFile);
             $fullPathNorm = str_replace('/', DIRECTORY_SEPARATOR, $fullPath);
 
-            // Capture stderr via temp file (exec + 2>&1 is unreliable on Windows Apache)
+            // On Windows, write a .bat file and execute it — most reliable method
+            // for running Node.js from Apache service context
+            $stdoutFile = $tempDir . DIRECTORY_SEPARATOR . 'stdout-' . uniqid() . '.txt';
             $stderrFile = $tempDir . DIRECTORY_SEPARATOR . 'stderr-' . uniqid() . '.txt';
+            $batFile = $tempDir . DIRECTORY_SEPARATOR . 'run-pdf-' . uniqid() . '.bat';
 
-            $command = sprintf(
-                '%s %s %s %s %s %s %s %s %s %s %s 2>%s',
-                escapeshellarg($nodePath),
-                escapeshellarg($jsRendererNorm),
-                escapeshellarg($tempHtmlNorm),
-                escapeshellarg($fullPathNorm),
-                escapeshellarg($margins['width']),
-                escapeshellarg($margins['height']),
-                escapeshellarg($margins['top']),
-                escapeshellarg($margins['bottom']),
-                escapeshellarg($margins['left']),
-                escapeshellarg($margins['right']),
-                escapeshellarg($chromePath ?: ''),
-                escapeshellarg($stderrFile)
-            );
+            $batContent = '@echo off' . "\r\n";
+            if ($chromePath) {
+                $batContent .= 'set "CHROME_PATH=' . $chromePath . '"' . "\r\n";
+            }
+            $batContent .= sprintf(
+                '"%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" 1>"%s" 2>"%s"',
+                $nodePath,
+                $jsRendererNorm,
+                $tempHtmlNorm,
+                $fullPathNorm,
+                $margins['width'],
+                $margins['height'],
+                $margins['top'],
+                $margins['bottom'],
+                $margins['left'],
+                $margins['right'],
+                $chromePath ?: '',
+                $stdoutFile,
+                $stderrFile
+            ) . "\r\n";
+            $batContent .= 'exit /b %ERRORLEVEL%' . "\r\n";
+            file_put_contents($batFile, $batContent);
 
-            Log::debug('Launching Puppeteer via exec', [
-                'command' => $command,
-                'CHROME_PATH' => $chromePath ?: '(not set)',
+            Log::debug('Launching Puppeteer via .bat', [
+                'bat_file' => $batFile,
+                'bat_content' => $batContent,
                 'surat_id' => $surat->id_surat
             ]);
 
             $output = [];
             $returnVar = 0;
-            exec($command, $output, $returnVar);
-            $stdoutString = implode("\n", $output);
+            exec('"' . $batFile . '"', $output, $returnVar);
+            $stdoutString = file_exists($stdoutFile) ? file_get_contents($stdoutFile) : '';
             $stderrString = file_exists($stderrFile) ? file_get_contents($stderrFile) : '';
+            @unlink($batFile);
+            @unlink($stdoutFile);
             @unlink($stderrFile);
             $outputString = trim($stdoutString . "\n" . $stderrString);
-            Log::debug('Puppeteer exec output', [
+            Log::debug('Puppeteer bat output', [
                 'return' => $returnVar,
                 'stdout' => $stdoutString,
                 'stderr' => $stderrString,
