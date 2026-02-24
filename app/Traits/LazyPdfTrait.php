@@ -295,9 +295,11 @@ trait LazyPdfTrait
             Log::info('Resolved node binary for Puppeteer', ['node' => $nodePath, 'surat_id' => $surat->id_surat]);
 
             // Diagnostic: can PHP exec() run Node.js at all?
+            // IMPORTANT: On Windows, cmd /c strips first & last quotes when command starts with "
+            // So we must NOT start the command with a quoted path. Only quote paths containing spaces.
             $diagOut = [];
             $diagRc = -1;
-            exec('"' . $nodePath . '" -e "process.stdout.write(JSON.stringify({ok:true,v:process.version,cwd:process.cwd()}))" 2>&1', $diagOut, $diagRc);
+            exec($nodePath . ' -e "process.stdout.write(JSON.stringify({ok:true,v:process.version}))" 2>&1', $diagOut, $diagRc);
             $diagStr = implode("\n", $diagOut);
             Log::info('Node.js diagnostic', ['return' => $diagRc, 'output' => $diagStr, 'surat_id' => $surat->id_surat]);
 
@@ -323,8 +325,10 @@ trait LazyPdfTrait
 
             $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
 
-            // Use shell_exec which may work better than exec on Windows Apache
-            $command = sprintf('"%s" "%s" "%s" 2>&1', $nodePath, $jsRenderer, $configFile);
+            // Helper: only quote a path if it contains spaces (avoids cmd.exe quote-stripping)
+            $q = function($p) { return (strpos($p, ' ') !== false) ? '"' . $p . '"' : $p; };
+
+            $command = $q($nodePath) . ' ' . $q($jsRenderer) . ' ' . $q($configFile) . ' 2>&1';
 
             Log::debug('Launching Puppeteer', [
                 'command' => $command,
@@ -356,7 +360,7 @@ trait LazyPdfTrait
             } else {
                 @unlink($nodeLogFile);
                 // Keep config + html for manual debugging
-                Log::info('Manual test command for CMD: "' . $nodePath . '" "' . $jsRenderer . '" "' . $configFile . '"');
+                Log::info('Manual test command for CMD: ' . $q($nodePath) . ' ' . $q($jsRenderer) . ' ' . $q($configFile));
             }
 
             $returnVar = $pdfCreated ? 0 : 1;
