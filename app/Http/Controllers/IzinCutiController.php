@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class IzinCutiController extends Controller
 {
@@ -61,6 +62,7 @@ class IzinCutiController extends Controller
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
                 'form.nama_atasan' => 'required|string',
+                'form.rentang_cuti_json' => 'nullable|string',
             ], [
                 'kategori.required' => 'Kategori wajib diisi',
                 'kategori.in' => 'Kategori tidak valid',
@@ -68,6 +70,9 @@ class IzinCutiController extends Controller
                 'form.tanggal_surat.required' => 'Tanggal surat wajib diisi',
                 'form.nama_atasan.required' => 'Nama atasan wajib diisi',
             ]);
+
+            $normalizedForm = $this->normalizeCutiDateForm($request->input('form', []));
+            $request->merge(['form' => $normalizedForm]);
 
             $kategori = strtoupper($request->kategori);
             $namaPegawai = strtoupper(trim($request->input('form.nama') ?? 'DRAFT'));
@@ -300,6 +305,7 @@ class IzinCutiController extends Controller
                 'form' => 'required|array',
                 'form.tanggal_surat' => 'required|date',
                 'form.nama_atasan' => 'required|string',
+                'form.rentang_cuti_json' => 'nullable|string',
             ], [
                 'kategori.required' => 'Kategori wajib diisi',
                 'kategori.in' => 'Kategori tidak valid',
@@ -307,6 +313,9 @@ class IzinCutiController extends Controller
                 'form.tanggal_surat.required' => 'Tanggal surat wajib diisi',
                 'form.nama_atasan.required' => 'Nama atasan wajib diisi',
             ]);
+
+            $normalizedForm = $this->normalizeCutiDateForm($request->input('form', []));
+            $request->merge(['form' => $normalizedForm]);
 
             $surat = Surat::findOrFail($id);
             $cuti = SuratIzinCuti::where('id_surat', $id)->firstOrFail();
@@ -406,5 +415,119 @@ class IzinCutiController extends Controller
                 'message' => 'Gagal memperbarui draft: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    private function normalizeCutiDateForm(array $form): array
+    {
+        $ranges = $this->extractLeaveRanges($form);
+        if (empty($ranges)) {
+            return $form;
+        }
+
+        usort($ranges, function ($a, $b) {
+            return strcmp($a['mulai'], $b['mulai']);
+        });
+
+        $totalDays = 0;
+        $mergedRanges = [];
+
+        foreach ($ranges as $range) {
+            $start = Carbon::parse($range['mulai'])->startOfDay();
+            $end = Carbon::parse($range['sampai'])->startOfDay();
+
+            if (empty($mergedRanges)) {
+                $mergedRanges[] = ['mulai' => $start, 'sampai' => $end];
+                continue;
+            }
+
+            $lastIndex = count($mergedRanges) - 1;
+            $last = $mergedRanges[$lastIndex];
+
+            if ($start->lte($last['sampai']->copy()->addDay())) {
+                if ($end->gt($last['sampai'])) {
+                    $mergedRanges[$lastIndex]['sampai'] = $end;
+                }
+            } else {
+                $mergedRanges[] = ['mulai' => $start, 'sampai' => $end];
+            }
+        }
+
+        foreach ($mergedRanges as $merged) {
+            $totalDays += $merged['mulai']->diffInDays($merged['sampai']) + 1;
+        }
+
+        $form['rentang_cuti'] = array_map(function ($range) {
+            return [
+                'mulai' => $range['mulai'],
+                'sampai' => $range['sampai'],
+            ];
+        }, $ranges);
+
+        $form['mulai'] = $ranges[0]['mulai'];
+        $form['sampai'] = $ranges[count($ranges) - 1]['sampai'];
+        $form['lama_cuti'] = $totalDays;
+
+        unset($form['rentang_cuti_json']);
+
+        return $form;
+    }
+
+    private function extractLeaveRanges(array $form): array
+    {
+        $ranges = [];
+
+        if (!empty($form['rentang_cuti_json']) && is_string($form['rentang_cuti_json'])) {
+            $decoded = json_decode($form['rentang_cuti_json'], true);
+            if (is_array($decoded)) {
+                foreach ($decoded as $row) {
+                    $normalized = $this->normalizeRangeRow($row);
+                    if ($normalized !== null) {
+                        $ranges[] = $normalized;
+                    }
+                }
+            }
+        }
+
+        if (empty($ranges) && !empty($form['mulai']) && !empty($form['sampai'])) {
+            $fallback = $this->normalizeRangeRow([
+                'mulai' => $form['mulai'],
+                'sampai' => $form['sampai'],
+            ]);
+
+            if ($fallback !== null) {
+                $ranges[] = $fallback;
+            }
+        }
+
+        return $ranges;
+    }
+
+    private function normalizeRangeRow($row): ?array
+    {
+        if (!is_array($row)) {
+            return null;
+        }
+
+        $startRaw = $row['mulai'] ?? null;
+        $endRaw = $row['sampai'] ?? null;
+        if (!$startRaw || !$endRaw) {
+            return null;
+        }
+
+        try {
+            $start = Carbon::parse($startRaw)->startOfDay();
+            $end = Carbon::parse($endRaw)->startOfDay();
+        } catch (\Throwable $e) {
+            return null;
+        }
+
+        if ($end->lt($start)) {
+            [$start, $end] = [$end, $start];
+        }
+
+        return [
+            'mulai' => $start->toDateString(),
+            'sampai' => $end->toDateString(),
+        ];
     }
 }

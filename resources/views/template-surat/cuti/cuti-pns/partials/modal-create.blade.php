@@ -121,7 +121,7 @@
                                     class="text-red-500">*</span></label>
                             
                             <div class="relative" @click.outside="openJenisCuti = false">
-                                <input type="hidden" name="form[jenis_cuti]" :value="jenisCuti" required>
+                                <input type="hidden" name="form[jenis_cuti]" id="jenis_cuti_pns" :value="jenisCuti" required>
 
                                 <button type="button" @click="openJenisCuti = !openJenisCuti"
                                     class="w-full px-4 py-3 text-left border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white flex justify-between items-center transition-all focus:ring-2 focus:ring-green-500 outline-none">
@@ -178,26 +178,30 @@
                         <h4 class="font-bold text-gray-900 dark:text-white">IV. LAMANYA CUTI</h4>
                     </div>
                     <div class="p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="hidden" name="form[rentang_cuti_json]" id="rentang_cuti_json_pns">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block mb-2 text-gray-700 dark:text-gray-300">Selama (hari) <span
                                         class="text-red-500">*</span></label>
-                                <input type="number" name="form[lama_cuti]" id="lama_cuti_pns" required min="1"
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <input type="number" name="form[lama_cuti]" id="lama_cuti_pns" required min="1" readonly
+                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                             </div>
                             <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Mulai Tanggal <span
+                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Cuti <span
                                         class="text-red-500">*</span></label>
-                                <input type="date" name="form[mulai]" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block mb-2 text-gray-700 dark:text-gray-300">Sampai Tanggal <span
-                                        class="text-red-500">*</span></label>
-                                <input type="date" name="form[sampai]" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                <div class="relative">
+                                    <input type="text" id="tanggal_cuti_multi_pns" placeholder="Pilih tanggal cuti"
+                                        class="w-full px-4 py-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                    <button type="button" id="clear_tanggal_cuti_pns"
+                                        class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                        aria-label="Clear tanggal cuti">
+                                        <i class="fas fa-times-circle text-lg"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        <input type="hidden" name="form[mulai]" id="mulai_cuti_pns" required>
+                        <input type="hidden" name="form[sampai]" id="sampai_cuti_pns" required>
                     </div>
                 </div>
 
@@ -576,7 +580,7 @@
             });
         }
 
-        const jenisCutiSelect = document.querySelector('#modalCreateCuti select[name="form[jenis_cuti]"]');
+        const jenisCutiSelect = document.getElementById('jenis_cuti_pns');
         const lamaCutiInput = document.getElementById('lama_cuti_pns');
         const sisaCutiContainer = document.getElementById('sisa_cuti_container');
         const sisaCutiDisplay = document.getElementById('sisa_cuti_display');
@@ -742,13 +746,239 @@
                 sisaN = 0;
                 sisaN1 = 0;
                 sisaN2 = 0;
+
+                if (typeof initRentangCutiPNS === 'function') {
+                    initRentangCutiPNS();
+                }
             });
         }
     })();
 
+    function attachFlatpickrActionsPNS(instance) {
+        if (!instance || !instance.calendarContainer) return;
+
+        const container = instance.calendarContainer;
+        if (container.querySelector('.flatpickr-action-row')) return;
+
+        const actionRow = document.createElement('div');
+        actionRow.className = 'flatpickr-action-row';
+        actionRow.style.display = 'flex';
+        actionRow.style.justifyContent = 'space-between';
+        actionRow.style.padding = '8px 12px';
+        actionRow.style.borderTop = '1px solid #e5e7eb';
+
+        const clearAction = document.createElement('button');
+        clearAction.type = 'button';
+        clearAction.textContent = 'Clear';
+        clearAction.style.color = '#2563eb';
+        clearAction.style.fontSize = '14px';
+
+        const todayAction = document.createElement('button');
+        todayAction.type = 'button';
+        todayAction.textContent = 'Today';
+        todayAction.style.color = '#2563eb';
+        todayAction.style.fontSize = '14px';
+
+        clearAction.addEventListener('click', function (e) {
+            e.preventDefault();
+            instance.clear();
+            syncRentangPNS([]);
+        });
+
+        todayAction.addEventListener('click', function (e) {
+            e.preventDefault();
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            if (instance.config.mode === 'multiple') {
+                const selected = (instance.selectedDates || []).map(d => {
+                    const dt = new Date(d);
+                    dt.setHours(0, 0, 0, 0);
+                    return dt;
+                });
+                const exists = selected.some(d => d.getTime() === now.getTime());
+                if (!exists) selected.push(now);
+                instance.setDate(selected, true);
+                return;
+            }
+
+            instance.setDate(now, true);
+        });
+
+        actionRow.appendChild(clearAction);
+        actionRow.appendChild(todayAction);
+        container.appendChild(actionRow);
+    }
+
+    function initRentangCutiPNS() {
+        const tanggalInput = document.getElementById('tanggal_cuti_multi_pns');
+        const clearBtn = document.getElementById('clear_tanggal_cuti_pns');
+        if (!tanggalInput || typeof flatpickr === 'undefined') return;
+
+        if (clearBtn && !clearBtn.dataset.bound) {
+            clearBtn.addEventListener('click', function () {
+                if (tanggalInput._flatpickr) {
+                    tanggalInput._flatpickr.clear();
+                }
+                syncRentangPNS([]);
+            });
+            clearBtn.dataset.bound = '1';
+        }
+
+        if (!tanggalInput.dataset.bound) {
+            flatpickr(tanggalInput, {
+                mode: 'multiple',
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'j F Y',
+                conjunction: ', ',
+                locale: 'id',
+                onReady: function (selectedDates) {
+                    syncRentangPNS(selectedDates);
+                    if (tanggalInput._flatpickr && tanggalInput._flatpickr.altInput) {
+                        tanggalInput._flatpickr.altInput.classList.add('pr-10');
+                    }
+                    attachFlatpickrActionsPNS(this);
+                },
+                onChange: function (selectedDates) {
+                    syncRentangPNS(selectedDates);
+                }
+            });
+            tanggalInput.dataset.bound = '1';
+        }
+
+        if (tanggalInput._flatpickr) {
+            tanggalInput._flatpickr.clear();
+        }
+        syncRentangPNS([]);
+    }
+
+    function syncRentangPNS(selectedDates = null) {
+        const lamaInput = document.getElementById('lama_cuti_pns');
+        const mulaiInput = document.getElementById('mulai_cuti_pns');
+        const sampaiInput = document.getElementById('sampai_cuti_pns');
+        const jsonInput = document.getElementById('rentang_cuti_json_pns');
+        const tanggalInput = document.getElementById('tanggal_cuti_multi_pns');
+        const clearBtn = document.getElementById('clear_tanggal_cuti_pns');
+        if (!lamaInput || !mulaiInput || !sampaiInput || !jsonInput || !tanggalInput) return;
+
+        const picked = selectedDates ?? (tanggalInput._flatpickr ? tanggalInput._flatpickr.selectedDates : []);
+        const orderedDates = picked
+            .map(d => {
+                const dt = new Date(d);
+                dt.setHours(0, 0, 0, 0);
+                return dt;
+            })
+            .sort((a, b) => a - b)
+            .filter((d, idx, arr) => idx === 0 || d.getTime() !== arr[idx - 1].getTime());
+
+        if (orderedDates.length === 0) {
+            lamaInput.value = '';
+            mulaiInput.value = '';
+            sampaiInput.value = '';
+            jsonInput.value = '[]';
+            if (tanggalInput._flatpickr && tanggalInput._flatpickr.altInput) {
+                tanggalInput._flatpickr.altInput.value = '';
+            }
+            if (clearBtn) clearBtn.classList.add('hidden');
+            return;
+        }
+
+        const toDateString = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
+
+        const ranges = [];
+        let start = orderedDates[0];
+        let prev = orderedDates[0];
+
+        for (let i = 1; i < orderedDates.length; i++) {
+            const curr = orderedDates[i];
+            const diffDay = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+            if (diffDay === 1) {
+                prev = curr;
+                continue;
+            }
+
+            ranges.push({ mulai: toDateString(start), sampai: toDateString(prev) });
+            start = curr;
+            prev = curr;
+        }
+        ranges.push({ mulai: toDateString(start), sampai: toDateString(prev) });
+
+        lamaInput.value = orderedDates.length;
+        mulaiInput.value = toDateString(orderedDates[0]);
+        sampaiInput.value = toDateString(orderedDates[orderedDates.length - 1]);
+        jsonInput.value = JSON.stringify(ranges);
+
+        if (tanggalInput._flatpickr && tanggalInput._flatpickr.altInput) {
+            const compactLabel = formatCompactRangeLabel(ranges);
+            tanggalInput._flatpickr.altInput.value = compactLabel;
+        }
+        if (clearBtn) clearBtn.classList.remove('hidden');
+
+        const event = new Event('input', { bubbles: true });
+        lamaInput.dispatchEvent(event);
+    }
+
+    function formatCompactRangeLabel(ranges) {
+        if (!ranges || ranges.length === 0) return '';
+
+        const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const parse = (v) => {
+            const [y, m, d] = v.split('-').map(Number);
+            return { y, m, d };
+        };
+
+        const allSameMonthYear = ranges.every((r) => {
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            return a.y === b.y && a.m === b.m;
+        }) && ranges.every((r) => {
+            const ref = parse(ranges[0].mulai);
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            return a.y === ref.y && a.m === ref.m && b.y === ref.y && b.m === ref.m;
+        });
+
+        if (allSameMonthYear) {
+            const ref = parse(ranges[0].mulai);
+            const parts = ranges.map((r) => {
+                const a = parse(r.mulai);
+                const b = parse(r.sampai);
+                return a.d === b.d ? `${a.d}` : `${a.d}-${b.d}`;
+            });
+            return `${parts.join(', ')} ${bulan[ref.m - 1]} ${ref.y}`;
+        }
+
+        return ranges.map((r) => {
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            if (a.y === b.y && a.m === b.m) {
+                return a.d === b.d
+                    ? `${a.d} ${bulan[a.m - 1]} ${a.y}`
+                    : `${a.d}-${b.d} ${bulan[a.m - 1]} ${a.y}`;
+            }
+            return `${a.d} ${bulan[a.m - 1]} ${a.y} - ${b.d} ${bulan[b.m - 1]} ${b.y}`;
+        }).join(', ');
+    }
+
+    document.addEventListener('DOMContentLoaded', initRentangCutiPNS);
+
     function submitCutiForm(e) {
         e.preventDefault();
+        syncRentangPNS();
+
         const form = document.getElementById('cutiForm');
+        const rentangJson = document.getElementById('rentang_cuti_json_pns');
+        if (!rentangJson || rentangJson.value === '[]') {
+            notify('error', 'Validasi', 'Minimal satu rentang tanggal cuti harus diisi.', false);
+            return;
+        }
+
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan';

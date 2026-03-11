@@ -121,6 +121,44 @@ function formatTanggalIndonesia($tanggal)
     $tahun = date('Y', $timestamp);
     return $hari . ' ' . $bulan[$bulanAngka] . ' ' . $tahun;
 }
+
+function formatRentangCuti($rentangCuti)
+{
+    if (!is_array($rentangCuti) || empty($rentangCuti)) {
+        return '';
+    }
+
+    $segments = [];
+    $bulanNama = array(1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember');
+    foreach ($rentangCuti as $segment) {
+        $mulai = $segment['mulai'] ?? null;
+        $sampai = $segment['sampai'] ?? null;
+        if (!$mulai || !$sampai) {
+            continue;
+        }
+
+        $mulaiTs = strtotime($mulai);
+        $sampaiTs = strtotime($sampai);
+        $mulaiHari = date('j', $mulaiTs);
+        $sampaiHari = date('j', $sampaiTs);
+        $mulaiBulan = (int) date('n', $mulaiTs);
+        $sampaiBulan = (int) date('n', $sampaiTs);
+        $mulaiTahun = date('Y', $mulaiTs);
+        $sampaiTahun = date('Y', $sampaiTs);
+
+        if ($mulaiBulan === $sampaiBulan && $mulaiTahun === $sampaiTahun) {
+            if ($mulaiHari === $sampaiHari) {
+                $segments[] = $mulaiHari . ' ' . $bulanNama[$mulaiBulan] . ' ' . $mulaiTahun;
+            } else {
+                $segments[] = $mulaiHari . '-' . $sampaiHari . ' ' . $bulanNama[$mulaiBulan] . ' ' . $mulaiTahun;
+            }
+        } else {
+            $segments[] = formatTanggalIndonesia($mulai) . ' s/d ' . formatTanggalIndonesia($sampai);
+        }
+    }
+
+    return implode(', ', $segments);
+}
     ?>
     <div class="container">
 
@@ -230,6 +268,30 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
             <tr>
                 <td colspan="6" class="section-header">IV. LAMANYA CUTI</td>
             </tr>
+            <?php
+            $rentang_cuti = $f['rentang_cuti'] ?? [];
+            if (!empty($rentang_cuti) && is_array($rentang_cuti) && count($rentang_cuti) > 1):
+                $totalRanges = count($rentang_cuti);
+                foreach ($rentang_cuti as $idx => $range):
+                    $mulai = $range['mulai'] ?? null;
+                    $sampai = $range['sampai'] ?? null;
+            ?>
+            <tr>
+                <?php if ($idx === 0): ?>
+                    <td style="width: 10%; vertical-align:middle; text-align:left;" rowspan="<?= $totalRanges ?>">Selama</td>
+                    <td style="width: 15%; vertical-align:middle; text-align:left;" rowspan="<?= $totalRanges ?>"><?= $f['lama_cuti'] ?? '' ?> hari</td>
+                    <td style="width: 15%; vertical-align:middle; text-align:left;" rowspan="<?= $totalRanges ?>">mulai tanggal</td>
+                <?php endif; ?>
+                <td style="width: 20%;"><?= $mulai ? formatTanggalIndonesia($mulai) : '' ?></td>
+                <?php if ($idx === 0): ?>
+                    <td style="width: 10%; vertical-align:middle; text-align:left;" rowspan="<?= $totalRanges ?>">s/d</td>
+                <?php endif; ?>
+                <td style="width: 30%;"><?= $sampai ? formatTanggalIndonesia($sampai) : '' ?></td>
+            </tr>
+            <?php
+                endforeach;
+            else:
+            ?>
             <tr>
                 <td style="width: 10%">Selama</td>
                 <td style="width: 15%"><?= $f['lama_cuti'] ?? '' ?> hari</td>
@@ -238,6 +300,9 @@ echo $mkTh . ' th ' . $mkBl . ' bln';
                 <td style="width: 10%">s/d</td>
                 <td style="width: 30%"><?= isset($f['sampai']) ? formatTanggalIndonesia($f['sampai']) : '' ?></td>
             </tr>
+            <?php
+            endif;
+            ?>
         </table>
 
         <table>

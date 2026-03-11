@@ -3,12 +3,11 @@ const fs = require("fs");
 const path = require("path");
 const { pathToFileURL } = require('url');
 
-// Helper: write to log file if configured
 let logFilePath = null;
 function writeLog(msg) {
     const line = new Date().toISOString() + ' ' + msg + '\n';
     if (logFilePath) {
-        try { fs.appendFileSync(logFilePath, line); } catch(e) { /* ignore */ }
+        try { fs.appendFileSync(logFilePath, line); } catch(e) { }
     }
     console.error(line.trim());
 }
@@ -22,7 +21,6 @@ function writeLog(msg) {
     writeLog('cwd: ' + process.cwd());
     writeLog('node version: ' + process.version);
 
-    // Support JSON config file as single argument (avoids Windows cmd quoting issues)
     if (args.length === 1 && args[0].endsWith('.json')) {
         try {
             const configRaw = fs.readFileSync(args[0], 'utf8');
@@ -45,7 +43,6 @@ function writeLog(msg) {
             process.exit(1);
         }
     } else if (args.length >= 2) {
-        // Legacy: positional arguments
         inputPath = args[0];
         outputPath = args[1];
         width = args[2] || "215.9mm";
@@ -137,7 +134,6 @@ function writeLog(msg) {
                 console.error('Saved debug screenshot to', debugPath);
             }
         } catch (sErr) {
-            // ignore screenshot errors
         }
         process.exit(1);
     } finally {

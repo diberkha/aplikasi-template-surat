@@ -116,30 +116,55 @@ class IzinCutiNonAsnController extends Controller
             $table = $section->addTable('CutiTable');
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 6])->addText('IV. LAMANYA CUTI');
-            $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(0.7))->addText('Selama');
-            $table->addCell((int) Converter::inchToTwip(1.0))->addText(($data['lama_cuti'] ?? '') . ' hari');
-            $table->addCell((int) Converter::inchToTwip(1.3))->addText('mulai tanggal');
-            $table->addCell((int) Converter::inchToTwip(1.5))->addText(isset($data['mulai']) ? $formatTanggalIndonesia($data['mulai']) : '');
-            $table->addCell((int) Converter::inchToTwip(0.5))->addText('s/d');
-            $table->addCell((int) Converter::inchToTwip(1.27))->addText(isset($data['sampai']) ? $formatTanggalIndonesia($data['sampai']) : '');
+            
+            $rentang_cuti = $data['rentang_cuti'] ?? [];
+            if (!empty($rentang_cuti) && is_array($rentang_cuti) && count($rentang_cuti) > 1) {
+                $totalRanges = count($rentang_cuti);
+                foreach ($rentang_cuti as $idx => $range) {
+                    $table->addRow();
+                    if ($idx === 0) {
+                        $table->addCell((int) Converter::inchToTwip(0.7), ['vMerge' => 'restart', 'valign' => 'center'])->addText('Selama', null, ['alignment' => Jc::START]);
+                        $table->addCell((int) Converter::inchToTwip(1.0), ['vMerge' => 'restart', 'valign' => 'center'])->addText(($data['lama_cuti'] ?? '') . ' hari', null, ['alignment' => Jc::START]);
+                        $table->addCell((int) Converter::inchToTwip(1.3), ['vMerge' => 'restart', 'valign' => 'center'])->addText('mulai tanggal', null, ['alignment' => Jc::START]);
+                    } else {
+                        $table->addCell((int) Converter::inchToTwip(0.7), ['vMerge' => 'continue', 'valign' => 'center'])->addText('');
+                        $table->addCell((int) Converter::inchToTwip(1.0), ['vMerge' => 'continue', 'valign' => 'center'])->addText('');
+                        $table->addCell((int) Converter::inchToTwip(1.3), ['vMerge' => 'continue', 'valign' => 'center'])->addText('');
+                    }
+                    $table->addCell((int) Converter::inchToTwip(1.5))->addText($formatTanggalIndonesia($range['mulai']));
+                    if ($idx === 0) {
+                        $table->addCell((int) Converter::inchToTwip(0.5), ['vMerge' => 'restart', 'valign' => 'center'])->addText('s/d', null, ['alignment' => Jc::START]);
+                    } else {
+                        $table->addCell((int) Converter::inchToTwip(0.5), ['vMerge' => 'continue', 'valign' => 'center'])->addText('');
+                    }
+                    $table->addCell((int) Converter::inchToTwip(1.27))->addText($formatTanggalIndonesia($range['sampai']));
+                }
+            } else {
+                $table->addRow();
+                $table->addCell((int) Converter::inchToTwip(0.7))->addText('Selama');
+                $table->addCell((int) Converter::inchToTwip(1.0))->addText(($data['lama_cuti'] ?? '') . ' hari');
+                $table->addCell((int) Converter::inchToTwip(1.3))->addText('mulai tanggal');
+                $table->addCell((int) Converter::inchToTwip(1.5))->addText(isset($data['mulai']) ? $formatTanggalIndonesia($data['mulai']) : '');
+                $table->addCell((int) Converter::inchToTwip(0.5))->addText('s/d');
+                $table->addCell((int) Converter::inchToTwip(1.27))->addText(isset($data['sampai']) ? $formatTanggalIndonesia($data['sampai']) : '');
+            }
 
             $section->addTextBreak(1, ['spaceAfter' => (int) Converter::inchToTwip(1.5)]);
 
             $table = $section->addTable('CutiTable');
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(7.1), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
+            $table->addCell((int) Converter::inchToTwip(7.27), ['gridSpan' => 5])->addText('V. CATATAN CUTI***');
 
             $table->addRow();
-            $table->addCell((int) Converter::inchToTwip(3.1), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
-            $table->addCell((int) Converter::inchToTwip(2.9))->addText('2. CUTI BESAR');
+            $table->addCell((int) Converter::inchToTwip(3.2), ['gridSpan' => 3])->addText('1. CUTI TAHUNAN');
+            $table->addCell((int) Converter::inchToTwip(2.97))->addText('2. CUTI BESAR');
             $table->addCell((int) Converter::inchToTwip(1.1))->addText($jenisCuti == 'Cuti Besar' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();
             $table->addCell((int) Converter::inchToTwip(0.6))->addText('Tahun');
             $table->addCell((int) Converter::inchToTwip(0.6))->addText('Sisa');
-            $table->addCell((int) Converter::inchToTwip(1.9))->addText('Keterangan');
-            $table->addCell((int) Converter::inchToTwip(2.9))->addText('3. CUTI MELAHIRKAN');
+            $table->addCell((int) Converter::inchToTwip(2.0))->addText('Keterangan');
+            $table->addCell((int) Converter::inchToTwip(2.97))->addText('3. CUTI MELAHIRKAN');
             $table->addCell((int) Converter::inchToTwip(1.1))->addText($jenisCuti == 'Cuti Melahirkan' ? 'V' : '', null, ['alignment' => Jc::CENTER]);
 
             $table->addRow();

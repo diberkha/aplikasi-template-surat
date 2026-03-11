@@ -262,7 +262,6 @@ trait LazyPdfTrait
         }
 
         try {
-            // ensure temp folder exists and write HTML there for easier discovery
             $tempDir = storage_path('app/temp');
             if (!file_exists($tempDir)) {
                 @mkdir($tempDir, 0755, true);
@@ -271,7 +270,6 @@ trait LazyPdfTrait
             file_put_contents($tempHtmlFile, $html);
             Log::info('Wrote temp HTML for Puppeteer', ['temp_html' => $tempHtmlFile, 'surat_id' => $surat->id_surat]);
 
-            // resolve node binary: prefer NODE_PATH env, otherwise try to locate
             $nodePath = env('NODE_PATH', null);
             if (!$nodePath) {
                 if (stripos(PHP_OS, 'WIN') === 0) {
@@ -296,7 +294,6 @@ trait LazyPdfTrait
 
             $chromePath = env('CHROME_PATH', '');
 
-            // Write config as JSON file
             $configFile = $tempDir . DIRECTORY_SEPARATOR . 'pdf-config-' . uniqid() . '.json';
             $nodeLogFile = $tempDir . DIRECTORY_SEPARATOR . 'node-log-' . uniqid() . '.txt';
             $config = [
@@ -315,13 +312,11 @@ trait LazyPdfTrait
 
             $jsRenderer = base_path('resources' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'pdf-renderer.js');
 
-            // Use proc_open with ARRAY command (PHP 7.4+) to bypass cmd.exe entirely.
-            // This calls node.exe directly — no shell, no quoting issues.
             $cmdArray = [$nodePath, $jsRenderer, $configFile];
             $descriptors = [
-                0 => ['pipe', 'r'],  // stdin
-                1 => ['pipe', 'w'],  // stdout
-                2 => ['pipe', 'w'],  // stderr
+                0 => ['pipe', 'r'],  
+                1 => ['pipe', 'w'],  
+                2 => ['pipe', 'w'],  
             ];
 
             Log::debug('Launching Puppeteer via proc_open (no shell)', [
@@ -357,14 +352,12 @@ trait LazyPdfTrait
                 'surat_id' => $surat->id_surat
             ]);
 
-            // Cleanup temp files
             @unlink($configFile);
             @unlink($nodeLogFile);
             if ($pdfCreated) {
                 @unlink($tempHtmlFile);
             }
 
-            // Use file existence as success indicator (more reliable than return code)
             $returnVar = $pdfCreated ? 0 : 1;
 
             if (!$pdfCreated) {

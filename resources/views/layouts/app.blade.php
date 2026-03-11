@@ -9,6 +9,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="{{ asset('img/icon-logo-rs.png') }}">
     <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
@@ -135,6 +137,21 @@
 
         .dark .custom-scrollbar-x::-webkit-scrollbar-thumb {
             background: #4b5563;
+        }
+
+        .flatpickr-current-month {
+            font-size: 115%;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month input.cur-year,
+        .flatpickr-current-month .numInputWrapper {
+            font-size: 1rem !important;
+            font-weight: 500;
+        }
+
+        .flatpickr-monthDropdown-months option {
+            font-size: 1rem;
         }
     </style>
 </head>

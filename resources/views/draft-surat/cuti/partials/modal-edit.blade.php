@@ -45,6 +45,7 @@
                 <input type="hidden" name="form[n1_used]" id="edit_n1_used_hidden">
                 <input type="hidden" name="form[n_used]" id="edit_n_used_hidden">
                 <input type="hidden" name="form[sisa_cuti_tahunan]" id="edit_sisa_cuti_tahunan_hidden">
+                <input type="hidden" name="form[rentang_cuti_json]" id="edit_rentang_cuti_json">
 
                 <div class="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
 
@@ -191,26 +192,29 @@
                             <h4 class="font-bold text-gray-900 dark:text-white">IV. LAMANYA CUTI</h4>
                         </div>
                         <div class="p-4 space-y-4 text-sm">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block mb-2 text-gray-700 dark:text-gray-300">Lama Cuti (Hari) <span
                                             class="text-red-500">*</span></label>
-                                    <input type="number" name="form[lama_cuti]" id="edit_cuti_lama" required min="1"
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                    <input type="number" name="form[lama_cuti]" id="edit_cuti_lama" required min="1" readonly
+                                    class="w-full px-4 py-3 bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-gray-300 cursor-not-allowed">
                                 </div>
                                 <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Mulai Tanggal <span
+                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Tanggal Cuti <span
                                             class="text-red-500">*</span></label>
-                                    <input type="date" name="form[mulai]" id="edit_cuti_mulai" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
-                                </div>
-                                <div>
-                                    <label class="block mb-2 text-gray-700 dark:text-gray-300">Sampai Tanggal <span
-                                            class="text-red-500">*</span></label>
-                                    <input type="date" name="form[sampai]" id="edit_cuti_sampai" required
-                                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                    <div class="relative">
+                                        <input type="text" id="edit_tanggal_cuti_multi" placeholder="Pilih tanggal cuti"
+                                            class="w-full px-4 py-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white">
+                                        <button type="button" id="edit_clear_tanggal_cuti_btn"
+                                            class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                            aria-label="Clear tanggal cuti">
+                                            <i class="fas fa-times-circle text-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="form[mulai]" id="edit_cuti_mulai" required>
+                            <input type="hidden" name="form[sampai]" id="edit_cuti_sampai" required>
                         </div>
                     </div>
 
@@ -472,6 +476,226 @@
     let editModeCuti = false;
     let currentCutiDraftData = null;
     let isInitializingCuti = false;
+    let editCutiFlatpickr = null;
+
+    function attachFlatpickrActionsEditCuti(instance) {
+        if (!instance || !instance.calendarContainer) return;
+
+        const container = instance.calendarContainer;
+        if (container.querySelector('.flatpickr-action-row')) return;
+
+        const actionRow = document.createElement('div');
+        actionRow.className = 'flatpickr-action-row';
+        actionRow.style.display = 'flex';
+        actionRow.style.justifyContent = 'space-between';
+        actionRow.style.padding = '8px 12px';
+        actionRow.style.borderTop = '1px solid #e5e7eb';
+
+        const clearAction = document.createElement('button');
+        clearAction.type = 'button';
+        clearAction.textContent = 'Clear';
+        clearAction.style.color = '#2563eb';
+        clearAction.style.fontSize = '14px';
+
+        const todayAction = document.createElement('button');
+        todayAction.type = 'button';
+        todayAction.textContent = 'Today';
+        todayAction.style.color = '#2563eb';
+        todayAction.style.fontSize = '14px';
+
+        clearAction.addEventListener('click', function (e) {
+            e.preventDefault();
+            instance.clear();
+            syncEditCutiDateSelection([]);
+        });
+
+        todayAction.addEventListener('click', function (e) {
+            e.preventDefault();
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            if (instance.config.mode === 'multiple') {
+                const selected = (instance.selectedDates || []).map(d => {
+                    const dt = new Date(d);
+                    dt.setHours(0, 0, 0, 0);
+                    return dt;
+                });
+                const exists = selected.some(d => d.getTime() === now.getTime());
+                if (!exists) selected.push(now);
+                instance.setDate(selected, true);
+                return;
+            }
+
+            instance.setDate(now, true);
+        });
+
+        actionRow.appendChild(clearAction);
+        actionRow.appendChild(todayAction);
+        container.appendChild(actionRow);
+    }
+
+    function initEditCutiDatePicker() {
+        const tanggalInput = document.getElementById('edit_tanggal_cuti_multi');
+        const clearBtn = document.getElementById('edit_clear_tanggal_cuti_btn');
+        if (!tanggalInput || typeof flatpickr === 'undefined') return;
+
+        if (clearBtn && !clearBtn.dataset.bound) {
+            clearBtn.addEventListener('click', function () {
+                if (editCutiFlatpickr) {
+                    editCutiFlatpickr.clear();
+                }
+                syncEditCutiDateSelection([]);
+            });
+            clearBtn.dataset.bound = '1';
+        }
+
+        if (!editCutiFlatpickr) {
+            editCutiFlatpickr = flatpickr(tanggalInput, {
+                mode: 'multiple',
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'j F Y',
+                conjunction: ', ',
+                locale: 'id',
+                onReady: function (selectedDates) {
+                    syncEditCutiDateSelection(selectedDates);
+                    if (tanggalInput._flatpickr && tanggalInput._flatpickr.altInput) {
+                        tanggalInput._flatpickr.altInput.classList.add('pr-10');
+                    }
+                    attachFlatpickrActionsEditCuti(this);
+                },
+                onChange: function (selectedDates) {
+                    syncEditCutiDateSelection(selectedDates);
+                }
+            });
+        }
+    }
+
+    function syncEditCutiDateSelection(selectedDates = null) {
+        const lamaInput = document.getElementById('edit_cuti_lama');
+        const mulaiInput = document.getElementById('edit_cuti_mulai');
+        const sampaiInput = document.getElementById('edit_cuti_sampai');
+        const jsonInput = document.getElementById('edit_rentang_cuti_json');
+        const tanggalInput = document.getElementById('edit_tanggal_cuti_multi');
+        const clearBtn = document.getElementById('edit_clear_tanggal_cuti_btn');
+        if (!lamaInput || !mulaiInput || !sampaiInput || !jsonInput || !tanggalInput) return;
+
+        const picked = selectedDates ?? (editCutiFlatpickr ? editCutiFlatpickr.selectedDates : []);
+        const orderedDates = picked
+            .map(d => {
+                const dt = new Date(d);
+                dt.setHours(0, 0, 0, 0);
+                return dt;
+            })
+            .sort((a, b) => a - b)
+            .filter((d, idx, arr) => idx === 0 || d.getTime() !== arr[idx - 1].getTime());
+
+        if (orderedDates.length === 0) {
+            lamaInput.value = '';
+            mulaiInput.value = '';
+            sampaiInput.value = '';
+            jsonInput.value = '[]';
+            if (editCutiFlatpickr && editCutiFlatpickr.altInput) {
+                editCutiFlatpickr.altInput.value = '';
+            }
+            if (clearBtn) clearBtn.classList.add('hidden');
+            updateEditSisaCutiDisplay();
+            return;
+        }
+
+        const toDateString = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
+
+        const ranges = [];
+        let start = orderedDates[0];
+        let prev = orderedDates[0];
+        for (let i = 1; i < orderedDates.length; i++) {
+            const curr = orderedDates[i];
+            const diffDay = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+            if (diffDay === 1) {
+                prev = curr;
+                continue;
+            }
+            ranges.push({ mulai: toDateString(start), sampai: toDateString(prev) });
+            start = curr;
+            prev = curr;
+        }
+        ranges.push({ mulai: toDateString(start), sampai: toDateString(prev) });
+
+        lamaInput.value = orderedDates.length;
+        mulaiInput.value = toDateString(orderedDates[0]);
+        sampaiInput.value = toDateString(orderedDates[orderedDates.length - 1]);
+        jsonInput.value = JSON.stringify(ranges);
+
+        if (editCutiFlatpickr && editCutiFlatpickr.altInput) {
+            editCutiFlatpickr.altInput.value = formatCompactRangeLabelEditCuti(ranges);
+        }
+        if (clearBtn) clearBtn.classList.remove('hidden');
+
+        updateEditSisaCutiDisplay();
+    }
+
+    function formatCompactRangeLabelEditCuti(ranges) {
+        if (!ranges || ranges.length === 0) return '';
+
+        const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const parse = (v) => {
+            const [y, m, d] = v.split('-').map(Number);
+            return { y, m, d };
+        };
+
+        const allSameMonthYear = ranges.every((r) => {
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            return a.y === b.y && a.m === b.m;
+        }) && ranges.every((r) => {
+            const ref = parse(ranges[0].mulai);
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            return a.y === ref.y && a.m === ref.m && b.y === ref.y && b.m === ref.m;
+        });
+
+        if (allSameMonthYear) {
+            const ref = parse(ranges[0].mulai);
+            const parts = ranges.map((r) => {
+                const a = parse(r.mulai);
+                const b = parse(r.sampai);
+                return a.d === b.d ? `${a.d}` : `${a.d}-${b.d}`;
+            });
+            return `${parts.join(', ')} ${bulan[ref.m - 1]} ${ref.y}`;
+        }
+
+        return ranges.map((r) => {
+            const a = parse(r.mulai);
+            const b = parse(r.sampai);
+            if (a.y === b.y && a.m === b.m) {
+                return a.d === b.d
+                    ? `${a.d} ${bulan[a.m - 1]} ${a.y}`
+                    : `${a.d}-${b.d} ${bulan[a.m - 1]} ${a.y}`;
+            }
+            return `${a.d} ${bulan[a.m - 1]} ${a.y} - ${b.d} ${bulan[b.m - 1]} ${b.y}`;
+        }).join(', ');
+    }
+
+    function expandRangesToDates(ranges) {
+        const dates = [];
+        if (!Array.isArray(ranges)) return dates;
+
+        ranges.forEach((r) => {
+            if (!r || !r.mulai || !r.sampai) return;
+            const start = new Date(r.mulai + 'T00:00:00');
+            const end = new Date(r.sampai + 'T00:00:00');
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                dates.push(new Date(d));
+            }
+        });
+
+        return dates;
+    }
 
     async function openEditCutiModal(id) {
         try {
@@ -555,9 +779,26 @@
         }
 
         document.getElementById('edit_cuti_alasan').value = formData.alasan || formData.alasan_cuti || '';
-        document.getElementById('edit_cuti_mulai').value = formData.mulai ? formData.mulai.substring(0, 10) : (formData.tanggal_mulai ? formData.tanggal_mulai.substring(0, 10) : '');
-        document.getElementById('edit_cuti_sampai').value = formData.sampai ? formData.sampai.substring(0, 10) : (formData.tanggal_selesai ? formData.tanggal_selesai.substring(0, 10) : '');
-        document.getElementById('edit_cuti_lama').value = formData.lama_cuti || '';
+        initEditCutiDatePicker();
+
+        let ranges = [];
+        if (Array.isArray(formData.rentang_cuti) && formData.rentang_cuti.length > 0) {
+            ranges = formData.rentang_cuti;
+        } else {
+            const fallbackMulai = formData.mulai ? formData.mulai.substring(0, 10) : (formData.tanggal_mulai ? formData.tanggal_mulai.substring(0, 10) : '');
+            const fallbackSampai = formData.sampai ? formData.sampai.substring(0, 10) : (formData.tanggal_selesai ? formData.tanggal_selesai.substring(0, 10) : '');
+            if (fallbackMulai && fallbackSampai) {
+                ranges = [{ mulai: fallbackMulai, sampai: fallbackSampai }];
+            }
+        }
+
+        const selectedDates = expandRangesToDates(ranges);
+        if (editCutiFlatpickr) {
+            editCutiFlatpickr.setDate(selectedDates, true);
+        } else {
+            syncEditCutiDateSelection(selectedDates);
+        }
+
         document.getElementById('edit_cuti_alamat').value = formData.alamat || formData.alamat_cuti || '';
 
         if (pegId) {
@@ -628,11 +869,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const lamaInput = document.getElementById('edit_cuti_lama');
-
-        if (lamaInput) {
-            lamaInput.addEventListener('input', updateEditSisaCutiDisplay);
-        }
+        initEditCutiDatePicker();
     });
 
     function updateEditSisaCutiDisplay() {
@@ -703,8 +940,16 @@
 
     function submitEditCutiForm(event) {
         event.preventDefault();
+        syncEditCutiDateSelection();
+
         const form = document.getElementById('editCutiForm');
         const id = document.getElementById('edit_cuti_id_surat').value;
+        const rentangJson = document.getElementById('edit_rentang_cuti_json');
+        if (!rentangJson || rentangJson.value === '[]') {
+            notify('error', 'Validasi', 'Minimal satu rentang tanggal cuti harus diisi.', false);
+            return;
+        }
+
         const formData = new FormData(form);
 
         const currentFields = {};
