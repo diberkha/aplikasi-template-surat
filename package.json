@@ -23,5 +23,8 @@
     },
     "dependencies": {
         "puppeteer": "^24.36.1"
+    },
+    "overrides": {
+        "yaml": "^2.9.0"
     }
 }
